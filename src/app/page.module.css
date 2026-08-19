@@ -41,6 +41,12 @@
   margin: 0 0 12px;
 }
 
+.cardList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
 .card {
   display: block;
   background: var(--paper-raised);

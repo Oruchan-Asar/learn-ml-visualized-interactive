@@ -21,6 +21,8 @@ export interface CurvePlaygroundProps {
   readout?: ReactNode;
   /** Highlights the handle a different color, e.g. once a checkpoint has passed. */
   passed?: boolean;
+  /** Past x positions (e.g. gradient-descent steps), rendered as a fading trail. */
+  trail?: number[];
 }
 
 const SAMPLES = 120;
@@ -36,6 +38,7 @@ export function CurvePlayground({
   showTangent = true,
   readout,
   passed = false,
+  trail,
 }: CurvePlaygroundProps) {
   const margin = { top: 20, right: 24, bottom: 16, left: 24 };
   const innerW = width - margin.left - margin.right;
@@ -130,6 +133,16 @@ export function CurvePlayground({
             <line x1={0} x2={innerW} y1={yScale(0)} y2={yScale(0)} className={styles.axis} />
           )}
           <path d={pathD} className={styles.curve} />
+          {trail?.map((tx, i) => (
+            <circle
+              key={i}
+              cx={xScale(tx)}
+              cy={yScale(fn(tx))}
+              r={4}
+              className={styles.trailDot}
+              opacity={0.25 + (0.55 * i) / Math.max(1, trail.length - 1)}
+            />
+          ))}
           {showTangent && (
             <line
               x1={xScale(tx1)}

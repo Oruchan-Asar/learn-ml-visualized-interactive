@@ -58,6 +58,7 @@ export function GradientCheckpoint() {
       }
       passed={passed || everPassed}
       hasInteracted={hasInteracted}
+      idleLabel="Drag the point to try it"
     >
       <CurvePlayground
         fn={f}

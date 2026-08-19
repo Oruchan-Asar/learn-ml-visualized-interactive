@@ -48,6 +48,10 @@
   fill: var(--accent2);
 }
 
+.trailDot {
+  fill: var(--ink-faint);
+}
+
 .readout {
   font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
   font-size: 13px;
