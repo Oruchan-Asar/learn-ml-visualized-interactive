@@ -144,7 +144,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Gradient descent variants",
     blurb: "Batch, stochastic, and mini-batch — the same hill, three different ways down it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "momentum",

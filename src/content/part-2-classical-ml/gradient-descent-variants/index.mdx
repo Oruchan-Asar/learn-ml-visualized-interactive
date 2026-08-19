@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, VariantsCheckpoint } from "./Demos";
+
+<Hook>
+  To take one gradient step, do you really need to look at every single data point first?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is the exact same landscape and step button from the Part I capstone — except now the bowl is a real loss surface, fit to five data points, and each step uses *every one of them* to compute its direction. Watch how smoothly it heads for the minimum.
+</Intuition>
+
+<Formalize>
+  That's **batch** gradient descent — the gradient is the average over every example:
+
+  $$
+  \nabla L_{\text{batch}} = \frac{1}{n}\sum_{i=1}^n \nabla L_i
+  $$
+
+  **Stochastic** gradient descent uses just one example per step, $\nabla L_i$ for a single $i$ — cheap, but noisy. **Mini-batch** splits the difference, averaging over a small subset $B$: $\frac{1}{|B|}\sum_{i \in B} \nabla L_i$. All three are estimates of the same true gradient — they just trade accuracy per step for cost per step.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch modes and take a few steps each time. Batch heads straight for the minimum. Stochastic zigzags — each step only "knows about" one point, so it's regularly a little wrong — while mini-batch sits somewhere in between.
+</Play>
+
+<WorkedExample>
+  At $(w,b)=(0,0)$, the point $(-2,-3.2)$ alone gives a gradient of $(-12.8, 6.4)$ — while the full batch gradient there is $(-7.88, -2.04)$. Same rough neighborhood, but a different $w$-magnitude and even a *flipped sign* on $b$. Averaged over a full pass through all five points, though, the individual gradients exactly reconstruct the batch gradient — noise that cancels out over time, not bias.
+</WorkedExample>
+
+<VariantsCheckpoint />
+
+<Summary>
+  $$
+  \nabla L_{\text{batch}} = \frac{1}{n}\sum_{i=1}^n \nabla L_i, \qquad \nabla L_{\text{stochastic}} = \nabla L_i
+  $$
+
+  Every step is still exactly Chapter 2's descent rule from Part I — only *which examples* compute the gradient changes. Real training almost always uses mini-batches: batch is often too slow to even compute once, and pure stochastic is noisier than necessary.
+</Summary>
