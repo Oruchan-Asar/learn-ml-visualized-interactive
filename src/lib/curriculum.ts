@@ -168,7 +168,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Overfitting a tree",
     blurb: "Watch a tree memorize noise, then prune it back until it generalizes again.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "ensembles-bagging-and-random-forests",
