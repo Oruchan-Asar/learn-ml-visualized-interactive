@@ -18,6 +18,8 @@ export interface ContourPlaygroundProps {
   readout?: ReactNode;
   /** Recolors the point and arrow, e.g. once a checkpoint has passed. */
   passed?: boolean;
+  /** Past probe points (e.g. gradient-descent steps), rendered as a fading trail. */
+  trail?: { x: number; y: number }[];
 }
 
 const DEFAULT_DOMAIN: [number, number] = [-6, 6];
@@ -33,6 +35,7 @@ export function ContourPlayground({
   size = 320,
   readout,
   passed = false,
+  trail,
 }: ContourPlaygroundProps) {
   const margin = 16;
   const [dMin, dMax] = domain;
@@ -160,6 +163,17 @@ export function ContourPlayground({
             height={cellSize + 0.5}
             className={styles.cell}
             fillOpacity={c.opacity}
+          />
+        ))}
+
+        {trail?.map((p, i) => (
+          <circle
+            key={i}
+            cx={scaleX(p.x)}
+            cy={scaleY(p.y)}
+            r={4}
+            className={styles.trailDot}
+            opacity={0.25 + (0.55 * i) / Math.max(1, trail.length - 1)}
           />
         ))}
 

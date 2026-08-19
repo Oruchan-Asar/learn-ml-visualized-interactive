@@ -101,7 +101,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "Descend a two-parameter loss by hand",
     blurb: "Combine the gradient vector and gradient descent into one hands-on optimization from scratch.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 

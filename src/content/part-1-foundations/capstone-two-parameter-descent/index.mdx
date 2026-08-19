@@ -1,0 +1,48 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  You've dragged a point downhill by hand, and you've watched a formula take one automatic step. What happens when both come together — a real, iterative search across two coordinates at once, toward a minimum you have to find yourself?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Everything here is a part you've already built. The arrow is the gradient vector from Chapter 6. The step button applies the same update rule from Chapter 2 — just to both coordinates simultaneously. Click it a few times and watch the trail find the bright spot.
+</Intuition>
+
+<Formalize>
+  One update rule, one dimension higher —
+
+  $$
+  (x,y)_{n+1} = (x,y)_n - \eta\, \nabla f(x_n, y_n)
+  $$
+
+  Exactly Chapter 2's $x_{n+1} = x_n - \eta f'(x_n)$, with the scalar derivative replaced by Chapter 6's gradient *vector*. Same idea, one number became two.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Tune $\eta$ and step through it. Too small crawls; too large overshoots the bowl entirely — the exact same stability story from Chapter 2, now playing out in two directions at once.
+</Play>
+
+<WorkedExample>
+  From $(7,-6)$ with $\eta = 0.1$ on $f(x,y)=(x-3)^2+(y+2)^2$: $\nabla f(7,-6) = (2(7-3),\ 2(-6+2)) = (8,-8)$, so
+
+  $$
+  (x,y)_1 = (7,-6) - 0.1\,(8,-8) = (6.2,\ -5.2)
+  $$
+
+  Both coordinates moved together, each shrinking its own distance to the minimum at $(3,-2)$ by the same fraction — because each axis is independently running Chapter 2's exact recurrence.
+</WorkedExample>
+
+<CapstoneCheckpoint />
+
+<Summary>
+  $$
+  (x,y)_{n+1} = (x,y)_n - \eta\, \nabla f(x_n, y_n)
+  $$
+
+  Gradient descent doesn't change at all in higher dimensions — it just steps against a longer vector. Every optimizer in the rest of this book is a variation on exactly this update rule.
+</Summary>

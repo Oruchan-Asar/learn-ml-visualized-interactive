@@ -23,6 +23,10 @@
   stroke: none;
 }
 
+.trailDot {
+  fill: var(--ink);
+}
+
 .arrowLine {
   stroke: var(--ink-soft);
   stroke-width: 2.5;

@@ -9,3 +9,16 @@ export function gradientDescentStep(
 ): number {
   return x - learningRate * gradient(x);
 }
+
+/** Same update rule, one dimension up: (x,y)_{n+1} = (x,y)_n - learningRate * gradient(x_n, y_n). */
+export function gradientDescentStep2D(
+  point: { x: number; y: number },
+  gradient: (x: number, y: number) => { x: number; y: number },
+  learningRate: number,
+): { x: number; y: number } {
+  const g = gradient(point.x, point.y);
+  return {
+    x: point.x - learningRate * g.x,
+    y: point.y - learningRate * g.y,
+  };
+}

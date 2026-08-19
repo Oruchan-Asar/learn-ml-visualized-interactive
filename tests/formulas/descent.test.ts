@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { gradient } from "@/lib/math-core/gradient";
-import { gradientDescentStep } from "@/lib/math-core/descent";
+import { gradient as gradient2D } from "@/lib/math-core/two-parameter-loss";
+import { gradientDescentStep, gradientDescentStep2D } from "@/lib/math-core/descent";
 
 /**
  * For f(x) = x^2 - 4x + 5, one step is x_new = x(1 - 2*lr) + 4*lr — a linear
@@ -31,5 +32,39 @@ describe("gradientDescentStep on f(x) = x^2 - 4x + 5", () => {
     expect(x1).toBeCloseTo(4.4, 10);
     const x2 = gradientDescentStep(x1, gradient, 0.1);
     expect(x2).toBeCloseTo(3.92, 10);
+  });
+});
+
+/**
+ * The capstone's 2D case: f(x,y) = (x-3)^2 + (y+2)^2, minimum at (3,-2).
+ * Each axis follows the exact same recurrence as the 1D case independently,
+ * so the same stability threshold (0 < lr < 1) applies per axis.
+ */
+describe("gradientDescentStep2D on the capstone's two-parameter loss", () => {
+  it("converges toward (3,-2) within the predicted ~8 steps at lr=0.15", () => {
+    let point = { x: 7, y: -6 };
+    for (let i = 0; i < 8; i++) {
+      point = gradientDescentStep2D(point, gradient2D, 0.15);
+    }
+    const distance = Math.hypot(point.x - 3, point.y + 2);
+    expect(distance).toBeLessThan(0.4);
+  });
+
+  it("makes comparatively little progress in 8 steps at too-small a learning rate", () => {
+    let point = { x: 7, y: -6 };
+    for (let i = 0; i < 8; i++) {
+      point = gradientDescentStep2D(point, gradient2D, 0.05);
+    }
+    const distance = Math.hypot(point.x - 3, point.y + 2);
+    expect(distance).toBeGreaterThan(1);
+  });
+
+  it("diverges for a learning rate above the per-axis stability threshold", () => {
+    let point = { x: 7, y: -6 };
+    for (let i = 0; i < 100; i++) {
+      point = gradientDescentStep2D(point, gradient2D, 1.05);
+    }
+    const distance = Math.hypot(point.x - 3, point.y + 2);
+    expect(distance).toBeGreaterThan(1e4);
   });
 });
