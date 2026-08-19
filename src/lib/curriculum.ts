@@ -93,7 +93,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 9,
     title: "Information & entropy",
     blurb: "Measure surprise in bits, and notice it's the same math a decision tree uses to pick a split.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-two-parameter-descent",

@@ -1,0 +1,48 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, EntropyCheckpoint } from "./Demos";
+
+<Hook>
+  Which is more surprising: a coin that's fair, or one that always lands heads?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the bars from equal toward one outcome dominating. Once an outcome becomes almost certain, there's really nothing left to learn from watching the next draw — you already knew what was coming.
+</Intuition>
+
+<Formalize>
+  That "amount left to learn" is **entropy**, measured in bits —
+
+  $$
+  H(X) = -\sum_i P(x_i) \log_2 P(x_i)
+  $$
+
+  It's exactly zero when one outcome is certain, and it's largest exactly when every outcome is equally likely — uncertainty is maximized when you have the least information to favor any one outcome.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag toward uniform and watch entropy climb to its ceiling; drag toward certainty and watch it collapse toward zero.
+</Play>
+
+<WorkedExample>
+  With $P = (0.5, 0.25, 0.125, 0.125)$:
+
+  $$
+  H(X) = 0.5(1) + 0.25(2) + 0.125(3) + 0.125(3) = 0.5+0.5+0.375+0.375 = 1.75 \text{ bits}
+  $$
+
+  Each term is $-p\log_2 p$ — here the probabilities are all powers of two, so every term comes out to a whole number of bits.
+</WorkedExample>
+
+<EntropyCheckpoint />
+
+<Summary>
+  $$
+  H(X) = -\sum_i P(x_i) \log_2 P(x_i)
+  $$
+
+  Entropy measures how much uncertainty a distribution holds, in bits — zero at certainty, maximal at uniform. This exact quantity — how much uncertainty a split removes — is what a decision tree maximizes when it picks where to split, several chapters from now.
+</Summary>
