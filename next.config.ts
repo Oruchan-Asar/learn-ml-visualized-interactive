@@ -10,10 +10,6 @@ const withMDX = createMDX({
   options: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [rehypeKatex],
-    // Forces the production JSX runtime for MDX output. The dev JSX runtime's
-    // owner-stack tracking currently crashes against this React version inside
-    // MDX-generated components (`_createMdxContent`) — see commit message.
-    development: false,
   },
 });
 
