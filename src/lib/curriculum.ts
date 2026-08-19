@@ -69,7 +69,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "The gradient in multiple dimensions",
     blurb: "Extend \"downhill\" to two parameters at once, on a loss surface instead of a curve.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "probability-outcomes-and-distributions",
