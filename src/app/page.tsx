@@ -16,20 +16,43 @@ export default function Home() {
         </p>
       </header>
 
-      {parts.map((part) => (
-        <section key={part} className={styles.partSection}>
-          <p className={styles.partLabel}>{part}</p>
-          <div className={styles.cardList}>
-            {CURRICULUM.filter((c) => c.part === part).map((c) => (
-              <Link key={c.slug} href={`/chapter/${c.slug}`} className={styles.card}>
-                <span className={styles.cardNumber}>Chapter {c.chapterNumber}</span>
-                <h2 className={styles.cardTitle}>{c.title}</h2>
-                <p className={styles.cardBlurb}>{c.blurb}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
-      ))}
+      {parts.map((part) => {
+        const chaptersInPart = CURRICULUM.filter((c) => c.part === part);
+        const shippedInPart = chaptersInPart.filter((c) => c.status === "shipped").length;
+        return (
+          <details key={part} className={styles.partSection} open>
+            <summary className={styles.partSummary}>
+              <span className={styles.partTitle}>{part}</span>
+              <span className={styles.partCount}>
+                {shippedInPart} / {chaptersInPart.length} shipped
+              </span>
+            </summary>
+            <div className={styles.cardList}>
+              {chaptersInPart.map((c) =>
+                c.status === "shipped" ? (
+                  <Link key={c.slug} href={`/chapter/${c.slug}`} className={styles.card}>
+                    <span className={styles.cardNumber}>Chapter {c.chapterNumber}</span>
+                    <h2 className={styles.cardTitle}>{c.title}</h2>
+                    <p className={styles.cardBlurb}>{c.blurb}</p>
+                  </Link>
+                ) : (
+                  <div key={c.slug} className={styles.cardPlanned} aria-disabled="true">
+                    <div className={styles.cardHeader}>
+                      <span className={styles.cardNumber}>
+                        Chapter {c.chapterNumber}
+                        {c.capstone && " · Capstone"}
+                      </span>
+                      <span className={styles.plannedTag}>Planned</span>
+                    </div>
+                    <h2 className={styles.cardTitle}>{c.title}</h2>
+                    <p className={styles.cardBlurb}>{c.blurb}</p>
+                  </div>
+                ),
+              )}
+            </div>
+          </details>
+        );
+      })}
     </div>
   );
 }

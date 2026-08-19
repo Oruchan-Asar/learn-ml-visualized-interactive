@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
-import { CURRICULUM, getChapterMeta, getChapterNeighbors } from "@/lib/curriculum";
+import { CURRICULUM, getChapterMeta, getChapterNeighbors, getShippedChapters } from "@/lib/curriculum";
 import styles from "./ChapterFrame.module.css";
 
 export interface ChapterFrameProps {
@@ -11,6 +11,7 @@ export interface ChapterFrameProps {
 export function ChapterFrame({ slug, children }: ChapterFrameProps) {
   const meta = getChapterMeta(slug);
   const { index, prev, next } = getChapterNeighbors(slug);
+  const shippedCount = getShippedChapters().length;
   const parts = [...new Set(CURRICULUM.map((c) => c.part))];
 
   return (
@@ -20,33 +21,52 @@ export function ChapterFrame({ slug, children }: ChapterFrameProps) {
           ← All chapters
         </Link>
         <p className={styles.position}>
-          Chapter {index + 1} of {CURRICULUM.length}
+          Chapter {index + 1} of {shippedCount}
         </p>
 
         <details className={styles.overview} open>
           <summary>Contents</summary>
           <div className={styles.overviewBody}>
-            {parts.map((part) => (
-              <div key={part}>
-                <p className={styles.overviewPartLabel}>{part}</p>
-                <ol className={styles.overviewPartList}>
-                  {CURRICULUM.filter((c) => c.part === part).map((c) => {
-                    const isCurrent = c.slug === slug;
-                    return (
-                      <li key={c.slug}>
-                        <Link
-                          href={`/chapter/${c.slug}`}
-                          className={isCurrent ? styles.overviewLinkCurrent : styles.overviewLink}
-                        >
-                          Chapter {c.chapterNumber} — {c.title}
-                          {isCurrent && " (current)"}
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ol>
-              </div>
-            ))}
+            {parts.map((part) => {
+              const chaptersInPart = CURRICULUM.filter((c) => c.part === part);
+              const shippedInPart = chaptersInPart.filter((c) => c.status === "shipped").length;
+              const isCurrentPart = part === meta.part;
+              return (
+                <details key={part} className={styles.overviewPart} open={isCurrentPart}>
+                  <summary className={styles.overviewPartSummary}>
+                    <span>{part}</span>
+                    <span className={styles.overviewPartCount}>
+                      {shippedInPart}/{chaptersInPart.length}
+                    </span>
+                  </summary>
+                  <ol className={styles.overviewPartList}>
+                    {chaptersInPart.map((c) => {
+                      const isCurrent = c.slug === slug;
+                      if (c.status !== "shipped") {
+                        return (
+                          <li key={c.slug}>
+                            <span className={styles.overviewLinkPlanned} aria-disabled="true">
+                              Chapter {c.chapterNumber} — {c.title}
+                            </span>
+                          </li>
+                        );
+                      }
+                      return (
+                        <li key={c.slug}>
+                          <Link
+                            href={`/chapter/${c.slug}`}
+                            className={isCurrent ? styles.overviewLinkCurrent : styles.overviewLink}
+                          >
+                            Chapter {c.chapterNumber} — {c.title}
+                            {isCurrent && " (current)"}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ol>
+                </details>
+              );
+            })}
           </div>
         </details>
       </aside>

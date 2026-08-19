@@ -118,35 +118,73 @@
 }
 
 .overviewBody {
-  padding: 4px 12px 12px;
+  padding: 6px 10px 10px;
   border-top: 1px solid var(--line);
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 2px;
+  max-height: 60vh;
+  overflow-y: auto;
 }
 
-.overviewPartLabel {
+.overviewPart {
+  border-top: 1px solid var(--line);
+}
+.overviewPart:first-child {
+  border-top: none;
+}
+
+.overviewPartSummary {
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 2px;
   font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
   font-size: 10.5px;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-faint);
-  margin: 10px 2px 4px;
+}
+.overviewPartSummary::-webkit-details-marker {
+  display: none;
+}
+.overviewPartSummary::before {
+  content: "▸";
+  margin-right: 6px;
+  display: inline-block;
+  transition: transform 0.15s ease;
+}
+.overviewPart[open] > .overviewPartSummary::before {
+  transform: rotate(90deg);
+}
+.overviewPartSummary:hover {
+  color: var(--ink-soft);
+}
+
+.overviewPartCount {
+  flex-shrink: 0;
 }
 
 .overviewPartList {
   list-style: none;
-  margin: 0;
+  margin: 0 0 8px;
   padding: 0;
 }
 
 .overviewLink,
-.overviewLinkCurrent {
+.overviewLinkCurrent,
+.overviewLinkPlanned {
   display: block;
   padding: 7px 8px;
   border-radius: 6px;
   font-size: 13.5px;
   line-height: 1.35;
+}
+
+.overviewLink {
   color: var(--ink-soft);
 }
 .overviewLink:hover {
@@ -156,6 +194,10 @@
 .overviewLinkCurrent {
   color: var(--accent-ink);
   font-weight: 600;
+}
+.overviewLinkPlanned {
+  color: var(--ink-faint);
+  cursor: default;
 }
 
 .chapterNav {
