@@ -61,7 +61,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Matrices as transformations",
     blurb: "Watch a matrix stretch, rotate, and flip a vector in real time.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "gradient-in-multiple-dimensions",

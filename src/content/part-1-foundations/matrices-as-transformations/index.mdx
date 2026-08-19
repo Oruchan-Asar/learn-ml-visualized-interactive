@@ -1,0 +1,49 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MatrixCheckpoint } from "./Demos";
+
+<Hook>
+  A function takes a number to a number. What does a function from arrows to arrows look like?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag $v$ anywhere. $Mv$ always stays exactly $90°$ ahead of it — the matrix isn't picking a new direction each time, it's applying the same fixed rule to whatever you hand it.
+</Intuition>
+
+<Formalize>
+  A $2\times2$ matrix is that fixed rule —
+
+  $$
+  M = \begin{pmatrix} a & b \\ c & d \end{pmatrix}, \qquad
+  Mv = \begin{pmatrix} a\,v_x + b\,v_y \\ c\,v_x + d\,v_y \end{pmatrix}
+  $$
+
+  Each output component is a weighted mix of $v$'s own components. Change $a,b,c,d$ and you change *what kind* of transformation it is — a stretch, a rotation, a flip, a shear.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch matrices and drag $v$ around each time. The same arrow gets stretched, rotated, flipped, or sheared depending only on which numbers are sitting in $M$.
+</Play>
+
+<WorkedExample>
+  With $M = \begin{pmatrix} 2 & 0 \\ 0 & 0.5 \end{pmatrix}$ (the "Scale" preset) and $v=(3,4)$:
+
+  $$
+  Mv = \begin{pmatrix} 2(3) + 0(4) \\ 0(3) + 0.5(4) \end{pmatrix} = \begin{pmatrix} 6 \\ 2 \end{pmatrix}
+  $$
+
+  The $x$-component doubled, the $y$-component halved — exactly what a diagonal matrix does: scale each axis independently.
+</WorkedExample>
+
+<MatrixCheckpoint />
+
+<Summary>
+  $$
+  Mv = \begin{pmatrix} a\,v_x + b\,v_y \\ c\,v_x + d\,v_y \end{pmatrix}
+  $$
+
+  A matrix is a fixed rule for turning any vector into another one. The same four numbers, applied consistently, are all it takes to stretch, rotate, flip, or shear every arrow in the plane.
+</Summary>
