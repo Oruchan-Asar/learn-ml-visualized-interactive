@@ -152,7 +152,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Momentum",
     blurb: "Give descent a memory and watch it roll straight through small bumps that used to stall it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "decision-trees-information-gain",

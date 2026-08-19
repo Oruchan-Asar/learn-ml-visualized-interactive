@@ -1,0 +1,44 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MomentumCheckpoint } from "./Demos";
+
+<Hook>
+  A ball rolling downhill doesn't stop and re-aim at every bump — it carries speed through them. Plain gradient descent re-aims from scratch every single step.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This bowl is steep in one direction and shallow in the other — a "ravine." Take a few steps and watch the velocity readout: it doesn't just track the current gradient, it *accumulates*, so the point picks up speed along the direction it's been consistently pushed, instead of reacting only to right-now.
+</Intuition>
+
+<Formalize>
+  Momentum keeps a running **velocity** $v$ that blends the old velocity with the new gradient, then moves by that velocity instead of the raw gradient:
+
+  $$
+  v' = \beta v + \nabla f(\theta), \qquad \theta' = \theta - \eta v'
+  $$
+
+  $\beta \in [0,1)$ is how much of the old velocity survives each step. At $\beta = 0$, $v'$ is always just the current gradient — this is exactly plain gradient descent. Push $\beta$ up and the point starts remembering where it's been heading.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch to Plain and take several steps — in the shallow direction it barely moves, since the gradient there is small at every single step. Switch to Momentum with the same step count: the shallow direction keeps building speed step after step, while try pushing β close to its max — the point starts overshooting the bottom and bouncing back and forth instead of settling.
+</Play>
+
+<WorkedExample>
+  Starting at $(4, 1)$ on $f(x,y) = x^2 + 10y^2$, with $\eta = 0.045$ and $\beta = 0.7$: the gradient there is $(8, 20)$, so step one gives velocity $(8, 20)$ and lands at $(4,1) - 0.045\cdot(8,20) = (3.64, 0.1)$ — identical to plain descent's first step, since velocity starts at zero either way.
+
+  Step two is where they split. The gradient at $(3.64, 0.1)$ is $(7.28, 2)$, so the new velocity is $0.7\cdot(8,20) + (7.28, 2) = (12.88, 16)$ — nothing like the fresh gradient alone. The point moves to $(3.64, 0.1) - 0.045\cdot(12.88, 16) = (3.0604, -0.62)$, already further along in $x$ than plain descent's second step reaches, purely because momentum carried speed forward from step one.
+</WorkedExample>
+
+<MomentumCheckpoint />
+
+<Summary>
+  $$
+  v' = \beta v + \nabla f(\theta), \qquad \theta' = \theta - \eta v'
+  $$
+
+  Momentum is memory: instead of reacting to just the current gradient, each step folds in a fraction $\beta$ of everywhere it's been heading. That accelerates progress along a consistent direction — but too much memory means overshooting the target before the gradient has a chance to pull it back, which is exactly the oscillation you saw at high $\beta$.
+</Summary>
