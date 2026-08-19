@@ -1,14 +1,17 @@
 import type { Metadata } from "next";
 import { ChapterFrame } from "@/components/chapter/ChapterFrame";
+import { getChapterMeta } from "@/lib/curriculum";
 import ChapterContent from "@/content/part-1-foundations/gradient-descent/ClientContent";
 
+const SLUG = "gradient-descent";
+
 export const metadata: Metadata = {
-  title: "Gradient descent — Gradient",
+  title: `${getChapterMeta(SLUG).title} — Gradient`,
 };
 
 export default function Page() {
   return (
-    <ChapterFrame partLabel="Part I — Foundations" chapterNumber={2} title="Gradient descent">
+    <ChapterFrame slug={SLUG}>
       <ChapterContent />
     </ChapterFrame>
   );

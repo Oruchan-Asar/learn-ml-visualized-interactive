@@ -1,7 +1,10 @@
 import Link from "next/link";
 import styles from "./page.module.css";
+import { CURRICULUM } from "@/lib/curriculum";
 
 export default function Home() {
+  const parts = [...new Set(CURRICULUM.map((c) => c.part))];
+
   return (
     <div className={styles.page}>
       <header className={styles.masthead}>
@@ -13,25 +16,20 @@ export default function Home() {
         </p>
       </header>
 
-      <p className={styles.partLabel}>Part I — Foundations</p>
-      <div className={styles.cardList}>
-        <Link href="/chapter/what-is-a-gradient" className={styles.card}>
-          <span className={styles.cardNumber}>Chapter 1</span>
-          <h2 className={styles.cardTitle}>What is a gradient?</h2>
-          <p className={styles.cardBlurb}>
-            Drag a point along a curve, watch the tangent line, and find the exact spot where the gradient
-            hits zero.
-          </p>
-        </Link>
-        <Link href="/chapter/gradient-descent" className={styles.card}>
-          <span className={styles.cardNumber}>Chapter 2</span>
-          <h2 className={styles.cardTitle}>Gradient descent</h2>
-          <p className={styles.cardBlurb}>
-            Take steps against the gradient, tune the learning rate, and see exactly how it can overshoot
-            or diverge.
-          </p>
-        </Link>
-      </div>
+      {parts.map((part) => (
+        <section key={part} className={styles.partSection}>
+          <p className={styles.partLabel}>{part}</p>
+          <div className={styles.cardList}>
+            {CURRICULUM.filter((c) => c.part === part).map((c) => (
+              <Link key={c.slug} href={`/chapter/${c.slug}`} className={styles.card}>
+                <span className={styles.cardNumber}>Chapter {c.chapterNumber}</span>
+                <h2 className={styles.cardTitle}>{c.title}</h2>
+                <p className={styles.cardBlurb}>{c.blurb}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ))}
     </div>
   );
 }
