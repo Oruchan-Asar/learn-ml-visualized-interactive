@@ -32,6 +32,14 @@ export const CURRICULUM: ChapterMeta[] = [
     blurb:
       "Drag a point through two linked curves and watch two slopes multiply into the slope of the whole chain.",
   },
+  {
+    slug: "vectors-and-dot-products",
+    part: "Part I — Foundations",
+    chapterNumber: 4,
+    title: "Vectors & the dot product",
+    blurb:
+      "Drag an arrow around a fixed one and watch a single number reveal whether they agree, oppose, or sit at a right angle.",
+  },
 ];
 
 export function getChapterMeta(slug: string): ChapterMeta {

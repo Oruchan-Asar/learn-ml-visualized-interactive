@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DotProductCheckpoint } from "./Demos";
+
+<Hook>
+  How do you measure whether two directions roughly agree, roughly oppose, or have nothing to do with each other?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A vector is just an arrow from the origin. Drag $b$ around $a$ and watch the angle $\theta$ between them — that angle alone already tells you "agree," "oppose," or "unrelated."
+</Intuition>
+
+<Formalize>
+  The **dot product** turns that agreement into a single number —
+
+  $$
+  a \cdot b = a_x b_x + a_y b_y
+  $$
+
+  which is exactly equal to $|a|\,|b|\cos\theta$. Its sign tells the story: positive when $\theta < 90°$ (roughly the same direction), zero at exactly $90°$ (perpendicular), negative beyond that (roughly opposite).
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag $b$ and watch $a\cdot b$ and $\theta$ move together — the dot product crosses zero at exactly the moment the arrows form a right angle.
+</Play>
+
+<WorkedExample>
+  With $a=(4,0)$ and $b=(3,4)$: $a\cdot b = 4(3) + 0(4) = 12$. Their magnitudes are $|a|=4$ and $|b|=5$, so $\cos\theta = 12/20 = 0.6$, giving $\theta \approx 53.13°$ — comfortably under $90°$, matching a positive dot product.
+</WorkedExample>
+
+<DotProductCheckpoint />
+
+<Summary>
+  $$
+  a \cdot b = a_x b_x + a_y b_y = |a|\,|b|\cos\theta
+  $$
+
+  The dot product measures alignment: positive means pointing roughly together, zero means perpendicular, negative means pointing roughly apart.
+</Summary>
