@@ -1,11 +1,25 @@
+"use client";
+
 import type { ReactNode } from "react";
 import Link from "next/link";
 import { CURRICULUM, getChapterMeta, getChapterNeighbors, getShippedChapters } from "@/lib/curriculum";
+import { useCheckpointPassed } from "@/lib/mastery/useCheckpointPassed";
 import styles from "./ChapterFrame.module.css";
 
 export interface ChapterFrameProps {
   slug: string;
   children: ReactNode;
+}
+
+/** Its own component so the hook is called once per chapter row, not inside a .map callback. */
+function MasteryCheck({ slug }: { slug: string }) {
+  const passed = useCheckpointPassed(slug);
+  if (!passed) return null;
+  return (
+    <span className={styles.masteryCheck} aria-label="Checkpoint passed">
+      ✓
+    </span>
+  );
 }
 
 export function ChapterFrame({ slug, children }: ChapterFrameProps) {
@@ -57,8 +71,10 @@ export function ChapterFrame({ slug, children }: ChapterFrameProps) {
                             href={`/chapter/${c.slug}`}
                             className={isCurrent ? styles.overviewLinkCurrent : styles.overviewLink}
                           >
-                            Chapter {c.chapterNumber} — {c.title}
-                            {isCurrent && " (current)"}
+                            <span>
+                              Chapter {c.chapterNumber} — {c.title}
+                            </span>
+                            <MasteryCheck slug={c.slug} />
                           </Link>
                         </li>
                       );

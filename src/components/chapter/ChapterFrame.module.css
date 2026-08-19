@@ -177,7 +177,10 @@
 .overviewLink,
 .overviewLinkCurrent,
 .overviewLinkPlanned {
-  display: block;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
   padding: 7px 8px;
   border-radius: 6px;
   font-size: 13.5px;
@@ -198,6 +201,12 @@
 .overviewLinkPlanned {
   color: var(--ink-faint);
   cursor: default;
+}
+
+.masteryCheck {
+  flex-shrink: 0;
+  color: var(--accent2-ink);
+  font-weight: 700;
 }
 
 .chapterNav {
