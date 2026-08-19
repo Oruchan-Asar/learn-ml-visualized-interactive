@@ -1,0 +1,73 @@
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 64px 20px 100px;
+  width: 100%;
+}
+
+.masthead {
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 24px;
+  margin-bottom: 36px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  font-weight: 600;
+}
+
+.title {
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  line-height: 1.05;
+  margin: 10px 0 12px;
+}
+
+.subtitle {
+  color: var(--ink-soft);
+  max-width: 56ch;
+  margin: 0;
+}
+
+.partLabel {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin: 0 0 12px;
+}
+
+.card {
+  display: block;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 22px;
+  transition: border-color 0.15s ease;
+}
+.card:hover {
+  border-color: var(--accent);
+}
+
+.cardNumber {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  color: var(--accent-ink);
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.cardTitle {
+  font-size: 1.15rem;
+  margin: 4px 0 6px;
+}
+
+.cardBlurb {
+  color: var(--ink-soft);
+  font-size: 14.5px;
+  margin: 0;
+}

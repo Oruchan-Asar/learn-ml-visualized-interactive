@@ -1,0 +1,44 @@
+.beat {
+  margin: 0 0 40px;
+}
+
+.eyebrow {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  font-weight: 600;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.hook {
+  font-family: var(--font-display), "Fraunces", Georgia, serif;
+  font-size: 1.35rem;
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.4;
+  max-width: 34ch;
+}
+
+.prose > * + * {
+  margin-top: 14px;
+}
+.prose p {
+  max-width: 68ch;
+}
+
+.summaryCard {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent2);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  padding: 18px 22px;
+  box-shadow: var(--shadow);
+}
+
+.summaryFormula {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}

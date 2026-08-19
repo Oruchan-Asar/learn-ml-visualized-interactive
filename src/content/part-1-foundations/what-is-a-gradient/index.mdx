@@ -1,0 +1,48 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GradientCheckpoint } from "./Demos";
+
+<Hook>
+  Which direction should you move along this curve to make it smaller — right now, without seeing the whole curve?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the point along the curve. The dashed line is its steepness at that exact spot — tilt down to the right means the curve is falling there; tilt up means it's rising.
+</Intuition>
+
+<Formalize>
+  That steepness has a name: the **gradient**. For a function of one variable, it's just the derivative —
+
+  $$
+  \nabla f(x) = \frac{df}{dx}
+  $$
+
+  For the curve above, $f(x) = x^2 - 4x + 5$. Differentiating term by term gives:
+
+  $$
+  \nabla f(x) = 2x - 4
+  $$
+
+  Its sign tells you the direction: positive means the curve rises as $x$ grows, negative means it falls.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag again — now watch the formula's value track the tangent line exactly. The gradient is the tangent's slope, nothing more.
+</Play>
+
+<WorkedExample>
+  At $x = 5$: $\nabla f(5) = 2(5) - 4 = 6$. Positive, so the curve is rising there — to decrease $f$, move in the negative $x$ direction. This one fact — "the gradient points toward increase, so step against it" — is the entire idea behind gradient descent, several chapters from now.
+</WorkedExample>
+
+<GradientCheckpoint />
+
+<Summary>
+  $$
+  \nabla f(x) = \frac{df}{dx}
+  $$
+
+  The gradient is the slope of the tangent line at a point: it points in the direction the function increases fastest, and it's exactly zero at a flat spot like a minimum.
+</Summary>

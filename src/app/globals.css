@@ -1,0 +1,91 @@
+:root {
+  --paper: #f0f1f4;
+  --paper-raised: #ffffff;
+  --ink: #1a1d27;
+  --ink-soft: #565f78;
+  --ink-faint: #8991a8;
+  --line: #dadfe6;
+  --accent: #b8722a;
+  --accent-ink: #7a4a17;
+  --accent2: #2e7d82;
+  --accent2-ink: #1c5054;
+  --shadow: 0 1px 2px rgba(26, 29, 39, 0.06), 0 8px 24px rgba(26, 29, 39, 0.05);
+  --radius: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --paper: #14161c;
+    --paper-raised: #1b1e27;
+    --ink: #e9eaf0;
+    --ink-soft: #a7aec2;
+    --ink-faint: #6b7288;
+    --line: #2b2f3a;
+    --accent: #e8a355;
+    --accent-ink: #f4c286;
+    --accent2: #5bbdc2;
+    --accent2-ink: #8fd6d9;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 28px rgba(0, 0, 0, 0.35);
+    color-scheme: dark;
+  }
+}
+
+html {
+  height: 100%;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  color: var(--ink);
+  background: var(--paper);
+  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, system-ui, sans-serif;
+  font-size: 16.5px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body,
+h1,
+h2,
+h3,
+p,
+figure {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: var(--accent2-ink);
+  text-decoration: none;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), "Fraunces", Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-wrap: balance;
+}
+
+code {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+}
+
+/* KaTeX inherits body color so formulas read correctly in both themes */
+.katex {
+  color: var(--ink);
+}
