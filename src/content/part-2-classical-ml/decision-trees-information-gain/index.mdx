@@ -1,0 +1,44 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SplitCheckpoint } from "./Demos";
+
+<Hook>
+  Given ten points of two classes scattered along a line, where's the one cut that tells you the most?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the dashed line left and right. Some spots leave both sides a genuine mix of orange and grey — barely worth the split. Somewhere in the middle, one side becomes almost entirely one class. That's the split that actually teaches you something.
+</Intuition>
+
+<Formalize>
+  A decision tree is greedy: at every node, it tries every possible threshold and keeps whichever one removes the most uncertainty. That removed uncertainty is **information gain** — the entropy chapter's own formula, applied to a parent and its two children:
+
+  $$
+  \text{IG} = H(\text{parent}) - \left(\frac{n_L}{n}H(\text{left}) + \frac{n_R}{n}H(\text{right})\right)
+  $$
+
+  The second term is the children's entropy, weighted by how many points landed on each side. A split is good exactly when that weighted average is much lower than where you started.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Now watch both sides' entropy directly instead of just the final gain. Push the split to an edge and one side goes empty (entropy 0, nothing left to weigh) while the other still holds the full mess. The best split isn't the one that empties a side fastest — it's the one that minimizes the *weighted* average.
+</Play>
+
+<WorkedExample>
+  This dataset is 6 of one class, 4 of the other, so the parent entropy is $-(0.6\log_2 0.6 + 0.4\log_2 0.4) \approx 0.971$ bits.
+
+  Splitting at $5.5$: the left side ($x \le 5$) is 5 points, all one class — entropy $0$. The right side ($x \ge 6$) is 5 points, 4 of one class and 1 of the other — entropy $-(0.8\log_2 0.8 + 0.2\log_2 0.2) \approx 0.722$. Weighted: $\frac{5}{10}(0) + \frac{5}{10}(0.722) = 0.361$. Information gain: $0.971 - 0.361 \approx 0.610$ bits — the largest of any threshold this dataset admits, even though the right side still isn't perfectly pure.
+</WorkedExample>
+
+<SplitCheckpoint />
+
+<Summary>
+  $$
+  \text{IG} = H(\text{parent}) - \left(\frac{n_L}{n}H(\text{left}) + \frac{n_R}{n}H(\text{right})\right)
+  $$
+
+  A tree grows by repeating this one move at every node: try every threshold, measure how much entropy it removes, keep the best. Nothing here is new math — it's the same entropy formula from before, just applied twice and subtracted.
+</Summary>

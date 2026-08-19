@@ -160,7 +160,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Decision trees: splitting on information gain",
     blurb: "Grow a tree one split at a time, each one scored by the entropy chapter's own formula.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "overfitting-a-tree",
