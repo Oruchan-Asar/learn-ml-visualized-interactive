@@ -1,0 +1,48 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CrossEntropyCheckpoint } from "./Demos";
+
+<Hook>
+  This example's true answer is "yes." How much should it cost your model to have said "almost certainly not"?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the point — it's your model's predicted probability that this true-positive example is positive. Near 1 the loss barely moves. Down near 0, it shoots upward without any sign of leveling off.
+</Intuition>
+
+<Formalize>
+  That's **cross-entropy loss**. For one example with true label $y$ and predicted probability $p$ —
+
+  $$
+  L = -\big[y\log p + (1-y)\log(1-p)\big]
+  $$
+
+  Since $y$ is exactly 0 or 1, only one of the two terms is ever active. A probability approaching 0 for the *correct* answer sends $\log p$ toward $-\infty$ — and the leading minus sign turns that into a loss with no ceiling at all.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the comparison: squared error tops out at $1$ no matter how wrong the prediction gets, but cross-entropy keeps climbing. A model that's *confidently* wrong gets punished far harder than one that's just wrong.
+</Play>
+
+<WorkedExample>
+  True label $y=1$, predicted $p=0.1$ — confidently wrong:
+
+  $$
+  L = -\log(0.1) \approx 2.303
+  $$
+
+  Squared error for the same case is only $(1-0.1)^2 = 0.81$ — cross-entropy is already nearly three times larger, and would keep growing the more confident the wrong prediction became.
+</WorkedExample>
+
+<CrossEntropyCheckpoint />
+
+<Summary>
+  $$
+  L = -\big[y\log p + (1-y)\log(1-p)\big]
+  $$
+
+  Cross-entropy is built for probability outputs specifically: it's small when a prediction is confidently correct, and unboundedly large when a prediction is confidently wrong. That's exactly the signal gradient descent needs to fix a badly wrong classifier fast.
+</Summary>

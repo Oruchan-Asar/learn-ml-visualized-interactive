@@ -136,7 +136,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Cross-entropy loss",
     blurb: "Why classification needs a different loss than regression, and what it penalizes harder.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "gradient-descent-variants",
