@@ -120,7 +120,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Loss functions: MSE vs. MAE",
     blurb: "See one outlier hijack a fit, and how the choice of loss function decides how much it matters.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "logistic-regression-and-the-sigmoid",

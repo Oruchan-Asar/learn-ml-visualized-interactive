@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LossCheckpoint } from "./Demos";
+
+<Hook>
+  One of your data points is way off from the rest. Should it get to boss around your line as much as everyone else?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Notice the one point sitting far above the others. Drag the line near it, then away from it, and watch its dashed residual stretch and shrink far more dramatically than any of the rest.
+</Intuition>
+
+<Formalize>
+  Two ways to average those residuals into one number —
+
+  $$
+  \text{MSE} = \frac{1}{n}\sum_i (y_i-\hat y_i)^2, \qquad \text{MAE} = \frac{1}{n}\sum_i |y_i - \hat y_i|
+  $$
+
+  Squaring means a residual twice as large costs *four times* as much — so one big miss can dominate the entire sum. Absolute value grows only proportionally, so a single outlier can't hijack MAE the same way.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Fit the five close-together points well, then watch both numbers. MAE settles down close to what it was without the outlier at all — MSE stays stubbornly large no matter where you put the line.
+</Play>
+
+<WorkedExample>
+  With $w=2, b=1$, the outlier at $(2, 20)$ has residual $20 - 5 = 15$. Squared, that's $225$ — versus the other five residuals' squares summing to just $0.83$, so the outlier accounts for **over 99%** of the total SSE. In absolute terms it's $15$ against the other five's $1.9$ combined — still large, but only about **89%** of the total. The same point, two very different amounts of leverage.
+</WorkedExample>
+
+<LossCheckpoint />
+
+<Summary>
+  $$
+  \text{MSE} = \frac{1}{n}\sum_i (y_i-\hat y_i)^2, \qquad \text{MAE} = \frac{1}{n}\sum_i |y_i - \hat y_i|
+  $$
+
+  MSE punishes large misses so heavily that a single outlier can dominate the fit; MAE treats every miss proportionally, making it far more robust to one bad point. The choice of loss function is a choice about which mistakes you consider expensive.
+</Summary>

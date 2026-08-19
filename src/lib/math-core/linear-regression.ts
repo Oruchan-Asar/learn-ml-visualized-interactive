@@ -12,6 +12,9 @@ export const DATA_POINTS: Point[] = [
   { x: 9, y: 18.5 },
 ];
 
+/** The same dataset, plus one dramatic outlier at (2, 20) — the rest still trend near y ≈ 2x + 1. */
+export const OUTLIER_DATA_POINTS: Point[] = [...DATA_POINTS, { x: 2, y: 20 }];
+
 export function predict(w: number, b: number, x: number): number {
   return w * x + b;
 }
@@ -26,4 +29,13 @@ export function sumSquaredError(points: Point[], w: number, b: number): number {
 
 export function meanSquaredError(points: Point[], w: number, b: number): number {
   return sumSquaredError(points, w, b) / points.length;
+}
+
+/** Total absolute residual across every point — grows linearly with a miss, unlike SSE. */
+export function sumAbsoluteError(points: Point[], w: number, b: number): number {
+  return points.reduce((sum, p) => sum + Math.abs(p.y - predict(w, b, p.x)), 0);
+}
+
+export function meanAbsoluteError(points: Point[], w: number, b: number): number {
+  return sumAbsoluteError(points, w, b) / points.length;
 }
