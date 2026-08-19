@@ -1,13 +1,14 @@
 /*
- * The reading column must stay dead-center on the page, independent of the
- * sidebar. Achieved with a symmetric flex row — sidebar, centered content,
- * and an invisible ghost spacer the same width as the sidebar — so the
- * content's flexible track is bounded by two equal zones and its auto
- * margins center it on the true page center, not on the row minus sidebar.
+ * The reading column must stay dead-center on the page while sitting right
+ * next to the sidebar (not centered independently, which pushes it away
+ * from the sidebar via auto-margins). Solved with a calculated left padding:
+ * sidebar (230) + gap (44) + half the content's width (350) = 624px, so
+ * `50% - 624px` is exactly the padding that puts the *content's* center at
+ * the viewport's center, with the sidebar packed directly against it.
  */
 .layout {
   width: 100%;
-  padding: 48px 24px 100px;
+  padding: 48px 24px 100px calc(50% - 624px);
   display: flex;
   gap: 44px;
 }
@@ -20,17 +21,12 @@
 }
 
 .main {
-  flex: 1 1 auto;
+  flex: 0 0 700px;
   min-width: 0;
   max-width: 700px;
-  margin: 0 auto;
 }
 
-.ghost {
-  flex: 0 0 230px;
-}
-
-@media (max-width: 1100px) {
+@media (max-width: 1279px) {
   .layout {
     flex-direction: column;
     gap: 28px;
@@ -43,11 +39,8 @@
     flex-basis: auto;
   }
   .main {
+    flex: 1 1 auto;
     max-width: none;
-    margin: 0;
-  }
-  .ghost {
-    display: none;
   }
 }
 

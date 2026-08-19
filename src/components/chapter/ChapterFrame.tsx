@@ -80,8 +80,6 @@ export function ChapterFrame({ slug, children }: ChapterFrameProps) {
           )}
         </nav>
       </div>
-
-      <div className={styles.ghost} aria-hidden="true" />
     </div>
   );
 }
