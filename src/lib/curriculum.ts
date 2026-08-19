@@ -85,7 +85,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Conditional probability & Bayes' rule",
     blurb: "Update a belief live as new evidence arrives, and see why the base rate keeps surprising people.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "information-and-entropy",

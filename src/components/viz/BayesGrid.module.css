@@ -1,0 +1,73 @@
+.wrap {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.svg {
+  width: 100%;
+  max-width: 260px;
+  height: auto;
+  display: block;
+}
+
+.tp {
+  fill: var(--accent2);
+}
+
+.fp {
+  fill: var(--accent);
+}
+
+.fn {
+  fill: var(--accent2);
+  opacity: 0.22;
+}
+
+.tn {
+  fill: var(--ink-faint);
+  opacity: 0.28;
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.swatchTp,
+.swatchFp {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.swatchTp {
+  background: var(--accent2);
+}
+.swatchFp {
+  background: var(--accent);
+}
+
+.readout {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+}

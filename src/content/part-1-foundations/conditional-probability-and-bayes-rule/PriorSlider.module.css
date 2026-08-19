@@ -1,0 +1,14 @@
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 14px;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.sliderRow input[type="range"] {
+  accent-color: var(--accent);
+  width: 160px;
+}
