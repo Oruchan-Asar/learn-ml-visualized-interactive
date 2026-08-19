@@ -112,7 +112,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Linear regression: fitting a line",
     blurb: "Drag a line's slope and intercept and watch the loss surface respond underneath it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "loss-functions-mse-vs-mae",

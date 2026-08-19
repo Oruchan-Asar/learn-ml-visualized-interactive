@@ -1,0 +1,48 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, FitCheckpoint } from "./Demos";
+
+<Hook>
+  Given a scatter of points, what's the single "best" line through them — and what does "best" even mean here?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag either end of the line. The dashed segments are each point's **residual** — how far it misses the line, straight up or down. A good fit is one where those misses are all small at once.
+</Intuition>
+
+<Formalize>
+  Squaring each residual before adding them up gives the standard measure of fit —
+
+  $$
+  \text{SSE} = \sum_i \big(y_i - (w x_i + b)\big)^2
+  $$
+
+  Squaring does two things: it makes every term positive, so misses in opposite directions can't cancel out, and it makes one large miss cost far more than several small ones — a line has to stay close to *every* point, not just close on average.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag toward a better angle and watch $w$, $b$, and the SSE update together — the line's slope and intercept are just two numbers, and SSE is one number summarizing how well those two numbers fit everything at once.
+</Play>
+
+<WorkedExample>
+  With $w=2, b=1$: predictions are $3, 7, 11, 15, 19$ against actual values $3.5, 6.8, 10.5, 15.2, 18.5$. The residuals are $0.5, -0.2, -0.5, 0.2, -0.5$, and squaring and summing them gives
+
+  $$
+  \text{SSE} = 0.25+0.04+0.25+0.04+0.25 = 0.83
+  $$
+
+  Close, clean numbers — and already a good fit, without needing the exact optimum.
+</WorkedExample>
+
+<FitCheckpoint />
+
+<Summary>
+  $$
+  \text{SSE} = \sum_i \big(y_i - (w x_i + b)\big)^2
+  $$
+
+  Fitting a line means choosing $w$ and $b$ to make this sum as small as possible. Next: what changes if you measure "small" a different way.
+</Summary>
