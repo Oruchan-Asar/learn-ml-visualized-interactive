@@ -128,7 +128,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Logistic regression & the sigmoid",
     blurb: "Squash a line into a probability and watch a decision boundary form between two classes.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "cross-entropy-loss",
