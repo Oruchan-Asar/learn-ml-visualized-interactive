@@ -1,0 +1,50 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DistributionCheckpoint } from "./Demos";
+
+<Hook>
+  If you had to describe how likely each outcome of something uncertain is, what rule do those likelihoods have to follow?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag any bar. Watch what happens to the others — the whole picture always fills exactly one bar's worth of height, no more, no less.
+</Intuition>
+
+<Formalize>
+  That's a **probability distribution**: a number for every outcome, following two rules —
+
+  $$
+  P(x_i) \geq 0, \qquad \sum_i P(x_i) = 1
+  $$
+
+  No outcome gets a negative share, and the shares always add up to the whole thing.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Reshape the distribution and watch the **expected value** — the long-run average outcome — track the shift:
+
+  $$
+  E[X] = \sum_i P(x_i)\, x_i
+  $$
+</Play>
+
+<WorkedExample>
+  With $P = (0.1, 0.2, 0.3, 0.4)$ over outcomes worth $(1,2,3,4)$:
+
+  $$
+  E[X] = 0.1(1) + 0.2(2) + 0.3(3) + 0.4(4) = 0.1+0.4+0.9+1.6 = 3.0
+  $$
+</WorkedExample>
+
+<DistributionCheckpoint />
+
+<Summary>
+  $$
+  \sum_i P(x_i) = 1, \qquad E[X] = \sum_i P(x_i)\, x_i
+  $$
+
+  A distribution is just a set of non-negative shares that add up to one. The expected value is what you'd average over many draws from it.
+</Summary>

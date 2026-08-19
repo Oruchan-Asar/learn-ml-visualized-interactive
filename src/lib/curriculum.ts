@@ -77,7 +77,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Probability: outcomes & distributions",
     blurb: "Build a distribution by dragging probability mass around, and watch it always sum to one.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "conditional-probability-and-bayes-rule",
