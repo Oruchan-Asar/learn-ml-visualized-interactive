@@ -1,0 +1,13 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.flow {
+  text-align: center;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-faint);
+  padding: 2px 0;
+}

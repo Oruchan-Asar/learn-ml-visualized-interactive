@@ -24,6 +24,14 @@ export const CURRICULUM: ChapterMeta[] = [
     blurb:
       "Take steps against the gradient, tune the learning rate, and see exactly how it can overshoot or diverge.",
   },
+  {
+    slug: "the-chain-rule",
+    part: "Part I — Foundations",
+    chapterNumber: 3,
+    title: "The chain rule",
+    blurb:
+      "Drag a point through two linked curves and watch two slopes multiply into the slope of the whole chain.",
+  },
 ];
 
 export function getChapterMeta(slug: string): ChapterMeta {
