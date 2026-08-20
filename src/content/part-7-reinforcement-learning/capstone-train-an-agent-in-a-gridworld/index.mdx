@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GridworldCapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 3 walked through six hand-picked moves. This capstone lets the same Q-learning update run for real: five full episodes, acting on its own evolving table, starting from nothing and ending at the correct solution to the maze.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through all 29 training moves across 5 episodes. Early on, the agent wanders — it bounces off the left wall, backtracks, resets. There's no script telling it what to do anymore; every action comes from whatever the table currently believes, mixed with a fixed rhythm of forced exploration.
+</Intuition>
+
+<Formalize>
+  Nothing new: every step still applies Chapter 3's exact update,
+
+  $$
+  Q(s,a) \leftarrow Q(s,a) + \alpha\Big(r + \gamma \max_{a'} Q(s',a') - Q(s,a)\Big)
+  $$
+
+  What's different is scale and autonomy — instead of a fixed 6-move script, the agent runs real episodes, resetting to the start each time it reaches the goal (or times out), acting greedily on its own table except for scheduled exploration steps that keep testing the alternative.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  This is the *trained* policy — read straight off the final Q-table, no further learning involved. From every state it says exactly one thing: go right. Step through it and watch it solve the maze in the minimum three moves, every single time.
+</Play>
+
+<WorkedExample>
+  Across all 5 episodes:
+
+  <Steps>
+    <Step label="Early episodes: mostly wandering">
+      Episodes 0 through 2 never reach the goal at all within their step limit — forced exploration keeps
+      pulling the agent back toward state 0 before it can complete the corridor.
+    </Step>
+    <Step label="Episode 3: the goal, for the first time">
+      $Q(2,\text{right})$ jumps to exactly $5$ the moment the agent first reaches the goal — identical to
+      Chapter 3's very first successful pull, just arrived at through the agent's own exploration instead of
+      a scripted move.
+    </Step>
+    <Step label="Episode 4: reinforced, and converged">
+      A second successful run pushes $Q(2,\text{right})$ to $7.5$. By the end, $Q(\text{right}) >
+      Q(\text{left})$ at every one of the three non-terminal states — the greedy policy read off the table
+      is "right" everywhere, the actual optimal solution.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GridworldCapstoneCheckpoint />
+
+<Summary>
+  $$
+  Q(s,a) \leftarrow Q(s,a) + \alpha\Big(r + \gamma \max_{a'} Q(s',a') - Q(s,a)\Big)
+  $$
+
+  Every idea from this part shows up somewhere in these 29 steps: exploration versus exploitation from the bandit chapter, the Bellman-style value propagation from the MDP chapter, and the same update rule from Chapter 3, just left running long enough to actually solve something instead of illustrating one update. Nothing here needed a bigger algorithm — it needed more of the same algorithm, applied for longer. That's most of what separates a toy example from a working agent.
+</Summary>

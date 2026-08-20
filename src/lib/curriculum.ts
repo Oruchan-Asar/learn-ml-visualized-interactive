@@ -640,7 +640,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Solve a gridworld from scratch",
     blurb: "Watch Q-learning solve a maze live, one epsilon-greedy step at a time, starting from a table of zeros.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 
