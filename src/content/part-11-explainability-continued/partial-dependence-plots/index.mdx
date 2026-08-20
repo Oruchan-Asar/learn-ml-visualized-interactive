@@ -1,0 +1,58 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PDPCheckpoint } from "./Demos";
+
+<Hook>
+  Integrated gradients explains one prediction at a time. What if you want the bigger picture — how does the model's answer change, on average, as one feature sweeps across its whole range? Averaging sounds safe. It isn't always.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Sweep $x_1$ across a grid, holding $x_2$ at one row's actual value. Different rows trace completely different lines — some rising, some falling — while the *average* across all of them stays perfectly flat.
+</Intuition>
+
+<Formalize>
+  A **partial dependence plot (PDP)** sweeps one feature $x_1$ across a grid, holding every other feature at each training row's own observed value, and averages the resulting prediction across all rows:
+
+  $$
+  \widehat{\text{PDP}}(x_1) = \frac{1}{n}\sum_{i=1}^{n} f\big(x_1, x_2^{(i)}\big)
+  $$
+
+  An **ICE (individual conditional expectation) curve** is the same sweep, but for one row at a time, with no averaging. PDP is the mean of all the ICE curves — which means whatever the ICE curves disagree about, the PDP quietly erases.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Four rows, four different slopes — some rising steeply, some falling steeply, driven entirely by each row's own $x_2$. The dashed average line never leaves zero, the entire time.
+</Play>
+
+<WorkedExample>
+  $f(x_1, x_2) = x_1 \cdot x_2$ — a pure interaction, no effect of $x_1$ on its own. Four rows: $x_2 \in \{2, 1, -1, -2\}$:
+
+  <Steps>
+    <Step label="Every row has a real, strong effect from x1">
+      At $x_1=2$: the four rows predict $4, 2, -2, -4$ — a spread of $8$. $x_1$ clearly matters, a lot, for every
+      single row.
+    </Step>
+    <Step label="The average cancels it exactly">
+      $(4 + 2 - 2 - 4)/4 = 0$. This holds at *every* grid value of $x_1$ from $-2$ to $2$: the PDP is $0, 0, 0,
+      0, 0$ — flat, because the symmetric $x_2$ values always cancel regardless of $x_1$.
+    </Step>
+    <Step label="A flat PDP doesn't mean a feature doesn't matter">
+      The PDP alone would say "$x_1$ has no effect." The ICE curves say the opposite: $x_1$'s effect is real and
+      large, it just flips sign depending on $x_2$ — an interaction the averaged view is structurally incapable
+      of showing.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PDPCheckpoint />
+
+<Summary>
+  $$
+  \text{PDP}(x_1) = \frac{1}{n}\sum_i \text{ICE}_i(x_1) \qquad\text{— an average can erase exactly what you're looking for}
+  $$
+
+  A PDP is only trustworthy when the ICE curves it's averaging roughly agree with each other. When they don't — because of an interaction, like here, or any other source of heterogeneity — the PDP isn't wrong, exactly, but it's answering a question ("what's the effect on average?") that isn't the one usually being asked ("does this feature matter?"). The next chapter turns to a model family where feature importance comes from the training procedure itself, not from probing an already-trained model after the fact.
+</Summary>

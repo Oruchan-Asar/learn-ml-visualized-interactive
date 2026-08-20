@@ -844,7 +844,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Partial dependence & ICE plots",
     blurb: "Sweep one feature across its whole range and watch the model's average answer trace a curve.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "tree-feature-importance",
