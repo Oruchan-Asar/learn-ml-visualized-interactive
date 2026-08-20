@@ -1,0 +1,40 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, TransformerBlockCheckpoint } from "./Demos";
+
+<Hook>
+  Self-attention lets every token look at every other token. On its own, that's still just one computation. A real Transformer stacks dozens of these, and stacking anything that deep needs two things attention alone doesn't provide: a way to keep gradients from vanishing across all those layers, and a place to actually think about each token individually, not just compare it to its neighbors.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A Transformer block is four pieces, always in this order: self-attention, **add the input back in** (a residual connection), **normalize**, a **feedforward layer** applied to each token separately, add and normalize again. Two tiny 3D tokens go all the way through below — watch the numbers actually change at every stage.
+</Intuition>
+
+<Formalize>
+  $$
+  z = \text{LayerNorm}(x + \text{Attention}(x)), \qquad \text{output} = \text{LayerNorm}(z + \text{FFN}(z))
+  $$
+
+  The residual "$x + \dots$" means each sublayer only has to learn a *correction* to its input, not reproduce the whole thing from scratch — and it gives the gradient a direct, addition-only path back through the block, exactly like the LSTM's cell state in Chapter 7. LayerNorm rescales each token's vector to zero mean and unit variance, independently of every other token, which keeps values from drifting as they pass through dozens of stacked blocks.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the feedforward bias down toward the bottom of its range. Watch <strong>x1</strong>'s hidden units in the feedforward stage: both stuck at exactly $0$ — a dead ReLU, contributing nothing. And yet x1's final output is still perfectly well-defined, identical to its post-attention value. That's the residual connection doing its job: even when a sublayer computes nothing useful for a given token, the block doesn't break — it just passes that token through unchanged.
+</Play>
+
+<WorkedExample>
+  x1's feedforward hidden units are computed as $\text{ReLU}(W_1 z_1 + b)$. At $b=0$, both units land at or below zero, so both get clipped to exactly $0$ — no correction is added, and $\text{residual}_2 = z_1 + 0 = z_1$ exactly. Raise $b$ past about $0.436$ and the second hidden unit crosses zero, so the feedforward layer starts contributing a real, non-zero correction to x1's output for the first time.
+</WorkedExample>
+
+<TransformerBlockCheckpoint />
+
+<Summary>
+  $$
+  z = \text{LayerNorm}(x + \text{Attention}(x)), \qquad \text{output} = \text{LayerNorm}(z + \text{FFN}(z))
+  $$
+
+  Stack this exact block — same structure, independently learned weights each time — a dozen or more times, and the result is a Transformer encoder. Every piece here was already built: attention from Chapters 10–11, feedforward layers and ReLU from Part III, residual connections' gradient benefit from Chapter 7's LSTM cell state. The next chapter puts a small stack of these blocks to work: a tiny, character-level Transformer, trained and sampled live.
+</Summary>

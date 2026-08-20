@@ -1,0 +1,34 @@
+.pipeline {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 16px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+}
+
+.stageLabel {
+  color: var(--ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11px;
+  margin-top: 8px;
+}
+
+.stageLabel:first-child {
+  margin-top: 0;
+}
+
+.vectorRow {
+  color: var(--ink);
+  display: flex;
+  gap: 16px;
+}
+
+.dead {
+  color: var(--accent-ink);
+}

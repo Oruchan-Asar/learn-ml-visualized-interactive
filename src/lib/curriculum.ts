@@ -439,7 +439,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 12,
     title: "The Transformer block",
     blurb: "Assemble attention, a feedforward layer, and residual connections into one block.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-generate-text",
