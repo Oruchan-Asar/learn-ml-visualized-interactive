@@ -852,7 +852,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Tree-based feature importance",
     blurb: "Read off which feature did the most work — for free, from a forest you already trained.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "anchors-rule-based-explanations",

@@ -1,0 +1,60 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, TreeImportanceCheckpoint } from "./Demos";
+
+<Hook>
+  Integrated gradients and PDPs both probe an already-trained model from the outside, after the fact. A decision tree already knows exactly which feature did the most work — it decided that at every single split, while training. Reading it back out costs nothing extra.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through each node in a small tree and see which feature it picked, and how much impurity that split actually removed. The root's choice and the child's choice don't have to be the same feature at all.
+</Intuition>
+
+<Formalize>
+  At every node, a tree tries every feature's best threshold and keeps whichever gives the highest information gain. **Feature importance** just adds up that gain, weighted by how many samples reached each node, per feature, across the whole tree:
+
+  $$
+  \text{importance}(f) = \sum_{\text{nodes splitting on } f} \frac{n_{\text{node}}}{n_{\text{total}}} \cdot \text{gain}_{\text{node}}
+  $$
+
+  No perturbation, no gradients, no separate explanation step — the number was already computed the moment the tree finished training.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  x1 wins the root split, using every sample the tree has. x2 only ever gets used once, deeper in the tree, on a small subset — and still ends up with real, substantial importance, because that one split it does make is a clean, high-gain one.
+</Play>
+
+<WorkedExample>
+  Eight points, two features. x1 orders the classes almost perfectly; one point is mislabeled relative to x1 alone:
+
+  <Steps>
+    <Step label="The root split: x1, using all 8 samples">
+      Threshold $4.5$ on x1 gives information gain $\approx0.549$, weighted by all $8$ samples:
+      $\tfrac{8}{8}\times0.549\approx0.549$.
+    </Step>
+    <Step label="The left child: x2 catches the one exception">
+      Among the 4 points that reached the left child, one has a label that x1 alone would get wrong. A split on
+      x2 at threshold $3.5$ isolates it perfectly — gain $\approx0.811$, weighted by $4$ of the $8$ total samples:
+      $\tfrac{4}{8}\times0.811\approx0.406$.
+    </Step>
+    <Step label="The right child needed nothing">
+      All 4 points on the other side of the root split already share the same label — the best possible split
+      there has gain $0$, and contributes nothing to either feature's importance.
+    </Step>
+  </Steps>
+
+  Normalizing $0.549$ and $0.406$ to sum to $1$: x1 $\approx0.575$, x2 $\approx0.425$ — x1 clearly the bigger contributor, but x2 far from irrelevant.
+</WorkedExample>
+
+<TreeImportanceCheckpoint />
+
+<Summary>
+  $$
+  \text{importance}(f) = \sum_{\text{splits on } f} \frac{n_{\text{node}}}{n_{\text{total}}} \cdot \text{gain}_{\text{node}}
+  $$
+
+  Tree-based importance is the cheapest explanation method in this course — it requires training the model once, and nothing more. That's also its limit: it can only ever describe what the *training procedure* found useful for reducing impurity, which isn't automatically the same as what matters for a specific prediction, or what a human would consider the "true" cause. The next chapter asks for something tree importance can't give at all: a simple, human-readable rule that guarantees a specific prediction, not just a ranked list of contributing features.
+</Summary>
