@@ -291,7 +291,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Loss landscapes in high dimensions",
     blurb: "Why \"stuck in a local minimum\" is rarer in practice than it sounds in theory.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "optimizers-momentum-rmsprop-adam",

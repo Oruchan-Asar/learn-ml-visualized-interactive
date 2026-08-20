@@ -1,0 +1,36 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LandscapeCheckpoint } from "./Demos";
+
+<Hook>
+  "Gradient descent might get stuck in a local minimum" is one of the most repeated warnings about training neural networks. In a landscape with millions of dimensions, how often does that actually happen?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The gradient is exactly zero right where you started — by every test gradient descent has, this looks like a place to stop. Drag along $x$ and the value climbs. Drag along $y$ instead, and it *falls*. Zero gradient was never a guarantee of a minimum.
+</Intuition>
+
+<Formalize>
+  A flat point ($\nabla f = 0$) is a true **local minimum** only if the function curves upward in *every* direction through it. If even one direction curves downward instead, it's a **saddle point** — and gradient descent can simply walk out along that direction. Whether a given direction curves up or down is governed by the sign of an eigenvalue of the Hessian (the matrix of second derivatives); a minimum needs all of them positive.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch between Bowl and Saddle. Same starting point, same exactly-zero gradient — one traps you, one doesn't. In two dimensions, a random flat point has to get lucky in only 2 independent directions to be a true minimum.
+</Play>
+
+<WorkedExample>
+  Treat each of $n$ dimensions at a flat point as an independent coin flip: does the function curve up or down along that direction? A true minimum needs *every* coin to land "up." With fair coins, that probability is $(1/2)^n$ — exactly $0.5$ in 1D, $0.25$ in 2D, but already under $1\%$ by 7 dimensions, and under one in a million by 20. Real networks have millions of dimensions. Almost every flat point gradient descent finds is a saddle, not a trap — and saddles have at least one escape direction, which is exactly what noisy, non-exact gradients (Chapter 5 of Part II) are good at stumbling onto.
+</WorkedExample>
+
+<LandscapeCheckpoint />
+
+<Summary>
+  $$
+  P(\text{true minimum}) \approx (1/2)^n
+  $$
+
+  "Stuck in a local minimum" describes a 2D intuition that barely survives contact with high dimensions. The real obstacle in deep networks is usually a saddle point's flat *region* nearby, not the point itself — training slows down passing through, then finds a downhill direction and keeps going. The next few chapters look at other things that go wrong at depth, and why.
+</Summary>
