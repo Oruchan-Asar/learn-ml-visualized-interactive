@@ -323,7 +323,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "Batch normalization",
     blurb: "Re-center activations mid-network and watch a wobbly training run stabilize.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "dropout",

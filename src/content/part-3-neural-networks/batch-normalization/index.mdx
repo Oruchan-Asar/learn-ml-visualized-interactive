@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, BatchNormCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 8 needed exactly the right weight scale to keep a deep network stable. What if a layer could just fix its own scale, no matter what came before it?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same broken scale from Chapter 8 — the faint line still vanishes exactly as before. The bold line is the same network with one thing added after every layer: batch normalization. It barely moves.
+</Intuition>
+
+<Formalize>
+  Batch normalization re-centers and rescales a layer's output *across a batch of examples*, at every layer, regardless of what produced it:
+
+  $$
+  \hat h_j = \frac{h_j - \mu_j}{\sqrt{\sigma_j^2 + \epsilon}}
+  $$
+
+  $\mu_j$ and $\sigma_j^2$ are the mean and variance of neuron $j$'s output, measured across the current batch. After this, every neuron has mean $0$ and variance $1$ — by construction, not by hoping the weight scale happened to be right.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the scale anywhere — tiny, huge, exactly ideal. The faint line swings across nine orders of magnitude. The bold one barely leaves $1$. Batch norm doesn't care what scale produced the input; it forces the *output* to a fixed scale every time.
+</Play>
+
+<WorkedExample>
+  At scale $0.05$, six layers without batch norm shrink the RMS activation from about $1$ down to under $10^{-5}$ — dead, exactly as in Chapter 8. Insert batch normalization after each layer instead, and every single layer's RMS activation comes out within about $0.5\%$ of exactly $1$ — at *every* scale tried, from $0.05$ all the way to $1.0$. The five-scale spread in final-layer RMS with batch norm is under $0.05$, compared to nine orders of magnitude without it.
+</WorkedExample>
+
+<BatchNormCheckpoint />
+
+<Summary>
+  $$
+  \hat h_j = \frac{h_j - \mu_j}{\sqrt{\sigma_j^2 + \epsilon}}
+  $$
+
+  Batch norm doesn't fix a bad weight scale — it makes the weight scale stop mattering, by re-establishing a healthy activation distribution at every layer regardless of what arrived there. That's also why training got noticeably more forgiving of learning rate and initialization choices once batch norm became standard. The next chapter looks at a completely different kind of fix — one aimed not at unstable activations, but at a network that's learned its training data a little too well.
+</Summary>
