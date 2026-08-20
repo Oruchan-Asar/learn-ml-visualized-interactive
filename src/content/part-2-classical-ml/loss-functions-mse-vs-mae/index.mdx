@@ -12,7 +12,7 @@ import { IntuitionDemo, PlayDemo, LossCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  Two ways to average those residuals into one number —
+  Two ways to average those residuals into one number — Mean Squared Error (MSE) and Mean Absolute Error (MAE):
 
   $$
   \text{MSE} = \frac{1}{n}\sum_i (y_i-\hat y_i)^2, \qquad \text{MAE} = \frac{1}{n}\sum_i |y_i - \hat y_i|
@@ -33,7 +33,7 @@ import { IntuitionDemo, PlayDemo, LossCheckpoint } from "./Demos";
   <Steps>
     <Step label="Its leverage under squared error">
       Squared, that's $225$ — versus the other five residuals' squares summing to just $0.83$, so the outlier
-      accounts for **over 99%** of the total SSE.
+      accounts for **over 99%** of the total sum of squared errors (SSE).
     </Step>
     <Step label="Its leverage under absolute error">
       In absolute terms it's $15$ against the other five's $1.9$ combined — still large, but only about **89%** of
