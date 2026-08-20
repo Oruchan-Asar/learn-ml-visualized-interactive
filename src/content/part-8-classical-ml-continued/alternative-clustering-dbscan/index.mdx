@@ -1,0 +1,58 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DbscanCheckpoint } from "./Demos";
+
+<Hook>
+  k-means needs to be told how many clusters to look for, and it always draws them as round, roughly equal-sized blobs. What about data that comes in two long, thin chains instead — and includes a point that doesn't belong to any group at all?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Two short chains of points, plus one point sitting far off on its own. Drag `eps` — the neighborhood radius — and watch clusters appear, merge, and disappear. Too small, and even points one unit apart look unrelated; too large, and two genuinely separate chains fuse into one.
+</Intuition>
+
+<Formalize>
+  DBSCAN never asks how many clusters to expect. Instead, a point is a **core point** if it has enough neighbors within a radius `eps`:
+
+  $$
+  \text{core}(i) = |\{j : \lVert x_i - x_j \rVert \leq \text{eps}\}| \geq \text{minPts}
+  $$
+
+  A cluster is everything reachable by hopping from core point to core point, radius by radius — like a chain of falling dominoes, each one only needing to be close enough to knock over the next. Anything never reached this way, from any core point, is **noise** — not assigned to any cluster at all.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  At `eps=0.5`, even points exactly $1$ unit apart aren't neighbors — every point is isolated, and the whole dataset is noise. At `eps=1.5`, both chains connect internally without merging with each other. At `eps=5.0`, the two chains fuse into a single cluster — genuinely different structures, collapsed together by too generous a radius.
+</Play>
+
+<WorkedExample>
+  Two chains at $y=0$ and $y=5$, points spaced $1$ unit apart within each chain, plus one point at $(10,10)$:
+
+  <Steps>
+    <Step label="Checking a core point">
+      Point $(1,0)$ has neighbors $(0,0)$ and $(2,0)$, both at distance exactly $1$ — with `eps=1.5` and
+      `minPts=1`, that's enough: it's a core point.
+    </Step>
+    <Step label="The gap between chains">
+      The closest pair *across* the two chains is $(0,0)$ and $(0,5)$, at distance exactly $5$. At
+      `eps=1.5`, that's nowhere close enough to connect — the chains stay two separate clusters.
+    </Step>
+    <Step label="The point with no neighbors at all">
+      $(10,10)$'s nearest other point is $9.4$ units away — far beyond any reasonable `eps`. It's never a
+      core point and never reachable from one, so DBSCAN correctly leaves it as noise, folded into neither
+      cluster.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DbscanCheckpoint />
+
+<Summary>
+  $$
+  \text{core}(i) = |\{j : \lVert x_i - x_j \rVert \leq \text{eps}\}| \geq \text{minPts}
+  $$
+
+  DBSCAN trades k-means' two conveniences — pick $k$ up front, every point belongs to some cluster — for two things k-means can't do at all: clusters of any shape, and an explicit "doesn't belong anywhere" label for genuine outliers. Neither algorithm is strictly better; k-means assumes round, similarly-sized groups and gets a clean answer fast, while DBSCAN makes no shape assumption at all but needs `eps` tuned by hand, the same way $k$ itself did.
+</Summary>

@@ -667,7 +667,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Beyond k-means: DBSCAN",
     blurb: "Watch a density-based cluster shape survive exactly where k-means falls apart.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "time-series-forecasting",
