@@ -624,7 +624,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Policy gradient methods",
     blurb: "Skip the value table and climb the reward gradient directly — the same ascent as every optimizer in this course, on a different objective.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "reinforcement-learning-from-human-feedback",

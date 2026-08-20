@@ -1,0 +1,60 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PolicyGradientCheckpoint } from "./Demos";
+
+<Hook>
+  Q-learning discovers a policy indirectly — learn a value for every action, then always take the best one. What if a policy could just be a set of parameters, adjusted by gradient ascent, the same way every other model in this course has been?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Back to the three-armed bandit — but instead of a Q-table, there's a **preference** number for each arm, run through a softmax to get a probability of picking it. Step through five pulls and watch the bars themselves shift: an arm that pays off gets *more* likely to be picked next time, one that doesn't gets less so.
+</Intuition>
+
+<Formalize>
+  With preferences $\theta$ and policy $\pi_\theta(a) = \text{softmax}(\theta)_a$, the **REINFORCE** update after taking action $a$ and observing return $G$ is:
+
+  $$
+  \theta_i \leftarrow \theta_i + \alpha\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)\,G
+  $$
+
+  Look closely at $\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)$ — it's *exactly* the softmax cross-entropy gradient from Part III, indicator minus predicted probability. The only difference is what it's scaled by: cross-entropy always scales by $1$ (the true label is certain), while REINFORCE scales by $G$, whatever return that action happened to earn. A big positive return pushes hard toward that action; a return of exactly zero pushes not at all.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Compare the very first policy to the one after five pulls. Nothing here ever built or consulted a value table — the probabilities shifted directly, one gradient step at a time, purely from the returns each pull happened to produce.
+</Play>
+
+<WorkedExample>
+  Starting from $\theta=(0,0,0)$ — a uniform policy — with $\alpha=0.5$:
+
+  <Steps>
+    <Step label="First pull: arm A, reward 1">
+      $\pi = (\frac13,\frac13,\frac13)$ before the update. $\theta_A \leftarrow 0 + 0.5(1-\frac13)(1) = \frac13$;
+      both $\theta_B$ and $\theta_C$ drop to $-\frac16$ — pushed down even though they weren't pulled, simply
+      for not being the chosen action.
+    </Step>
+    <Step label="A reward of exactly zero changes nothing">
+      Pulling arm C next happens to pay $0$. Since the update scales by the return, multiplying by $0$
+      zeroes out every single term — $\theta$ comes out of that step completely unchanged, regardless of
+      which arm was pulled.
+    </Step>
+    <Step label="After all five pulls">
+      $\theta_B \approx 0.498$, clearly ahead of $\theta_A \approx -0.074$ and $\theta_C \approx -0.424$ — the
+      policy now assigns arm B *more than half* its probability mass, without ever computing a single
+      $Q(s,a)$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PolicyGradientCheckpoint />
+
+<Summary>
+  $$
+  \theta_i \leftarrow \theta_i + \alpha\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)\,G
+  $$
+
+  Q-learning and policy gradients solve the exact same problem from two different directions: one estimates *values* and reads a policy off them; the other adjusts a policy *directly*, using nothing but the returns actions happen to produce. Both are, underneath, still gradient-based learning from a numeric signal — the same idea as every optimizer since Part II, aimed at a different kind of objective. The next chapter applies that same direct-policy idea somewhere it's become extremely consequential: teaching a language model to prefer the answers people actually like.
+</Summary>
