@@ -1,0 +1,64 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GrabBagCheckpoint } from "./Demos";
+
+<Hook>
+  Same nine points, same one troublemaker — a stray point labeled A that sits spatially right inside cluster B's territory. Three tools from this part, run on the exact same data. Do they agree about what to do with it?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch lenses. kNN and Naive Bayes both use the labels — they're trying to predict a class for a new point. DBSCAN never looks at a single label — it just asks which points are close enough together to call a cluster, and lets the noisy point land wherever the geometry actually puts it.
+</Intuition>
+
+<Formalize>
+  Three different questions about the same nine points and the same query at $(5, 5.5)$:
+
+  $$
+  \text{kNN: } \hat y = \text{majority vote of } k \text{ closest labeled points}
+  $$
+  $$
+  \text{Naive Bayes: } \hat y = \arg\max_c P(c)\prod_i P(x_i \mid c)
+  $$
+  $$
+  \text{DBSCAN: cluster} = \text{whatever's density-reachable, no labels involved at all}
+  $$
+
+  kNN answers with whichever *individual* points are nearest. Naive Bayes answers with an *aggregate* statistic across the whole class. DBSCAN doesn't answer the labeled question at all — it answers a completely different one.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  DBSCAN's own clustering puts the noisy point in the *same* cluster as the real B points — not because it disagrees with the label, but because it never consulted the label in the first place. Density doesn't care what a point is called.
+</Play>
+
+<WorkedExample>
+  The noisy point sits at $(5.2, 5.3)$, labeled A, right next to the real B cluster:
+
+  <Steps>
+    <Step label="kNN with k=1 gets fooled">
+      The single nearest neighbor to the query is the noisy point itself, at distance $0.28$. Prediction:
+      A — wrong, exactly like Chapter 1's own noisy-point example.
+    </Step>
+    <Step label="Naive Bayes isn't fooled at all">
+      Binarizing position into "high x" / "high y" features, class A's statistics come from *all five* A
+      points, not just the nearby one — so the noisy point's contribution gets diluted by the four genuine,
+      clearly-not-near-B, A points. The posterior for B comes out above $87\%$.
+    </Step>
+    <Step label="DBSCAN doesn't use the label at all">
+      Clustering the same nine points by density alone, the noisy point ends up in the same cluster as the
+      four real B points — its spatial neighbors, regardless of what it was told to call itself.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GrabBagCheckpoint />
+
+<Summary>
+  $$
+  \text{kNN: local vote} \qquad \text{Naive Bayes: aggregate statistics} \qquad \text{DBSCAN: pure density, no labels}
+  $$
+
+  None of these three answers is more "correct" than the others — they're answers to three different questions, and picking the right classical tool starts with knowing which question actually needs answering. A single noisy point can fool a method that only looks locally (kNN with small $k$), barely register against a method that aggregates broadly (Naive Bayes), or simply not matter at all to a method that never used labels to begin with (DBSCAN). This closes Classical ML, Continued. The next part turns to a question every model built so far has dodged: not just whether a prediction is right, but how to actually measure that, honestly.
+</Summary>

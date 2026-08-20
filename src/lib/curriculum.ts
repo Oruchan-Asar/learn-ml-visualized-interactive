@@ -699,7 +699,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Pick the right classical tool",
     blurb: "Same messy dataset, run through kNN, Naive Bayes, and DBSCAN — see which one actually fits its shape.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 
