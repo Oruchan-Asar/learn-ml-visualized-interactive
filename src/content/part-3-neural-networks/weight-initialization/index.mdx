@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, WeightInitCheckpoint } from "./Demos";
+
+<Hook>
+  Before a network has learned anything at all, its very first forward pass depends on nothing but its starting weights. Can a network be broken before training even begins?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is a genuine 6-layer network — 8 inputs, 8 outputs per layer, fixed random weights — with every weight multiplied by one shared scale. Drag it small: the signal shrinks by roughly the same fraction every layer, and six layers of shrinking compounds into almost nothing left.
+</Intuition>
+
+<Formalize>
+  Each layer's output is a sum of $\text{fan-in}$ random-weighted terms. Averaged over random weights, that sum's typical size scales like $\sqrt{\text{fan-in}}\cdot\text{scale}$ times the input's size. For the signal to stay roughly the same size layer after layer — neither shrinking nor growing — that factor needs to sit near $1$:
+
+  $$
+  \text{scale} \approx \frac{1}{\sqrt{\text{fan-in}}}
+  $$
+
+  This is the idea behind Xavier/Glorot initialization: pick the initial weight scale from the layer's own size, not a fixed constant, so six layers or sixty behave the same way at the start.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The dashed lines mark a healthy band. Push the scale toward 1 and the curve rockets upward, doubling or more with every layer — the "exploding" failure mode. This chapter's dataset has fan-in 8, so $1/\sqrt{8}\approx0.354$ is the scale that keeps the curve inside the band the whole way across.
+</Play>
+
+<WorkedExample>
+  With fan-in $8$: at scale $0.05$ (twenty times smaller than ideal), the RMS activation drops from about $1.5$ at the input to under $0.0001$ by layer 6 — a network that's already numerically dead before a single gradient step. At scale $1.0$ (roughly three times too large), the same six layers push it up past $400$. At the ideal scale $\approx0.354$, every one of the six layers stays within about $0.4\times$ to $2\times$ of the input's own size — no compounding in either direction.
+</WorkedExample>
+
+<WeightInitCheckpoint />
+
+<Summary>
+  $$
+  \text{scale} \approx \frac{1}{\sqrt{\text{fan-in}}}
+  $$
+
+  A network that starts too small can't produce a signal worth learning from; one that starts too large saturates its activations and produces gradients too extreme to use. Good initialization doesn't teach the network anything — it just makes sure the forward pass survives long enough for training to start. The next chapter asks the same question about gradients flowing *backward* through depth, where an almost identical failure mode has its own name.
+</Summary>

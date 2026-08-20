@@ -307,7 +307,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Weight initialization",
     blurb: "Watch a network start dead on arrival, then come alive with better init.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "vanishing-and-exploding-gradients",
