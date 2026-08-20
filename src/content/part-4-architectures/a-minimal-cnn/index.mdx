@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MinimalCnnCheckpoint } from "./Demos";
+
+<Hook>
+  A convolution finds edges. A pooling layer shrinks the result. Neither one, by itself, produces a decision. A real network chains several of these together, then hands the result to a plain layer that actually decides.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This image has a light-dark-light stripe. The kernel from Chapter 1 convolves it, ReLU keeps only the positive (dark-to-light) evidence, pooling shrinks the result to 4 numbers, and a small dense layer turns those 4 numbers into a decision: *edge detected*. Five stages, one pipeline, no step done by hand — every one of them just a repeated small computation.
+</Intuition>
+
+<Formalize>
+  A minimal CNN chains exactly the pieces built so far, plus one new one:
+
+  $$
+  \text{image} \xrightarrow{\text{conv}} \text{feature map} \xrightarrow{\text{ReLU}} \text{feature map} \xrightarrow{\text{pool}} \text{small map} \xrightarrow{\text{flatten}} \text{vector} \xrightarrow{\text{dense}} \text{logits}
+  $$
+
+  ReLU is the one piece not yet introduced: $\text{relu}(x) = \max(0, x)$, applied to every value independently, right after the convolution. It's what turns "how strongly does this patch match the filter, in either direction" into "how strongly does this patch match, and only when the match actually supports the feature."
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Toggle ReLU off. The raw feature map has both a $+3$ (a dark-to-light transition — evidence *for* the filter's direction) and a $-3$ (a light-to-dark transition — evidence *against* it). Pooling keeps both, flattening gives $[-3, 3, -3, 3]$, and the dense layer's two votes nearly cancel to $-2$ and $2$ — the wrong class wins. Turn ReLU back on: the $-3$s become $0$, flattening gives $[0, 3, 0, 3]$, and the votes come out $4$ and $-4$ — a clean, correct decision.
+</Play>
+
+<WorkedExample>
+  With ReLU on, the pooled map flattens to $[0, 3, 0, 3]$. The "edge detected" neuron has weights $(1,1,1,1)$ and bias $-2$: $0+3+0+3-2 = 4$. The "no edge" neuron has weights $(-1,-1,-1,-1)$ and bias $2$: $-(0+3+0+3)+2 = -4$. Since $4 > -4$, the network predicts "edge detected" — correctly. Without ReLU, the same two neurons see $[-3,3,-3,3]$ instead: $-3+3-3+3-2=-2$ and $-(-3+3-3+3)+2=2$, so $2 > -2$ flips the decision to "no edge" — wrong, because the genuine positive evidence got cancelled by evidence that ReLU exists specifically to discard.
+</WorkedExample>
+
+<MinimalCnnCheckpoint />
+
+<Summary>
+  $$
+  \text{image} \xrightarrow{\text{conv}} \xrightarrow{\text{ReLU}} \xrightarrow{\text{pool}} \xrightarrow{\text{flatten}} \xrightarrow{\text{dense}} \text{logits}
+  $$
+
+  Every weight in this pipeline — the kernel, the dense weights, the biases — was hand-picked here. A real network learns all of them from data, the same backprop as always, just with a convolution and a pooling layer added to the chain of derivatives. The next chapter does exactly that: trains this shape of network on real digit images, live, and shows what its filters end up learning to detect.
+</Summary>

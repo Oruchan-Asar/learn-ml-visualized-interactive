@@ -366,7 +366,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "A minimal CNN",
     blurb: "Assemble filters and pooling into a real, small, working network.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-classify-digits",

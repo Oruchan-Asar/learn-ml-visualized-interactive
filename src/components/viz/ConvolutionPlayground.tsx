@@ -13,6 +13,8 @@ export interface ConvolutionPlaygroundProps {
   maxResponse: number;
   width?: number;
   readout?: ReactNode;
+  /** Set false to hide the kernel-window outline, e.g. when displaying an already-computed feature map. */
+  showWindow?: boolean;
 }
 
 export function ConvolutionPlayground({
@@ -24,6 +26,7 @@ export function ConvolutionPlayground({
   maxResponse,
   width = 480,
   readout,
+  showWindow = true,
 }: ConvolutionPlaygroundProps) {
   const imageSize = image.length;
   const cell = 32;
@@ -50,13 +53,15 @@ export function ConvolutionPlayground({
             />
           )),
         )}
-        <rect
-          x={windowCol * cell}
-          y={windowRow * cell}
-          width={kernelSize * cell - 1}
-          height={kernelSize * cell - 1}
-          className={styles.windowOutline}
-        />
+        {showWindow && (
+          <rect
+            x={windowCol * cell}
+            y={windowRow * cell}
+            width={kernelSize * cell - 1}
+            height={kernelSize * cell - 1}
+            className={styles.windowOutline}
+          />
+        )}
 
         {featureMap.map((row, r) =>
           row.map((v, c) => {
