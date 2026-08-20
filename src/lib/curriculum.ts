@@ -573,7 +573,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Vision-language models, assembled",
     blurb: "Put joint embeddings and cross-attention together into one working model.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "retrieval-augmented-generation",

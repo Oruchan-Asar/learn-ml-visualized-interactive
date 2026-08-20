@@ -1,0 +1,58 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, VlmCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 1 measured distance between whole images and whole captions. Chapter 3 let a text token attend over image regions. Chained together, they answer an actual question about an image — not "how similar are these two things," but "what's in the part of the image this question is asking about?"
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the query — the embedding of a question like "what's in the sky?" Cross-attention (Chapter 3) blends the image patches into one context vector; that context vector is then matched, nearest-neighbor style (Chapter 1), against a small set of answer prototypes. Two ideas, chained, produce one answer.
+</Intuition>
+
+<Formalize>
+  The whole pipeline is two formulas run back to back, neither one new:
+
+  $$
+  \text{context} = \sum_i \text{softmax}\!\left(\frac{q \cdot k_i}{\sqrt{d}}\right)_i k_i, \qquad \text{answer} = \underset{a}{\arg\min}\; \lVert \text{context} - a \rVert
+  $$
+
+  Cross-attention decides *where to look*; nearest-neighbor decides *what to call it*. Neither step knows about the other's internals — the context vector is just a point in space, and the nearest-neighbor search doesn't care how that point was produced.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the query anywhere and check the full ranked list, not just the winner. The runner-up answer is always the patch that received the second-most attention — the ranking isn't a coincidence, it's a direct consequence of how much each patch pulled the context vector toward itself.
+</Play>
+
+<WorkedExample>
+  Query aligned with the sky patch, $q=(2,0)$ — the exact numbers from Chapter 3:
+
+  <Steps>
+    <Step label="Cross-attention produces a context vector">
+      Weights $0.768$, $0.045$, $0.187$ for sky, ground, dog give a context vector of
+      $(1.723,\ 0.277)$.
+    </Step>
+    <Step label="Nearest-neighbor picks the answer">
+      That context sits $0.39$ units from the sky prototype, $1.02$ from dog, and $2.44$ from ground — sky
+      wins by more than double the runner-up's distance.
+    </Step>
+    <Step label="A query with no preference at all">
+      At $q=(0,0)$, attention is exactly uniform — $\frac13$ to each patch — and the context vector lands
+      at $(1,1)$, which happens to be *exactly* the dog prototype's own coordinates. Perfectly even
+      attention still produces a definite, confident answer here, just not necessarily the one you'd expect.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<VlmCheckpoint />
+
+<Summary>
+  $$
+  \text{context} = \sum_i \text{softmax}\!\left(\frac{q \cdot k_i}{\sqrt{d}}\right)_i k_i, \qquad \text{answer} = \underset{a}{\arg\min}\; \lVert \text{context} - a \rVert
+  $$
+
+  This is the shape of every real vision-language model: an image encoder, a text encoder, a cross-modal attention layer connecting them, and a read-out step turning the result into an answer, a caption, or a classification. Every piece was already built in earlier chapters — assembling them is most of the actual engineering. The next chapter asks what happens when the model doesn't just answer from the image in front of it, but retrieves outside information first.
+</Summary>
