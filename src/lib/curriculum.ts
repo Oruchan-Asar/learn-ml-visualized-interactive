@@ -522,7 +522,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "SHAP for real models",
     blurb: "Shapley values made practical and applied to an actual trained classifier.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "counterfactual-explanations",

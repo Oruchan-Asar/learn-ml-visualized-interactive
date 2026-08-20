@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ShapLinearCheckpoint } from "./Demos";
+
+<Hook>
+  The pizza game had 3 features and 6 orderings to average — already a lot of arithmetic by hand. A real model can have hundreds of features, and $n!$ grows far too fast to ever enumerate. SHAP is what makes Shapley values usable in practice — and for one common case, it doesn't need the orderings at all.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A linear model predicting a house's price from four features. Every bar is that feature's SHAP value for this specific house — and unlike the pizza chapter, none of these came from averaging over $4! = 24$ orderings. For a linear model, there's an exact shortcut.
+</Intuition>
+
+<Formalize>
+  For a linear model $f(x) = b + \sum_i w_i x_i$, the Shapley value has a closed form — no permutations needed at all:
+
+  $$
+  \phi_i = w_i\,(x_i - \bar x_i)
+  $$
+
+  where $\bar x_i$ is feature $i$'s baseline (typically its average value across some reference population). A feature's credit is just its weight times how far *this* instance sits from "typical" — exactly what you'd guess a fair split should look like, and provably the same answer the full permutation average would have given, for a linear model specifically.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the size slider. Only size's own bar moves — every other feature's SHAP value is untouched, because in a linear model each feature's contribution genuinely doesn't depend on any other feature's value. Watch the total, though: baseline plus every bar summed still always equals the exact prediction, at any size you drag to.
+</Play>
+
+<WorkedExample>
+  Baseline (a typical house): size $20$, age $15$, distance $10$, not renovated — predicting $320$. This house:
+  size $25$, age $5$, distance $8$, renovated — predicting $445$:
+
+  <Steps>
+    <Step label="Size's contribution">
+      $w_{\text{size}}(25-20) = 15 \times 5 = 75$ — five units above baseline, each worth $15$.
+    </Step>
+    <Step label="Age and distance's contributions">
+      Age: $w_{\text{age}}(5-15) = -2\times(-10) = 20$ — younger than baseline, and age's weight is negative,
+      so a below-baseline age adds value. Distance: $-5\times(8-10) = 10$, the same logic.
+    </Step>
+    <Step label="Renovated's contribution, and the total">
+      Renovated: $20\times(1-0)=20$. All four sum to $75+20+10+20=125$, and $320 + 125 = 445$ — exactly the
+      predicted price, with no approximation anywhere.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ShapLinearCheckpoint />
+
+<Summary>
+  $$
+  \phi_i = w_i\,(x_i - \bar x_i)
+  $$
+
+  This exact shortcut only exists because the model is linear — the moment there's any interaction between features (a tree split, a neural network's nonlinearity), the shortcut breaks and real SHAP implementations fall back to smart sampling strategies that approximate the permutation average without ever computing all $n!$ of them. The takeaway carries over regardless: SHAP is Chapter 5's fair-credit idea, engineered to actually run on models with more than three features. The next chapter asks a different kind of question about the same prediction: not "how much did each feature contribute," but "what's the smallest change that would have flipped the answer?"
+</Summary>
