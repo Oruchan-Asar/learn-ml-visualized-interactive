@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, GradientCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,20 @@ import { IntuitionDemo, PlayDemo, GradientCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At $(3, 4)$: $\nabla f = (2 \times 3,\ 2 \times 4) = (6, 8)$. Its magnitude is $\sqrt{6^2+8^2} = \sqrt{100} = 10$ — the same 3:4:5 triangle from the vectors chapter, showing up again.
+  <Steps>
+    <Step label="Compute each partial derivative at (3, 4)">
+      $$
+      \nabla f = (2 \times 3,\ 2 \times 4) = (6, 8)
+      $$
+    </Step>
+    <Step label="Compute the gradient's magnitude">
+      $$
+      |\nabla f| = \sqrt{6^2+8^2} = \sqrt{100} = 10
+      $$
+
+      The same 3:4:5 triangle from the vectors chapter, showing up again.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <GradientCheckpoint />

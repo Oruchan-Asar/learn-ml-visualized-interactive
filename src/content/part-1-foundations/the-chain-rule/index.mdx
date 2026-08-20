@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ChainRuleCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,28 @@ import { IntuitionDemo, PlayDemo, ChainRuleCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  Here $f(x) = 2x + 1$ and $g(u) = u^2$, so $h(x) = (2x+1)^2$. At $x=1$: $u = f(1) = 3$, so $g'(u) = 2u = 6$ and $f'(x) = 2$. Chain rule: $dh/dx = 6 \times 2 = 12$. Check directly — $h(x) = 4x^2+4x+1$, so $h'(x)=8x+4$, and $h'(1) = 12$. Same answer, two routes.
+  Here $f(x) = 2x + 1$ and $g(u) = u^2$, so $h(x) = (2x+1)^2$.
+
+  <Steps>
+    <Step label="Find the inner value at x = 1">
+      $$
+      u = f(1) = 2(1) + 1 = 3
+      $$
+    </Step>
+    <Step label="Find both local slopes">
+      $$
+      g'(u) = 2u = 6, \qquad f'(x) = 2
+      $$
+    </Step>
+    <Step label="Multiply them (the chain rule)">
+      $$
+      \frac{dh}{dx} = 6 \times 2 = 12
+      $$
+    </Step>
+    <Step label="Check directly, a different route">
+      Expand $h(x) = (2x+1)^2 = 4x^2+4x+1$, so $h'(x)=8x+4$, and $h'(1) = 12$ — same answer, two routes.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <ChainRuleCheckpoint />

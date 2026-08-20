@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, EntropyCheckpoint } from "./Demos";
 
 <Hook>
@@ -30,11 +30,20 @@ import { IntuitionDemo, PlayDemo, EntropyCheckpoint } from "./Demos";
 <WorkedExample>
   With $P = (0.5, 0.25, 0.125, 0.125)$:
 
-  $$
-  H(X) = 0.5(1) + 0.25(2) + 0.125(3) + 0.125(3) = 0.5+0.5+0.375+0.375 = 1.75 \text{ bits}
-  $$
+  <Steps>
+    <Step label="Compute each term, -p log₂ p">
+      $$
+      0.5(1) = 0.5, \quad 0.25(2) = 0.5, \quad 0.125(3) = 0.375, \quad 0.125(3) = 0.375
+      $$
 
-  Each term is $-p\log_2 p$ — here the probabilities are all powers of two, so every term comes out to a whole number of bits.
+      Here the probabilities are all powers of two, so every term comes out to a whole number of bits.
+    </Step>
+    <Step label="Add them up for the entropy">
+      $$
+      H(X) = 0.5+0.5+0.375+0.375 = 1.75 \text{ bits}
+      $$
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <EntropyCheckpoint />

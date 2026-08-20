@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, MatrixCheckpoint } from "./Demos";
 
 <Hook>
@@ -31,11 +31,17 @@ import { IntuitionDemo, PlayDemo, MatrixCheckpoint } from "./Demos";
 <WorkedExample>
   With $M = \begin{pmatrix} 2 & 0 \\ 0 & 0.5 \end{pmatrix}$ (the "Scale" preset) and $v=(3,4)$:
 
-  $$
-  Mv = \begin{pmatrix} 2(3) + 0(4) \\ 0(3) + 0.5(4) \end{pmatrix} = \begin{pmatrix} 6 \\ 2 \end{pmatrix}
-  $$
-
-  The $x$-component doubled, the $y$-component halved — exactly what a diagonal matrix does: scale each axis independently.
+  <Steps>
+    <Step label="Multiply the matrix by the vector">
+      $$
+      Mv = \begin{pmatrix} 2(3) + 0(4) \\ 0(3) + 0.5(4) \end{pmatrix} = \begin{pmatrix} 6 \\ 2 \end{pmatrix}
+      $$
+    </Step>
+    <Step label="Read what each component did">
+      The $x$-component doubled, the $y$-component halved — exactly what a diagonal matrix does: scale each axis
+      independently.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <MatrixCheckpoint />

@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DistributionCheckpoint } from "./Demos";
 
 <Hook>
@@ -34,9 +34,18 @@ import { IntuitionDemo, PlayDemo, DistributionCheckpoint } from "./Demos";
 <WorkedExample>
   With $P = (0.1, 0.2, 0.3, 0.4)$ over outcomes worth $(1,2,3,4)$:
 
-  $$
-  E[X] = 0.1(1) + 0.2(2) + 0.3(3) + 0.4(4) = 0.1+0.4+0.9+1.6 = 3.0
-  $$
+  <Steps>
+    <Step label="Weight each outcome by its probability">
+      $$
+      0.1(1) = 0.1, \quad 0.2(2) = 0.4, \quad 0.3(3) = 0.9, \quad 0.4(4) = 1.6
+      $$
+    </Step>
+    <Step label="Add them up for the expected value">
+      $$
+      E[X] = 0.1+0.4+0.9+1.6 = 3.0
+      $$
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <DistributionCheckpoint />

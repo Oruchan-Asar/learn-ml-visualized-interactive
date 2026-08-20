@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BayesCheckpoint } from "./Demos";
 
 <Hook>
@@ -30,15 +30,22 @@ import { IntuitionDemo, PlayDemo, BayesCheckpoint } from "./Demos";
 <WorkedExample>
   Base rate $1\%$, sensitivity $90\%$, false-positive rate $10\%$:
 
-  $$
-  P(B) = 0.9(0.01) + 0.1(0.99) = 0.108
-  $$
-
-  $$
-  P(A\mid B) = \frac{0.9 \times 0.01}{0.108} \approx 8.3\%
-  $$
-
-  A "90% accurate" test, and a positive result still means less than a 1-in-10 chance of actually having it — because the condition was rare enough that false alarms from the other 99% swamp the true positives.
+  <Steps>
+    <Step label="Find the overall chance of a positive test">
+      $$
+      P(B) = 0.9(0.01) + 0.1(0.99) = 0.108
+      $$
+    </Step>
+    <Step label="Apply Bayes' rule">
+      $$
+      P(A\mid B) = \frac{0.9 \times 0.01}{0.108} \approx 8.3\%
+      $$
+    </Step>
+    <Step label="Read what it means">
+      A "90% accurate" test, and a positive result still means less than a 1-in-10 chance of actually having it —
+      because the condition was rare enough that false alarms from the other 99% swamp the true positives.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <BayesCheckpoint />

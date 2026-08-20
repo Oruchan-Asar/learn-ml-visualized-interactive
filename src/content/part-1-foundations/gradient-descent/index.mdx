@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DescentCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,24 @@ import { IntuitionDemo, PlayDemo, DescentCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  From $x_0 = 5$ with $\eta = 0.1$: step one gives $x_1 = 5 - 0.1(2 \cdot 5 - 4) = 5 - 0.6 = 4.4$. Step two gives $x_2 = 4.4 - 0.1(2 \cdot 4.4 - 4) = 4.4 - 0.48 = 3.92$. Each step shrinks the distance to the minimum at $x^* = 2$ by the same factor — that's what a *stable* learning rate looks like.
+  From $x_0 = 5$ with $\eta = 0.1$:
+
+  <Steps>
+    <Step label="Take the first step">
+      $$
+      x_1 = 5 - 0.1(2 \cdot 5 - 4) = 5 - 0.6 = 4.4
+      $$
+    </Step>
+    <Step label="Take the second step">
+      $$
+      x_2 = 4.4 - 0.1(2 \cdot 4.4 - 4) = 4.4 - 0.48 = 3.92
+      $$
+    </Step>
+    <Step label="Read what happened">
+      Each step shrinks the distance to the minimum at $x^* = 2$ by the same factor — that's what a *stable*
+      learning rate looks like.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <DescentCheckpoint />

@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DotProductCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,27 @@ import { IntuitionDemo, PlayDemo, DotProductCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  With $a=(4,0)$ and $b=(3,4)$: $a\cdot b = 4(3) + 0(4) = 12$. Their magnitudes are $|a|=4$ and $|b|=5$, so $\cos\theta = 12/20 = 0.6$, giving $\theta \approx 53.13°$ — comfortably under $90°$, matching a positive dot product.
+  With $a=(4,0)$ and $b=(3,4)$:
+
+  <Steps>
+    <Step label="Compute the dot product">
+      $$
+      a\cdot b = 4(3) + 0(4) = 12
+      $$
+    </Step>
+    <Step label="Compute each magnitude">
+      $$
+      |a|=4, \qquad |b|=5
+      $$
+    </Step>
+    <Step label="Solve for the angle">
+      $$
+      \cos\theta = \frac{12}{4\times5} = 0.6 \implies \theta \approx 53.13°
+      $$
+
+      Comfortably under $90°$, matching a positive dot product.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <DotProductCheckpoint />

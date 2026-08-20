@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, GradientCheckpoint } from "./Demos";
 
 <Hook>
@@ -34,7 +34,18 @@ import { IntuitionDemo, PlayDemo, GradientCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At $x = 5$: $\nabla f(5) = 2(5) - 4 = 6$. Positive, so the curve is rising there — to decrease $f$, move in the negative $x$ direction. This one fact — "the gradient points toward increase, so step against it" — is the entire idea behind gradient descent, several chapters from now.
+  <Steps>
+    <Step label="Evaluate the gradient at x = 5">
+      $$
+      \nabla f(5) = 2(5) - 4 = 6
+      $$
+    </Step>
+    <Step label="Read the sign">
+      Positive, so the curve is rising there — to decrease $f$, move in the negative $x$ direction. This one fact —
+      "the gradient points toward increase, so step against it" — is the entire idea behind gradient descent,
+      several chapters from now.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <GradientCheckpoint />
