@@ -742,7 +742,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Feature engineering & scaling",
     blurb: "Watch two features on wildly different scales silently sabotage a descent that never sees it coming.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-evaluate-a-real-pipeline",

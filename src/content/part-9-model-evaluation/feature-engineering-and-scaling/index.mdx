@@ -1,0 +1,60 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, FeatureScalingCheckpoint } from "./Demos";
+
+<Hook>
+  The last chapter tuned one learning rate for one weight. Real models have many weights, one per feature — and if two features sit on wildly different scales, there may be no single learning rate that treats both of them fairly.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Two features, two weights, one shared learning rate — exactly like every gradient descent so far in this course, except now $x_1$ ranges across $\pm 1$ and $x_2$ ranges across $\pm 100$. Step through learning rates and watch the faint curve ($w_2$, the huge-scale feature) and the bold curve ($w_1$, the tiny-scale feature) refuse to cooperate.
+</Intuition>
+
+<Formalize>
+  For linear regression, the curvature of the loss along each weight's axis scales with that feature's variance:
+
+  $$
+  \frac{\partial^2 \mathcal{L}}{\partial w_j^2} \propto \sum_i x_{ij}^2
+  $$
+
+  A feature on a 100x larger scale produces roughly $100^2 = 10{,}000\times$ more curvature along its own weight axis. Since a single learning rate must stay below $2/\text{curvature}$ everywhere to avoid diverging, the large-scale feature forces the *whole* learning rate down — including for every feature that didn't need it to be that small.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Train on the raw features for 20 steps at the rate that's safe for the huge-scale feature, and $w_1$ has barely moved — its error is still nearly its full starting distance. Rescale $x_2$ down to $x_1$'s range first, and the *same* learning rate that solved the tiny-scale weight now solves both weights exactly, in two steps instead of twenty.
+</Play>
+
+<WorkedExample>
+  $y = w_1 x_1 + w_2 x_2$, true weights $w_1{=}3$, $w_2{=}0.02$, with $x_1 \in \{\pm 1\}$ and $x_2 \in \{\pm 100\}$:
+
+  <Steps>
+    <Step label="The same starting point, wildly different gradients">
+      At $w_1{=}w_2{=}0$, the gradient is $-6$ for $w_1$ but $-400$ for $w_2$ — over 66x steeper, purely because
+      $x_2$'s values are 100x larger. The loss surface is a long, narrow valley: gentle along $w_1$'s axis, brutally
+      steep along $w_2$'s.
+    </Step>
+    <Step label="Safe for the steep axis, frozen on the gentle one">
+      $\eta=0.00005$ is exactly the rate that lands $w_2$ on its true value in one step. Using that same rate for
+      $w_1$ over 20 steps leaves it at just $0.006$ — still $2.99$ away from its true value of $3$. Double the rate
+      to $\eta=0.0001$ and $w_2$ stops converging altogether, bouncing between $0$ and $0.04$ forever.
+    </Step>
+    <Step label="Scaling turns two curvatures into one">
+      Dividing $x_2$ by $100$ shrinks its range to match $x_1$'s, and its true weight becomes $0.02\times100=2$.
+      Both features now produce identical curvature. $\eta=0.5$ — the same "magic" rate from the last chapter —
+      lands both $w_1{=}3$ and $w_2{=}2$ exactly, in a single step.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<FeatureScalingCheckpoint />
+
+<Summary>
+  $$
+  \text{curvature}_j \propto \sum_i x_{ij}^2 \quad\Rightarrow\quad \text{one learning rate can't serve every feature unless every feature is on the same scale}
+  $$
+
+  Grid search from the last chapter can find the best single learning rate, but it can't fix a loss surface shaped like a canyon — it can only pick the least-bad compromise. Standardizing every feature to a comparable scale before training removes the problem instead of compromising around it. This closes Model Evaluation & the Practical Workflow. The capstone puts every metric from this part — accuracy, F1, AUC, cross-validation, tuning, scaling — against one real pipeline at once.
+</Summary>
