@@ -1,0 +1,60 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, TransferLearningCheckpoint } from "./Demos";
+
+<Hook>
+  Every model in this course has started from scratch — random or zero weights, learning everything from its own training data. What if a huge chunk of the problem was already solved by someone else's model, and only a small piece was actually specific to your task?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Two points, one shared slope. One approach starts from a pretrained slope and only has to learn where to shift it; the other has to rediscover the slope and the shift together, from nothing, using the exact same two points.
+</Intuition>
+
+<Formalize>
+  **Transfer learning** freezes parameters already learned on a large source task and fine-tunes only the remainder on a small target task:
+
+  $$
+  \underbrace{w_{\text{frozen}}}_{\text{from pretraining}}, \qquad b_{\text{fine-tuned}} \leftarrow \arg\min_b \; \mathcal{L}(w_{\text{frozen}}, b; \; \text{target data})
+  $$
+
+  Training from scratch instead optimizes every parameter jointly, starting from nothing. Freezing turns a coupled, multi-parameter optimization problem into a much simpler one — often, as here, a single parameter with an easy, well-behaved loss curve.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The learning rate that solves transfer's one-parameter problem exactly, in a single step, sends the joint two-parameter problem into an explosive spiral within 3 steps. The same underlying data, the same starting point conceptually — but coupling two unknowns together changes what "safe" even means.
+</Play>
+
+<WorkedExample>
+  Pretrained slope $w=2$; target task $y=2x+5$, observed at just two points, $(1,7)$ and $(3,11)$:
+
+  <Steps>
+    <Step label="Freezing turns two unknowns into one">
+      With $w$ fixed at $2$, the loss in $b$ alone is exactly $2(b-5)^2$-shaped — the same quadratic form from
+      the hyperparameter-tuning chapter. Its ideal learning rate, $\eta=0.5$, lands $b=5$ exactly, in one step.
+      MSE: $0$.
+    </Step>
+    <Step label="The same rate wrecks the joint problem">
+      Training $w$ and $b$ together from $(0,0)$ at that same $\eta=0.5$ overshoots on step one, overshoots
+      further on step two, and by step three has exploded to $w\approx394$, $b\approx165$ — nowhere near the
+      target $(2,5)$.
+    </Step>
+    <Step label="Even a safe rate is slow when there's more to learn">
+      At a stable $\eta=0.1$, from-scratch training reaches $(w,b)\approx(3.24, 2.01)$ after 5 steps — MSE
+      $\approx1.80$. After 20 steps, 4x the budget, it's only improved to $(w,b)\approx(2.73, 3.23)$ — MSE
+      $\approx0.63$, still far from the transfer model's exact $0$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<TransferLearningCheckpoint />
+
+<Summary>
+  $$
+  \text{transfer: 1 unknown, closed-form-simple} \qquad\text{vs}\qquad \text{scratch: 2 coupled unknowns, slower and more fragile}
+  $$
+
+  Freezing pretrained weights doesn't just save compute — it changes the shape of the optimization problem itself, often turning a fragile, coupled search into something closer to the single-parameter toy problems from early in this course. That's the real reason transfer learning works so well with so little target-task data: there's simply less left to learn, and what's left tends to be far better-behaved. The next chapter turns from classification and reconstruction to a task with its own coordinates entirely: not just naming what's in an image, but drawing a box around exactly where it is.
+</Summary>

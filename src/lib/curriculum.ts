@@ -809,7 +809,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Transfer learning & fine-tuning",
     blurb: "Start from someone else's trained weights, freeze most of them, and see how little data specializes the rest.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "object-detection-and-segmentation",
