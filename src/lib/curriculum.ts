@@ -868,7 +868,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Audit one model, five different ways",
     blurb: "Saliency, SHAP, PDP, tree importance, and an Anchor rule, on the exact same prediction.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 

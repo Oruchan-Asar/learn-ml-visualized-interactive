@@ -1,0 +1,62 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, AuditCheckpoint } from "./Demos";
+
+<Hook>
+  One model: predict $1$ only when $x_1 > 3$ **and** $x_2 > 3$. One instance: $(5, 5)$. Five explainability methods from this course, all pointed at the exact same question — does $x_1$ or $x_2$ matter more here? They don't all give the same answer.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Tree importance, Shapley values, and integrated gradients, applied to the same model and the same instance. Switch between them and watch which feature comes out on top change depending on which question you asked.
+</Intuition>
+
+<Formalize>
+  Five methods, five different questions about the same $(x_1, x_2) = (5, 5)$:
+
+  $$
+  \text{anchor: what rule guarantees this prediction?} \quad\big|\quad \text{tree: what did training find useful?} \quad\big|\quad \text{Shapley: fair credit over all orderings?}
+  $$
+  $$
+  \text{IG: integral of gradient along the path from baseline?} \quad\big|\quad \text{PDP: average behavior as } x_1 \text{ sweeps?}
+  $$
+
+  None of these is wrong. Each is answering a genuinely different question, using different information — a training dataset's split structure, a coalition game over feature presence, a smooth surrogate's gradient field, or the raw grid itself.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Shapley and integrated gradients agree perfectly — both are symmetric in $x_1$ and $x_2$, and both split credit exactly down the middle. Tree importance doesn't: whichever feature happens to win the root split (a near-arbitrary tie here) ends up with less total credit than the feature that gets to clean up the remaining impurity deeper in the tree.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Shapley values: perfectly symmetric">
+      Coalition values: $v(\emptyset)=0$, $v(\{x_1\})=0$, $v(\{x_2\})=0$, $v(\{x_1,x_2\})=1$. Averaging marginal
+      contributions over both orderings gives $\phi_{x_1}=\phi_{x_2}=0.5$ — exactly equal, exactly summing to the
+      total change in value ($1-0=1$).
+    </Step>
+    <Step label="Integrated gradients: also symmetric, and nearly exact">
+      Integrating a smooth surrogate of the same boundary along the diagonal path from $(0,0)$ to $(5,5)$ gives
+      $\text{IG}_{x_1}\approx\text{IG}_{x_2}\approx0.482$, summing to $\approx0.965$ — within $0.0004$ of the
+      surrogate's true output change, just like the completeness check from earlier in this part.
+    </Step>
+    <Step label="Tree importance: the tie-break at the root cascades">
+      Training a tree on this model's own grid gives $x_1$ the root split (a tie with $x_2$, broken arbitrarily)
+      with gain $\approx0.266$ weighted by all 49 samples. $x_2$'s only split happens one level deeper, on just
+      21 samples — but at a far higher gain, $\approx0.985$. Net importance: $x_2\approx0.422$ actually edges out
+      $x_1\approx0.266$, despite the two features being logically interchangeable in the true rule.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<AuditCheckpoint />
+
+<Summary>
+  $$
+  \text{5 methods, 1 model, 1 instance} \;\Rightarrow\; \text{2 say "exactly tied," 1 says "x2 matters more," 2 more (PDP, anchors) don't even ask that question}
+  $$
+
+  This is the honest state of model explainability: there is no single number that "the" importance of a feature. Shapley values answer a precise, symmetric, game-theoretic question and get a clean answer here because the underlying model happens to be symmetric. Tree importance answers a different question — "what did this particular training procedure find useful, in this particular tree structure" — and that answer is sensitive to arbitrary tie-breaks in a way Shapley values structurally cannot be. Anchors and PDP don't rank features against each other at all; they answer their own separate questions about reliability and average behavior. Auditing a model well means running several of these, expecting some disagreement, and understanding *why* they disagree — not searching for the one that confirms what you already believed. This closes Part XI — Explainability, Continued. The next part turns to multimodal AI, continued: audio, video, and text-conditioned generation.
+</Summary>
