@@ -251,7 +251,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "The perceptron",
     blurb: "A single artificial neuron, drawing its very first line.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "activation-functions",

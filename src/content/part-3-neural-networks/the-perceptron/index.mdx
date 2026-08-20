@@ -1,0 +1,44 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PerceptronCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 11 found the *best possible* line separating two classes by solving an optimization problem. What's the simplest algorithm that finds merely *a* working line at all?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same two clusters as the SVM chapter. Take a step: one point gets checked against the current line. If it's already on the right side, nothing happens. If it's wrong, the line moves — just enough to nudge that one point onto its correct side.
+</Intuition>
+
+<Formalize>
+  This is the **perceptron**, one of the oldest learning algorithms. It's a single artificial neuron: a weight vector $w$ and bias $b$ predict $\hat y = \text{sign}(w \cdot x + b)$. Whenever a prediction is wrong, it corrects itself by exactly the term that caused the error:
+
+  $$
+  w \leftarrow w + \eta\, y\, x, \qquad b \leftarrow b + \eta\, y
+  $$
+
+  where $y$ is the true label ($+1$ or $-1$). No calculus, no loss function to minimize — just "if wrong, shift toward being right."
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch $w$ and $b$ directly. They only change on the two steps that actually hit a misclassified point — every other step leaves them untouched. The line isn't being *optimized*; it's being *corrected*, one mistake at a time.
+</Play>
+
+<WorkedExample>
+  Starting at $w=(0,0)$, $b=0$, the first point $(3,6)$ is class A (label $-1$), but $\text{sign}(0) = +1$ — wrong. The update: $w \leftarrow (0,0) + 1\cdot(-1)\cdot(3,6) = (-3,-6)$, $b \leftarrow 0 + 1\cdot(-1) = -1$.
+
+  The next three points are already correctly classified by this new line — no change. Point five, $(5,4)$, is class B ($+1$), but the current line predicts $-1$ — wrong again: $w \leftarrow (-3,-6) + (5,4) = (2,-2)$, $b \leftarrow -1+1=0$. From here, all eight points — checked again in a full second pass — are already correct. Just two corrections, out of sixteen checks, and it's converged to $w=(2,-2)$, $b=0$: the line $y=x$.
+</WorkedExample>
+
+<PerceptronCheckpoint />
+
+<Summary>
+  $$
+  w \leftarrow w + \eta\, y\, x, \qquad b \leftarrow b + \eta\, y
+  $$
+
+  The perceptron is guaranteed to converge on any linearly separable data — but unlike the SVM's max-margin line, it just stops at the *first* separator it finds, with no guarantee it's the widest one. It's also the smallest possible building block of a neural network: the next chapters are about what happens when you stack many of these together.
+</Summary>
