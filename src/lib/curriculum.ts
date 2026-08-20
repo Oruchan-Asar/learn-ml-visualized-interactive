@@ -482,7 +482,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "The interpretability–accuracy tradeoff",
     blurb: "Why the most accurate model on the leaderboard is often the least explainable.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "saliency-maps",

@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, TradeoffCheckpoint } from "./Demos";
+
+<Hook>
+  Every model in this course so far has been judged by one number: how often it's right. But a model that's right 100% of the time and a model that's right 70% of the time can both be worth building — if the second one is simple enough that a person can actually say *why* it made each call.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same ten points, two models. The "simple" model is one rule — one threshold, two regions — and you could recite its entire logic in a sentence. The "complex" model has enough boundaries to get every point right, but describing *why* it drew each one starts to require pointing at the data itself, not stating a rule.
+</Intuition>
+
+<Formalize>
+  For a set of decision regions, accuracy is just the fraction correctly classified. A simple, decreasing proxy for interpretability is one over the number of regions the model uses:
+
+  $$
+  \text{accuracy} = \frac{\text{correct}}{n}, \qquad \text{interpretability} = \frac{1}{\text{regions}}
+  $$
+
+  This interpretability score is a stand-in for something real: a model built from a handful of regions is one a person can hold in their head and restate as a short list of rules. A model built from dozens of regions — one for nearly every data point — has traded that away for the ability to fit exceptions no simple rule ever could.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Step through all three models. Each added split fixes one more of the dataset's exceptions — but every fix also grows the rule. By the third model, every single point is classified correctly, at the cost of a rule with four separate regions instead of two.
+</Play>
+
+<WorkedExample>
+  On the same 10-point dataset:
+
+  <Steps>
+    <Step label="Stump — 1 split, 2 regions">
+      Accuracy $7/10 = 70\%$. Interpretability $1/2 = 0.50$. It gets the three "noisy" points near $x=7,8,9$ wrong,
+      because a single threshold can't carve out a middle exception.
+    </Step>
+    <Step label="Small tree — 2 splits, 3 regions">
+      Accuracy $9/10 = 90\%$. Interpretability $1/3 \approx 0.33$. The extra split recovers $x=7,8,9$, but now
+      misses the lone point at $x=10$.
+    </Step>
+    <Step label="Black box — 3 splits, 4 regions">
+      Accuracy $10/10 = 100\%$. Interpretability $1/4 = 0.25$. A third split finally isolates $x=10$ too — every
+      point correct, at the cost of the most regions of the three.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<TradeoffCheckpoint />
+
+<Summary>
+  $$
+  \text{accuracy} = \frac{\text{correct}}{n}, \qquad \text{interpretability} = \frac{1}{\text{regions}}
+  $$
+
+  Neither number here is "the loss" — there's no single objective that says which model is better, because that depends on what the model is *for*. A model that flags fraud for a human reviewer to double-check needs to be checkable; a model that only has to be right, with nobody ever asking why, doesn't. The rest of this part is about a different way out of that tradeoff entirely: keep the accurate, complex model, and build tools that explain its decisions after the fact instead of simplifying the model itself. The first of those tools looks at exactly which pixels a model was looking at.
+</Summary>
