@@ -267,7 +267,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "The forward pass",
     blurb: "Stack neurons into a layer and watch numbers flow through it live.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "a-network-is-a-chain",

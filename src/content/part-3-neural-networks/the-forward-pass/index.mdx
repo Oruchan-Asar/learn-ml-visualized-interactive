@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ForwardPassCheckpoint } from "./Demos";
+
+<Hook>
+  One neuron takes a weighted sum and squashes it. What happens when the same two inputs feed three neurons at once, each with its own opinion?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag either input. Every neuron computes its own weighted sum from the exact same $(x_1, x_2)$ — they just disagree about which weights and bias to use. Watch the ring around each one: it lights up the moment that neuron's output is positive.
+</Intuition>
+
+<Formalize>
+  A **layer** is just several neurons run in parallel on the same input:
+
+  $$
+  z_i = w_i \cdot x + b_i, \qquad a_i = \text{ReLU}(z_i)
+  $$
+
+  Nothing here is new — $z_i$ is exactly the perceptron's weighted sum, computed once per neuron. A layer of 3 neurons on 2 inputs is 3 independent weighted sums, each fed through the same activation. Stack enough of these, feeding one layer's outputs into the next layer's inputs, and that's a neural network.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Push $x_1$ negative and $x_2$ positive. Some neurons' sums go negative and their ReLU output flatlines at exactly 0 — dead for this input, no matter how negative their sum gets. Others stay positive and keep responding linearly. Same inputs, three completely different reactions.
+</Play>
+
+<WorkedExample>
+  At $(x_1, x_2) = (2, 2)$: neuron A ($w=(1,-1)$, $b=0$) computes $z = 2 - 2 = 0$, so $\text{ReLU}(0) = 0$. Neuron B ($w=(0.5,0.5)$, $b=-1$) computes $z = 1+1-1 = 1$, so its output is $1$. Neuron C ($w=(-1,2)$, $b=0.5$) computes $z = -2+4+0.5 = 2.5$, output $2.5$. Same $(x_1,x_2)$, fed through three different weight vectors, three completely different answers — that's the entire forward pass.
+</WorkedExample>
+
+<ForwardPassCheckpoint />
+
+<Summary>
+  $$
+  z_i = w_i \cdot x + b_i, \qquad a_i = \text{ReLU}(z_i)
+  $$
+
+  A "layer" is nothing more than this computation repeated once per neuron, in parallel, on the same input. The next chapter asks the question this one was quietly setting up: if a network is just layers chained together, how do you compute a gradient through the *whole* chain — not just one neuron's slope?
+</Summary>
