@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, KnnCheckpoint } from "./Demos";
+
+<Hook>
+  Every classifier so far — logistic regression, a decision tree, an SVM — spends real effort during training, fitting weights or splits before it can predict anything. What's the classifier that skips training entirely and just... looks at what's nearby?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Two clusters, and one deliberately mislabeled-looking point sitting right inside the wrong cluster's territory. Toggle $k$ — with $k=1$, the query's prediction comes from whichever single point is closest, noisy point included. Raise $k$, and that one stray point gets outvoted by its genuine neighbors.
+</Intuition>
+
+<Formalize>
+  $k$-nearest neighbors has no training phase and no parameters to fit — the "model" is just the dataset itself:
+
+  $$
+  \hat{y}(q) = \underset{c}{\arg\max} \left|\{i \in \text{kNN}(q) : y_i = c\}\right|
+  $$
+
+  Find the $k$ closest points to the query $q$ by ordinary distance, then predict whichever class shows up most among them. All the "learning" happens at prediction time, not training time — the opposite of every other model built so far in this course.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the query and check the ranked list of nearest neighbors at every position. The prediction is entirely a local vote — it never looks at the shape of either cluster as a whole, only at whichever handful of points happen to be closest to wherever you're asking about.
+</Play>
+
+<WorkedExample>
+  A query point sits at $(4, 4.5)$, right at the edge of the B cluster — except for one noisy A point planted at $(4.2, 4.3)$:
+
+  <Steps>
+    <Step label="k=1: fooled by the noisy point">
+      The single nearest neighbor is the stray A point, at distance $\approx 0.28$ — closer than any real B
+      point. The prediction is A, which is wrong.
+    </Step>
+    <Step label="k=3: the noisy point gets outvoted">
+      The three nearest are the stray A point plus two genuine B points. That's $2$ votes for B against
+      $1$ for A — the majority correctly overrides the single noisy neighbor.
+    </Step>
+    <Step label="k=5: even more confident">
+      Extending to the five nearest adds two more B points, for a $4$-to-$1$ vote. The noisy point never goes
+      away — it just matters less as more real evidence gets counted alongside it.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<KnnCheckpoint />
+
+<Summary>
+  $$
+  \hat{y}(q) = \underset{c}{\arg\max} \left|\{i \in \text{kNN}(q) : y_i = c\}\right|
+  $$
+
+  $k$ is kNN's one real hyperparameter, and it trades off exactly the way $k$-means' cluster count or a tree's depth did: too small and a single noisy point can swing the answer; too large and it starts averaging in points from an entirely different neighborhood that shouldn't count at all. This same nearest-neighbor idea has already shown up all over this course — word embeddings, joint embedding spaces, retrieval — but this is the first time it's the entire classifier by itself, with nothing trained on top of it.
+</Summary>

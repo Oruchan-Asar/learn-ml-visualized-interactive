@@ -651,7 +651,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "k-Nearest Neighbors",
     blurb: "Classify a new point by vote of its closest neighbors — no training step required at all.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "naive-bayes-classifier",
