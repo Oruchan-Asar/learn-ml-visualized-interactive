@@ -1,0 +1,55 @@
+.wrap {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 8px;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.point {
+  fill: var(--ink-faint);
+}
+
+.pointQuery {
+  fill: var(--accent);
+}
+
+.pointNearest {
+  fill: var(--accent2);
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.wordLabel {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  fill: var(--ink-soft);
+}
+
+.extraMark {
+  stroke: var(--accent);
+  stroke-width: 2.5;
+}
+
+.extraLabel {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--accent-ink);
+}
+
+.readout {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 6px 0 2px;
+}

@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, WordEmbeddingCheckpoint } from "./Demos";
+
+<Hook>
+  Every network so far has taken numbers as input — pixels, coordinates, one-hot tokens. Text is made of words. Before any of the machinery from this part can touch a sentence, every word needs to become a vector — and not just any vector: one where distance means something.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click any word. Its nearest neighbor lights up — and it's always the word that's closest in *meaning*, not spelling or length. "King" sits nearest to "prince," not to "man" or "queen," because this toy space has two axes: how royal, and which gender. Real embeddings have hundreds of dimensions learned from text, but the idea is identical — position encodes meaning, and nearby points mean similar things.
+</Intuition>
+
+<Formalize>
+  With word vectors $a$ and $b$, distance is just ordinary Euclidean distance:
+
+  $$
+  d(a, b) = \sqrt{(a_1-b_1)^2 + (a_2-b_2)^2 + \dots}
+  $$
+
+  A **nearest-neighbor** search is nothing more than computing this for every other word and keeping the smallest. What makes embeddings powerful isn't the distance formula — it's that a well-trained embedding space arranges words so this simple formula lines up with human judgments of similarity.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Click through several words and read the full ranked list. Notice the *axes* this space actually encodes: moving along one direction changes royalty (commoner → prince → king), moving along another changes gender (woman → man). Nobody labeled those axes by hand — they just happen to be the directions distance is measured along.
+</Play>
+
+<WorkedExample>
+  If position encodes meaning, then *directions* should too. Take king's vector, subtract man's, add woman's: $\text{king} - \text{man} + \text{woman}$. Subtracting "man" from "king" removes whatever direction encodes "male royalty $\to$ male," and adding "woman" adds back "female" in its place — leaving pure "female royalty." In this space, that arithmetic lands exactly on queen's coordinates. This is the single most famous fact about word embeddings: analogies work as vector arithmetic, because the *relationship* between two words is encoded as a direction, and that direction transfers to other word pairs.
+</WorkedExample>
+
+<WordEmbeddingCheckpoint />
+
+<Summary>
+  $$
+  \text{king} - \text{man} + \text{woman} \approx \text{queen}
+  $$
+
+  This chapter hand-placed the vectors to make the geometry obvious. Real word embeddings (word2vec, GloVe, and the embedding layer inside every modern language model) are *learned* — trained so that words appearing in similar contexts end up nearby, and this king/queen-style arithmetic emerges on its own, unplanned. Before any of that training can happen, though, a sentence first has to be cut into discrete pieces to assign vectors to. That's next: tokenization.
+</Summary>

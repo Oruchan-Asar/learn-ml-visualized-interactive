@@ -407,7 +407,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Word embeddings",
     blurb: "Turn words into vectors, then find their nearest neighbors in meaning.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "tokenization",
