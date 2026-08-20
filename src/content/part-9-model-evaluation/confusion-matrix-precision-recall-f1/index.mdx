@@ -1,0 +1,58 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ConfusionMatrixCheckpoint } from "./Demos";
+
+<Hook>
+  Every classifier in this course has reported "accuracy" as if it settles the question of whether a model is any good. Two classifiers can score the exact same accuracy while doing completely different — and completely differently useful — things.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Ten cases, nine negative and one positive — a rare event, like a rare disease or a fraud attempt. Toggle between a classifier that always says "negative" and one that actually catches the rare case. Watch the readout: their true/false positive/negative counts are entirely different.
+</Intuition>
+
+<Formalize>
+  A **confusion matrix** counts four outcomes: true/false positive, true/false negative. From those four numbers:
+
+  $$
+  \text{precision} = \frac{TP}{TP+FP}, \qquad \text{recall} = \frac{TP}{TP+FN}, \qquad F_1 = \frac{2 \cdot \text{precision} \cdot \text{recall}}{\text{precision}+\text{recall}}
+  $$
+
+  Precision asks "of everything I flagged positive, how much was actually positive?" Recall asks "of everything actually positive, how much did I catch?" $F_1$ is their harmonic mean — a single number that only looks good when *both* precision and recall are reasonably high, unlike an average that a lopsided pair could still inflate.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Two classifiers, read side by side. One never predicts positive at all; the other catches the single true positive at the cost of one false alarm. Precision, recall, and F1 tell them apart completely — accuracy alone can't.
+</Play>
+
+<WorkedExample>
+  Nine negatives, one positive. Classifier A always predicts negative; classifier B predicts positive on the true case plus one extra:
+
+  <Steps>
+    <Step label="Both classifiers score exactly 90% accuracy">
+      A gets $9$ true negatives and $1$ false negative: $9/10 = 90\%$. B gets $1$ true positive, $1$ false
+      positive, $8$ true negatives: $(1+8)/10 = 90\%$ too — identical, despite behaving nothing alike.
+    </Step>
+    <Step label="Precision and recall tell a completely different story">
+      A: precision $=0$, recall $=0$ — it never predicted positive, so both are undefined-in-spirit and
+      exactly zero by convention. B: precision $=1/2=0.5$, recall $=1/1=1.0$ — it caught the one case that
+      mattered, at the cost of one false alarm.
+    </Step>
+    <Step label="F1 makes the difference impossible to miss">
+      A's F1 is exactly $0$. B's F1 is $2(0.5)(1)/(0.5+1) = 2/3 \approx 0.667$ — a large, clear gap that
+      "90% accuracy" alone completely hid.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ConfusionMatrixCheckpoint />
+
+<Summary>
+  $$
+  \text{precision} = \frac{TP}{TP+FP}, \qquad \text{recall} = \frac{TP}{TP+FN}, \qquad F_1 = \frac{2 \cdot \text{precision} \cdot \text{recall}}{\text{precision}+\text{recall}}
+  $$
+
+  Accuracy treats every correct prediction as equally valuable — which is exactly wrong whenever one class is rare and getting it right matters more than getting the common class right. This is precisely the kind of imbalance that shows up in fraud detection, rare-disease screening, and search-and-rescue triage, and it's exactly the pattern Part V's interpretability-accuracy-tradeoff chapter gestured at without naming: the score itself can be a choice, not a neutral fact about the model.
+</Summary>

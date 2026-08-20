@@ -710,7 +710,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Confusion matrix, precision, recall & F1",
     blurb: "Watch accuracy stay high while a classifier misses every positive case, and see the one number that catches it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "roc-curve-and-auc",
