@@ -423,7 +423,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "Attention",
     blurb: "Let a model look at an entire sequence at once, not just its previous neighbor.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "self-attention-and-multi-head-attention",

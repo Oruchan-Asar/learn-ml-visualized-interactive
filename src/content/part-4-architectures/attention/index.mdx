@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, AttentionCheckpoint } from "./Demos";
+
+<Hook>
+  Even with gating, an RNN still processes a sequence strictly left to right, folding everything into one hidden state as it goes. Attention throws that constraint out: instead of compressing a sequence into one running summary, keep every token's vector around, and let a query look at all of them at once.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Three tokens sit at fixed points; a **query** (the ×) is what's currently "looking." Drag it around. The token whose vector points in a similar direction to the query gets more weight — dragging toward "cat" pulls almost all the attention onto "cat," dragging to the middle spreads it evenly across all three.
+</Intuition>
+
+<Formalize>
+  For a query $q$ and a set of token (key) vectors $k_i$, attention computes a similarity score for each one, turns those scores into weights that sum to $1$, and returns their weighted blend:
+
+  $$
+  \text{score}_i = \frac{q \cdot k_i}{\sqrt{d}}, \qquad w_i = \text{softmax}(\text{score})_i, \qquad \text{context} = \sum_i w_i\, k_i
+  $$
+
+  The $\sqrt{d}$ divides out the fact that dot products grow with dimension $d$ — without it, scores in a high-dimensional model would blow up and softmax would saturate into an almost one-hot distribution regardless of which token actually matches best.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the **context vector** — the actual output of attention — as you drag the query. It's always some blend of "the," "cat," and "sat," and it moves smoothly as the weights shift. This is the payoff: instead of one RNN hidden state trying to remember an entire sequence, attention produces a fresh, query-specific blend of *all* of it, recomputed on demand.
+</Play>
+
+<WorkedExample>
+  At query $q=(2,0)$ — aligned with "the" $=(2,0)$ — the raw dot products are $4, 0, 2$ for "the," "cat," "sat." Scaled by $\frac{1}{\sqrt{2}}$: $2.828,\ 0,\ 1.414$. Softmax turns these into weights $0.768,\ 0.045,\ 0.187$ — "the" dominates, but "sat" (whose vector partially overlaps) still gets a meaningful share, and "cat" (pointing in an unrelated direction) gets almost none.
+</WorkedExample>
+
+<AttentionCheckpoint />
+
+<Summary>
+  $$
+  \text{context} = \sum_i \text{softmax}\!\left(\frac{q \cdot k_i}{\sqrt{d}}\right)_i k_i
+  $$
+
+  This chapter used one query looking at a fixed set of tokens — the original attention mechanism, first built to let a decoder look back at every encoder state instead of just the last one. The next chapter asks what happens when *every token in a sequence* gets to be a query looking at every other token, all at once, and why that needs more than one attention computation running in parallel.
+</Summary>
