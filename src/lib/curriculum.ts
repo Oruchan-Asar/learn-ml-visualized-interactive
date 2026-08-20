@@ -726,7 +726,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "k-fold cross-validation",
     blurb: "Split the same data five different ways and watch how much the \"best\" model changes each time.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "hyperparameter-tuning",
