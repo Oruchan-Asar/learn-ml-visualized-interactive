@@ -383,7 +383,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Why sequences break feedforward nets",
     blurb: "Watch a plain network fail on data where order is the whole point.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "recurrent-neural-networks",

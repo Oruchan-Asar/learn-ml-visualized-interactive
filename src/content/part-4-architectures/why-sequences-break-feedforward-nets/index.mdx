@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SequenceOrderCheckpoint } from "./Demos";
+
+<Hook>
+  A convolution slides a filter across space and doesn't care where a pattern sits. Text and time series have a similar-looking problem — but sliding a filter across a sentence doesn't fix it, because for language the thing that matters most is often the *order* itself.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  "X then Y" and "Y then X" are different sequences — in language, "dog bites man" and "man bites dog" are not the same story. But a common way to turn a sequence into a fixed-size vector is to just add up its tokens. Addition doesn't care about order: $X + Y$ and $Y + X$ land on the exact same point. Once that sum is computed, the order is simply gone — there is no way to recover it from the vector alone.
+</Intuition>
+
+<Formalize>
+  Feed that pooled vector into a plain dense layer with weights $(w_1, w_2)$ and a sigmoid, trained to output $0$ for "X then Y" and $1$ for "Y then X":
+
+  $$
+  \hat{y} = \sigma(w_1 p_1 + w_2 p_2), \qquad p = \text{pool}(\text{sequence})
+  $$
+
+  Since $p$ is identical for both sequences, $\hat{y}$ is identical for both — for *every* choice of $w_1, w_2$. No amount of training can make this network output two different things for two inputs it has already made indistinguishable.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the point anywhere in this plane. The loss never depends on $w_1$ and $w_2$ separately — only on their sum. Every point along the diagonal where $w_1 + w_2 = 0$ sits in the exact same flat valley, all at the same loss. There's no direction to search in that helps, because the representation this network is working from threw away the one thing that would have let it succeed.
+</Play>
+
+<WorkedExample>
+  At $w_1{=}2, w_2{=}{-}2$: the pooled input is $(1,1)$ for both sequences, so the logit is $2(1) + (-2)(1) = 0$ either way, giving $\hat{y}=\sigma(0)=0.5$ for both. The loss for "X then Y" (target $0$) is $-\log(1-0.5) = \ln 2$; for "Y then X" (target $1$) it's $-\log(0.5) = \ln 2$. Average: $\ln 2 \approx 0.693$ — exactly the loss of a coin flip, because that's genuinely the best this architecture can do.
+</WorkedExample>
+
+<SequenceOrderCheckpoint />
+
+<Summary>
+  $$
+  \hat{y} = \sigma(w_1 p_1 + w_2 p_2), \qquad p = \text{pool}(\text{sequence})
+  $$
+
+  This isn't a training problem — more epochs, a better optimizer, or more data won't fix it. It's an architecture problem: any network that collapses a sequence into an order-blind summary before it ever sees a weight has already thrown away the information the task needed. What sequence models actually need is a way to process tokens one at a time, in order, while remembering what came before — which is exactly what the next chapter builds.
+</Summary>
