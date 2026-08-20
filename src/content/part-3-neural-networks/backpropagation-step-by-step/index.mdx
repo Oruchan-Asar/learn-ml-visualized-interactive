@@ -1,0 +1,44 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, BackpropCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter chained two neurons along one path. A real network has *many* paths — every weight needs its own gradient. Is that a completely new problem, or the same one, more times?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is the loss of a real two-layer network — 2 inputs, 2 hidden neurons, 1 output — as a function of just one weight, $w_{11}$, holding everything else fixed. Drag it: the tangent line is backprop's answer for $dL/dw_{11}$, computed by chaining through *both* layers.
+</Intuition>
+
+<Formalize>
+  Backpropagation is the chain rule, applied backward from the loss, one layer at a time:
+
+  $$
+  \frac{\partial L}{\partial w_{11}} = \frac{\partial L}{\partial y}\cdot\frac{\partial y}{\partial z_{\text{out}}}\cdot\frac{\partial z_{\text{out}}}{\partial h_1}\cdot\frac{\partial h_1}{\partial z_1}\cdot\frac{\partial z_1}{\partial w_{11}}
+  $$
+
+  Five factors, but only two *new* ideas beyond Chapter 4: the loss contributes its own local derivative at the very start, and $\partial z_{\text{out}}/\partial h_1$ is just $v_1$ — the weight connecting $h_1$ to the output. Every other weight in the network gets its gradient the same way, reusing the exact same $\partial L/\partial z_{\text{out}}$ and $\partial L/\partial z_1$ terms computed once and shared.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Push $w_{11}$ negative and watch the loss keep falling — this particular network, on this particular input, never stops preferring a more negative $w_{11}$ within this range. The gradient still tells you the *direction* correctly at every point, even where it isn't near zero.
+</Play>
+
+<WorkedExample>
+  At $w_{11}=0.5$: $z_1 = 0.5(1) + (-0.3)(2) + 0.1 = 0$ exactly, so $h_1=\sigma(0)=0.5$. Forward through the rest: $z_2=0.8$, $h_2\approx0.690$, $z_{\text{out}}\approx0.360$, $y\approx0.589$, loss $\approx0.173$.
+
+  Backward: $\partial L/\partial y = y = 0.589$ (target is $0$), times $\sigma'(z_{\text{out}})\approx0.243$ gives $\partial L/\partial z_{\text{out}}\approx0.143$. That one number is *shared* by every weight feeding the output: $\partial L/\partial v_1 = 0.143\cdot h_1 \approx 0.071$, $\partial L/\partial v_2 = 0.143\cdot h_2\approx0.098$, $\partial L/\partial c \approx0.143$. Pushing further back, $\partial L/\partial h_1 = 0.143\cdot v_1\approx0.214$, times $\sigma'(z_1)=0.25$ gives $\partial L/\partial z_1\approx0.053$ — and *that* number is shared by every weight feeding $h_1$: $\partial L/\partial w_{11}\approx0.053(1)=0.053$, $\partial L/\partial w_{12}\approx0.053(2)=0.107$, $\partial L/\partial b_1\approx0.053$. All nine gradients, from two shared numbers and the inputs each weight multiplies.
+</WorkedExample>
+
+<BackpropCheckpoint />
+
+<Summary>
+  $$
+  \frac{\partial L}{\partial w_{11}} = \frac{\partial L}{\partial y}\cdot\frac{\partial y}{\partial z_{\text{out}}}\cdot\frac{\partial z_{\text{out}}}{\partial h_1}\cdot\frac{\partial h_1}{\partial z_1}\cdot\frac{\partial z_1}{\partial w_{11}}
+  $$
+
+  Every gradient in this chapter was checked against a plain numerical derivative — nudge a weight by a tiny amount, remeasure the loss, compare. That's autograd's whole promise: whatever backprop computes analytically, a numerical check should reproduce. The next chapters ask what starts to go wrong with this chain once a network gets deep enough that it's dozens of layers long, not two.
+</Summary>

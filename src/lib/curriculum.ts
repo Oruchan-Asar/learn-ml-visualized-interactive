@@ -283,7 +283,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Backpropagation, step by step",
     blurb: "Walk a full two-layer gradient computation by hand, then check it against autograd.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "loss-landscapes-in-high-dimensions",
