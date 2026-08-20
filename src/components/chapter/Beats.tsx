@@ -55,6 +55,24 @@ export function WorkedExample({ children }: { children: ReactNode }) {
   );
 }
 
+/** Wraps a sequence of <Step> blocks inside a WorkedExample, numbering them in order. */
+export function Steps({ children }: { children: ReactNode }) {
+  return <ol className={styles.steps}>{children}</ol>;
+}
+
+/** One numbered step of a worked example: a short label plus its math/prose. */
+export function Step({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <li className={styles.step}>
+      <span className={styles.stepNumber} aria-hidden="true" />
+      <div className={styles.stepBody}>
+        <span className={styles.stepLabel}>{label}</span>
+        <div className={styles.stepContent}>{children}</div>
+      </div>
+    </li>
+  );
+}
+
 /** The anchor for later spaced review: one formula, one sentence. */
 export function Summary({ children }: { children: ReactNode }) {
   return (

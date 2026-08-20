@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,13 +28,24 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  From $(7,-6)$ with $\eta = 0.1$ on $f(x,y)=(x-3)^2+(y+2)^2$: $\nabla f(7,-6) = (2(7-3),\ 2(-6+2)) = (8,-8)$, so
+  Starting at $(7,-6)$ with $\eta = 0.1$ on $f(x,y)=(x-3)^2+(y+2)^2$:
 
-  $$
-  (x,y)_1 = (7,-6) - 0.1\,(8,-8) = (6.2,\ -5.2)
-  $$
-
-  Both coordinates moved together, each shrinking its own distance to the minimum at $(3,-2)$ by the same fraction — because each axis is independently running Chapter 2's exact recurrence.
+  <Steps>
+    <Step label="Compute the gradient at the current point">
+      $$
+      \nabla f(7,-6) = \big(2(7-3),\ 2(-6+2)\big) = (8,\,-8)
+      $$
+    </Step>
+    <Step label="Apply the update rule">
+      $$
+      (x,y)_1 = (7,-6) - 0.1\,(8,-8) = (6.2,\ -5.2)
+      $$
+    </Step>
+    <Step label="Read what happened">
+      Both coordinates moved together, each shrinking its own distance to the minimum at $(3,-2)$ by the same
+      fraction — because each axis is independently running Chapter 2's exact recurrence.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <CapstoneCheckpoint />
