@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ObjectDetectionCheckpoint } from "./Demos";
+
+<Hook>
+  Every classifier in this course has answered "what is this?" A detector has to answer "what, and exactly where?" — and "where" needs its own metric entirely, one that a confusion matrix alone was never built to measure.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A ground-truth box and a predicted box on a small pixel grid. Shift the prediction and watch how much they overlap — and how sharply that overlap score drops once the boxes stop lining up.
+</Intuition>
+
+<Formalize>
+  **Intersection over Union (IoU)** scores how well two boxes overlap, independent of their size or position:
+
+  $$
+  \text{IoU} = \frac{\text{area of overlap}}{\text{area of union}}
+  $$
+
+  A detection typically only "counts" if IoU clears a threshold — commonly $0.5$. **Segmentation** asks the same overlap question at the level of individual pixels instead of a single box, scored with the same TP/FP/FN machinery as any confusion matrix: every pixel is either correctly inside the mask, correctly outside it, or wrong one way or the other.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The exact same two boxes, scored two ways: IoU treats the whole box as one geometric shape, while precision, recall, and Dice treat every pixel as its own tiny classification. Both agree the boxes don't fully align — the pixel view just says *which* pixels are the problem.
+</Play>
+
+<WorkedExample>
+  Ground truth: a $2\times3$ box. Predicted box, same size, shifted right by 0, 1, or 2 columns:
+
+  <Steps>
+    <Step label="Perfect alignment: IoU=1">
+      Shift $0$: the boxes coincide exactly. Intersection $=6$, union $=6$, $\text{IoU}=1$.
+    </Step>
+    <Step label="Right at the standard threshold">
+      Shift $1$: intersection drops to $4$ pixels, union rises to $8$. $\text{IoU}=4/8=0.5$ — sitting exactly on
+      the boundary most detection benchmarks use to call something a match at all.
+    </Step>
+    <Step label="Pixel metrics agree, and go further">
+      At the same shift, pixel-level scoring gives TP$=4$, FP$=2$, FN$=2$: precision $=$ recall $=2/3$, and Dice
+      $=2(4)/(2\cdot4+2+2)=8/12=2/3$ — consistent with the box IoU of $0.5$ via $\text{Dice}=2\,\text{IoU}/(1+\text{IoU})$,
+      but reporting exactly which pixels were false alarms versus which were missed.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ObjectDetectionCheckpoint />
+
+<Summary>
+  $$
+  \text{IoU} = \frac{|A \cap B|}{|A \cup B|}, \qquad \text{Dice} = \frac{2|A\cap B|}{|A|+|B|} = \frac{2\,\text{IoU}}{1+\text{IoU}}
+  $$
+
+  Detection and segmentation both reduce to the same question — how much do two regions overlap — just measured at different granularities: one box versus the other, or one pixel versus the other. Every evaluation idea from Part IX still applies here; IoU and Dice are just a confusion matrix wearing a geometric hat. The capstone that closes this part puts every architecture built so far — attention, residual connections, transfer learning — to work fine-tuning one real pretrained model.
+</Summary>

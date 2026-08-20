@@ -817,7 +817,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Object detection & segmentation",
     blurb: "Ask a network not just \"what,\" but \"where\" — one bounding box, one pixel mask at a time.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-fine-tune-a-pretrained-model",
