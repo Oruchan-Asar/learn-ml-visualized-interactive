@@ -750,7 +750,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Grade a model against a scoreboard, honestly",
     blurb: "Run every metric from this part against one classifier, and see which score actually changes your mind.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 

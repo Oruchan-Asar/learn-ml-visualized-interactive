@@ -1,0 +1,64 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, EvaluatePipelineCheckpoint } from "./Demos";
+
+<Hook>
+  Five chapters, five different lenses for judging a model: a confusion matrix, a ranking curve, a fold-by-fold breakdown, a grid search, a scaling check. Point every one of them at the *same* classifier and see which lens actually changes your mind about how good it is.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  One scored classifier, ten examples. Slide the decision threshold across three candidates and watch accuracy, precision, recall, and F1 move independently — sometimes together, sometimes in opposite directions.
+</Intuition>
+
+<Formalize>
+  A real evaluation doesn't pick one metric — it runs the whole scoreboard and asks where the numbers agree and where they don't:
+
+  $$
+  \text{accuracy, F1 (one threshold)} \quad\big|\quad \text{AUC (every threshold at once)} \quad\big|\quad \text{per-fold accuracy (where it fails)} \quad\big|\quad \text{best-F1 threshold (grid search)}
+  $$
+
+  Each of these was built in isolation over the last five chapters. None of them is "the" right answer — each answers a different question, and a model that looks good on one can look mediocre on another.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  At the default threshold of $0.5$, accuracy is a respectable $0.7$ but F1 lags at $0.73$. The ranking AUC of $0.76$ says the model's raw *ordering* of examples is decent but not sharp. And the fold breakdown shows exactly why: two folds are trivially easy (accuracy $1.0$), while three folds straddling the decision boundary score only $0.5$ each — the same overall accuracy, but now you know precisely where the model is guessing.
+</Play>
+
+<WorkedExample>
+  Ten scored examples, five positive and five negative, with three overlapping scores right around the boundary:
+
+  <Steps>
+    <Step label="One threshold, two disagreeing scores">
+      At threshold $0.5$: TP$=4$, FP$=2$, FN$=1$, TN$=3$. Accuracy $=0.7$ looks fine. But precision is only
+      $2/3$ and F1 lands at $8/11 \approx 0.727$ — the two false alarms cost more in F1 than they cost in accuracy.
+    </Step>
+    <Step label="A threshold-free verdict">
+      Ranking every pair of one positive against one negative, the positive scores higher in 19 of 25 pairs:
+      AUC $=19/25=0.76$. This doesn't move if the deployed threshold changes — it's a property of the scores
+      themselves, not of wherever the cutoff happens to sit.
+    </Step>
+    <Step label="Where the fixed threshold actually fails">
+      Splitting the ten examples into five folds of two and scoring the *same* threshold-$0.5$ classifier on each
+      fold gives $[1.0, 0.5, 0.5, 0.5, 1.0]$ — mean $0.7$, matching the aggregate exactly, but now visibly
+      concentrated in three folds where a positive and a negative sit within $0.1$ of each other.
+    </Step>
+    <Step label="A better threshold, found by search">
+      Grid searching every candidate threshold by F1 finds $0.3$ scores $10/13 \approx 0.769$ — better than the
+      default's $0.727$, at the cost of accepting three false positives instead of two. Whether that trade is
+      worth it depends on what the model is *for*, which no metric in this part can answer by itself.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<EvaluatePipelineCheckpoint />
+
+<Summary>
+  $$
+  \text{"is this model good?"} \;\Rightarrow\; \text{accuracy, F1, AUC, per-fold accuracy, best-threshold F1 — pick the question, then the metric}
+  $$
+
+  No single number in this part is the honest one — each is honest about a different question. Accuracy answers "how often is it right, at this cutoff?" F1 answers "how well does it balance catching positives against false alarms?" AUC answers "how good is its ranking, independent of any cutoff?" Cross-validation answers "how much would this number have changed on different data?" And grid search over the threshold answers "given everything above, what's the best cutoff to actually ship?" A real pipeline runs all five and reports the disagreement, not just the number that looked best. This closes Part IX. The next part turns from evaluating models to a new roster of architectures — GRUs, ResNets, transfer learning, and the rest of the machinery modern deep learning is built from.
+</Summary>
