@@ -1,0 +1,44 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ChainCheckpoint } from "./Demos";
+
+<Hook>
+  Part I's chain rule found the slope of one function composed with another. A network is one neuron feeding the next feeding the next — so isn't that just the chain rule, several times over?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This whole curve is $y(x) = \sigma(w_2\, h(x) + b_2)$, where $h(x) = \sigma(w_1 x + b_1)$ is itself the output of a first neuron. Drag along it — the tangent line you see is the composed function's real slope, and it's built from nothing but two ordinary sigmoid derivatives.
+</Intuition>
+
+<Formalize>
+  Exactly Part I's chain rule, applied once per layer:
+
+  $$
+  \frac{dy}{dx} = \frac{dy}{dh} \cdot \frac{dh}{dx}
+  $$
+
+  $\frac{dh}{dx}$ is the first neuron's local slope — its own sigmoid derivative times $w_1$. $\frac{dy}{dh}$ is the second neuron's local slope with respect to *its* input, which happens to be $h$ — its sigmoid derivative times $w_2$. Multiply the two and you have the slope of the whole chain, with respect to the very first input.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The readout splits the product into its two factors. Neither factor alone is the answer — you need to multiply straight through the chain, exactly the way Part I's chain rule always worked, just with the first function's output value substituted into the second function's slope.
+</Play>
+
+<WorkedExample>
+  At $x=0.5$: $w_1 x + b_1 = 2(0.5)-1 = 0$, so $h = \sigma(0) = 0.5$ and $\frac{dh}{dx} = \sigma'(0)\cdot w_1 = 0.25 \cdot 2 = 0.5$. Then $w_2 h + b_2 = -3(0.5)+1 = -0.5$, so $\frac{dy}{dh} = \sigma'(-0.5)\cdot w_2 \approx 0.235 \cdot (-3) = -0.705$.
+
+  Multiplying: $\frac{dy}{dx} = -0.705 \times 0.5 = -0.353$ — matching the tangent line exactly at that point, and matching a plain numerical derivative to five decimal places.
+</WorkedExample>
+
+<ChainCheckpoint />
+
+<Summary>
+  $$
+  \frac{dy}{dx} = \frac{dy}{dh} \cdot \frac{dh}{dx}
+  $$
+
+  A two-layer network's gradient is a two-term product; an $n$-layer network's gradient is an $n$-term product — the exact same chain rule, repeated once per layer. That repeated multiplication, computed efficiently backward through the whole network, is what the next two chapters actually build.
+</Summary>

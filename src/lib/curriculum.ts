@@ -275,7 +275,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "A network is a chain",
     blurb: "See why backprop is just Part I's chain rule, applied once per layer.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "backpropagation-step-by-step",
