@@ -836,7 +836,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Integrated gradients",
     blurb: "Walk a straight line from a blank baseline to the real input, and integrate the gradient the whole way there.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "partial-dependence-plots",

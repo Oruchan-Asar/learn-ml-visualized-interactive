@@ -1,0 +1,58 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, IntegratedGradientsCheckpoint } from "./Demos";
+
+<Hook>
+  Saliency maps score a feature's importance by its gradient at the input — but a sigmoid deep in saturation has a gradient near zero everywhere close to the input, even when that feature clearly moved the output a lot on the way there. What does the gradient look like along the whole *path*, not just at the destination?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Instead of one gradient at one point, walk from a baseline to the input in small steps and average the gradient along the way. More steps means a finer walk along the exact same path, not a different destination — and the result converges to something a single gradient could never see.
+</Intuition>
+
+<Formalize>
+  **Integrated gradients** attribute a prediction to an input by integrating the gradient along the straight-line path from a baseline to the actual input:
+
+  $$
+  \text{IG}(x) = (x - x_{\text{baseline}}) \int_0^1 \frac{\partial f}{\partial x}\Big(x_{\text{baseline}} + \alpha(x - x_{\text{baseline}})\Big)\, d\alpha
+  $$
+
+  In practice this integral is approximated by a Riemann sum over $m$ steps along that path. The key guarantee — the **completeness axiom** — is that as $m$ grows, the attribution converges to *exactly* $f(x) - f(x_{\text{baseline}})$, the true change in output. Plain saliency is the special, degenerate case $m=1$: just the gradient at the input, with no path at all.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The model curve is flat near both ends and steep only in the middle. The path from baseline to input crosses that entire steep region — but the gradient *at* the input alone sits in the flat, saturated tail, where it's almost meaningless.
+</Play>
+
+<WorkedExample>
+  $f(x) = \sigma(5x)$, baseline $x_0=0$, input $x=2$:
+
+  <Steps>
+    <Step label="The true output change is large, the gradient at the input is tiny">
+      $f(0)=0.5$, $f(2)\approx0.99995$ — a change of nearly $0.5$. But $f'(2)\approx0.000227$: the input sits so
+      deep in saturation that its own gradient badly understates how much it mattered.
+    </Step>
+    <Step label="One step reduces to the same blind spot">
+      With only 1 integration step, IG evaluates the gradient only at the input itself — identical to plain
+      saliency. The result, $\approx0.00045$, misses over 99.9% of the true $\approx0.4999546$ output change.
+    </Step>
+    <Step label="More steps recover the missing attribution">
+      At 10 steps: $\approx0.375$ (gap $\approx0.125$). At 50 steps: $\approx0.475$ (gap $\approx0.025$). At 500
+      steps: $\approx0.497$ (gap $\approx0.0025$) — steadily converging toward the exact true change, because most
+      of that path crosses the steep, high-gradient middle that a single endpoint gradient never sees.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<IntegratedGradientsCheckpoint />
+
+<Summary>
+  $$
+  \text{IG}(x) \xrightarrow[m\to\infty]{} f(x) - f(x_{\text{baseline}}) \qquad\text{(completeness)}
+  $$
+
+  Saliency asks "how steep is the model right here?" Integrated gradients asks the more honest question: "how much did this feature's whole journey from nothing to its actual value change the answer?" Saturating activations — sigmoids, tanh, anything with a flat tail — are exactly where those two questions diverge, and exactly where a plain gradient becomes actively misleading rather than just imprecise. The next chapter looks at feature importance from a completely different angle: not the gradient at all, but how the prediction changes as you sweep one feature across its whole range.
+</Summary>
