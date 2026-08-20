@@ -1,0 +1,56 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CrossAttentionCheckpoint } from "./Demos";
+
+<Hook>
+  A shared embedding space lets you measure distance between a whole image and a whole caption. But a caption is made of individual words, and an image is made of individual regions — what if a word could look at *specific parts* of the image instead of the image as one averaged point?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is Part IV's attention mechanism again, but $Q$ now comes from a *text* token while $K$ and $V$ come from *image patches* — sky, ground, and dog. Drag the query: it's still one attention computation, just spanning two modalities instead of one sequence attending to itself.
+</Intuition>
+
+<Formalize>
+  The formula hasn't changed at all from Part IV:
+
+  $$
+  \text{score}_i = \frac{q \cdot k_i}{\sqrt{d}}, \qquad w_i = \text{softmax}(\text{score})_i, \qquad \text{context} = \sum_i w_i\, k_i
+  $$
+
+  What changed is only *where* $q$, $k_i$, and $v_i$ come from. Self-attention had all three from the same sequence; cross-attention lets $q$ come from one modality's encoder while $k_i, v_i$ come from a completely different one — the same mechanism, pointed across a modality boundary instead of within one sequence.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the context vector as you drag. It's always a weighted blend of all three image patches — never any single one exactly, unless one weight reaches all the way to $1$. This is what a text token "looking at" an image actually produces: not a chosen patch, but a soft mixture shaped by how much each patch matters to that particular word.
+</Play>
+
+<WorkedExample>
+  At query $q=(1,2)$ over patches sky$=(2,0)$, ground$=(0,2)$, dog$=(1,1)$:
+
+  <Steps>
+    <Step label="Raw scores, scaled by root d">
+      $q \cdot k_i / \sqrt{2}$ gives $1.414$ for sky, $2.828$ for ground, $2.121$ for dog.
+    </Step>
+    <Step label="Softmax into weights">
+      $0.140$, $0.576$, $0.284$ — the ground patch dominates, since this query leans more toward "ground" than
+      "sky" or "dog" in raw dot product.
+    </Step>
+    <Step label="The context vector">
+      $(0.564,\ 1.436)$ — noticeably closer to the ground patch's own coordinates than to sky's, but pulled
+      partway toward the other two, exactly reflecting their smaller but nonzero weights.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CrossAttentionCheckpoint />
+
+<Summary>
+  $$
+  \text{context} = \sum_i \text{softmax}\!\left(\frac{q \cdot k_i}{\sqrt{d}}\right)_i k_i
+  $$
+
+  Cross-attention is what lets a caption-generating model ask, word by word, "which part of the image is relevant to the word I'm about to produce" — instead of summarizing the whole image into one fixed vector up front and hoping every word can work from that. The next chapter assembles this alongside Chapter 1's joint embeddings into one working vision-language pipeline.
+</Summary>

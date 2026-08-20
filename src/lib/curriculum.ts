@@ -565,7 +565,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Cross-attention",
     blurb: "Let one modality directly query another instead of just sharing a space with it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "vision-language-models-assembled",
