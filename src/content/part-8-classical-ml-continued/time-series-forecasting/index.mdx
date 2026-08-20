@@ -1,0 +1,58 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, TimeSeriesCheckpoint } from "./Demos";
+
+<Hook>
+  Part II's linear regression fit a line through a scatter of points. What happens when the points come one after another in time, and the "noise" the line doesn't explain isn't noise at all — it's a pattern that repeats every few steps?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Eight points, rising overall but wobbling up and down along the way. The straight line is Part II's ordinary least squares, fit directly on the raw numbers — it captures the rise, but leaves a suspiciously regular zig-zag of leftover error behind.
+</Intuition>
+
+<Formalize>
+  Time series decomposition splits a series into a trend and a repeating **season**:
+
+  $$
+  y_t = \text{trend}(t) + \text{season}(t \bmod p)
+  $$
+
+  Fit the trend first — ordinary least squares, same as always. Then look at what's left over: the **residuals**, $y_t - \text{trend}(t)$. Average those residuals by their position in the cycle (every 4th one, if the period is 4), and that average *is* the seasonal component — the part of the pattern that keeps repeating.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Add the fitted season back on top of the fitted trend, and the reconstruction passes through every single observed point exactly. Nothing about this series was ever "noisy" — it was two clean, additive patterns that a straight line alone could never see on its own.
+</Play>
+
+<WorkedExample>
+  Eight points: a true trend of $2t+10$ plus a true season of $(3,-3,-3,3)$ repeating every 4 steps:
+
+  <Steps>
+    <Step label="Fit the trend on the raw series">
+      Ordinary least squares recovers slope $=2$ and intercept $=10$ *exactly* — this particular season
+      happens to be orthogonal to the trend over these 8 points, so it doesn't bias the fit at all. That's a
+      property of this specific data, not something you'd get for free in general.
+    </Step>
+    <Step label="The residuals are the season">
+      Subtracting the fitted trend from each point leaves exactly $(3,-3,-3,3,3,-3,-3,3)$ — the true season,
+      recovered with no error, because the trend fit had none either.
+    </Step>
+    <Step label="Forecasting past the data">
+      At $t=11$ (phase $3$, one full cycle past the last observed point): trend $=2(11)+10=32$, season
+      $=+3$, forecast $=35$ — a real prediction for a time step that was never observed.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<TimeSeriesCheckpoint />
+
+<Summary>
+  $$
+  y_t = \text{trend}(t) + \text{season}(t \bmod p)
+  $$
+
+  This chapter's trend and season happened to separate perfectly — in real data they rarely do, and a trend fit on raw, seasonal data is usually at least a little biased by the very pattern it's supposed to ignore. Real forecasting methods (like ARIMA, or repeating this fit-and-subtract process iteratively) exist mostly to handle that imperfection. But the core idea — split a signal into parts, fit each part with tools already in this course, add them back together — is exactly what's happening here, at the smallest possible scale.
+</Summary>

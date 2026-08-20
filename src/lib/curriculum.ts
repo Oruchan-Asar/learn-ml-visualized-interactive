@@ -675,7 +675,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Time series forecasting",
     blurb: "Fit a trend and a season separately, then add them back together to predict what's next.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "recommender-systems",
