@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GanCheckpoint } from "./Demos";
+
+<Hook>
+  The autoencoder's decoder reconstructs a specific input it was given. A generator has a harder job: produce something that never existed, convincing enough that nothing can tell it apart from the real thing. A generative adversarial network trains that generator by pitting it against an opponent whose entire job is to catch it.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  One real data point (at $5$), one fake point the **generator** controls, and a **discriminator** curve $D(x)$ giving the probability any point is real. Click train: the discriminator adjusts to score the real point higher and the fake point lower; the generator adjusts its output to push $D(\text{fake})$ *up* — toward wherever the discriminator currently thinks "real" looks like.
+</Intuition>
+
+<Formalize>
+  Two competing objectives, trained by alternating gradient steps:
+
+  $$
+  \max_D\; \log D(\text{real}) + \log(1 - D(\text{fake})), \qquad \min_G\; -\log D(G(z))
+  $$
+
+  The discriminator is an ordinary binary classifier — the exact cross-entropy loss from Part III. The generator's loss is *the discriminator's success turned upside down*: every time $D$ gets better at rejecting the fake, that same $D$ is what the generator's gradient pushes against, using $D$'s own current decision boundary as the signal for which direction "more convincing" points.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Keep training. The **confusion gap** — how differently the discriminator scores the real point versus the fake one — shrinks fast at first. But watch closely once the generator's output passes the real value: the gap doesn't just settle at zero. It grows again, because the generator overshoots and the discriminator has to chase it back down. Unlike every previous chapter's loss curve, this one doesn't fall to zero and stay there — it's a genuine back-and-forth contest, and that instability is a real, well-documented property of adversarial training.
+</Play>
+
+<WorkedExample>
+  After 450 training steps, the generator's output has reached about $4.95$, close to the real value of $5$. At that point $D(\text{real}) \approx 0.51$ and $D(\text{fake}) \approx 0.50$ — the discriminator is essentially guessing, unable to tell them apart. A hundred and fifty steps later, the generator has overshot past $6$, and the gap between $D(\text{real})$ and $D(\text{fake})$ has grown back past where it started — the discriminator now scores the generator's output as *more* convincing than the real point.
+</WorkedExample>
+
+<GanCheckpoint />
+
+<Summary>
+  $$
+  \max_D\; \log D(\text{real}) + \log(1 - D(\text{fake})), \qquad \min_G\; -\log D(G(z))
+  $$
+
+  At a true equilibrium, the discriminator can't do better than a coin flip on either real or fake data — its gradient signal for the generator effectively vanishes, because there's nothing left to exploit. Reaching and *staying* at that equilibrium, rather than oscillating around it, is one of the hardest open problems in training GANs in practice. The next chapter looks at a different, more stable way to generate new data: diffusion models, which learn to reverse noise one small step at a time instead of playing this adversarial game at all.
+</Summary>

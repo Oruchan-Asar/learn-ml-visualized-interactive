@@ -464,7 +464,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 15,
     title: "Generative adversarial networks",
     blurb: "Two networks compete — one forges, one detects — and both get better together.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "diffusion-models",
