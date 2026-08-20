@@ -1,0 +1,58 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  This part built a residual block that keeps gradient flowing across depth, and a fine-tuning trick that keeps a small target task cheap to solve. Put them together: freeze a residual "backbone" entirely, and fine-tune only a tiny task-specific head on top of it.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Two raw inputs pass through the exact same frozen residual block from earlier in this part. The backbone itself never changes — only its output becomes the input to whatever small head gets trained next.
+</Intuition>
+
+<Formalize>
+  A "pretrained model" here is just the residual recursion from earlier — $h_i = h_{i-1} + w\cdot\sigma(w h_{i-1})$, weights fixed — reused as a frozen feature extractor:
+
+  $$
+  \text{feature} = \text{Backbone}(x_0) \qquad \hat y = w_{\text{head}}\cdot\text{feature} + b_{\text{head}}
+  $$
+
+  Fine-tuning freezes the backbone and, in this example, even freezes $w_{\text{head}}$ at its correct pretrained value — leaving only $b_{\text{head}}$ to learn. Training from scratch instead has to find $w_{\text{head}}$ and $b_{\text{head}}$ together, using the same two backbone features and the same tiny dataset.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Fine-tuning the head's one remaining parameter reaches an exact fit in a single step. Training both head parameters from scratch is still measurably behind after 10 steps, and only *approaches* — never exactly matches — that same result even after 50.
+</Play>
+
+<WorkedExample>
+  Backbone inputs $x_0=-1$ and $x_0=1$, one frozen residual layer, head target $y=2\cdot\text{feature}+5$:
+
+  <Steps>
+    <Step label="The frozen backbone produces two well-separated features">
+      $\text{Backbone}(-1)\approx-0.858$, $\text{Backbone}(1)\approx3.858$ — different enough that the two-point
+      target line is easy to recover, not a near-duplicate pair.
+    </Step>
+    <Step label="Fine-tuning the head's bias: solved in one step">
+      With $w_{\text{head}}=2$ frozen at its correct value, $\eta=0.5$ lands $b_{\text{head}}=5$ exactly.
+      MSE: $0$.
+    </Step>
+    <Step label="From scratch: the same ideal rate explodes; a safe one crawls">
+      That same $\eta=0.5$, applied to both head parameters jointly from $(0,0)$, explodes to $w\approx1059$ within
+      3 steps. A safe $\eta=0.05$ instead reaches MSE $\approx3.33$ after 10 steps and only MSE $\approx0.011$
+      after 50 — closer, but still not the exact $0$ that freezing the backbone got in a single step.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapstoneCheckpoint />
+
+<Summary>
+  $$
+  \text{feature} = \text{Backbone}_{\text{frozen}}(x_0), \qquad \hat y = w_{\text{head}}\,\text{feature} + b_{\text{head}}
+  $$
+
+  Nothing in this capstone is new mechanically — it's the residual block from earlier in this part, and the exact fine-tuning math from a few chapters back, applied to features instead of raw inputs. That's the actual practice of transfer learning: someone else's frozen backbone plus a small trained head, and every optimization lesson from this entire course — ideal learning rates, coupled parameters, the cost of starting from nothing — still applies to whatever tiny piece is left to fine-tune. This closes Part X — Advanced Architectures. The next part turns back to explainability, this time for the deeper, less transparent models built here.
+</Summary>
