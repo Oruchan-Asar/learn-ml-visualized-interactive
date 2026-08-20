@@ -192,7 +192,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 11,
     title: "Support vector machines",
     blurb: "Drag the widest possible street between two classes, anchored by the points closest to it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "the-kernel-trick",

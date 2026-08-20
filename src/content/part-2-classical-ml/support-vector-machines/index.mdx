@@ -1,0 +1,34 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SvmCheckpoint } from "./Demos";
+
+<Hook>
+  Infinitely many lines can separate two well-clustered classes. Is any one of them actually the *best* choice?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag either end of the line. As long as it separates the two classes, two dashed lines appear on either side — the "street," bounded by whichever point on each side sits closest. Push either end too far and the street vanishes: the line is now cutting through a class instead of separating it.
+</Intuition>
+
+<Formalize>
+  A support vector machine picks the one separating line that makes this street as **wide** as possible. Whichever points end up touching the edges of that street — often just one or two per class — are the **support vectors**: the only points that determine the line at all. Move any other point further from the boundary and nothing changes; move a support vector and the whole line shifts.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Now both edges are measured separately. An off-center line has a wide gap on one side and a thin one on the other — the street is only ever as wide as its *narrower* side. Widening the narrow side (even at the cost of the wide side) is how the street actually grows.
+</Play>
+
+<WorkedExample>
+  The closest pair here is $(3,6)$ from one class and $(5,4)$ from the other — distance $\sqrt{(5-3)^2+(4-6)^2} = \sqrt{8} = 2\sqrt{2} \approx 2.83$. The widest possible street is centered exactly on their perpendicular bisector: the segment between them has slope $-1$, so the bisector has slope $+1$ and passes through their midpoint $(4,5)$, giving the line $y = x + 1$.
+
+  Every other point sits comfortably further from this line than $(3,6)$ and $(5,4)$ do — so the street's width is set entirely by this one pair, and it equals exactly the distance between them, $2\sqrt{2} \approx 2.83$.
+</WorkedExample>
+
+<SvmCheckpoint />
+
+<Summary>
+  An SVM's line isn't just *a* separator — it's the one maximizing the margin to the nearest point of each class. That margin is set entirely by the support vectors; every other point could move (or vanish) without changing the answer at all. The next chapter asks what happens when no straight line can separate the classes in the first place.
+</Summary>

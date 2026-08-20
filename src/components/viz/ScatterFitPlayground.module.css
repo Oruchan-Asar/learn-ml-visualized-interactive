@@ -16,6 +16,12 @@
 .point {
   fill: var(--ink-soft);
 }
+.pointA {
+  fill: var(--accent);
+}
+.pointB {
+  fill: var(--accent2);
+}
 
 .residual {
   stroke: var(--ink-faint);
@@ -27,9 +33,19 @@
   stroke: var(--accent);
   stroke-width: 2.5;
 }
+.lineNeutral {
+  stroke: var(--ink);
+  stroke-width: 2.5;
+}
 .linePassed {
   stroke: var(--accent2);
   stroke-width: 2.5;
+}
+
+.marginLine {
+  stroke: var(--ink-faint);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 4;
 }
 
 .handle {

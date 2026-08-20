@@ -7,6 +7,13 @@ import styles from "./ScatterFitPlayground.module.css";
 export interface DataPoint {
   x: number;
   y: number;
+  /** When present (exactly two distinct values expected), colors the point by class instead of the default neutral fill. */
+  label?: string;
+}
+
+export interface MarginLine {
+  yLeft: number;
+  yRight: number;
 }
 
 export interface ScatterFitPlaygroundProps {
@@ -25,6 +32,10 @@ export interface ScatterFitPlaygroundProps {
   passed?: boolean;
   /** Draws each point's vertical miss from the line. */
   showResiduals?: boolean;
+  /** Extra parallel lines (e.g. an SVM margin's two edges), each given as y-values at the domain's left/right x. */
+  marginLines?: MarginLine[];
+  /** Renders the main line in a neutral ink color instead of accent — use when point colors already use accent (e.g. classes). */
+  neutralLine?: boolean;
 }
 
 export function ScatterFitPlayground({
@@ -39,6 +50,8 @@ export function ScatterFitPlayground({
   readout,
   passed = false,
   showResiduals = false,
+  marginLines,
+  neutralLine = false,
 }: ScatterFitPlaygroundProps) {
   const margin = 24;
   const height = Math.round(size * 0.72);
@@ -73,8 +86,17 @@ export function ScatterFitPlayground({
     [scaleY, height, yMin, yMax, onChangeLeft, onChangeRight],
   );
 
-  const lineClass = passed ? styles.linePassed : styles.line;
+  const lineClass = passed ? styles.linePassed : neutralLine ? styles.lineNeutral : styles.line;
   const handleClass = passed ? styles.handlePassed : styles.handle;
+
+  const labels = useMemo(
+    () => [...new Set(points.map((p) => p.label).filter((l): l is string => l !== undefined))],
+    [points],
+  );
+  const pointClass = (p: DataPoint) => {
+    if (p.label === undefined) return styles.point;
+    return p.label === labels[0] ? styles.pointA : styles.pointB;
+  };
 
   const xLeftPx = scaleX(xMin);
   const xRightPx = scaleX(xMax);
@@ -111,10 +133,21 @@ export function ScatterFitPlayground({
             return <line key={i} x1={px} y1={py} x2={px} y2={fittedY} className={styles.residual} />;
           })}
 
+        {marginLines?.map((m, i) => (
+          <line
+            key={i}
+            x1={xLeftPx}
+            y1={scaleY(m.yLeft)}
+            x2={xRightPx}
+            y2={scaleY(m.yRight)}
+            className={styles.marginLine}
+          />
+        ))}
+
         <line x1={xLeftPx} y1={yLeftPx} x2={xRightPx} y2={yRightPx} className={lineClass} />
 
         {points.map((p, i) => (
-          <circle key={i} cx={scaleX(p.x)} cy={scaleY(p.y)} r={5} className={styles.point} />
+          <circle key={i} cx={scaleX(p.x)} cy={scaleY(p.y)} r={5} className={pointClass(p)} />
         ))}
 
         <circle
