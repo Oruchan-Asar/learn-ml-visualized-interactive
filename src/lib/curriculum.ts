@@ -184,7 +184,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "Ensembles II: boosting",
     blurb: "Chain weak learners so each one fixes the mistakes the last one made.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "support-vector-machines",

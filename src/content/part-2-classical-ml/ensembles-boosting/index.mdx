@@ -1,0 +1,44 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, BoostingCheckpoint } from "./Demos";
+
+<Hook>
+  Bagging trains many strong learners in parallel and averages away their disagreements. What if you trained many *weak* learners instead — one at a time, each one aimed squarely at whatever the last one got wrong?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This pattern has two separate bumps of one class — a single split can only ever capture one boundary well. Dot size is each point's current weight: watch it grow on whatever the last round got wrong, and shrink on whatever it already handles. Each new round's split is chosen to serve exactly the biggest dots on the board.
+</Intuition>
+
+<Formalize>
+  This is **boosting** (specifically AdaBoost). Each round trains one weak learner — here, the exact single-split "stump" from Chapter 7, but scored by weighted error instead of information gain — then reweights the data before the next round:
+
+  $$
+  \alpha_t = \frac{1}{2}\ln\frac{1-\epsilon_t}{\epsilon_t}, \qquad w_i \leftarrow w_i \, e^{-\alpha_t \, y_i \, h_t(x_i)}
+  $$
+
+  $\epsilon_t$ is round $t$'s weighted error; a more accurate stump gets a bigger $\alpha_t$ (more say in the final vote). The weight update shrinks correctly-classified points and grows misclassified ones — each new stump is trained on data that's been re-tilted toward exactly what's still wrong.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch $\alpha$ and the combined accuracy together. A single round is stuck at 60% — genuinely weak. The final vote weights every round's opinion by its own $\alpha$, not just a plain majority, so a more confident round can outvote several less confident ones.
+</Play>
+
+<WorkedExample>
+  Round 1's best stump splits at $x=3.5$ (predict A left, B right), wrong on 8 of 20 points — weighted error $\epsilon_1 = 8/20 = 0.4$, since every point starts at weight $1/20$. That gives $\alpha_1 = \frac{1}{2}\ln\frac{0.6}{0.4} \approx 0.203$.
+
+  For a point this stump got right, its new weight shrinks by $e^{-0.203} \approx 0.82$; for one it got wrong, its weight grows by $e^{0.203} \approx 1.22$. After renormalizing, the correctly-classified points end up at about $0.83\times$ the average weight, and the misclassified ones at about $1.25\times$ — exactly the size difference the next round's stump sees before it even starts.
+</WorkedExample>
+
+<BoostingCheckpoint />
+
+<Summary>
+  $$
+  \alpha_t = \frac{1}{2}\ln\frac{1-\epsilon_t}{\epsilon_t}, \qquad w_i \leftarrow w_i \, e^{-\alpha_t \, y_i \, h_t(x_i)}
+  $$
+
+  Bagging cancels noise by averaging independent overfit learners; boosting builds accuracy by chaining weak learners that each specialize in whatever's still unsolved. Neither pass alone reaches this pattern's answer — one round here is stuck at 60%, but five chained rounds reach 95%, each one narrowing in on a smaller and smaller residue of mistakes.
+</Summary>

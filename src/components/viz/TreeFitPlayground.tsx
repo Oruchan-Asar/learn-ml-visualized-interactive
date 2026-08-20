@@ -7,6 +7,8 @@ import styles from "./TreeFitPlayground.module.css";
 export interface TreeFitPoint {
   x: number;
   label: string;
+  /** Relative importance weight (1 = average) — sizes the dot when present, e.g. for boosting's reweighting. */
+  weight?: number;
 }
 
 export interface TreeFitRegion {
@@ -18,8 +20,8 @@ export interface TreeFitRegion {
 export interface TreeFitPlaygroundProps {
   /** Points the tree was trained on — plotted on the top row, colored by the (possibly noisy) label they trained on. */
   trainPoints: TreeFitPoint[];
-  /** Points the tree never saw — plotted on the bottom row, colored by their true label. */
-  validationPoints: TreeFitPoint[];
+  /** Points the tree never saw — plotted on the bottom row, colored by their true label. Omit when there's no held-out set. */
+  validationPoints?: TreeFitPoint[];
   /** The current tree's leaf intervals, left to right, spanning the full domain. */
   regions: TreeFitRegion[];
   domain: [number, number];
@@ -30,7 +32,7 @@ export interface TreeFitPlaygroundProps {
 
 export function TreeFitPlayground({
   trainPoints,
-  validationPoints,
+  validationPoints = [],
   regions,
   domain,
   width = 640,
@@ -39,6 +41,7 @@ export function TreeFitPlayground({
 }: TreeFitPlaygroundProps) {
   const margin = 20;
   const [dMin, dMax] = domain;
+  const hasValidation = validationPoints.length > 0;
   const labels = useMemo(
     () => [...new Set([...trainPoints, ...validationPoints].map((p) => p.label))],
     [trainPoints, validationPoints],
@@ -49,7 +52,7 @@ export function TreeFitPlayground({
     [dMin, dMax, width],
   );
 
-  const trainRowY = height / 2 - 28;
+  const trainRowY = hasValidation ? height / 2 - 28 : height / 2;
   const validationRowY = height / 2 + 28;
   const bandTop = 14;
   const bandBottom = height - 14;
@@ -62,7 +65,11 @@ export function TreeFitPlayground({
         viewBox={`0 0 ${width} ${height}`}
         className={styles.svg}
         role="img"
-        aria-label="Decision tree fit — background bands show the tree's predicted class, dots show training points (top) and held-out validation points (bottom)."
+        aria-label={
+          hasValidation
+            ? "Decision tree fit — background bands show the tree's predicted class, dots show training points (top) and held-out validation points (bottom)."
+            : "Decision tree fit — background bands show the ensemble's predicted class, dots show each point's current importance weight as size."
+        }
       >
         {regions.map((r, i) => (
           <rect
@@ -87,7 +94,13 @@ export function TreeFitPlayground({
         ))}
 
         {trainPoints.map((p, i) => (
-          <circle key={i} cx={scaleX(p.x)} cy={trainRowY} r={6} className={classFill(p.label)} />
+          <circle
+            key={i}
+            cx={scaleX(p.x)}
+            cy={trainRowY}
+            r={6 * Math.sqrt(p.weight ?? 1)}
+            className={classFill(p.label)}
+          />
         ))}
 
         {validationPoints.map((p, i) => (
