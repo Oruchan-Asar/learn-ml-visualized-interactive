@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, KMeansCheckpoint } from "./Demos";
+
+<Hook>
+  No labels this time — just a scatter of points. Can an algorithm find the groups on its own?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the two diamond centroids anywhere, then take a step. Every point turns the color of whichever centroid it's closest to; then each centroid jumps to the middle of the points that just turned its color. Do that a few times and the centroids stop moving — they've found the two blobs, starting from nothing but a guess.
+</Intuition>
+
+<Formalize>
+  This is **k-means**, and one iteration is just two moves repeated:
+
+  $$
+  \text{assign: } c_i = \arg\min_k \lVert x_i - \mu_k \rVert^2 \qquad\qquad \text{update: } \mu_k = \frac{1}{|S_k|}\sum_{i \in S_k} x_i
+  $$
+
+  Assign every point to its nearest centroid, then move each centroid to the mean of the points now assigned to it. Neither step alone finds the clusters — assignment without updating just repeats the same bad guess forever, and updating without reassigning never notices when a point should switch sides.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Try a few very different starting positions for the centroids — both inside one blob, both in empty space, swapped to the wrong side entirely. The path each takes to get there differs, but for two well-separated blobs like these, they all end up in the same place.
+</Play>
+
+<WorkedExample>
+  Starting both centroids in empty space — one at $(9,1)$, the other at $(1,8)$ — the very first assignment step is messy: point $(2,1)$ ends up nearer to $(9,1)$ (distance $7$) than to $(1,8)$ (distance $\approx 7.07$), a near-tie that could easily have gone the other way. But averaging each resulting group already pulls the centroids to roughly $(7.67, 6.42)$ and $(2.67, 2.75)$ — close enough to the real blobs that the *next* assignment step cleanly sorts every point correctly. One more update afterward lands the centroids exactly on their blobs' true means, $(8.67, 7.58)$ and $(1.67, 1.58)$, and a further step changes nothing at all.
+</WorkedExample>
+
+<KMeansCheckpoint />
+
+<Summary>
+  $$
+  \text{assign: } c_i = \arg\min_k \lVert x_i - \mu_k \rVert^2 \qquad\qquad \text{update: } \mu_k = \frac{1}{|S_k|}\sum_{i \in S_k} x_i
+  $$
+
+  K-means needs no labels at all — it only ever looks at distances between points and centroids. That's also its limit: it can only find clusters shaped like blobs around a center. The next chapter's technique looks at the data differently, by asking which *directions* it actually varies in.
+</Summary>

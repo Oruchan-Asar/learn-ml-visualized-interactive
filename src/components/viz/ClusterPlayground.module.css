@@ -1,0 +1,53 @@
+.wrap {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 8px 4px 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.svg {
+  width: 100%;
+  max-width: 320px;
+  height: auto;
+  display: block;
+  touch-action: none;
+}
+
+.cluster0 {
+  fill: var(--accent);
+  opacity: 0.55;
+}
+.cluster1 {
+  fill: var(--accent2);
+  opacity: 0.55;
+}
+
+.cluster0Centroid {
+  fill: var(--accent);
+  stroke: var(--paper-raised);
+  stroke-width: 2;
+  cursor: grab;
+}
+.cluster1Centroid {
+  fill: var(--accent2);
+  stroke: var(--paper-raised);
+  stroke-width: 2;
+  cursor: grab;
+}
+.cluster0Centroid:focus-visible,
+.cluster1Centroid:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.readout {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 6px 0 10px;
+}

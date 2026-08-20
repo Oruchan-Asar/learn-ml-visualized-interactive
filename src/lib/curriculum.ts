@@ -208,7 +208,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 13,
     title: "k-means clustering",
     blurb: "Watch cluster centers wander step by step until they settle on the data.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "pca-directions-of-maximum-variance",
