@@ -1,0 +1,55 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CounterfactualCheckpoint } from "./Demos";
+
+<Hook>
+  SHAP answers "how much did each feature contribute?" A rejected applicant usually wants a more actionable answer: "what's the smallest change to my application that would have gotten me approved?"
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is Part I Chapter 6's gradient field again, but the "loss" is now a linear approval score, and the gradient — constant everywhere, since the score is linear — always points in the one direction that increases it fastest. Drag the point: that arrow is the cheapest possible direction to move toward "approved."
+</Intuition>
+
+<Formalize>
+  For a linear decision function $f(x) = w\cdot x + b$, approved when $f(x) \geq 0$, the closest point on the boundary itself — the smallest possible change that flips the decision — has a closed form:
+
+  $$
+  x^{\text{cf}} = x - \frac{f(x)}{\lVert w \rVert^2}\,w, \qquad \text{distance} = \frac{|f(x)|}{\lVert w \rVert}
+  $$
+
+  This is exactly Chapter 6's gradient direction, scaled to land precisely on $f=0$ instead of just pointing that way — the same idea Part I used to walk *downhill*, now used to walk to the *nearest* point where a linear classifier's answer changes.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the point anywhere. The marked counterfactual point always sits on the boundary, always at the foot of the perpendicular from wherever you are — never straight toward the origin, never toward any other fixed spot. The *cheapest* fix depends entirely on where the applicant currently stands.
+</Play>
+
+<WorkedExample>
+  With weights $w=(3,4)$ (so $\lVert w \rVert = 5$) and bias $b=-20$, starting from $(0,0)$:
+
+  <Steps>
+    <Step label="Check the current decision">
+      $f(0,0) = 3(0)+4(0)-20 = -20$ — denied, and $20/5 = 4$ units from the boundary.
+    </Step>
+    <Step label="Find the nearest counterfactual">
+      $x^{\text{cf}} = (0,0) - \frac{-20}{25}(3,4) = (0,0) + 0.8\,(3,4) = (2.4,\ 3.2)$.
+    </Step>
+    <Step label="Verify it's exactly on the boundary">
+      $f(2.4, 3.2) = 3(2.4)+4(3.2)-20 = 7.2+12.8-20=0$ — exactly zero, confirming $(2.4,3.2)$ is the smallest
+      possible change from $(0,0)$ that flips the decision.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CounterfactualCheckpoint />
+
+<Summary>
+  $$
+  x^{\text{cf}} = x - \frac{f(x)}{\lVert w \rVert^2}\,w, \qquad \text{distance} = \frac{|f(x)|}{\lVert w \rVert}
+  $$
+
+  For a linear model this is exact and cheap — the same closed form Chapter 6 used for SHAP. For a real, nonlinear classifier, there's no single formula: finding the nearest point that flips the decision becomes its own small optimization problem, usually solved by taking gradient steps toward the boundary rather than jumping there in one shot. But the question stays exactly the same, and it's often the most useful answer of all: not why the model decided what it did, but what would have to change.
+</Summary>

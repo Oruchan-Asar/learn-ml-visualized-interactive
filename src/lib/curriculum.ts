@@ -530,7 +530,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Counterfactual explanations",
     blurb: "\"What's the smallest change that would have flipped this decision?\"",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-explain-one-prediction-three-ways",
