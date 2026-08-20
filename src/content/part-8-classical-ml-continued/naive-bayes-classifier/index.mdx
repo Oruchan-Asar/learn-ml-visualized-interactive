@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, NaiveBayesCheckpoint } from "./Demos";
+
+<Hook>
+  Part I's Bayes' rule updated a belief given one piece of evidence. What happens with several pieces of evidence at once — and what's the cheapest possible assumption that makes combining them tractable?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Six training messages, three spam, three not. Toggle smoothing on a new message containing "free" and "money" — both toggles predict spam, but look at *how confident* each one is. One of them is lying about how sure it should be.
+</Intuition>
+
+<Formalize>
+  Naive Bayes multiplies Bayes' rule across every feature, assuming they're independent *given the class* — the "naive" part:
+
+  $$
+  P(\text{class} \mid x_1,\dots,x_n) \propto P(\text{class}) \prod_{i=1}^n P(x_i \mid \text{class})
+  $$
+
+  Each $P(x_i \mid \text{class})$ is just a frequency: how often word $i$ showed up in training messages of that class. Multiplying independent probabilities together is exactly what "assume independence" *means* — it's the one assumption that turns a hard joint-probability problem into a handful of easy word-counting ones.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Build a message by toggling which words are present. "Meeting" alone should pull hard toward not-spam; "free" alone pulls the other way. Watch how the posterior shifts as you add or remove one piece of evidence at a time — each word's presence (or absence) multiplies in independently.
+</Play>
+
+<WorkedExample>
+  "Free" never appears in any of the three not-spam training messages:
+
+  <Steps>
+    <Step label="The zero-frequency problem">
+      $P(\text{free}\mid\text{not spam}) = 0/3 = 0$ exactly. For a message containing "free," this makes the
+      *entire* not-spam probability collapse to precisely $0$ — not small, not unlikely, but mathematically
+      impossible — purely because of one gap in a tiny training set.
+    </Step>
+    <Step label="Laplace smoothing patches it">
+      Add one fake "seen" and one fake "not seen" example to every count: $P(\text{free}\mid\text{not spam})
+      = (0+1)/(3+2) = 0.2$. Never exactly zero again, no matter how sparse the training data.
+    </Step>
+    <Step label="Same prediction, honest confidence">
+      For "free, money": the unsmoothed model claims $100\%$ spam, $0\%$ not-spam — absolute certainty from
+      one missing example. The smoothed model reaches the *same* correct prediction, spam, but at a far more
+      reasonable $90\%$ to $10\%$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<NaiveBayesCheckpoint />
+
+<Summary>
+  $$
+  P(\text{class} \mid x_1,\dots,x_n) \propto P(\text{class}) \prod_{i=1}^n P(x_i \mid \text{class})
+  $$
+
+  The independence assumption is almost always technically false — whether an email says "free" and whether it says "money" are not really independent — and naive Bayes works remarkably well anyway, because getting the relative ranking between classes right matters far more than getting the exact probabilities right. Laplace smoothing isn't a minor implementation detail; without it, any word that happens to be missing from one class's tiny training set can make an entire prediction mathematically impossible, forever.
+</Summary>

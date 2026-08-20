@@ -659,7 +659,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "The naive Bayes classifier",
     blurb: "Turn Part I's Bayes' rule into a full classifier, one independent feature at a time.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "alternative-clustering-dbscan",
