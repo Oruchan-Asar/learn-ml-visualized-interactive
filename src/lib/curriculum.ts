@@ -557,7 +557,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Contrastive learning",
     blurb: "How CLIP-style models learn that shared space without a single hand-written label.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "cross-attention",

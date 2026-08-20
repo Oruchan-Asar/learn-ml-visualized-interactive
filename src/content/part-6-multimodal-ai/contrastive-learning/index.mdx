@@ -1,0 +1,58 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ContrastiveCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 1 hand-placed six points so cross-modal search would obviously work. Nobody hand-places the coordinates in a real model — and nobody labels "this pixel region means dog." So what actually pulls a dog photo and "a dog running" together, with no supervision except which pairs happened to appear together?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Before training, every image and every caption embed to the same point — there's no signal to tell them apart, so the model can only guess uniformly among the three captions for any image. After training (Chapter 1's exact placements), the probability matrix sharpens hard onto the diagonal: each image's own caption dominates.
+</Intuition>
+
+<Formalize>
+  Score every image against every caption with a similarity function, turn each image's row of scores into a probability distribution over captions with softmax, and push that distribution toward the *true* pairing — exactly Part III's cross-entropy loss, just computed in both directions at once:
+
+  $$
+  \mathcal{L} = \frac{1}{2}\left(\underbrace{-\frac{1}{n}\sum_i \log P(\text{caption}_i \mid \text{image}_i)}_{\text{image} \to \text{caption}} + \underbrace{-\frac{1}{n}\sum_i \log P(\text{image}_i \mid \text{caption}_i)}_{\text{caption} \to \text{image}}\right)
+  $$
+
+  There are no hand-written labels anywhere in this formula — the "true pairing" is just whichever image and caption arrived together in the training data. Every *other* image in the same batch automatically becomes a negative example for every *other* caption, for free.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Compare raw similarity scores to what softmax turns them into. The raw numbers are just negative distances — useful, but not yet a probability. Softmax is what turns "closer" into "more likely," and it's exactly the same softmax from Part III's cross-entropy chapter and Part IV's attention chapter, doing the same job a third time.
+</Play>
+
+<WorkedExample>
+  Three images, three captions, correctly paired:
+
+  <Steps>
+    <Step label="Before training">
+      Every embedding collapses to the same point, so every similarity score is $0$ and softmax gives exactly
+      $\frac{1}{3}$ to each caption. The loss is $\ln 3 \approx 1.099$ — precisely the entropy of a uniform
+      guess over three options, because that's genuinely all the model can do.
+    </Step>
+    <Step label="After training">
+      Using Chapter 1's placements, the dog image assigns its true caption a probability of about
+      $0.876$ — more than ten times any rival caption's share.
+    </Step>
+    <Step label="The loss reflects that gap">
+      Averaged over both directions and all three pairs, the loss drops to about $0.112$ — roughly a tenth of
+      where it started, without a single hand-written label anywhere in the process.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ContrastiveCheckpoint />
+
+<Summary>
+  $$
+  \mathcal{L} = \frac{1}{2}\left(-\frac{1}{n}\sum_i \log P(\text{caption}_i \mid \text{image}_i) -\frac{1}{n}\sum_i \log P(\text{image}_i \mid \text{caption}_i)\right)
+  $$
+
+  This is the core idea behind CLIP and every model like it: pull matched pairs together, push every mismatched pair apart, using nothing but which examples arrived side by side. Chapter 1's space didn't come from nowhere — this loss, minimized over millions of image-caption pairs instead of three, is what places it. The next chapter asks what a model does with that shared space once it has one: not just measuring distance, but letting one modality directly *query* the other.
+</Summary>
