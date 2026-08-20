@@ -1,0 +1,64 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GRUCheckpoint } from "./Demos";
+
+<Hook>
+  The LSTM fixed vanishing gradients with three gates and a separate cell state running alongside the hidden state. What if you could get the same fix with one gate fewer, and no second state to keep track of at all?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The same fixed input every step, an update gate biased almost shut. Watch the hidden state creep upward, a little more each step, never resetting and never exploding — the signature of a gate that's mostly saying "keep what you already have."
+</Intuition>
+
+<Formalize>
+  A GRU cell has two gates instead of the LSTM's three, and only one state instead of two:
+
+  $$
+  z_t = \sigma(W_z x_t + U_z h_{t-1} + b_z), \qquad r_t = \sigma(W_r x_t + U_r h_{t-1} + b_r)
+  $$
+  $$
+  \tilde{h}_t = \tanh\big(W x_t + U(r_t \odot h_{t-1}) + b\big), \qquad h_t = (1-z_t)\,h_{t-1} + z_t\,\tilde{h}_t
+  $$
+
+  The **update gate** $z_t$ plays the LSTM's forget gate and input gate at once: it's a single dial between "keep $h_{t-1}$ exactly" ($z_t{\approx}0$) and "replace it with the new candidate" ($z_t{\approx}1$). The **reset gate** $r_t$ controls how much of the old state the candidate itself is allowed to see before being blended in.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The same 10-step gradient comparison from the LSTM chapter, with the GRU added: a plain RNN's gradient has collapsed to essentially zero, the LSTM's typical forget gate of $0.9$ holds onto a modest fraction, and this GRU's update gate — biased hard toward "remember" — preserves *more* gradient than either, using one fewer gate to do it.
+</Play>
+
+<WorkedExample>
+  Fixed input $x_t=1$ every step, weights biasing $z$ toward $0$ and $r$ toward $1$:
+
+  <Steps>
+    <Step label="Both gates settle to the same value every step">
+      With $W_z{=}U_z{=}0$, $b_z{=}-4$: $z_t = \sigma(-4) \approx 0.0180$ at every timestep, regardless of the
+      hidden state. With $b_r{=}4$: $r_t \approx 0.9820$ — the reset gate stays wide open, barely touching the
+      candidate.
+    </Step>
+    <Step label="The hidden state creeps forward">
+      $h_t = (1-z_t)h_{t-1} + z_t\tilde h_t$ with $z_t\approx 0.018$ means each step keeps about $98.2\%$ of the old
+      state and blends in only a sliver of the new candidate. After 10 steps, $h \approx 0.128$ — small, steadily
+      increasing, never overshooting.
+    </Step>
+    <Step label="The same gate that shapes memory shapes the gradient">
+      The dominant path for $\partial h_{10}/\partial h_1$ is a product of $(1-z_t)$ at each step:
+      $(0.982)^9 \approx 0.849$. The LSTM's typical forget gate of $0.9$ gives $(0.9)^9 \approx 0.387$ over the same
+      span — this GRU's bias toward remembering preserves gradient even more aggressively, with no separate cell
+      state required.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GRUCheckpoint />
+
+<Summary>
+  $$
+  h_t = (1-z_t)\,h_{t-1} + z_t\,\tilde h_t \qquad\text{(one gate, doing the forget gate's and the input gate's job at once)}
+  $$
+
+  The GRU isn't a different fix from the LSTM's — it's a cheaper one. Fold the forget and input decisions into a single update gate, drop the separate cell state, and the same $(1-\text{gate})$ memory highway falls out for free. Fewer parameters, fewer states to track, and — as this chapter's numbers show — no real cost in how well gradient survives across time. The next chapter builds on this same gated hidden state to solve a problem no single-sequence chapter has faced yet: turning one sequence into another of a different length entirely.
+</Summary>

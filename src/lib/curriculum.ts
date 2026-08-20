@@ -761,7 +761,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "The GRU",
     blurb: "Same fix as the LSTM's gates, with one fewer of them — watch it hold on to the same memory.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "sequence-to-sequence",
