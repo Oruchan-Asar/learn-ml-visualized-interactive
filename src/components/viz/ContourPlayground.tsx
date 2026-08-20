@@ -78,6 +78,21 @@ export function ContourPlayground({
     });
   }, [fn, dMin, dMax]);
 
+  /** The steepest gradient magnitude anywhere in the visible domain — the arrow's length is scaled relative to this, so it actually shrinks near a minimum instead of staying a fixed size. */
+  const maxGradMag = useMemo(() => {
+    let max = 0;
+    for (let i = 0; i < GRID; i++) {
+      for (let j = 0; j < GRID; j++) {
+        const x = dMin + ((i + 0.5) / GRID) * (dMax - dMin);
+        const y = dMin + ((j + 0.5) / GRID) * (dMax - dMin);
+        const g = gradient(x, y);
+        const m = Math.hypot(g.x, g.y);
+        if (m > max) max = m;
+      }
+    }
+    return max;
+  }, [gradient, dMin, dMax]);
+
   const svgRef = useRef<SVGSVGElement>(null);
   const dragging = useRef(false);
 
@@ -116,9 +131,10 @@ export function ContourPlayground({
   const hasArrow = gradMag > 1e-6;
   const dirX = hasArrow ? grad.x / gradMag : 0;
   const dirY = hasArrow ? grad.y / gradMag : 0;
+  const arrowLength = maxGradMag > 0 ? Math.min(1, gradMag / maxGradMag) * ARROW_LENGTH : 0;
   // Screen space flips the y-axis, so a +y data direction points "up" (-y in pixels).
-  const tipX = px + dirX * ARROW_LENGTH;
-  const tipY = py - dirY * ARROW_LENGTH;
+  const tipX = px + dirX * arrowLength;
+  const tipY = py - dirY * arrowLength;
 
   const step = (dMax - dMin) / 100;
 
