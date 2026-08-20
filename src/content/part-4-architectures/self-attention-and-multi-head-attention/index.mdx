@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SelfAttentionCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,22 @@ import { IntuitionDemo, PlayDemo, SelfAttentionCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  As a query, "sat" $=(1,1)$ projects to $1$ on both axes. Head A (horizontal) compares $1$ against "the" $=2$, "cat" $=0$, "sat" $=1$ — favoring "the." Head B (vertical) compares the exact same $1$ against "the" $=0$, "cat" $=2$, "sat" $=1$ — favoring "cat," the mirror image. Concatenating both heads' outputs keeps *both* signals side by side, instead of forcing one projection to average them away.
+  <Steps>
+    <Step label="Project the query">
+      As a query, "sat" $=(1,1)$ projects to $1$ on both axes.
+    </Step>
+    <Step label="Head A (horizontal)">
+      Compares $1$ against "the" $=2$, "cat" $=0$, "sat" $=1$ — favoring "the."
+    </Step>
+    <Step label="Head B (vertical)">
+      Compares the exact same $1$ against "the" $=0$, "cat" $=2$, "sat" $=1$ — favoring "cat," the mirror
+      image.
+    </Step>
+    <Step label="Concatenate">
+      Combining both heads' outputs keeps *both* signals side by side, instead of forcing one projection to
+      average them away.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <SelfAttentionCheckpoint />

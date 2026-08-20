@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, TransformerBlockCheckpoint } from "./Demos";
 
 <Hook>
@@ -26,7 +26,18 @@ import { IntuitionDemo, PlayDemo, TransformerBlockCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  x1's feedforward hidden units are computed as $\text{ReLU}(W_1 z_1 + b)$. At $b=0$, both units land at or below zero, so both get clipped to exactly $0$ — no correction is added, and $\text{residual}_2 = z_1 + 0 = z_1$ exactly. Raise $b$ past about $0.436$ and the second hidden unit crosses zero, so the feedforward layer starts contributing a real, non-zero correction to x1's output for the first time.
+  x1's feedforward hidden units are computed as $\text{ReLU}(W_1 z_1 + b)$.
+
+  <Steps>
+    <Step label="At bias = 0">
+      Both units land at or below zero, so both get clipped to exactly $0$ — no correction is added, and
+      $\text{residual}_2 = z_1 + 0 = z_1$ exactly.
+    </Step>
+    <Step label="Raise the bias past about 0.436">
+      The second hidden unit crosses zero, so the feedforward layer starts contributing a real, non-zero
+      correction to x1's output for the first time.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <TransformerBlockCheckpoint />

@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AutoencoderCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,16 @@ import { IntuitionDemo, PlayDemo, AutoencoderCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At the angle matching Part II's true direction $(0.6, 0.8)$, the mean squared reconstruction error is exactly $\frac{4}{7} \approx 0.571$ — and every other direction does strictly worse. Rotate away by even a small amount and the error rises immediately, because you're no longer capturing the one direction these seven points actually vary along.
+  <Steps>
+    <Step label="At the true PCA direction (0.6, 0.8)">
+      The mean squared reconstruction error is exactly $\frac{4}{7} \approx 0.571$ — and every other direction
+      does strictly worse.
+    </Step>
+    <Step label="Rotate away">
+      Even a small rotation away from $(0.6, 0.8)$ makes the error rise immediately, because you're no longer
+      capturing the one direction these seven points actually vary along.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <AutoencoderCheckpoint />

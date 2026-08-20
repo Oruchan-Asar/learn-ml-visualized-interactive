@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,18 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  Compare a trained filter to Chapter 1's hand-designed vertical-edge kernel, $\begin{pmatrix} -1 & 0 & 1 \\ -1 & 0 & 1 \\ -1 & 0 & 1 \end{pmatrix}$: every row sums to zero, and the sign flips from one side of the kernel to the other. A filter that learns to solve *this* task tends toward the same kind of structure — not the identical numbers, but the same shape of solution: something whose row-sums or column-sums cancel out for a constant patch, and don't cancel when a patch straddles an edge. Nobody told the network that; gradient descent found it because it's what reduces the loss.
+  <Steps>
+    <Step label="Chapter 1's hand-designed kernel">
+      The vertical-edge kernel $\begin{pmatrix} -1 & 0 & 1 \\ -1 & 0 & 1 \\ -1 & 0 & 1 \end{pmatrix}$: every row
+      sums to zero, and the sign flips from one side of the kernel to the other.
+    </Step>
+    <Step label="What a trained filter converges to">
+      A filter that learns to solve *this* task tends toward the same kind of structure — not the identical
+      numbers, but the same shape of solution: something whose row-sums or column-sums cancel out for a
+      constant patch, and don't cancel when a patch straddles an edge. Nobody told the network that; gradient
+      descent found it because it's what reduces the loss.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <CapstoneCheckpoint />

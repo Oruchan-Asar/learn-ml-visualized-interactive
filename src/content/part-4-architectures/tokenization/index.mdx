@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, TokenizationCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,7 +22,19 @@ import { IntuitionDemo, PlayDemo, TokenizationCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  Tokenizing "lowest" from scratch: $l\ o\ w\ e\ s\ t\ \langle/w\rangle$. Applying the learned merges in order — $e{+}s\to es$, then $es{+}t\to est$, then $est{+}\langle/w\rangle \to est\langle/w\rangle$, then $l{+}o\to lo$, then $lo{+}w\to low$ — leaves exactly two tokens: $low$ and $est\langle/w\rangle$. Every merge rule came from *low*, *lower*, *newest*, and *widest* alone; "lowest" itself was never part of training.
+  <Steps>
+    <Step label="Start from characters">
+      Tokenizing "lowest" from scratch: $l\ o\ w\ e\ s\ t\ \langle/w\rangle$.
+    </Step>
+    <Step label="Apply the learned merges in order">
+      $e{+}s\to es$, then $es{+}t\to est$, then $est{+}\langle/w\rangle \to est\langle/w\rangle$, then
+      $l{+}o\to lo$, then $lo{+}w\to low$.
+    </Step>
+    <Step label="Result">
+      Exactly two tokens: $low$ and $est\langle/w\rangle$. Every merge rule came from *low*, *lower*,
+      *newest*, and *widest* alone; "lowest" itself was never part of training.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <TokenizationCheckpoint />

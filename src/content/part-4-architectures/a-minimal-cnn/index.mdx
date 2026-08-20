@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, MinimalCnnCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,18 @@ import { IntuitionDemo, PlayDemo, MinimalCnnCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  With ReLU on, the pooled map flattens to $[0, 3, 0, 3]$. The "edge detected" neuron has weights $(1,1,1,1)$ and bias $-2$: $0+3+0+3-2 = 4$. The "no edge" neuron has weights $(-1,-1,-1,-1)$ and bias $2$: $-(0+3+0+3)+2 = -4$. Since $4 > -4$, the network predicts "edge detected" — correctly. Without ReLU, the same two neurons see $[-3,3,-3,3]$ instead: $-3+3-3+3-2=-2$ and $-(-3+3-3+3)+2=2$, so $2 > -2$ flips the decision to "no edge" — wrong, because the genuine positive evidence got cancelled by evidence that ReLU exists specifically to discard.
+  <Steps>
+    <Step label="With ReLU on">
+      The pooled map flattens to $[0, 3, 0, 3]$. The "edge detected" neuron has weights $(1,1,1,1)$ and bias
+      $-2$: $0+3+0+3-2 = 4$. The "no edge" neuron has weights $(-1,-1,-1,-1)$ and bias $2$:
+      $-(0+3+0+3)+2 = -4$. Since $4 > -4$, the network predicts "edge detected" — correctly.
+    </Step>
+    <Step label="Without ReLU">
+      The same two neurons see $[-3,3,-3,3]$ instead: $-3+3-3+3-2=-2$ and $-(-3+3-3+3)+2=2$, so $2 > -2$ flips
+      the decision to "no edge" — wrong, because the genuine positive evidence got cancelled by evidence that
+      ReLU exists specifically to discard.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <MinimalCnnCheckpoint />

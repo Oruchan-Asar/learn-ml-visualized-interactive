@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AttentionCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,20 @@ import { IntuitionDemo, PlayDemo, AttentionCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At query $q=(2,0)$ — aligned with "the" $=(2,0)$ — the raw dot products are $4, 0, 2$ for "the," "cat," "sat." Scaled by $\frac{1}{\sqrt{2}}$: $2.828,\ 0,\ 1.414$. Softmax turns these into weights $0.768,\ 0.045,\ 0.187$ — "the" dominates, but "sat" (whose vector partially overlaps) still gets a meaningful share, and "cat" (pointing in an unrelated direction) gets almost none.
+  At query $q=(2,0)$ — aligned with "the" $=(2,0)$:
+
+  <Steps>
+    <Step label="Raw dot products">
+      $q \cdot k_i$ gives $4, 0, 2$ for "the," "cat," "sat."
+    </Step>
+    <Step label="Scale by the square root of d">
+      Divided by $\sqrt{2}$: $2.828,\ 0,\ 1.414$.
+    </Step>
+    <Step label="Softmax into weights">
+      $0.768,\ 0.045,\ 0.187$ — "the" dominates, but "sat" (whose vector partially overlaps) still gets a
+      meaningful share, and "cat" (pointing in an unrelated direction) gets almost none.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <AttentionCheckpoint />

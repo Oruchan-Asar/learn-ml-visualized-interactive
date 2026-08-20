@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, WordEmbeddingCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,22 @@ import { IntuitionDemo, PlayDemo, WordEmbeddingCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  If position encodes meaning, then *directions* should too. Take king's vector, subtract man's, add woman's: $\text{king} - \text{man} + \text{woman}$. Subtracting "man" from "king" removes whatever direction encodes "male royalty $\to$ male," and adding "woman" adds back "female" in its place — leaving pure "female royalty." In this space, that arithmetic lands exactly on queen's coordinates. This is the single most famous fact about word embeddings: analogies work as vector arithmetic, because the *relationship* between two words is encoded as a direction, and that direction transfers to other word pairs.
+  If position encodes meaning, then *directions* should too. Take king's vector, subtract man's, add woman's:
+  $\text{king} - \text{man} + \text{woman}$.
+
+  <Steps>
+    <Step label="Subtract man from king">
+      Removes whatever direction encodes "male royalty $\to$ male."
+    </Step>
+    <Step label="Add woman">
+      Adds back "female" in its place — leaving pure "female royalty."
+    </Step>
+    <Step label="Land on queen">
+      In this space, that arithmetic lands exactly on queen's coordinates. This is the single most famous fact
+      about word embeddings: analogies work as vector arithmetic, because the *relationship* between two
+      words is encoded as a direction, and that direction transfers to other word pairs.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <WordEmbeddingCheckpoint />

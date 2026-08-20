@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,18 @@ import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  Forward: $x_0=5 \to x_1\approx5.06 \to x_2\approx4.30 \to x_3\approx4.04 \to x_4\approx2.37$. With a perfect denoiser, reverse retraces those exact numbers backward: $x_4=2.37 \to 4.04 \to 4.30 \to 5.06 \to 5.00$. With a denoiser that always predicts zero noise instead, reversing the same $x_4$ only reaches about $4.31$ — the right neighborhood, but nowhere near exact, because every step's error compounds into the next.
+  <Steps>
+    <Step label="Forward — destroy the signal">
+      $x_0=5 \to x_1\approx5.06 \to x_2\approx4.30 \to x_3\approx4.04 \to x_4\approx2.37$.
+    </Step>
+    <Step label="Reverse with a perfect denoiser">
+      Retraces those exact numbers backward: $x_4=2.37 \to 4.04 \to 4.30 \to 5.06 \to 5.00$.
+    </Step>
+    <Step label="Reverse with a useless denoiser">
+      Always predicting zero noise instead, reversing the same $x_4$ only reaches about $4.31$ — the right
+      neighborhood, but nowhere near exact, because every step's error compounds into the next.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <DiffusionCheckpoint />

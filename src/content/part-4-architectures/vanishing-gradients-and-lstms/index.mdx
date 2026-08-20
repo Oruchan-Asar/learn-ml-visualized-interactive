@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, VanishingRnnCheckpoint } from "./Demos";
 
 <Hook>
@@ -34,7 +34,19 @@ import { IntuitionDemo, PlayDemo, VanishingRnnCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At weight (or forget gate) $0.9$ and $10$ timesteps: the plain RNN's gradient is about $2.9\times10^{-10}$ — nine orders of magnitude gone. The LSTM's cell-state gradient is $0.9^9 \approx 0.387$ — still very much alive. The ratio between them is over a billion, using the *same* $0.9$ on both sides.
+  At weight (or forget gate) $0.9$ and $10$ timesteps:
+
+  <Steps>
+    <Step label="Plain RNN gradient">
+      About $2.9\times10^{-10}$ — nine orders of magnitude gone.
+    </Step>
+    <Step label="LSTM cell-state gradient">
+      $0.9^9 \approx 0.387$ — still very much alive.
+    </Step>
+    <Step label="Compare">
+      The ratio between them is over a billion, using the *same* $0.9$ on both sides.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <VanishingRnnCheckpoint />

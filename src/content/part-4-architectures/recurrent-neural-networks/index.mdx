@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, RnnCheckpoint } from "./Demos";
 
 <Hook>
@@ -26,7 +26,20 @@ import { IntuitionDemo, PlayDemo, RnnCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  With $W_x = (1,-1)$, $b=0$, $W_h=1$: for "X then Y", $h_1 = \tanh(1) \approx 0.762$, then $h_2 = \tanh(-1 + 1 \times 0.762) = \tanh(-0.238) \approx -0.234$. For "Y then X", $h_1 = \tanh(-1) \approx -0.762$, then $h_2 = \tanh(1 + 1 \times (-0.762)) = \tanh(0.238) \approx 0.234$. Same weights, same two tokens — but processed in the opposite order, the final hidden states land on opposite signs. That sign is something a simple readout layer can actually use.
+  With $W_x = (1,-1)$, $b=0$, $W_h=1$:
+
+  <Steps>
+    <Step label={'"X then Y"'}>
+      $h_1 = \tanh(1) \approx 0.762$, then $h_2 = \tanh(-1 + 1 \times 0.762) = \tanh(-0.238) \approx -0.234$.
+    </Step>
+    <Step label={'"Y then X"'}>
+      $h_1 = \tanh(-1) \approx -0.762$, then $h_2 = \tanh(1 + 1 \times (-0.762)) = \tanh(0.238) \approx 0.234$.
+    </Step>
+    <Step label="Compare">
+      Same weights, same two tokens — but processed in the opposite order, the final hidden states land on
+      opposite signs. That sign is something a simple readout layer can actually use.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <RnnCheckpoint />
