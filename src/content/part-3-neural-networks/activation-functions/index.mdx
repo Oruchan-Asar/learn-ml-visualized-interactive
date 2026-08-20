@@ -1,0 +1,45 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ActivationCheckpoint } from "./Demos";
+
+<Hook>
+  The perceptron's sign function gives a hard yes/no. What if a neuron needs to answer "mostly yes," or needs a slope to learn from at all?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the input across all four at once. Step jumps instantly between 0 and 1 — no in-between. Sigmoid and tanh curve smoothly through the middle. ReLU does something different again: it's flat at exactly 0 for every negative input, then rises like a plain diagonal line.
+</Intuition>
+
+<Formalize>
+  An activation function turns a neuron's raw weighted sum into its output. Four of the most common:
+
+  $$
+  \text{step}(x) = \begin{cases} 0 & x<0 \\ 1 & x\ge 0 \end{cases}, \quad
+  \sigma(x) = \frac{1}{1+e^{-x}}, \quad
+  \tanh(x), \quad
+  \text{ReLU}(x) = \max(0,x)
+  $$
+
+  Step is what the perceptron used — but it's flat everywhere except one point, so its slope is useless for learning by gradient. Sigmoid and tanh are smooth substitutes with a real slope everywhere. ReLU throws out smoothness for something else: dead simple to compute, and its slope never shrinks to nothing on the positive side.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch what happens right around $x=0$. Step is discontinuous there. Sigmoid and tanh are at their steepest — right where they're most useful for learning. ReLU has a kink: flat on the left, a clean 45° line on the right.
+</Play>
+
+<WorkedExample>
+  Tanh isn't a fourth independent shape — it's sigmoid, rescaled: $\tanh(x) = 2\sigma(2x)-1$. At $x=1$: $\sigma(2) = 1/(1+e^{-2}) \approx 0.881$, and $2(0.881)-1 = 0.762$ — exactly $\tanh(1)$. Sigmoid ranges over $(0,1)$; tanh stretches and shifts that same curve to range over $(-1,1)$.
+</WorkedExample>
+
+<ActivationCheckpoint />
+
+<Summary>
+  $$
+  \sigma(x) = \frac{1}{1+e^{-x}}, \qquad \text{ReLU}(x) = \max(0,x)
+  $$
+
+  Every neuron in every network from here on is a weighted sum fed through one of these. The choice matters enormously once networks get deep — the next chapters are about exactly what goes wrong (or right) when you stack many of these on top of each other.
+</Summary>

@@ -259,7 +259,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Activation functions",
     blurb: "Compare step, sigmoid, tanh, and ReLU side by side on the same input.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "the-forward-pass",

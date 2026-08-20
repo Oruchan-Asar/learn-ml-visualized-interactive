@@ -1,0 +1,82 @@
+.wrap {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 8px 4px 4px;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  touch-action: none;
+  cursor: grab;
+}
+
+.axis {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+
+.marker {
+  stroke: var(--ink-faint);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 3;
+}
+
+.curve0 {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-dasharray: 6 3;
+}
+.curve1 {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2.25;
+}
+.curve2 {
+  fill: none;
+  stroke: var(--accent2);
+  stroke-width: 2.25;
+}
+.curve3 {
+  fill: none;
+  stroke: var(--ink-soft);
+  stroke-width: 2;
+  stroke-dasharray: 1 4;
+  stroke-linecap: round;
+}
+
+.dot0 {
+  fill: var(--ink);
+}
+.dot1 {
+  fill: var(--accent);
+}
+.dot2 {
+  fill: var(--accent2);
+}
+.dot3 {
+  fill: var(--ink-soft);
+}
+
+.handle {
+  fill: var(--accent);
+  stroke: var(--paper-raised);
+  stroke-width: 2;
+  cursor: grab;
+}
+.handle:focus-visible {
+  outline: 3px solid var(--accent2);
+  outline-offset: 2px;
+}
+
+.readout {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 6px 0 10px;
+}
