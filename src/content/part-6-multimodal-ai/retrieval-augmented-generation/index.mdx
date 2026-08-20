@@ -1,0 +1,58 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RagCheckpoint } from "./Demos";
+
+<Hook>
+  Every model so far answers purely from what it already learned during training — frozen the moment training stopped. What if, right before answering, it could look something up first?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Squares are facts in a small knowledge base; circles are questions. Click a question — it retrieves its nearest fact by embedding distance, exactly Chapter 1's cross-modal search, just within a single modality this time. The retrieved fact is what actually grounds the final answer.
+</Intuition>
+
+<Formalize>
+  Retrieval is nothing more than the nearest-neighbor search from Chapter 1, applied to a document collection instead of images:
+
+  $$
+  \text{retrieve}(q) = \underset{d \in \text{docs}}{\arg\min}\; \lVert q - d \rVert, \qquad \text{answer} = \begin{cases}\text{retrieve}(q)\text{'s answer} & \text{grounded}\\ \text{fixed prior} & \text{ungrounded}\end{cases}
+  $$
+
+  "Generation" here is deliberately simplified to a lookup, so the actual point stays visible: retrieval doesn't change how a model generates, it changes *what it has in front of it* when it does. A real system still generates fluent text — it just conditions that generation on retrieved passages instead of (or alongside) its frozen training-time knowledge.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Toggle retrieval off for the same question. Without it, the model falls back on one fixed, generic answer — the single most common one it might have learned — regardless of what's actually being asked. With retrieval, the answer comes from whichever fact is actually nearest to *this* question.
+</Play>
+
+<WorkedExample>
+  Three questions, one ungrounded fallback answer ("Paris" — the most famous capital, and this toy model's fixed prior):
+
+  <Steps>
+    <Step label="Capital of Japan — no retrieval">
+      The ungrounded answer is "Paris" — wrong. Japan's own fact sits at distance $0.36$, but without
+      retrieval the model never looks.
+    </Step>
+    <Step label="Capital of Japan — with retrieval">
+      The nearest document is "capital of Japan," at distance $0.36$ — more than seven times closer than the
+      next-nearest fact. Retrieval corrects the wrong prior to "Tokyo."
+    </Step>
+    <Step label="Capital of France — a coincidence">
+      Here the ungrounded prior ("Paris") happens to already be correct. Retrieval still finds the same
+      right answer — but the fact that grounding and non-grounding agree here is luck, not evidence that
+      skipping retrieval is safe.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RagCheckpoint />
+
+<Summary>
+  $$
+  \text{retrieve}(q) = \underset{d \in \text{docs}}{\arg\min}\; \lVert q - d \rVert
+  $$
+
+  Retrieval-augmented generation is the difference between a model answering from whatever it happened to memorize and a model answering from evidence it just looked up. The nearest-neighbor search itself is nothing new — it's Chapter 1's exact mechanism — but grounding a generator's answer in it is what keeps a model from confidently repeating a stale or simply wrong prior. The capstone puts this same retrieval idea to work on images: type a query, and let the same nearest-neighbor search find the picture that matches.
+</Summary>

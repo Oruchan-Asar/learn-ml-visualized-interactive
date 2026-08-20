@@ -581,7 +581,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Retrieval-augmented generation",
     blurb: "Ground a model's answer in evidence it retrieved a moment before answering.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-image-text-search-engine",
