@@ -1,0 +1,32 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, TinyTransformerCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 12 assembled the block by hand, with fixed weights chosen to make a worked example clean. This capstone throws that away — random weights, real training, live in the browser — and asks a single Transformer block to learn something concrete: complete the pattern "abc" forever.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Three characters, three training examples — "abc"→"a", "bca"→"b", "cab"→"c" — because the pattern "abcabcabc…" only ever has three distinct 3-character windows. Character embeddings, a learned position for each of the 3 slots, one Transformer block, and a linear layer predicting the next character. Click train and watch the generated text (started from "abc") drift from nonsense toward the true repeating pattern.
+</Intuition>
+
+<Formalize>
+  This capstone computes gradients **numerically** — perturb each of the roughly 50 parameters by a tiny amount, measure how much the loss moves, divide — rather than deriving the analytic backward pass through attention and layer norm. With this few parameters it's completely practical, and it keeps the focus on watching the *architecture* learn rather than on a second long chain-rule derivation. The loss is the same cross-entropy from Part III, computed over which of the 3 characters comes next.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the attention matrix while training. Early on it's close to uniform — every position looks at every other position about equally, because nothing has told the model yet which positions matter. As training proceeds, the pattern sharpens: the model learns *which* earlier character actually predicts the next one, and the attention weights start reflecting that.
+</Play>
+
+<WorkedExample>
+  Before training, predicting the character after "abc" is close to a 3-way coin flip — no character is disproportionately likely, so the loss sits near $\ln 3 \approx 1.10$. After enough training steps, feeding "abc" back in gives a probability near $1$ for "a," and generating 9 more characters autoregressively — always feeding each prediction back in as the newest input — reproduces "abcabcabcabc" exactly, with the model never having seen more than 3 characters at once.
+</WorkedExample>
+
+<TinyTransformerCheckpoint />
+
+<Summary>
+  Everything here is the same shape as a real large language model: token embeddings, learned position information, a Transformer block, a linear head over a probability distribution, autoregressive generation one token at a time. The only differences are scale — three characters and one block here, tens of thousands of tokens and dozens of blocks in practice — and that real models learn their gradients analytically rather than numerically. Every idea in that gap was already built in this part: convolutions and pooling for images, recurrence and gating for sequences, and now attention, assembled into blocks, trained end to end.
+</Summary>

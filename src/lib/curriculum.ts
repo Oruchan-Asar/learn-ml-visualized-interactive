@@ -447,7 +447,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 13,
     title: "Generate text with a tiny Transformer",
     blurb: "A character-level model, trained and sampled live, one token at a time.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
   {
