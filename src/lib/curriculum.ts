@@ -691,7 +691,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Anomaly detection",
     blurb: "Isolate the one point that takes fewer random splits than all the rest to separate from the pack.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-classical-ml-grab-bag",

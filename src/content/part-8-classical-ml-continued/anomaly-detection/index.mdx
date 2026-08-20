@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, AnomalyCheckpoint } from "./Demos";
+
+<Hook>
+  Every classifier so far needed labeled examples of what "wrong" looks like. What finds the one weird point in a dataset when nobody has ever labeled anything as an outlier at all?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Six points: five clustered close together, one sitting far off on its own. No labels, no training signal about which one is "the anomaly" — just an anomaly *score* for each point, computed from nothing but how the data happens to be spread out.
+</Intuition>
+
+<Formalize>
+  An **isolation tree** repeatedly splits a dataset, at each step separating it into two groups, until every point sits alone. The score is just how many splits that took:
+
+  $$
+  \text{anomaly}(x) \propto \frac{1}{\text{depth}(x)}
+  $$
+
+  A point sitting off on its own tends to land alone after just one or two splits — there's nothing else nearby to keep splitting away from it. A point buried in a dense cluster needs several splits before every one of its close neighbors has been separated out too.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The outlier isolates in a single split. Every clustered point needs three or four. That gap is the entire signal isolation forests use — no notion of "normal," no boundary to fit, just: how fast does a random cut leave this point by itself?
+</Play>
+
+<WorkedExample>
+  Points $(1, 2, 3, 4, 5, 20)$, split at the midpoint of whatever range remains each time:
+
+  <Steps>
+    <Step label="The very first split isolates the outlier">
+      Range $[1, 20]$ splits at its midpoint, $10.5$. Everything below goes one way, $\{20\}$ goes the
+      other, alone — isolated after exactly $1$ split.
+    </Step>
+    <Step label="The cluster needs several more splits">
+      $\{1,2,3,4,5\}$ splits at $3$, giving $\{1,2\}$ and $\{3,4,5\}$. Splitting again at $1.5$ isolates
+      both $1$ and $2$ at depth $3$; splitting $\{3,4,5\}$ at $4$ isolates $3$ at depth $3$ too.
+    </Step>
+    <Step label="The last two take one split further">
+      $\{4,5\}$ needs one more split, at $4.5$, before $4$ and $5$ are each isolated — at depth $4$, the
+      deepest of any point in this dataset.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<AnomalyCheckpoint />
+
+<Summary>
+  $$
+  \text{anomaly}(x) \propto \frac{1}{\text{depth}(x)}
+  $$
+
+  A real isolation forest builds many trees, each picking a random feature and a random split point rather than always cutting at the midpoint, then averages the isolation depth across all of them — smoothing out the luck of any one particular tree. But the core mechanism is exactly what showed up here: points that are rare and different tend to fall away from the rest of the data almost immediately, and that's a signal worth measuring even when nobody has ever told the model what "anomalous" means.
+</Summary>
