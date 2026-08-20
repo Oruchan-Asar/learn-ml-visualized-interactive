@@ -415,7 +415,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 9,
     title: "Tokenization",
     blurb: "See exactly how a sentence gets cut into the numbers a model actually sees.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "attention",

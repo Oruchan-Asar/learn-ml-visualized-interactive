@@ -1,0 +1,48 @@
+.row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 12px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+}
+
+.chipMerged {
+  composes: chip;
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.chipMerged .chipText {
+  color: var(--paper-raised);
+}
+
+.chipText {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.chipId {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+
+.chipMerged .chipId {
+  color: var(--accent-ink);
+}

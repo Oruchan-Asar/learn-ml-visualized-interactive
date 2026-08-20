@@ -1,0 +1,23 @@
+.note {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 8px 0 0;
+}
+
+.input {
+  font: inherit;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13.5px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 10px;
+  color: var(--ink);
+  width: 260px;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
