@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, BanditsCheckpoint } from "./Demos";
+
+<Hook>
+  Every model in this course so far learned from a fixed dataset that already existed before training started. What if the only way to get more data was to *act* — and every action costs you the chance to have tried something else instead?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Three arms, three unknown reward rates. Pull one — its estimate updates. Pull it again, and it either supports or undermines what you just learned. There's no dataset to hand you upfront here; the only way to find out anything is to spend a pull finding out.
+</Intuition>
+
+<Formalize>
+  Each arm's estimated value is just the running average of what it's paid out so far:
+
+  $$
+  \hat{Q}(a) = \frac{1}{n_a}\sum_{i=1}^{n_a} r_i, \qquad \text{greedy choice} = \underset{a}{\arg\max}\; \hat{Q}(a)
+  $$
+
+  A purely greedy policy — always pull whichever arm currently looks best — can get stuck: an early lucky (or unlucky) run of pulls can lock in a wrong estimate before enough evidence comes in to correct it. **Epsilon-greedy** fixes this with the simplest possible patch: most of the time pull the current best arm (*exploit*), but some fraction of the time pull a different one anyway, just to keep checking (*explore*).
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Step through a fixed 8-pull run. The first three pulls explore all three arms once each — arm A and arm B both come back showing $1.0$, a tie. From here, a purely greedy policy could pull only A forever and never find out B is actually the better arm.
+</Play>
+
+<WorkedExample>
+  Arms A, B, C have fixed (but hidden from the policy) true means $0.5$, $0.8$, $0.2$. The script explores A, B, C once each, then exploits:
+
+  <Steps>
+    <Step label="After the first three explore steps">
+      A$=[1]\to1.0$, B$=[1]\to1.0$, C$=[0]\to0.0$ — A and B are tied for best, purely by chance on a single
+      pull each.
+    </Step>
+    <Step label="Exploiting the tie">
+      Ties break alphabetically, so the policy exploits A next: A$=[1,0]\to0.5$. Now B is the clear leader
+      and gets exploited: B$=[1,1]\to1.0$.
+    </Step>
+    <Step label="One more explore step saves it">
+      A scheduled explore step revisits A a third time: A$=[1,0,1]\to0.667$. Two more exploit steps follow,
+      landing on B$=[1,1,0]\to0.667$ — tied with A again, by coincidence, after just 8 pulls total.
+    </Step>
+  </Steps>
+
+  Even this short run shows the whole tension: without that one extra explore step, the policy might have kept exploiting A on a stale, lucky-looking estimate.
+</WorkedExample>
+
+<BanditsCheckpoint />
+
+<Summary>
+  $$
+  \hat{Q}(a) = \frac{1}{n_a}\sum_{i=1}^{n_a} r_i
+  $$
+
+  A bandit is reinforcement learning with everything stripped away except the one tension that defines the whole field: acting changes what you know, and what you know should change how you act. There's no state to track yet — every pull starts from the same "state" the last one did. The next chapter adds exactly that: a world where the action you take also decides *what situation you're in next*.
+</Summary>

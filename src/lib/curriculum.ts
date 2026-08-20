@@ -600,7 +600,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Multi-armed bandits",
     blurb: "Pull one of several arms and watch a policy learn when to explore versus cash in on what already works.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "markov-decision-processes",
