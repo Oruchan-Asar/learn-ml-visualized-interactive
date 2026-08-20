@@ -1,0 +1,44 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RegularizationCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter's degree-4 fit threaded every noisy point exactly — and paid for it with wild variance. What if the model could simplify *itself* back down, without you having to pick a lower degree by hand?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Push λ up. Watch the curve stop chasing every wiggle in the noise — and watch the readout count coefficients dropping to *exactly* zero, one at a time, as if the model were quietly deciding some of its own terms aren't worth keeping.
+</Intuition>
+
+<Formalize>
+  Regularization adds a penalty on the coefficients themselves to the loss being minimized:
+
+  $$
+  \text{L2 (Ridge): } \; \text{loss} + \lambda \sum_j \beta_j^2 \qquad\qquad \text{L1 (Lasso): } \; \text{loss} + \lambda \sum_j |\beta_j|
+  $$
+
+  Both shrink coefficients toward zero as $\lambda$ grows. The difference is in *how*: L2's penalty is smooth everywhere, so it shrinks every coefficient a little without ever fully canceling one out. L1's penalty has a sharp corner at zero, and that corner is exactly where coordinate-wise optimization tends to land — driving weak coefficients to *exactly* $0$, not just close to it.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch between L2 and L1 at the same λ. L2's coefficients are always some decimal, however small. L1 routinely shows a flat $0.00$ — not rounding, the actual fitted value — while its other coefficients stay comfortably non-zero.
+</Play>
+
+<WorkedExample>
+  Starting from the same overfit degree-4 fit, the $x^2$ coefficient sits at $-0.0167$ unregularized. At $\lambda=0.01$, Ridge only nudges it to $-0.0149$ — barely different. Lasso, at that same tiny $\lambda$, sends it to exactly $0$.
+
+  Push further: by $\lambda=0.2$, Lasso has zeroed *both* the $x^1$ and $x^2$ coefficients, leaving only the intercept, $x^3$, and $x^4$ terms doing any work — a strictly simpler model, chosen automatically. Ridge at that same $\lambda=0.2$ still has an $x^1$ coefficient around $0.32$ — shrunk from its unregularized $0.45$, but very much still there.
+</WorkedExample>
+
+<RegularizationCheckpoint />
+
+<Summary>
+  $$
+  \text{L2 (Ridge): } \; \text{loss} + \lambda \sum_j \beta_j^2 \qquad\qquad \text{L1 (Lasso): } \; \text{loss} + \lambda \sum_j |\beta_j|
+  $$
+
+  Both tame variance by shrinking coefficients — the same fight Chapter 15 introduced, fought with a penalty instead of a manual degree choice. L2 shrinks everything smoothly; L1 does automatic feature selection, deciding on its own which terms survive. Neither is strictly better — L1's sparsity is a feature when you actually want to know which inputs matter.
+</Summary>

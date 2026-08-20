@@ -232,7 +232,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 16,
     title: "Regularization: L1 vs. L2",
     blurb: "Penalize large weights and watch a model simplify itself two different ways.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-classifier-pipeline",
