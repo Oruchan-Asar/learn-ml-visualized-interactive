@@ -1,0 +1,40 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RnnCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter's network failed because it summed its tokens into one vector before doing anything else — by the time a weight ever touched the data, the order was already gone. The fix isn't a bigger network. It's a different shape: process one token at a time, and carry something forward.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A recurrent network keeps a single running number, the **hidden state**, starting at $h_0 = 0$. At every step it folds in the next token *and* its own previous state: $h_1$ depends on token 1, $h_2$ depends on token 2 *and* on $h_1$ — which already encoded token 1. Nothing is ever summed away. Slide $W_h$ and watch how much the earlier token's fingerprint survives into $h_2$.
+</Intuition>
+
+<Formalize>
+  $$
+  h_t = \tanh(W_x \cdot x_t + W_h \, h_{t-1} + b)
+  $$
+
+  The same weights $W_x$, $W_h$, $b$ are reused at every timestep — exactly the "share one small set of weights across many positions" idea from convolution, just applied across time instead of space. The recurrence is what makes $h_2$ depend on the *entire* sequence seen so far, not just the token that just arrived.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  These are the exact two sequences from Chapter 5 — "X then Y" and "Y then X" — the ones a sum-pooled network could never tell apart, because they pooled to the identical vector $(1,1)$ no matter the order. Watch $h_1$ here: it's already different for the two sequences, before the second token even arrives, simply because the RNN saw a different first token. Sum-pooling could never do that.
+</Play>
+
+<WorkedExample>
+  With $W_x = (1,-1)$, $b=0$, $W_h=1$: for "X then Y", $h_1 = \tanh(1) \approx 0.762$, then $h_2 = \tanh(-1 + 1 \times 0.762) = \tanh(-0.238) \approx -0.234$. For "Y then X", $h_1 = \tanh(-1) \approx -0.762$, then $h_2 = \tanh(1 + 1 \times (-0.762)) = \tanh(0.238) \approx 0.234$. Same weights, same two tokens — but processed in the opposite order, the final hidden states land on opposite signs. That sign is something a simple readout layer can actually use.
+</WorkedExample>
+
+<RnnCheckpoint />
+
+<Summary>
+  $$
+  h_t = \tanh(W_x \cdot x_t + W_h \, h_{t-1} + b)
+  $$
+
+  Carrying a hidden state forward, instead of pooling everything at once, is what let this network do something Chapter 5's architecture couldn't do at any weight setting. But notice how far you had to push $W_h$ to get a *confident* separation — and recall there was one particular weight where the two sequences collapsed back to the same state. Pushing a recurrent weight that hard, repeated over a long sequence, is exactly what causes the next chapter's problem: vanishing gradients.
+</Summary>

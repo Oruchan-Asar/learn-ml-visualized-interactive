@@ -1,0 +1,60 @@
+.wrap {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 8px;
+  overflow-x: auto;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  min-width: 420px;
+}
+
+.rowLabel {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  fill: var(--ink-soft);
+}
+
+.arrow {
+  stroke: var(--line);
+  stroke-width: 2;
+}
+
+.arrowHead {
+  fill: var(--line);
+}
+
+.cellPositive {
+  fill: var(--accent);
+  stroke: var(--accent);
+}
+.cellNegative {
+  fill: var(--accent2);
+  stroke: var(--accent2);
+}
+
+.tokenLabel {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  fill: var(--ink-faint);
+}
+
+.hValue {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  fill: var(--ink);
+}
+
+.readout {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 6px 0 2px;
+}

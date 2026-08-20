@@ -391,7 +391,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Recurrent neural networks",
     blurb: "Carry a hidden state forward, one token at a time, through a sequence.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "vanishing-gradients-and-lstms",
