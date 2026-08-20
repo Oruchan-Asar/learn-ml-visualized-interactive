@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SvmCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,9 +22,24 @@ import { IntuitionDemo, PlayDemo, SvmCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  The closest pair here is $(3,6)$ from one class and $(5,4)$ from the other — distance $\sqrt{(5-3)^2+(4-6)^2} = \sqrt{8} = 2\sqrt{2} \approx 2.83$. The widest possible street is centered exactly on their perpendicular bisector: the segment between them has slope $-1$, so the bisector has slope $+1$ and passes through their midpoint $(4,5)$, giving the line $y = x + 1$.
+  <Steps>
+    <Step label="Find the closest pair and their distance">
+      $(3,6)$ from one class and $(5,4)$ from the other:
 
-  Every other point sits comfortably further from this line than $(3,6)$ and $(5,4)$ do — so the street's width is set entirely by this one pair, and it equals exactly the distance between them, $2\sqrt{2} \approx 2.83$.
+      $$
+      \sqrt{(5-3)^2+(4-6)^2} = \sqrt{8} = 2\sqrt{2} \approx 2.83
+      $$
+    </Step>
+    <Step label="Find their perpendicular bisector">
+      The segment between them has slope $-1$, so the bisector has slope $+1$ and passes through their midpoint
+      $(4,5)$, giving the line $y = x + 1$.
+    </Step>
+    <Step label="Confirm it's the widest street">
+      Every other point sits comfortably further from this line than $(3,6)$ and $(5,4)$ do — so the street's
+      width is set entirely by this one pair, and it equals exactly the distance between them,
+      $2\sqrt{2} \approx 2.83$.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <SvmCheckpoint />

@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BoostingCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,9 +28,25 @@ import { IntuitionDemo, PlayDemo, BoostingCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  Round 1's best stump splits at $x=3.5$ (predict A left, B right), wrong on 8 of 20 points — weighted error $\epsilon_1 = 8/20 = 0.4$, since every point starts at weight $1/20$. That gives $\alpha_1 = \frac{1}{2}\ln\frac{0.6}{0.4} \approx 0.203$.
-
-  For a point this stump got right, its new weight shrinks by $e^{-0.203} \approx 0.82$; for one it got wrong, its weight grows by $e^{0.203} \approx 1.22$. After renormalizing, the correctly-classified points end up at about $0.83\times$ the average weight, and the misclassified ones at about $1.25\times$ — exactly the size difference the next round's stump sees before it even starts.
+  <Steps>
+    <Step label="Find round 1's best stump and its weighted error">
+      Splitting at $x=3.5$ (predict A left, B right), it's wrong on 8 of 20 points — weighted error
+      $\epsilon_1 = 8/20 = 0.4$, since every point starts at weight $1/20$.
+    </Step>
+    <Step label="Compute the stump's vote weight">
+      $$
+      \alpha_1 = \frac{1}{2}\ln\frac{0.6}{0.4} \approx 0.203
+      $$
+    </Step>
+    <Step label="Reweight the points">
+      For a point this stump got right, its new weight shrinks by $e^{-0.203} \approx 0.82$; for one it got wrong,
+      its weight grows by $e^{0.203} \approx 1.22$.
+    </Step>
+    <Step label="Read the renormalized result">
+      The correctly-classified points end up at about $0.83\times$ the average weight, and the misclassified ones
+      at about $1.25\times$ — exactly the size difference the next round's stump sees before it even starts.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <BoostingCheckpoint />

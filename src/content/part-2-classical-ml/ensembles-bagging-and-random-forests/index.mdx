@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BaggingCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,20 @@ import { IntuitionDemo, PlayDemo, BaggingCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At $x = 14.25$ (true label B), the first three trees predict B, A, A — majority vote says **A**, wrong. Add two more trees predicting B and B, and the vote among all five becomes B, A, A, B, B — majority **B**, correct. No tree changed its mind; two more independent (wrong-in-different-ways) opinions were enough to outvote the two that agreed on the mistake.
+  At $x = 14.25$ (true label B):
+
+  <Steps>
+    <Step label="Vote with the first three trees">
+      B, A, A — majority vote says **A**, wrong.
+    </Step>
+    <Step label="Add two more trees">
+      Predicting B and B, the vote among all five becomes B, A, A, B, B — majority **B**, correct.
+    </Step>
+    <Step label="Notice what actually changed">
+      No tree changed its mind; two more independent (wrong-in-different-ways) opinions were enough to outvote the
+      two that agreed on the mistake.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <BaggingCheckpoint />

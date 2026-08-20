@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, KMeansCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,22 @@ import { IntuitionDemo, PlayDemo, KMeansCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  Starting both centroids in empty space — one at $(9,1)$, the other at $(1,8)$ — the very first assignment step is messy: point $(2,1)$ ends up nearer to $(9,1)$ (distance $7$) than to $(1,8)$ (distance $\approx 7.07$), a near-tie that could easily have gone the other way. But averaging each resulting group already pulls the centroids to roughly $(7.67, 6.42)$ and $(2.67, 2.75)$ — close enough to the real blobs that the *next* assignment step cleanly sorts every point correctly. One more update afterward lands the centroids exactly on their blobs' true means, $(8.67, 7.58)$ and $(1.67, 1.58)$, and a further step changes nothing at all.
+  Starting both centroids in empty space — one at $(9,1)$, the other at $(1,8)$:
+
+  <Steps>
+    <Step label="First assignment step is messy">
+      Point $(2,1)$ ends up nearer to $(9,1)$ (distance $7$) than to $(1,8)$ (distance $\approx 7.07$) — a near-tie
+      that could easily have gone the other way.
+    </Step>
+    <Step label="First update already helps a lot">
+      Averaging each resulting group pulls the centroids to roughly $(7.67, 6.42)$ and $(2.67, 2.75)$ — close
+      enough to the real blobs that the *next* assignment step cleanly sorts every point correctly.
+    </Step>
+    <Step label="Converges to the true means">
+      One more update afterward lands the centroids exactly on their blobs' true means, $(8.67, 7.58)$ and
+      $(1.67, 1.58)$, and a further step changes nothing at all.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <KMeansCheckpoint />

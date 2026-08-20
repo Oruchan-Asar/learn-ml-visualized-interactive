@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SigmoidCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,16 @@ import { IntuitionDemo, PlayDemo, SigmoidCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  With $w=1, b=-5$: at $x=5$, $z = 1(5) + (-5) = 0$, so $\sigma(0) = 0.5$ exactly — the boundary. At $x=8$: $z=3$, so $\sigma(3) \approx 0.953$ — confidently on the "yes" side.
+  With $w=1, b=-5$:
+
+  <Steps>
+    <Step label="Evaluate at x = 5">
+      $z = 1(5) + (-5) = 0$, so $\sigma(0) = 0.5$ exactly — the boundary.
+    </Step>
+    <Step label="Evaluate at x = 8">
+      $z=3$, so $\sigma(3) \approx 0.953$ — confidently on the "yes" side.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <SigmoidCheckpoint />

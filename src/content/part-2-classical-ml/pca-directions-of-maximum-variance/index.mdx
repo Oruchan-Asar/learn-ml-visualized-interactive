@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, PcaCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,21 @@ import { IntuitionDemo, PlayDemo, PcaCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  This cloud was built by combining two independent directions: a wide spread along $(0.6, 0.8)$ and a narrow one along the perpendicular $(-0.8, 0.6)$. Projected onto $(0.6, 0.8)$, the variance comes out to exactly $4$; projected onto the perpendicular, it's $4/7 \approx 0.57$ — seven times smaller. No other direction beats $4$: that's the maximum, and $(0.6, 0.8)$ (about $53°$ from the x-axis) is the first principal component.
+  This cloud was built by combining two independent directions: a wide spread along $(0.6, 0.8)$ and a narrow one
+  along the perpendicular $(-0.8, 0.6)$.
+
+  <Steps>
+    <Step label="Project onto the wide direction">
+      Onto $(0.6, 0.8)$, the variance comes out to exactly $4$.
+    </Step>
+    <Step label="Project onto the perpendicular">
+      Onto $(-0.8, 0.6)$, it's $4/7 \approx 0.57$ — seven times smaller.
+    </Step>
+    <Step label="Confirm it's the maximum">
+      No other direction beats $4$: that's the maximum, and $(0.6, 0.8)$ (about $53°$ from the x-axis) is the first
+      principal component.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <PcaCheckpoint />

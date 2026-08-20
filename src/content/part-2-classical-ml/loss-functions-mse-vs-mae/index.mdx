@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, LossCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,21 @@ import { IntuitionDemo, PlayDemo, LossCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  With $w=2, b=1$, the outlier at $(2, 20)$ has residual $20 - 5 = 15$. Squared, that's $225$ — versus the other five residuals' squares summing to just $0.83$, so the outlier accounts for **over 99%** of the total SSE. In absolute terms it's $15$ against the other five's $1.9$ combined — still large, but only about **89%** of the total. The same point, two very different amounts of leverage.
+  With $w=2, b=1$, the outlier at $(2, 20)$ has residual $20 - 5 = 15$.
+
+  <Steps>
+    <Step label="Its leverage under squared error">
+      Squared, that's $225$ — versus the other five residuals' squares summing to just $0.83$, so the outlier
+      accounts for **over 99%** of the total SSE.
+    </Step>
+    <Step label="Its leverage under absolute error">
+      In absolute terms it's $15$ against the other five's $1.9$ combined — still large, but only about **89%** of
+      the total.
+    </Step>
+    <Step label="Compare the two">
+      The same point, two very different amounts of leverage.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <LossCheckpoint />

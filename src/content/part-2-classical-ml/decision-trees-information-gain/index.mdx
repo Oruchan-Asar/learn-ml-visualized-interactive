@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SplitCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,9 +28,35 @@ import { IntuitionDemo, PlayDemo, SplitCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  This dataset is 6 of one class, 4 of the other, so the parent entropy is $-(0.6\log_2 0.6 + 0.4\log_2 0.4) \approx 0.971$ bits.
+  This dataset is 6 of one class, 4 of the other.
 
-  Splitting at $5.5$: the left side ($x \le 5$) is 5 points, all one class — entropy $0$. The right side ($x \ge 6$) is 5 points, 4 of one class and 1 of the other — entropy $-(0.8\log_2 0.8 + 0.2\log_2 0.2) \approx 0.722$. Weighted: $\frac{5}{10}(0) + \frac{5}{10}(0.722) = 0.361$. Information gain: $0.971 - 0.361 \approx 0.610$ bits — the largest of any threshold this dataset admits, even though the right side still isn't perfectly pure.
+  <Steps>
+    <Step label="Compute the parent's entropy">
+      $$
+      -(0.6\log_2 0.6 + 0.4\log_2 0.4) \approx 0.971 \text{ bits}
+      $$
+    </Step>
+    <Step label="Split at 5.5 and compute each child's entropy">
+      The left side ($x \le 5$) is 5 points, all one class — entropy $0$. The right side ($x \ge 6$) is 5 points, 4
+      of one class and 1 of the other:
+
+      $$
+      -(0.8\log_2 0.8 + 0.2\log_2 0.2) \approx 0.722
+      $$
+    </Step>
+    <Step label="Weight the children by size">
+      $$
+      \frac{5}{10}(0) + \frac{5}{10}(0.722) = 0.361
+      $$
+    </Step>
+    <Step label="Subtract from the parent for the information gain">
+      $$
+      0.971 - 0.361 \approx 0.610 \text{ bits}
+      $$
+
+      The largest of any threshold this dataset admits, even though the right side still isn't perfectly pure.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <SplitCheckpoint />

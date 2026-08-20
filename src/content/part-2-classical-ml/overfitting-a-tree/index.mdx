@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, OverfitCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,9 +28,18 @@ import { IntuitionDemo, PlayDemo, OverfitCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At depth 1, the tree finds one split at $x = 9.5$ — exactly the true boundary. That single split gets $20/25 = 80\%$ of training points right (the 5 mislabeled ones are the only misses) and $24/24 = 100\%$ of validation points right, since the boundary itself is exactly correct.
-
-  At depth 6, the tree has carved out enough regions to rescue 4 of those 5 noisy points, reaching $24/25 = 96\%$ training accuracy — an improvement! But validation accuracy has *fallen* to $20/24 \approx 83\%$: the tiny regions built around noise now misclassify real validation points that happen to fall inside them.
+  <Steps>
+    <Step label="Depth 1">
+      The tree finds one split at $x = 9.5$ — exactly the true boundary. That single split gets $20/25 = 80\%$ of
+      training points right (the 5 mislabeled ones are the only misses) and $24/24 = 100\%$ of validation points
+      right, since the boundary itself is exactly correct.
+    </Step>
+    <Step label="Depth 6">
+      The tree has carved out enough regions to rescue 4 of those 5 noisy points, reaching $24/25 = 96\%$ training
+      accuracy — an improvement! But validation accuracy has *fallen* to $20/24 \approx 83\%$: the tiny regions
+      built around noise now misclassify real validation points that happen to fall inside them.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <OverfitCheckpoint />

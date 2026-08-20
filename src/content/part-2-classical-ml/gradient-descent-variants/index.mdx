@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, VariantsCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,20 @@ import { IntuitionDemo, PlayDemo, VariantsCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At $(w,b)=(0,0)$, the point $(-2,-3.2)$ alone gives a gradient of $(-12.8, 6.4)$ — while the full batch gradient there is $(-7.88, -2.04)$. Same rough neighborhood, but a different $w$-magnitude and even a *flipped sign* on $b$. Averaged over a full pass through all five points, though, the individual gradients exactly reconstruct the batch gradient — noise that cancels out over time, not bias.
+  At $(w,b)=(0,0)$:
+
+  <Steps>
+    <Step label="Compute one point's stochastic gradient">
+      The point $(-2,-3.2)$ alone gives a gradient of $(-12.8, 6.4)$.
+    </Step>
+    <Step label="Compare it to the full batch gradient">
+      The batch gradient there is $(-7.88, -2.04)$ — same rough neighborhood, but a different $w$-magnitude and
+      even a *flipped sign* on $b$.
+    </Step>
+    <Step label="Average over a full pass">
+      The individual gradients exactly reconstruct the batch gradient — noise that cancels out over time, not bias.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <VariantsCheckpoint />

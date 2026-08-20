@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CrossEntropyCheckpoint } from "./Demos";
 
 <Hook>
@@ -30,11 +30,17 @@ import { IntuitionDemo, PlayDemo, CrossEntropyCheckpoint } from "./Demos";
 <WorkedExample>
   True label $y=1$, predicted $p=0.1$ — confidently wrong:
 
-  $$
-  L = -\log(0.1) \approx 2.303
-  $$
-
-  Squared error for the same case is only $(1-0.1)^2 = 0.81$ — cross-entropy is already nearly three times larger, and would keep growing the more confident the wrong prediction became.
+  <Steps>
+    <Step label="Compute the cross-entropy loss">
+      $$
+      L = -\log(0.1) \approx 2.303
+      $$
+    </Step>
+    <Step label="Compare it to squared error">
+      Squared error for the same case is only $(1-0.1)^2 = 0.81$ — cross-entropy is already nearly three times
+      larger, and would keep growing the more confident the wrong prediction became.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <CrossEntropyCheckpoint />

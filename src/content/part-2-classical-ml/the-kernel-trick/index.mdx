@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, KernelCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,19 @@ import { IntuitionDemo, PlayDemo, KernelCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  Take one inner point at $(1.8, 0)$ and one outer point at $(4.7, 0)$: $z = 1.8^2 = 3.24$ and $z = 4.7^2 = 22.09$. Now take a diagonal inner point at $(1.556, 1.556)$: $z = 1.556^2 + 1.556^2 \approx 2.42+2.42 = 4.84$ — the *same* value every inner point at that radius gets, regardless of angle. Every inner point lands with $z \le 4.84$; every outer point lands with $z \ge 22.09$. Any threshold in between — 10, 15, 20 — separates all sixteen points at once.
+  <Steps>
+    <Step label="Transform an inner and an outer point">
+      $(1.8, 0)$: $z = 1.8^2 = 3.24$. $(4.7, 0)$: $z = 4.7^2 = 22.09$.
+    </Step>
+    <Step label="Transform a diagonal point at the same inner radius">
+      $(1.556, 1.556)$: $z = 1.556^2 + 1.556^2 \approx 2.42+2.42 = 4.84$ — the *same* value every inner point at
+      that radius gets, regardless of angle.
+    </Step>
+    <Step label="Confirm a single threshold separates everything">
+      Every inner point lands with $z \le 4.84$; every outer point lands with $z \ge 22.09$. Any threshold in
+      between — 10, 15, 20 — separates all sixteen points at once.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <KernelCheckpoint />

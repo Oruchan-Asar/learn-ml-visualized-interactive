@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 
 <Hook>
@@ -29,7 +29,17 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  AdaBoost's very first stump splits at $x=9.5$ — the identical threshold Chapter 8's depth-1 tree finds on its own. That's not a coincidence: both are searching for the single split that best separates the data, and there's only one true boundary here. The remaining four boosting rounds add nothing further, because the first stump already reached every validation point boosting could hope to fix.
+  <Steps>
+    <Step label="Compare boosting's first stump to the depth-1 tree">
+      AdaBoost's very first stump splits at $x=9.5$ — the identical threshold Chapter 8's depth-1 tree finds on its
+      own. That's not a coincidence: both are searching for the single split that best separates the data, and
+      there's only one true boundary here.
+    </Step>
+    <Step label="See why the remaining rounds add nothing">
+      The remaining four boosting rounds add nothing further, because the first stump already reached every
+      validation point boosting could hope to fix.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <CapstoneCheckpoint />
