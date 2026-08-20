@@ -490,7 +490,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Saliency maps",
     blurb: "Highlight exactly which pixels actually moved a prediction.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "grad-cam",

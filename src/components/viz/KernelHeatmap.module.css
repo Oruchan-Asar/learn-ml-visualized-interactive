@@ -23,6 +23,12 @@
   fill: var(--accent2);
 }
 
+.cellSelected {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
 .cellText {
   font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
   font-size: 11px;

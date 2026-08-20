@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SaliencyCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 3's minimal CNN predicted "Edge detected" for a striped image. It never said *which pixels* it actually used to get there — and a network with millions of weights can't be read off the way four dense weights can. A saliency map asks the network directly: nudge one pixel, and see how much the answer moves.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is the exact image and network from Part IV's minimal CNN chapter. Flip to the saliency map: the two darkest columns on the left get exactly zero weight — nothing about them affects the prediction at all — while the pixels near the dark-to-light boundary light up, because that's the evidence the kernel was built to find.
+</Intuition>
+
+<Formalize>
+  Saliency at a pixel is how much the model's output would change if that one pixel moved, holding every other pixel fixed — the same numerical-gradient technique from the tiny-Transformer capstone, applied to a real input instead of a weight:
+
+  $$
+  \text{saliency}(i,j) = \left| \frac{f(\text{image} + \epsilon\, e_{ij}) - f(\text{image} - \epsilon\, e_{ij})}{2\epsilon} \right|
+  $$
+
+  where $f$ is the predicted class's logit and $e_{ij}$ nudges only pixel $(i,j)$. A pixel earns a high score exactly when perturbing it moves the logit a lot — which, through a convolution, ReLU, and max-pool, only happens for pixels that reach a surviving, active path all the way to the output.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch between the "Edge detected" neuron and the "No edge" neuron. The saliency map doesn't change at all — both neurons are reading the exact same evidence from the same feature map, just weighting it with opposite signs. Saliency shows *what* mattered, not *which way* it pushed the decision.
+</Play>
+
+<WorkedExample>
+  With $\epsilon = 0.01$, on the same $6\times6$ striped image from Part IV:
+
+  <Steps>
+    <Step label="A pixel with zero saliency">
+      Every pixel in columns 0-1 (the left light block) scores exactly $0$. Nudging it can only move the
+      convolution's response near $-3$, which ReLU already clips to $0$ — a small nudge can't cross that
+      threshold, so it changes nothing downstream.
+    </Step>
+    <Step label="A pixel with moderate saliency">
+      Pixel $(0, 2)$ — top row, right at the boundary — scores $0.5$. It sits inside only one of the feature
+      map's overlapping convolution windows that survives pooling.
+    </Step>
+    <Step label="The most salient pixels">
+      Pixels $(2, 2)$ through $(3, 5)$ score exactly $1.0$ — twice pixel $(0,2)$'s score. Rows 2 and 3 sit in
+      the middle of the image, so they fall inside *twice* as many overlapping $3\times3$ convolution windows
+      that make it through max-pooling as the outer rows do.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SaliencyCheckpoint />
+
+<Summary>
+  $$
+  \text{saliency}(i,j) = \left| \frac{f(\text{image} + \epsilon\, e_{ij}) - f(\text{image} - \epsilon\, e_{ij})}{2\epsilon} \right|
+  $$
+
+  A saliency map is the cheapest possible explanation: it needs nothing but the ability to query the model repeatedly, no access to its weights or architecture. That generality is also its weakness — it says *where* the model looked, pixel by pixel, but not *how much each region of the image, as a whole, contributed*. The next chapter builds a coarser, more targeted map that answers exactly that, using the convolution layer's own feature map instead of individual pixels.
+</Summary>
