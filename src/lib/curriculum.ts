@@ -431,7 +431,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 11,
     title: "Self-attention & multi-head attention",
     blurb: "Several attention \"views\" of the same sequence, running in parallel.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "the-transformer-block",

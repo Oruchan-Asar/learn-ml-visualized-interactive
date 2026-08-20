@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SelfAttentionCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 10 had one query looking at a fixed set of tokens from the outside. What if every token in a sequence looked at every *other* token — including itself — all at the same time?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is **self-attention**: the query, the keys, and the values are all the same sequence. Every row is one token acting as a query; every column is a token it can attend to, itself included. "The" mostly attends to itself; "sat," sitting exactly between "the" and "cat," has no reason to prefer either.
+</Intuition>
+
+<Formalize>
+  A single attention computation is one *view* of the sequence. **Multi-head attention** runs several of these views in parallel, each looking at the tokens through a different projection, then combines what they found:
+
+  $$
+  \text{head}_i = \text{Attention}(Q W_i^Q,\, K W_i^K,\, V W_i^V), \qquad \text{output} = \text{concat}(\text{head}_1, \dots, \text{head}_h)
+  $$
+
+  Each head's $W^Q, W^K, W^V$ are learned separately, so each head is free to pick up on a completely different signal in the same tokens — one might track syntax, another meaning, another position. No single head has to do all the work.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Two toy heads, one projecting each token onto just its horizontal axis, the other onto just its vertical axis. Click through the query tokens. For "the" and "cat," one head goes flat (uniform) while the other has a clear opinion — that head simply has nothing to say, not a real disagreement. Watch "sat," though: *both* heads have a strong, opposite opinion about where to look.
+</Play>
+
+<WorkedExample>
+  As a query, "sat" $=(1,1)$ projects to $1$ on both axes. Head A (horizontal) compares $1$ against "the" $=2$, "cat" $=0$, "sat" $=1$ — favoring "the." Head B (vertical) compares the exact same $1$ against "the" $=0$, "cat" $=2$, "sat" $=1$ — favoring "cat," the mirror image. Concatenating both heads' outputs keeps *both* signals side by side, instead of forcing one projection to average them away.
+</WorkedExample>
+
+<SelfAttentionCheckpoint />
+
+<Summary>
+  $$
+  \text{output} = \text{concat}(\text{head}_1, \dots, \text{head}_h)
+  $$
+
+  Self-attention lets every position see every other position in one step, with no recurrence and no fixed distance penalty. Multi-head attention lets that happen from several angles at once, so a token whose relationships are genuinely multi-faceted — like "sat," pulled toward both its subject and its location — doesn't have to pick just one. The next chapter assembles this, a feedforward layer, and a residual connection into the actual repeating unit a Transformer stacks: the Transformer block.
+</Summary>
