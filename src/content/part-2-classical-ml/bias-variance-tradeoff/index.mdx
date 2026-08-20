@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, BiasVarianceCheckpoint } from "./Demos";
+
+<Hook>
+  If you retrained the exact same model on a slightly different sample of the same data, would it come back with the same answer?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag degree up. At 0 or 1, the fit is too stiff to follow the true curve's bend — it's *wrong in the same way* no matter which noisy sample you'd trained on. By degree 4, it bends through every single point exactly, chasing this sample's specific noise instead of the shape underneath it.
+</Intuition>
+
+<Formalize>
+  Retrain that same degree on several different noisy samples of the same underlying data, and two separate error sources fall out:
+
+  $$
+  \text{bias}^2 = \big(\mathbb{E}[\hat f(x)] - f(x)\big)^2, \qquad \text{variance} = \mathbb{E}\big[(\hat f(x) - \mathbb{E}[\hat f(x)])^2\big]
+  $$
+
+  Bias is how wrong the *average* fit is — high when the model is too simple to represent the true shape. Variance is how much the fit *swings* from one sample to the next — high when the model is flexible enough to chase noise. Total expected error is bias² + variance (plus noise no model can remove).
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Now all six resampled fits are drawn at once. At low degree they nearly overlap — consistently wrong, low variance — but sit visibly off the true dashed curve: that gap is bias. At high degree they fan out wildly from each other, each one perfectly tracing its own sample's noise: high variance, but their *average* lands close to the truth.
+</Play>
+
+<WorkedExample>
+  The true curve here is exactly quadratic. A degree-0 fit (just the mean) has bias² $= 3.3$ across the six samples — it structurally cannot bend, so it's consistently wrong by roughly the same amount every time; its variance is a tiny $0.003$. A degree-4 fit, with exactly enough parameters to hit all five points exactly, drives bias² to $0$ — but its variance explodes to $0.173$, nearly 50 times higher. Right in between, degree 2 (matching the true shape) reaches bias² $\approx 0$ *and* a modest variance of just $0.046$ — the lowest total error of any degree tried.
+</WorkedExample>
+
+<BiasVarianceCheckpoint />
+
+<Summary>
+  $$
+  \text{bias}^2 = \big(\mathbb{E}[\hat f(x)] - f(x)\big)^2, \qquad \text{variance} = \mathbb{E}\big[(\hat f(x) - \mathbb{E}[\hat f(x)])^2\big]
+  $$
+
+  Every model choice in this book so far — tree depth, forest size, boosting rounds, polynomial degree — has secretly been tuning this same tradeoff. Too simple underfits with high bias; too flexible overfits with high variance. The next chapter looks at a direct way to fight the variance side, without giving up flexibility outright.
+</Summary>

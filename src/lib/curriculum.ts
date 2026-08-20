@@ -224,7 +224,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 15,
     title: "Bias–variance tradeoff",
     blurb: "Tune model complexity and watch two different error sources trade off against each other.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "regularization-l1-vs-l2",
