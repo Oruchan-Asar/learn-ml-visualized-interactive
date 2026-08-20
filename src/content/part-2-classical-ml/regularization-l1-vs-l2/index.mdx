@@ -30,7 +30,7 @@ import { IntuitionDemo, PlayDemo, RegularizationCheckpoint } from "./Demos";
 <WorkedExample>
   Starting from the same overfit degree-4 fit, the $x^2$ coefficient sits at $-0.0167$ unregularized. At $\lambda=0.01$, Ridge only nudges it to $-0.0149$ — barely different. Lasso, at that same tiny $\lambda$, sends it to exactly $0$.
 
-  Push further: by $\lambda=0.2$, Lasso has zeroed *both* the $x^1$ and $x^2$ coefficients, leaving only the intercept, $x^3$, and $x^4$ terms doing any work — a strictly simpler model, chosen automatically. Ridge at that same $\lambda=0.2$ still has an $x^1$ coefficient around $0.32$ — shrunk from its unregularized $0.45$, but very much still there.
+  Push further: by $\lambda=0.2$, Lasso has zeroed *both* the $x^1$ and $x^2$ coefficients, leaving only the intercept, $x^3$, and $x^4$ terms doing any work — a strictly simpler model, chosen automatically. Ridge at that same $\lambda=0.2$ still has an $x^1$ coefficient around $0.38$ — shrunk from its unregularized $0.45$, but very much still there.
 </WorkedExample>
 
 <RegularizationCheckpoint />

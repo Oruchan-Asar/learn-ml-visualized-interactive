@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, VanishingCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  This is a chain of sigmoid layers, same weight repeated at every layer. Drag depth up and watch the gradient reaching the input drop — not by a little each layer, but by roughly two more orders of magnitude every single time.
+  This is a chain of sigmoid layers, same weight repeated at every layer. Drag depth up and watch the gradient reaching the input drop — not by a little each layer, but by roughly one more order of magnitude every single time.
 </Intuition>
 
 <Formalize>
@@ -24,11 +24,11 @@ import { IntuitionDemo, PlayDemo, VanishingCheckpoint } from "./Demos";
 <Play>
   <PlayDemo />
 
-  Slide from a shallow to a deep chain. Five layers in, the gradient is already down around $10^{-5}$; by ten layers it's below $10^{-9}$ — utterly unusable for updating a weight that far back. This is the **vanishing gradient problem**, and it's exactly why sigmoid fell out of favor as networks got deep.
+  Slide from a shallow to a deep chain. Five layers in, the gradient is already down around $10^{-5}$; by ten layers it's down to about $2\times10^{-9}$ — utterly unusable for updating a weight that far back. This is the **vanishing gradient problem**, and it's exactly why sigmoid fell out of favor as networks got deep.
 </Play>
 
 <WorkedExample>
-  With weight $w=3$ and a single layer: $\sigma'(z_0)\cdot w$ is at most $0.25\times3=0.75$, so even the very first backward step shrinks the gradient. By depth 6, the gradient reaching the input is about $3.6\times10^{-6}$ — already six orders of magnitude smaller than the loss gradient at the output. One more layer and it drops under $10^{-6}$ entirely: for practical purposes, that weight has stopped learning.
+  With weight $w=3$ and a single layer: $\sigma'(z_0)\cdot w$ is at most $0.25\times3=0.75$, so even the very first backward step shrinks the gradient. By depth 6, the gradient reaching the input is about $3.6\times10^{-6}$ — already roughly four orders of magnitude smaller than the loss gradient at the output, $\approx0.056$. One more layer and it drops under $10^{-6}$ entirely: for practical purposes, that weight has stopped learning.
 </WorkedExample>
 
 <VanishingCheckpoint />

@@ -28,7 +28,7 @@ import { IntuitionDemo, PlayDemo, WeightInitCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  With fan-in $8$: at scale $0.05$ (twenty times smaller than ideal), the RMS activation drops from about $1.5$ at the input to under $0.0001$ by layer 6 — a network that's already numerically dead before a single gradient step. At scale $1.0$ (roughly three times too large), the same six layers push it up past $400$. At the ideal scale $\approx0.354$, every one of the six layers stays within about $0.4\times$ to $2\times$ of the input's own size — no compounding in either direction.
+  With fan-in $8$: at scale $0.05$ (about seven times smaller than ideal), the RMS activation drops from about $1.5$ at the input to under $0.0001$ by layer 6 — a network that's already numerically dead before a single gradient step. At scale $1.0$ (roughly three times too large), the same six layers push it up past $400$. At the ideal scale $\approx0.354$, every one of the six layers stays within about $0.4\times$ to $2\times$ of the input's own size — no compounding in either direction.
 </WorkedExample>
 
 <WeightInitCheckpoint />
