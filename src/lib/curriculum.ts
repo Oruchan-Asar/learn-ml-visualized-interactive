@@ -718,7 +718,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "The ROC curve & AUC",
     blurb: "Sweep a classifier's decision threshold and trace out the one curve that doesn't depend on where you set it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "cross-validation",

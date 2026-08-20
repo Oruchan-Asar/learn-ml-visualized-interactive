@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RocCheckpoint } from "./Demos";
+
+<Hook>
+  Precision and recall both depend on wherever you happen to draw the line between "predict positive" and "predict negative." What if you don't want to commit to one threshold at all — what if you want to know how good the model's *ranking* is, independent of where anyone eventually decides to cut it?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the decision threshold. Every value traces out one point on the ROC curve — the true-positive rate against the false-positive rate at that exact cutoff. Slide it all the way and you retrace the entire curve, one threshold at a time.
+</Intuition>
+
+<Formalize>
+  Sweep the threshold from $1$ down to $0$, plotting $(\text{FPR}, \text{TPR})$ at each stop:
+
+  $$
+  \text{TPR} = \frac{TP}{TP+FN} = \text{recall}, \qquad \text{FPR} = \frac{FP}{FP+TN}
+  $$
+
+  A model that separates classes perfectly traces a curve that shoots straight up to $(0,1)$ before moving right at all. A model no better than a coin flip traces the diagonal exactly. The **area under this curve (AUC)** condenses the whole sweep into one number: the probability a random positive example gets a higher score than a random negative one.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The curve bows up and to the left of the diagonal — better than chance, but not the sharp right angle a perfect separator would trace. That's exactly what the one overlapping score pair in this dataset should produce: mostly correct ranking, with one pair out of place.
+</Play>
+
+<WorkedExample>
+  Three positives (scores $0.9, 0.7, 0.4$) and three negatives (scores $0.6, 0.3, 0.1$):
+
+  <Steps>
+    <Step label="Two points at zero false positives">
+      At threshold $0.9$: TPR$=1/3$, FPR$=0$. At threshold $0.7$: TPR$=2/3$, FPR$=0$ — both real positives
+      outrank every negative so far.
+    </Step>
+    <Step label="The one overlapping pair costs a false positive">
+      At threshold $0.6$, the highest-scoring negative gets swept in too: TPR stays at $2/3$, but FPR jumps
+      to $1/3$. One step later, at $0.4$, the last positive is caught: TPR reaches $1$, FPR still $1/3$.
+    </Step>
+    <Step label="Integrating the whole curve">
+      Trapezoidal integration over every segment gives $\text{AUC} = 8/9 \approx 0.889$ — meaningfully better
+      than a coin flip's $0.5$, but short of a perfect $1.0$, exactly because of that one overlapping pair.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RocCheckpoint />
+
+<Summary>
+  $$
+  \text{AUC} = P(\text{random positive scores higher than random negative})
+  $$
+
+  AUC answers a question accuracy, precision, and recall all dodge: how good is the model's *ranking*, before anyone commits to a specific cutoff? That makes it the right tool for comparing models that might eventually be deployed at different thresholds for different purposes — a fraud system tuned conservative in one country and aggressive in another can still be compared fairly by the same AUC, even though their accuracies at their own chosen thresholds would look completely different.
+</Summary>
