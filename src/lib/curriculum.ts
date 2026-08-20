@@ -472,7 +472,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 16,
     title: "Diffusion models",
     blurb: "Generate an image by learning to reverse noise, one small step at a time.",
-    status: "planned",
+    status: "shipped",
   },
 
   // ---------- Part V — Explainable AI ----------

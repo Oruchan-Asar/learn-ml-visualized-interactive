@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
+
+<Hook>
+  The GAN's adversarial game is famously hard to keep stable. Diffusion models sidestep the contest entirely with a strange trick: deliberately destroy the data with noise, step by step, until nothing recognizable is left — then train a model to undo exactly one small step of that destruction at a time.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The **forward process** (top row) is fixed and requires no learning at all — just mix in a little more noise at every step, according to a fixed schedule, until the data is almost unrecognizable. The **reverse process** (bottom row) undoes it one step at a time. With a perfect denoiser, reversing recovers the original value exactly — the same numbers, in reverse order.
+</Intuition>
+
+<Formalize>
+  Forward, adding noise at step $t$: $x_t = \sqrt{\alpha_t}\, x_{t-1} + \sqrt{\beta_t}\, \epsilon_t$, where $\beta_t$ is how much noise this step adds and $\alpha_t = 1-\beta_t$. Reverse, removing it, given a *predicted* noise $\hat\epsilon_t$ from a trained model:
+
+  $$
+  x_{t-1} = \frac{x_t - \sqrt{\beta_t}\,\hat\epsilon_t}{\sqrt{\alpha_t}}
+  $$
+
+  This is exactly the forward equation solved for $x_{t-1}$. If $\hat\epsilon_t$ equals the true $\epsilon_t$ at every step, this exactly inverts the forward process. The entire training problem reduces to one question: can a network predict, from a noisy $x_t$, what noise was added to get there?
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the denoiser's quality down from perfect (1) toward clueless (0, always predicting *zero* noise). The reconstructed value drifts further from the true $x_0$ — but even at quality $0$, it lands closer to $5$ than the pure-noise starting point did, because the $\sqrt{\alpha_t}$ scaling alone pulls values back toward a reasonable range at every step. A real diffusion model's whole job is training that noise predictor well enough to close this gap.
+</Play>
+
+<WorkedExample>
+  Forward: $x_0=5 \to x_1\approx5.06 \to x_2\approx4.30 \to x_3\approx4.04 \to x_4\approx2.37$. With a perfect denoiser, reverse retraces those exact numbers backward: $x_4=2.37 \to 4.04 \to 4.30 \to 5.06 \to 5.00$. With a denoiser that always predicts zero noise instead, reversing the same $x_4$ only reaches about $4.31$ — the right neighborhood, but nowhere near exact, because every step's error compounds into the next.
+</WorkedExample>
+
+<DiffusionCheckpoint />
+
+<Summary>
+  $$
+  x_{t-1} = \frac{x_t - \sqrt{\beta_t}\,\hat\epsilon_t}{\sqrt{\alpha_t}}
+  $$
+
+  No adversary, no minimax game — just a single, well-behaved supervised prediction task (predict the noise) repeated at every step, chained together to generate a full sample. That stability is the main reason diffusion models became the dominant approach for high-quality image generation. This closes Part IV: from raw pixels and sequences, through convolutions, recurrence, attention, and now generative models, every architecture in modern deep learning traces back to the same gradient descent and chain rule from Part II and III.
+</Summary>
