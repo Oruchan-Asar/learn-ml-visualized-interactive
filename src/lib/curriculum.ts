@@ -860,7 +860,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Anchors: rule-based explanations",
     blurb: "Replace a linear local approximation with a simple if-then rule that's true almost everywhere nearby.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-audit-a-model-five-ways",

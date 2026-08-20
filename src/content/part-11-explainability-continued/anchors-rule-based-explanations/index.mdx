@@ -1,0 +1,61 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, AnchorsCheckpoint } from "./Demos";
+
+<Hook>
+  LIME fits a straight line near one point and hopes it's still roughly right a little further away. What if, instead of hoping, you could state a simple rule and *guarantee* it holds — as long as you're honest about how much of the input space it actually covers?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Toggle between a simple one-condition rule and a stricter two-condition rule. The simple rule covers more of the space, but the prediction it "guarantees" is often wrong. The stricter rule covers less, but never lies.
+</Intuition>
+
+<Formalize>
+  An **anchor** is a rule $A$ such that, with precision at least a chosen threshold $\tau$ (commonly $0.95$), every point satisfying $A$ gets the same prediction as the instance being explained:
+
+  $$
+  \text{precision}(A) = \frac{|\{x : A(x) \text{ holds and } f(x) = f(\text{instance})\}|}{|\{x : A(x) \text{ holds}\}|} \geq \tau
+  $$
+
+  $$
+  \text{coverage}(A) = \frac{|\{x : A(x) \text{ holds}\}|}{|\text{all } x|}
+  $$
+
+  Anchors search for the *smallest* rule clearing the precision bar — trading coverage for precision only as far as actually necessary, never further.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The model's true positive region is a small corner of the grid, not a whole half-plane. A rule that only checks one condition sweeps in a lot of that corner's neighbors that don't actually belong — only the full conjunction traces the region exactly.
+</Play>
+
+<WorkedExample>
+  Model: predict $1$ only when $x_1 > 3$ **and** $x_2 > 3$. Instance: $(5, 5)$, predicted $1$. Grid: $x_1, x_2 \in \{0,\dots,6\}$:
+
+  <Steps>
+    <Step label="A plausible-looking rule that isn't reliable">
+      "$x_1 > 3$" alone is satisfied by $21$ of the $49$ grid points — but the model only predicts $1$ for $9$ of
+      them. Precision $= 9/21 \approx 0.429$: barely better than a coin flip, nowhere near a usable guarantee.
+    </Step>
+    <Step label="Adding the second condition fixes it completely">
+      "$x_1 > 3$ **and** $x_2 > 3$" is satisfied by exactly $9$ points — and the model predicts $1$ for all $9$
+      of them, by construction. Precision $= 1.0$ exactly.
+    </Step>
+    <Step label="The cost: less of the space is covered">
+      Coverage drops from $21/49\approx0.429$ to $9/49\approx0.184$. The anchor is smaller and less general, but
+      it's the smallest rule that actually clears a $0.95$ precision bar — the single condition never could.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<AnchorsCheckpoint />
+
+<Summary>
+  $$
+  \text{anchor} = \arg\min_{A:\ \text{precision}(A)\geq\tau} \big(-\text{coverage}(A)\big)
+  $$
+
+  A linear local explanation always applies "everywhere," it just gets less accurate as you move away from the point — there's no line where it stops being valid. An anchor draws that line explicitly: inside the rule, the prediction is guaranteed (to within the precision threshold); outside it, the anchor makes no claim at all. That honesty about its own boundary is the entire trade this method makes. The capstone that closes this part runs every explainability method built so far against one model, side by side.
+</Summary>
