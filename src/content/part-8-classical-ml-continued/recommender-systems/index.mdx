@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RecommenderCheckpoint } from "./Demos";
+
+<Hook>
+  Three users, three items, and one rating nobody ever entered. Every other model in this course was trained on a complete table of examples — what does gradient descent even optimize when part of the table is simply missing?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Toggle between one latent factor and two. With one, the reconstructed grid never quite matches the real ratings — it's making the same kind of mistake in the same place, no matter how long it trains. With two, it locks onto the real pattern.
+</Intuition>
+
+<Formalize>
+  Give every user $i$ and every item $j$ a small vector of **latent factors**, and predict a rating as their dot product:
+
+  $$
+  \hat{r}_{ij} = u_i \cdot v_j, \qquad \mathcal{L} = \sum_{(i,j)\,\text{observed}} (r_{ij} - \hat{r}_{ij})^2
+  $$
+
+  Gradient descent updates every $u_i$ and $v_j$ to reduce that squared error — but only summing over ratings that actually exist. The missing entry never appears in the loss at all; once training finishes, predicting it is just plugging its user and item vectors into the same dot product.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  With one factor, $U_3$'s rating of $I_3$ — a genuine $5$ — comes out well under $2$, and no amount of extra training time fixes it. With two factors, the same entry reconstructs almost exactly. One number wasn't enough to describe two people who like *opposite* things.
+</Play>
+
+<WorkedExample>
+  Two real taste groups: $U_1$ and $U_2$ like $I_1$/$I_2$ and dislike $I_3$; $U_3$ is the mirror image:
+
+  <Steps>
+    <Step label="One factor plateaus at a real error, not a training failure">
+      A single number per user and per item can only express "more of one thing," not two independent
+      directions of taste. Training converges — the loss stops moving — but it converges to a genuinely
+      wrong answer, because a rank-1 model cannot represent this data no matter how long it runs.
+    </Step>
+    <Step label="Two factors reconstruct every observed rating almost exactly">
+      With one extra dimension — and a starting point that isn't identical across dimensions, so the second
+      one doesn't just copy the first — the total squared error over all 8 known ratings drops to
+      essentially $0$.
+    </Step>
+    <Step label="The missing rating gets a specific, sensible prediction">
+      $U_2$'s hidden rating of $I_2$ comes out to about $3.21$ — between $U_1$'s $4$ and something lower,
+      exactly reflecting that $U_2$ likes $I_1$ slightly less than $U_1$ does.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RecommenderCheckpoint />
+
+<Summary>
+  $$
+  \hat{r}_{ij} = u_i \cdot v_j, \qquad \mathcal{L} = \sum_{(i,j)\,\text{observed}} (r_{ij} - \hat{r}_{ij})^2
+  $$
+
+  Two things had to be true for this to work at all: enough latent factors to represent the real structure in the data, and a starting point that actually lets each factor learn something different from the others — the same symmetry-breaking problem Part III's weight-initialization chapter ran into, one level removed. Real recommender systems scale this to millions of users and items and dozens of latent factors, but the mechanism — dot products, squared error, gradient descent, summed only over what's actually observed — is exactly this.
+</Summary>

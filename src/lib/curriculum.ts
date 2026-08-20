@@ -683,7 +683,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Recommender systems",
     blurb: "Factor a ratings matrix into two smaller ones, and watch it predict a rating nobody typed in.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "anomaly-detection",
