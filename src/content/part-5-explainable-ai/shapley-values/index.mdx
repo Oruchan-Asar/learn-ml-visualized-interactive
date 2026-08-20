@@ -1,0 +1,65 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ShapleyCheckpoint } from "./Demos";
+
+<Hook>
+  LIME's local line has a slope, but splitting a *single* prediction's credit fairly among several features isn't the same problem — especially when two features are worth far more together than either is alone. Shapley values, borrowed whole from 1950s game theory, are the one way to do that split that's provably fair.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A pizza's quality score, built from three upgrades: fresh dough, extra cheese, toppings. Cheese and toppings together are worth much more than their solo effects added up — a real synergy. The bars are each feature's Shapley value: the one splitting of the total credit that accounts for that synergy fairly.
+</Intuition>
+
+<Formalize>
+  Add features to an empty pizza in some order, and each one's *marginal contribution* is how much the score jumps when it joins:
+
+  $$
+  \text{marginal}(\pi, i) = v(\{\text{features before } i \text{ in order } \pi\} \cup \{i\}) - v(\{\text{features before } i \text{ in order } \pi\})
+  $$
+
+  A feature's Shapley value is that marginal contribution, averaged over *every possible order* features could arrive in:
+
+  $$
+  \phi_i = \frac{1}{n!}\sum_{\pi} \text{marginal}(\pi, i)
+  $$
+
+  Averaging over every order is what makes this fair rather than arbitrary — a feature that only pays off *in combination* with another gets credit for that exactly as often as the ordering happens to reward it.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Step through all six arrival orders. Extra cheese's marginal contribution swings from as little as $2$ (arriving first, alone) to as much as $13$ (arriving after toppings, where the synergy kicks in) — the *same* feature, wildly different credit, depending only on who got there first. The Shapley value is the one number that averages all six of those swings into a single fair answer.
+</Play>
+
+<WorkedExample>
+  Baseline (no upgrades) scores $50$; the full pizza scores $80$ — a gap of $30$ to split three ways:
+
+  <Steps>
+    <Step label="Order matters for any one feature">
+      In the order dough → cheese → toppings, cheese's marginal contribution is $7$. In the order
+      toppings → cheese → dough, cheese's marginal contribution is $12$ — same feature, same final pizza,
+      different credit, because cheese's payoff depends on what's already there.
+    </Step>
+    <Step label="Average over all 6 orders">
+      Fresh dough's Shapley value is $\phi_A = 29/3 \approx 9.67$. Extra cheese and toppings each come out to
+      $\phi_B = \phi_C = 61/6 \approx 10.17$ — tied, even though their solo effects ($2$ and $3$) weren't,
+      because they share the same synergy with each other in every ordering that puts them together.
+    </Step>
+    <Step label="The credits add up exactly">
+      $9.67 + 10.17 + 10.17 = 30$ — precisely the gap between the baseline and the full pizza. This isn't a
+      coincidence: it's the *efficiency* property built into Shapley values by construction.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ShapleyCheckpoint />
+
+<Summary>
+  $$
+  \phi_i = \frac{1}{n!}\sum_{\pi} \text{marginal}(\pi, i)
+  $$
+
+  Shapley values are the *unique* way to split credit that satisfies a short list of fairness axioms — efficiency (credits sum to the total), symmetry (identical features get identical credit), and a couple of others game theorists proved decades before anyone applied this to machine learning. The catch is cost: with $n$ features there are $n!$ orderings to average over, which is fine for three features and impossible for three hundred. The next chapter is about making this practical for a real, trained model.
+</Summary>

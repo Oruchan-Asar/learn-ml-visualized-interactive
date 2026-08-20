@@ -1,0 +1,72 @@
+.wrap {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 100px 1fr 56px;
+  align-items: center;
+  gap: 8px;
+}
+
+.label {
+  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, sans-serif;
+  font-size: 13.5px;
+  color: var(--ink);
+  text-align: right;
+}
+
+.track {
+  position: relative;
+  height: 18px;
+  background: var(--paper);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.zeroLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--line);
+}
+
+.barPositive {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  background: var(--accent);
+  border-radius: 3px;
+}
+
+.barNegative {
+  position: absolute;
+  top: 1px;
+  bottom: 1px;
+  background: var(--accent2);
+  border-radius: 3px;
+}
+
+.value {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+}
+
+.readout {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  padding-top: 4px;
+  border-top: 1px solid var(--line);
+}

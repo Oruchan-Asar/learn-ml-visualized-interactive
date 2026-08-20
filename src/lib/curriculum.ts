@@ -514,7 +514,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Shapley values",
     blurb: "A game-theoretic, provably fair way to split credit among features.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "shap-for-real-models",
