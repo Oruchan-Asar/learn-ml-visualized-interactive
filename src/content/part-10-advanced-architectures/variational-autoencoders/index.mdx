@@ -1,0 +1,63 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, VAECheckpoint } from "./Demos";
+
+<Hook>
+  An ordinary autoencoder compresses an input down to one latent point and decodes it back — the same input always produces the exact same output. What if the bottleneck held a whole neighborhood of possible points instead of just one, so decoding could generate variations you never actually saw?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The same input, encoded to the same distribution, decoded through a different noise draw each time. One of those draws reproduces the input exactly — the rest land nearby, at points the network never directly trained on.
+</Intuition>
+
+<Formalize>
+  A **variational autoencoder** encodes $x$ to a mean $\mu$ and log-variance $\log\sigma^2$ instead of a single point, then samples via the **reparameterization trick**:
+
+  $$
+  z = \mu + \sigma \cdot \varepsilon, \qquad \varepsilon \sim \mathcal{N}(0, 1)
+  $$
+
+  Writing sampling as a deterministic function of $\mu$, $\sigma$, and an external noise term $\varepsilon$ keeps the whole pipeline differentiable — gradients flow through $\mu$ and $\sigma$ even though $z$ itself is random. A second loss term, the **KL divergence** to the standard normal, keeps every input's distribution from collapsing to a single point or drifting off to some far corner of latent space:
+
+  $$
+  D_{KL}\big(\mathcal{N}(\mu,\sigma^2) \,\|\, \mathcal{N}(0,1)\big) = \tfrac{1}{2}\left(\sigma^2 + \mu^2 - 1 - \log\sigma^2\right)
+  $$
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Four different noise draws, one shared input. The mean alone decodes back to exactly the original value — but every other draw lands at a distinct nearby point, none of them ever explicitly trained on. That spread is the entire point: the decoder has learned a *neighborhood*, not a single memorized answer.
+</Play>
+
+<WorkedExample>
+  Encoding $x=2$ to $\mu=1$, $\log\sigma^2=-1.8$ (so $\sigma\approx 0.4066$), with a fixed sequence of stand-in noise values $\varepsilon \in \{0, 1, -1, 2\}$:
+
+  <Steps>
+    <Step label="No noise reproduces the input exactly">
+      $\varepsilon=0$ gives $z=\mu=1$, and decoding $z$ back through $\hat{x}=2z$ gives exactly $2$ — the original
+      input, recovered perfectly when there's no randomness at all.
+    </Step>
+    <Step label="Every other draw lands somewhere new">
+      $\varepsilon=1$ gives $z\approx1.4066\Rightarrow\hat x\approx2.8131$. $\varepsilon=-1$ gives
+      $z\approx0.5934\Rightarrow\hat x\approx1.1869$. $\varepsilon=2$ gives $z\approx1.8131\Rightarrow\hat
+      x\approx3.6263$ — four genuinely different outputs from one input, one encoder, one decoder.
+    </Step>
+    <Step label="KL divergence penalizes distributions that stray from standard normal">
+      This encoding's KL divergence is $D_{KL}\approx0.983$. Encoding $x=0$ instead gives $\mu=0$,
+      $\log\sigma^2=-2$, and a *smaller* KL divergence of $\approx0.568$ — closer to $\mu{=}0,\sigma{=}1$, the
+      one distribution where this penalty vanishes entirely.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<VAECheckpoint />
+
+<Summary>
+  $$
+  z = \mu + \sigma\varepsilon, \qquad \mathcal{L} = \text{reconstruction loss} + D_{KL}\big(\mathcal{N}(\mu,\sigma^2)\,\|\,\mathcal{N}(0,1)\big)
+  $$
+
+  Replacing a single latent point with a distribution — and regularizing that distribution toward the standard normal — turns an autoencoder from a compression scheme into a generative one. Sample a $z$ from anywhere reasonable in that latent space, even a point no training input ever mapped to, and the decoder still produces something plausible. The next chapter applies a very different training signal to sequences: masking out pieces of the input and asking a model to reconstruct exactly what's missing.
+</Summary>

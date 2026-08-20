@@ -785,7 +785,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Variational autoencoders",
     blurb: "Add a random draw to the bottleneck, and watch the decoder learn to generate points it never saw.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "bert-and-masked-language-modeling",
