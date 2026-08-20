@@ -506,7 +506,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "LIME",
     blurb: "Explain any black-box model by locally approximating it with something simple.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "shapley-values",

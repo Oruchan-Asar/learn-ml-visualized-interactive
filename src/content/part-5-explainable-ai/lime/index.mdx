@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LimeCheckpoint } from "./Demos";
+
+<Hook>
+  Saliency maps and Grad-CAM both needed to reach inside a convolutional network's own structure. What explains a prediction from a model with no gradients to inspect at all — a random forest, a rules engine, anything you can only query, never open up?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The curve is a "black box" — LIME never sees its formula, only its outputs. Drag the query point $x_0$: LIME samples a few points near it, weights the close ones more than the far ones, and fits the simplest possible model — a straight line — through just that weighted neighborhood.
+</Intuition>
+
+<Formalize>
+  Around a query point $x_0$, take samples $x_i$ nearby, weight each by a kernel that favors closeness, and fit a weighted linear regression:
+
+  $$
+  w_i = \exp\!\left(-\frac{(x_i-x_0)^2}{2\sigma^2}\right), \qquad \hat y = \text{slope}\cdot x + \text{intercept}
+  $$
+
+  where the slope and intercept minimize $\sum_i w_i(y_i - \hat y_i)^2$ — an ordinary least-squares fit, just with each point's error scaled by how close it is to $x_0$. Nothing here needs the black box's internals: LIME only ever calls it as a function, exactly like a saliency map does, but a linear fit instead of a per-input gradient.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag $x_0$ anywhere and compare LIME's local slope to the curve's actual derivative at that point, $2x_0$ — a fact LIME itself never gets to see, since it only ever queries the black box, never its formula. Watch how closely a *local*, linear approximation can still track a genuinely *curved* function, as long as it's never asked to explain anywhere but right around $x_0$.
+</Play>
+
+<WorkedExample>
+  The black box computes $f(x)=x^2$ (unknown to LIME). At $x_0=3$, with kernel width $\sigma=1.5$, LIME samples $x \in \{1,2,3,4,5\}$, giving $y \in \{1,4,9,16,25\}$:
+
+  <Steps>
+    <Step label="Fit the weighted local line">
+      Solving the weighted least-squares equations gives slope $=6$, intercept $\approx -7.57$.
+    </Step>
+    <Step label="Compare to the true derivative">
+      $f'(x) = 2x$, so $f'(3)=6$ — LIME's local slope matches the exact derivative, even though LIME never
+      computed a derivative at all, only fit a line through five sampled points.
+    </Step>
+    <Step label="But the line doesn't pass through (3, 9)">
+      At $x=3$ the fitted line gives $6(3)-7.57 \approx 10.43$, not $9$. LIME's local model tracks the
+      *slope* faithfully — that's what makes it a good explanation of sensitivity — but it's a regression
+      through a neighborhood, not an interpolation pinned to the exact point.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<LimeCheckpoint />
+
+<Summary>
+  $$
+  w_i = \exp\!\left(-\frac{(x_i-x_0)^2}{2\sigma^2}\right), \qquad \hat y = \text{slope}\cdot x + \text{intercept}
+  $$
+
+  LIME's entire trick is scope: don't explain the whole model, just the tiny neighborhood around one prediction, where almost anything looks roughly linear. That's also its limitation — the same black box gets a *different* local explanation at every point you ask about, and none of them say anything reliable once you're far from where they were fit. The next two chapters take a different approach: a single, game-theoretically justified way to split credit among features, valid everywhere at once.
+</Summary>
