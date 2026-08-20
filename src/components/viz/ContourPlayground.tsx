@@ -131,7 +131,9 @@ export function ContourPlayground({
   const hasArrow = gradMag > 1e-6;
   const dirX = hasArrow ? grad.x / gradMag : 0;
   const dirY = hasArrow ? grad.y / gradMag : 0;
-  const arrowLength = maxGradMag > 0 ? Math.min(1, gradMag / maxGradMag) * ARROW_LENGTH : 0;
+  // sqrt (not linear) so a small-but-real gradient still reads as a visible arrow, not a sliver —
+  // it still goes to exactly 0 only when the gradient itself is exactly 0.
+  const arrowLength = maxGradMag > 0 ? Math.sqrt(Math.min(1, gradMag / maxGradMag)) * ARROW_LENGTH : 0;
   // Screen space flips the y-axis, so a +y data direction points "up" (-y in pixels).
   const tipX = px + dirX * arrowLength;
   const tipY = py - dirY * arrowLength;

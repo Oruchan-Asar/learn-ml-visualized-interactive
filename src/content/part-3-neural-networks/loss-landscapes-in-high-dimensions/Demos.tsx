@@ -12,7 +12,7 @@ const CONCEPT_ID = "loss-landscapes-in-high-dimensions";
 
 /** Intuition beat: the gradient at the origin is exactly zero here too — but this isn't a minimum. */
 export function IntuitionDemo() {
-  const [point, setPoint] = useState({ x: 0.1, y: 0.1 });
+  const [point, setPoint] = useState({ x: 0, y: 0 });
   return (
     <ContourPlayground
       fn={saddle}
@@ -28,7 +28,7 @@ export function IntuitionDemo() {
 /** Play beat: switch between the true bowl and the saddle, same starting point, same zero gradient. */
 export function PlayDemo() {
   const [mode, setMode] = useState<"bowl" | "saddle">("bowl");
-  const [point, setPoint] = useState({ x: 0.1, y: 0.1 });
+  const [point, setPoint] = useState({ x: 0, y: 0 });
   const fn = mode === "bowl" ? bowl : saddle;
   const gradient = mode === "bowl" ? bowlGradient : saddleGradient;
   return (
@@ -55,9 +55,9 @@ export function PlayDemo() {
   );
 }
 
-/** Checkpoint: starting near the saddle's zero-gradient point, find a direction that actually decreases the loss. */
+/** Checkpoint: starting exactly at the saddle's zero-gradient point, find a direction that actually decreases the loss. */
 export function LandscapeCheckpoint() {
-  const [point, setPoint] = useState({ x: 0.1, y: 0.1 });
+  const [point, setPoint] = useState({ x: 0, y: 0 });
   const [hasInteracted, setHasInteracted] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
   const value = saddle(point.x, point.y);
@@ -72,7 +72,8 @@ export function LandscapeCheckpoint() {
     <CheckpointFrame
       instructions={
         <>
-          Starting near the zero-gradient point, drag to reach a value of <strong>{TARGET_VALUE}</strong> or lower.
+          Starting exactly at the zero-gradient point, drag to reach a value of <strong>{TARGET_VALUE}</strong> or
+          lower.
         </>
       }
       passed={passed || everPassed}
