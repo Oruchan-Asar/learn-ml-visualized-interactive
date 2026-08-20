@@ -240,7 +240,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 17,
     title: "Build and compare a full classifier pipeline",
     blurb: "Same dataset, several models from this part, one scoreboard.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 
