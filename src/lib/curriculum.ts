@@ -200,7 +200,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 12,
     title: "The kernel trick",
     blurb: "Lift unseparable data into another dimension where a straight line suddenly works.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "k-means-clustering",

@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, KernelCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter's line found the widest possible street between two classes. What happens when there's no street at all — no line, at any angle, separates them?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  One class rings the origin; the other rings that ring. Drag the line anywhere — there's always at least one point on the wrong side. This isn't a bad line; it's that *no* line can do better than about two-thirds here, because a straight cut can't tell "close to the center" from "far from it."
+</Intuition>
+
+<Formalize>
+  The data isn't separable in $(x, y)$ — but it doesn't have to stay in $(x, y)$. Lift every point through one new feature, the squared distance from the origin:
+
+  $$
+  z = x^2 + y^2
+  $$
+
+  Points near the center now share one small value of $z$; points on the outer ring share one large value, *no matter which direction they're in*. The two classes were tangled by angle but separated by radius all along — $z$ just throws away the angle and keeps the radius.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  This is the exact same 16 points, plotted by $z$ instead of $(x,y)$. One threshold now separates them completely — it's Chapter 7's split all over again, just on a feature that didn't exist until this chapter lifted it into being.
+</Play>
+
+<WorkedExample>
+  Take one inner point at $(1.8, 0)$ and one outer point at $(4.7, 0)$: $z = 1.8^2 = 3.24$ and $z = 4.7^2 = 22.09$. Now take a diagonal inner point at $(1.556, 1.556)$: $z = 1.556^2 + 1.556^2 \approx 2.42+2.42 = 4.84$ — the *same* value every inner point at that radius gets, regardless of angle. Every inner point lands with $z \le 4.84$; every outer point lands with $z \ge 22.09$. Any threshold in between — 10, 15, 20 — separates all sixteen points at once.
+</WorkedExample>
+
+<KernelCheckpoint />
+
+<Summary>
+  $$
+  z = x^2 + y^2
+  $$
+
+  This is the kernel trick's whole idea: a problem that's hopeless in the original features can become trivial in a cleverly chosen new one. Real kernels (polynomial, RBF) do this implicitly, for far higher-dimensional lifts than one extra coordinate — but the shape of the win is exactly what you just saw: unseparable becomes separable, and the same one-threshold or widest-street machinery from the last two chapters still does the rest.
+</Summary>
