@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { TreeFitPlayground } from "@/components/viz/TreeFitPlayground";
 import { CheckpointFrame } from "@/components/chapter/CheckpointFrame";
 import {
@@ -37,11 +37,12 @@ function useTreeAtDepth(depth: number) {
 }
 
 function DepthSlider({ value, onChange }: { value: number; onChange: (depth: number) => void }) {
+  const id = useId();
   return (
     <div className={styles.sliderRow}>
-      <label htmlFor="depth-slider">max depth = {value}</label>
+      <label htmlFor={id}>max depth = {value}</label>
       <input
-        id="depth-slider"
+        id={id}
         type="range"
         min={1}
         max={MAX_TREE_DEPTH}

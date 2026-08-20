@@ -176,7 +176,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 9,
     title: "Ensembles I: bagging & random forests",
     blurb: "Average many overfit trees into one model that suddenly generalizes well.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "ensembles-boosting",

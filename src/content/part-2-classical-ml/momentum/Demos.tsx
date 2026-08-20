@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { ContourPlayground } from "@/components/viz/ContourPlayground";
 import { CheckpointFrame } from "@/components/chapter/CheckpointFrame";
 import { f, gradient, momentumStep, type Vec2, type MomentumState } from "@/lib/math-core/momentum";
@@ -65,11 +65,12 @@ function BetaSlider({
   onChange: (beta: number) => void;
   disabled?: boolean;
 }) {
+  const id = useId();
   return (
     <div className={styles.sliderRow} style={disabled ? { opacity: 0.4 } : undefined}>
-      <label htmlFor="beta-slider">β = {value.toFixed(2)}</label>
+      <label htmlFor={id}>β = {value.toFixed(2)}</label>
       <input
-        id="beta-slider"
+        id={id}
         type="range"
         min={0}
         max={0.95}

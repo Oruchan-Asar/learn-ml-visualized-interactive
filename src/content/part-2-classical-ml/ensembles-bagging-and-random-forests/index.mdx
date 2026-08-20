@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, BaggingCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter, pruning a tree back was the only way to stop it from memorizing noise. What if you didn't have to prune at all?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Every tree here is grown to the same reckless max depth as Chapter 8's worst offender — each one individually overfits. But each is trained on a different random resample of the data, so each one overfits *differently*. Add more of them and watch the jagged, noise-chasing regions smooth out into the one boundary they all actually agree on.
+</Intuition>
+
+<Formalize>
+  This is **bagging** — bootstrap aggregating. Train $N$ trees, each on a random sample drawn *with replacement* from the training set (a "bootstrap sample"), then combine their predictions by majority vote:
+
+  $$
+  \hat{y}(x) = \text{majority}\big(T_1(x), T_2(x), \ldots, T_N(x)\big)
+  $$
+
+  Each $T_i$ still overfits its own bootstrap sample. But the noise it overfits to is specific to *which* points that resample happened to include — different resamples chase different noise, so it rarely lines up. A **random forest** adds one more trick on top: at every split, each tree only gets to consider a random subset of the available features. With just one feature here, that trick has nothing to act on — bagging alone is already the whole story.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch training accuracy stay roughly flat while validation accuracy climbs as trees are added. No single tree in the forest got any less overfit — the ensemble generalizes better anyway, purely because their individual mistakes don't overlap.
+</Play>
+
+<WorkedExample>
+  At $x = 14.25$ (true label B), the first three trees predict B, A, A — majority vote says **A**, wrong. Add two more trees predicting B and B, and the vote among all five becomes B, A, A, B, B — majority **B**, correct. No tree changed its mind; two more independent (wrong-in-different-ways) opinions were enough to outvote the two that agreed on the mistake.
+</WorkedExample>
+
+<BaggingCheckpoint />
+
+<Summary>
+  $$
+  \hat{y}(x) = \text{majority}\big(T_1(x), T_2(x), \ldots, T_N(x)\big)
+  $$
+
+  Bagging doesn't fix any individual tree's tendency to overfit — it cancels it out. As long as each tree's mistakes are driven by *different* noise, averaging enough of them together drowns the noise out and leaves the shared signal standing.
+</Summary>
