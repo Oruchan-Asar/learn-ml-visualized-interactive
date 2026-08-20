@@ -331,7 +331,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 11,
     title: "Dropout",
     blurb: "Randomly silence neurons during training and watch a network stop memorizing.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-train-a-tiny-network",

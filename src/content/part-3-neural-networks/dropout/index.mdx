@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DropoutCheckpoint } from "./Demos";
+
+<Hook>
+  Part II showed that averaging many independent overfit trees beats any single one. What if a single network could get a taste of that same trick, using only itself?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click resample. Each time, a different random half of these neurons goes dark — and the ones that survive get scaled up to compensate. The output jumps around from draw to draw, but it's never *systematically* off from the true, undropped value.
+</Intuition>
+
+<Formalize>
+  Dropout randomly zeroes each neuron independently with probability $p$, then rescales the survivors by $\frac{1}{1-p}$ ("inverted dropout"):
+
+  $$
+  \hat y = \frac{1}{1-p}\sum_{i \,\in\, \text{kept}} v_i h_i
+  $$
+
+  This rescaling isn't arbitrary — it's exactly what keeps the *expected* value of $\hat y$, averaged over every possible random mask, equal to the true undropped output $\sum_i v_i h_i$, for any dropout rate $p$ at all.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the rate up and resample. At higher rates, fewer neurons survive each draw and the output swings harder — but the expected active count $8(1-p)$ tells you exactly how many you should expect on average, even though any one draw might have more or fewer.
+</Play>
+
+<WorkedExample>
+  Averaged over 200,000 independent random draws at $p=0.5$, the mean output lands within about 1% of the true undropped value — confirming the unbiasedness the rescaling is designed to guarantee. But any *single* draw can differ from the true value by more than the true value's own size: dropout genuinely injects substantial per-step noise. That noise is the point — a network trained this way can't rely on any specific neuron or fixed combination of neurons always being present, so it's forced to spread what it learns across many redundant paths instead of memorizing through one fragile one.
+</WorkedExample>
+
+<DropoutCheckpoint />
+
+<Summary>
+  $$
+  \hat y = \frac{1}{1-p}\sum_{i \,\in\, \text{kept}} v_i h_i
+  $$
+
+  Dropout doesn't change what a network is *capable* of representing — it changes what it can afford to rely on during training. Forcing every subset of neurons to be independently useful is, in effect, training a huge implicit ensemble of thinned sub-networks that all share the same weights. Part III's final chapter puts everything from this part together: a full network, trained live, in the browser.
+</Summary>

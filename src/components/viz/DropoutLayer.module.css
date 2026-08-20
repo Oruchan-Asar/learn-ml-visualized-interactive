@@ -1,0 +1,55 @@
+.wrap {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 8px 4px 4px;
+}
+
+.svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.edgeActive {
+  stroke: var(--accent);
+  opacity: 0.5;
+}
+.edgeDropped {
+  stroke: var(--ink-faint);
+  opacity: 0.15;
+  stroke-dasharray: 2 3;
+}
+
+.neuronActive {
+  fill: var(--accent);
+  stroke: var(--paper-raised);
+  stroke-width: 2;
+}
+.neuronDropped {
+  fill: var(--paper);
+  stroke: var(--ink-faint);
+  stroke-width: 1.5;
+  opacity: 0.5;
+}
+
+.outputNode {
+  fill: var(--accent2);
+  stroke: var(--paper-raised);
+  stroke-width: 2;
+}
+
+.value {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 9px;
+  fill: var(--paper-raised);
+}
+
+.readout {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  padding: 6px 0 10px;
+}
