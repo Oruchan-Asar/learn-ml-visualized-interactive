@@ -769,7 +769,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Sequence-to-sequence models",
     blurb: "Encode a whole sentence into one vector, then decode it back out into a different language.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "resnet-and-residual-connections",

@@ -1,0 +1,60 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SeqToSeqCheckpoint } from "./Demos";
+
+<Hook>
+  Every RNN and gated cell so far has produced one output per input step — same length in, same length out. Translation doesn't work that way: a 3-word sentence in one language might need 5 words in another. How do you connect two sequences that don't even agree on length?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  One context vector, decoded out to however many steps you ask for. The encoder that produced it never runs again — everything the decoder knows about the input has to already be packed into that single number.
+</Intuition>
+
+<Formalize>
+  An **encoder** RNN reads the entire input sequence and keeps only its final hidden state — the **context vector**. A separate **decoder** RNN is initialized from that context and unrolls its own sequence, feeding each output back in as the next step's input, for as many steps as the task needs:
+
+  $$
+  c = \text{Encoder}(x_1, \dots, x_n), \qquad y_1, \dots, y_m = \text{Decoder}(c)
+  $$
+
+  Nothing ties $n$ and $m$ together. The encoder's job is compression; the decoder's job is generation — and the context vector is the only channel between them.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Three input steps compress down to one number. That same number then drives four decoder steps, each depending only on the context and the decoder's own previous output — the input sequence itself is gone the moment the context vector is formed.
+</Play>
+
+<WorkedExample>
+  Input sequence $x = (1, -1, 1)$, encoder recurrence $h_t=\tanh(x_t + 0.5\,h_{t-1})$:
+
+  <Steps>
+    <Step label="Encoding compresses three steps into one number">
+      $h_1=\tanh(1)\approx 0.7616$, $h_2=\tanh(-1+0.5(0.7616))\approx -0.5506$,
+      $h_3=\tanh(1+0.5(-0.5506))\approx 0.6198$. The context vector is $c=h_3\approx 0.6198$ — everything about
+      the 3-token input, folded into one scalar.
+    </Step>
+    <Step label="Decoding starts from the context, not the input">
+      $y_1=\tanh(c)\approx 0.5510$. From here the decoder only sees its own last output:
+      $y_2=\tanh(0.5\,y_1)\approx 0.2687$.
+    </Step>
+    <Step label="The same context, unrolled further or not at all">
+      Running the decoder for 4 steps instead of 2 from the *exact same* context gives
+      $y_3\approx 0.1336$, $y_4\approx 0.0667$ — each output smaller than the last, since nothing new is
+      feeding the recurrence. The output length was never determined by the input length; it's just how
+      many times you choose to run the decoder.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SeqToSeqCheckpoint />
+
+<Summary>
+  $$
+  c = \text{Encoder}(x_{1:n}), \qquad y_{1:m} = \text{Decoder}(c) \qquad \text{— } n \text{ and } m \text{ need not match}
+  $$
+
+  Encoder-decoder splits "understand the input" from "produce the output" into two separate networks connected by a single bottleneck vector. That bottleneck is also the design's biggest weakness: every detail of a long input has to survive being squeezed through one fixed-size vector, no matter how long the sequence was. This is exactly the problem attention was built to solve, back in Part IV — letting the decoder look back at every encoder state individually, instead of trusting one number to carry everything. The next chapter turns to a different bottleneck, one inside a single deep network rather than between two of them: what happens to a signal after it passes through far more layers than any network in this course has used so far.
+</Summary>
