@@ -374,7 +374,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Classify digits, visualize the filters",
     blurb: "Train the minimal CNN live, then look at what its filters actually learned to detect.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
   {

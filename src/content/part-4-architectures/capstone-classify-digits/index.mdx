@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 3's kernel, dense weights, and biases were all hand-picked to make one particular pipeline work on one particular image. Real networks don't get that luxury — they start from random numbers and have to earn every weight through training. This capstone does exactly that, live, in the browser.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Four tiny 6×6 images, two classes: a **vertical edge** (the boundary runs top-to-bottom) and a **horizontal edge** (the boundary runs left-to-right). Two 3×3 filters, initialized to small random numbers, feed a small dense layer through ReLU and max pooling — the exact shape from Chapter 3, but every weight starts unlearned. Click train and watch the loss fall as the filters reorganize themselves into something that actually tells the two classes apart.
+</Intuition>
+
+<Formalize>
+  The architecture is unchanged from Chapter 3 — image → convolution → ReLU → pool → flatten → dense → softmax — but now there are two filters instead of one, and a real loss to minimize:
+
+  $$
+  \mathcal{L} = -\log p_{\text{true class}}
+  $$
+
+  the cross-entropy loss from Part III, computed over the softmax of the two output logits. Backpropagation runs through every stage: the softmax gradient, back through the dense weights, back through max-pooling (which routes each gradient only to the position that actually won each window), back through ReLU (zero wherever the pre-activation wasn't positive), and finally back into the two 3×3 kernels themselves — the same chain rule as always, just longer.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Reset, then train one step at a time. Early on, the two random filters produce feature maps that don't separate the classes — predictions hover near 50%. After a few steps, watch one filter's weights drift toward something with a clear positive-to-negative split across a row or column — a shape it invented on its own, not copied from anywhere, because it's the shape that actually helps tell a vertical edge from a horizontal one.
+</Play>
+
+<WorkedExample>
+  Compare a trained filter to Chapter 1's hand-designed vertical-edge kernel, $\begin{pmatrix} -1 & 0 & 1 \\ -1 & 0 & 1 \\ -1 & 0 & 1 \end{pmatrix}$: every row sums to zero, and the sign flips from one side of the kernel to the other. A filter that learns to solve *this* task tends toward the same kind of structure — not the identical numbers, but the same shape of solution: something whose row-sums or column-sums cancel out for a constant patch, and don't cancel when a patch straddles an edge. Nobody told the network that; gradient descent found it because it's what reduces the loss.
+</WorkedExample>
+
+<CapstoneCheckpoint />
+
+<Summary>
+  $$
+  \mathcal{L} = -\log p_{\text{true class}}
+  $$
+
+  Every weight in this network — both kernels, both biases, the dense layer — was found by gradient descent, not hand-picked. That's the entire difference between Chapter 3 and this capstone: same architecture, same forward pass, but the numbers came from data instead of from a human. Part IV continues from images to sequences next: the same idea of a small, structured architecture, learned end-to-end, applied to data where order is the whole point.
+</Summary>
