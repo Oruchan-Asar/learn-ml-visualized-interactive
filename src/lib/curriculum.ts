@@ -216,7 +216,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 14,
     title: "PCA: directions of maximum variance",
     blurb: "Find the axis a cloud of points is most stretched along, and project onto it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "bias-variance-tradeoff",

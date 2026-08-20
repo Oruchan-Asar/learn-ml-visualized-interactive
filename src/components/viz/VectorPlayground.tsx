@@ -11,7 +11,7 @@ export interface VectorSpec {
 }
 
 export interface VectorPlaygroundProps {
-  /** Vectors are drawn from the origin. Index 0 is styled "primary", others "secondary". */
+  /** Vectors are drawn from the origin. When there's more than one, index 0 is styled "primary" (neutral, fixed reference) and the rest "secondary" (colorable). A single vector is always "secondary". */
   vectors: VectorSpec[];
   onChangeVector?: (index: number, next: { x: number; y: number }) => void;
   /** Symmetric domain applied to both axes, so angles render undistorted. */
@@ -20,6 +20,10 @@ export interface VectorPlaygroundProps {
   readout?: ReactNode;
   /** Recolors the secondary vector, e.g. once a checkpoint has passed. */
   passed?: boolean;
+  /** A fixed background scatter, e.g. the data cloud a direction vector is being fit to. */
+  cloudPoints?: { x: number; y: number }[];
+  /** Small markers along a vector's line, e.g. each cloud point's scalar projection onto it. */
+  projectedPoints?: { x: number; y: number }[];
 }
 
 const DEFAULT_DOMAIN: [number, number] = [-6, 6];
@@ -31,6 +35,8 @@ export function VectorPlayground({
   size = 320,
   readout,
   passed = false,
+  cloudPoints,
+  projectedPoints,
 }: VectorPlaygroundProps) {
   const margin = 24;
   const [dMin, dMax] = domain;
@@ -130,8 +136,16 @@ export function VectorPlayground({
         <line x1={margin} y1={originY} x2={size - margin} y2={originY} className={styles.axis} />
         <line x1={originX} y1={margin} x2={originX} y2={size - margin} className={styles.axis} />
 
+        {cloudPoints?.map((p, i) => (
+          <circle key={i} cx={scaleX(p.x)} cy={scaleY(p.y)} r={5} className={styles.cloudPoint} />
+        ))}
+
+        {projectedPoints?.map((p, i) => (
+          <circle key={i} cx={scaleX(p.x)} cy={scaleY(p.y)} r={4} className={styles.projectedPoint} />
+        ))}
+
         {vectors.map((v, i) => {
-          const isPrimary = i === 0;
+          const isPrimary = i === 0 && vectors.length > 1;
           const isPassedSecondary = !isPrimary && passed;
           const x2 = scaleX(v.x);
           const y2 = scaleY(v.y);
@@ -168,7 +182,7 @@ export function VectorPlayground({
                   className={handleClass}
                   tabIndex={0}
                   role="slider"
-                  aria-label={`Vector ${isPrimary ? "A" : "B"}: (${v.x.toFixed(1)}, ${v.y.toFixed(1)})`}
+                  aria-label={`Vector${vectors.length > 1 ? (isPrimary ? " A" : " B") : ""}: (${v.x.toFixed(1)}, ${v.y.toFixed(1)})`}
                   onPointerDown={(e) => {
                     draggingIndex.current = i;
                     (e.target as Element).setPointerCapture?.(e.pointerId);

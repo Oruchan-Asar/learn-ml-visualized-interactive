@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PcaCheckpoint } from "./Demos";
+
+<Hook>
+  Squint at a scatter of points from different angles and one angle always looks "most spread out." Can you find it exactly, not just by eye?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the arrow around the cloud. The teal marks are each point's shadow cast straight onto the arrow's line — squeeze together when the arrow points across the cloud's short way, spread apart when it points along the long way.
+</Intuition>
+
+<Formalize>
+  That spread is **variance** — of the projections, not the raw points:
+
+  $$
+  \text{Var}(\hat u) = \frac{1}{n}\sum_i \big((x_i - \bar x)\cdot \hat u\big)^2, \qquad \lVert \hat u \rVert = 1
+  $$
+
+  The **first principal component** is whichever unit direction $\hat u$ makes this as large as possible. It only depends on the direction's *angle* — stretching the arrow longer or flipping it to point the opposite way changes nothing, since $\hat u$ is normalized before projecting.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Compare a horizontal arrow, a vertical one, and the angle in between. One of those is far closer to the true maximum than the other two — this cloud was built stretched along one specific diagonal, not along either axis.
+</Play>
+
+<WorkedExample>
+  This cloud was built by combining two independent directions: a wide spread along $(0.6, 0.8)$ and a narrow one along the perpendicular $(-0.8, 0.6)$. Projected onto $(0.6, 0.8)$, the variance comes out to exactly $4$; projected onto the perpendicular, it's $4/7 \approx 0.57$ — seven times smaller. No other direction beats $4$: that's the maximum, and $(0.6, 0.8)$ (about $53°$ from the x-axis) is the first principal component.
+</WorkedExample>
+
+<PcaCheckpoint />
+
+<Summary>
+  $$
+  \text{Var}(\hat u) = \frac{1}{n}\sum_i \big((x_i - \bar x)\cdot \hat u\big)^2
+  $$
+
+  PCA doesn't invent new data — it just asks which direction the existing data is most spread along, then treats that direction as the one worth keeping if you had to keep only one. The next chapter turns to a different kind of tradeoff: how a model's complexity trades off two distinct sources of error.
+</Summary>
