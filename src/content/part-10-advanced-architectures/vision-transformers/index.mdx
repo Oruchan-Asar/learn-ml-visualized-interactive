@@ -1,0 +1,60 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ViTCheckpoint } from "./Demos";
+
+<Hook>
+  A convolution kernel only ever looks at its immediate neighborhood — reaching a patch on the far side of an image takes as many stacked layers as it takes hops to get there. What if a single layer could look at every patch at once, the same way self-attention already looks at every word in a sentence?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A 3x3 grid of image patches, with a bright diagonal running through it. Pick a query patch and watch which other patches it attends to — not just its neighbors, but any patch anywhere in the grid, scored purely by how similar its content is.
+</Intuition>
+
+<Formalize>
+  A **Vision Transformer** cuts an image into fixed-size patches, embeds each one, adds a position embedding, and feeds the resulting sequence into the exact same self-attention block from Part IV — no convolution anywhere:
+
+  $$
+  \text{patch}_i \to \text{embedding}_i + \text{position}_i \;\longrightarrow\; \text{self-attention over all patches at once}
+  $$
+
+  A convolution kernel's receptive field grows by one step of Chebyshev distance per layer — reaching a patch $d$ steps away takes at least $d$ stacked layers. Self-attention has no such restriction: every patch can attend to every other patch in a single layer, regardless of how far apart they sit in the image.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Top-left's attention lands overwhelmingly on the two other bright patches — including bottom-right, which sits on the *opposite corner* of the grid. A single 3x3 convolution centered on top-left couldn't reach bottom-right at all; self-attention reaches it in one hop, using nothing but content similarity.
+</Play>
+
+<WorkedExample>
+  A 3x3 grid, bright diagonal (top-left, center, bottom-right), query = top-left:
+
+  <Steps>
+    <Step label="Distance rules out a single conv layer entirely">
+      Top-left and bottom-right sit at Chebyshev distance $2$ — outside a single $3{\times}3$ kernel's reach,
+      which only covers distance $1$. Connecting them with convolutions alone would take at least two stacked
+      layers.
+    </Step>
+    <Step label="Self-attention connects them anyway">
+      Top-left's embedding and bottom-right's embedding produce identical dot-product scores against the query
+      (both are the "bright" pattern) — softmax assigns bottom-right $\approx 0.298$ of top-left's total
+      attention, in a single layer, with no distance penalty of any kind.
+    </Step>
+    <Step label="Content beats proximity">
+      Meanwhile the immediately adjacent top-middle and mid-left patches — squarely inside a conv kernel's reach,
+      but dark — receive only $\approx 0.018$ each. Being close doesn't matter if the content doesn't match;
+      being far away doesn't matter if it does.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ViTCheckpoint />
+
+<Summary>
+  $$
+  \text{conv: reach grows by 1 hop per layer} \qquad\text{vs}\qquad \text{attention: every patch, every layer, one hop}
+  $$
+
+  ViT doesn't invent a new mechanism for images — it removes the assumption, baked into convolution since Part III, that nearby pixels matter more than far ones by default. Patches become tokens, position becomes an embedding, and the same attention machinery that connects distant words in a sentence connects distant regions of an image just as directly. The next chapter asks a different question about that same idea: instead of building a new model from scratch, how much of what one already-trained network learned can be reused for something else entirely?
+</Summary>

@@ -801,7 +801,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Vision Transformers",
     blurb: "Cut an image into patches, and feed them to the exact same block that already reads sentences.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "transfer-learning-and-fine-tuning",
