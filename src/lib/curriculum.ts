@@ -538,7 +538,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Explain one prediction three ways",
     blurb: "Saliency, SHAP, and a counterfactual on the same case, compared side by side.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 
