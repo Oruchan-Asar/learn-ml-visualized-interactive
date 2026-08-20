@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, AutoencoderCheckpoint } from "./Demos";
+
+<Hook>
+  Every architecture so far has taken an input and produced a *different kind* of output — a class label, a next character, a translation. An autoencoder does something stranger: it tries to reproduce its own input, after being forced through a narrower pipe than the input itself.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  These are the same seven points from Part II's PCA chapter. The **encoder** compresses each 2D point down to a single number — its position along one direction. The **decoder** expands that one number back out to 2D, by placing it back on that same line. Drag the direction: every point snaps onto whatever line you've chosen, and the gap between a point and its snapped-back position is exactly what got lost by compressing.
+</Intuition>
+
+<Formalize>
+  With a 1D bottleneck and linear encoder/decoder, encoding is a projection and decoding places the result back on the line:
+
+  $$
+  z = x \cdot w, \qquad \hat{x} = z\, w, \qquad \mathcal{L} = \frac{1}{n}\sum_i \lVert x_i - \hat{x}_i \rVert^2
+  $$
+
+  for a unit direction $w$. Because $\hat{x}$ is the closest point on the line to $x$, Pythagoras gives $\lVert x \rVert^2 = \lVert \hat{x} \rVert^2 + \lVert x - \hat{x} \rVert^2$ — so minimizing reconstruction error is exactly the same problem as maximizing $\lVert \hat{x} \rVert^2$, the projected variance from Part II. A linear autoencoder with one bottleneck dimension *is* PCA.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag along this curve — it's reconstruction error as a function of the bottleneck direction's angle. There's exactly one minimum, and it's a real critical point: the tangent is flat right at the bottom, not just low. Autoencoders only get interesting when the encoder and decoder stop being linear — then this single smooth bowl can become a much more complicated surface, capable of capturing bends and curves a straight line never could.
+</Play>
+
+<WorkedExample>
+  At the angle matching Part II's true direction $(0.6, 0.8)$, the mean squared reconstruction error is exactly $\frac{4}{7} \approx 0.571$ — and every other direction does strictly worse. Rotate away by even a small amount and the error rises immediately, because you're no longer capturing the one direction these seven points actually vary along.
+</WorkedExample>
+
+<AutoencoderCheckpoint />
+
+<Summary>
+  $$
+  \mathcal{L} = \frac{1}{n}\sum_i \lVert x_i - \hat{x}_i \rVert^2
+  $$
+
+  A linear, 1D-bottleneck autoencoder rediscovers PCA's principal direction purely by trying to minimize reconstruction error — nobody told it to maximize variance. Swap the linear encoder/decoder for the nonlinear networks built throughout this course, and the same idea compresses far richer data — images, audio, whatever — into a bottleneck that still tries to keep only what's needed to reconstruct. The next two chapters ask what happens when, instead of reconstructing real data, a network tries to *generate* new data that never existed.
+</Summary>

@@ -456,7 +456,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 14,
     title: "Autoencoders",
     blurb: "Compress data down to a bottleneck, reconstruct it, and see exactly what's lost.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "generative-adversarial-networks",
