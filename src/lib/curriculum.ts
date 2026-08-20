@@ -399,7 +399,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Vanishing gradients in RNNs, and LSTMs",
     blurb: "Watch gates rescue a memory that plain recurrence would have forgotten.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "word-embeddings",
