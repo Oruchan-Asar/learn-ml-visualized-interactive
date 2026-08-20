@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, OptimizersCheckpoint } from "./Demos";
+
+<Hook>
+  Part II gave gradient descent a memory. What if it also kept a running estimate of how *big* its steps have been, and used that too?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same ravine as Part II's momentum chapter, same starting point, three optimizers stepping at once. Take a few steps and watch orange zigzag through the steep direction while teal barely wobbles at all.
+</Intuition>
+
+<Formalize>
+  **RMSProp** keeps a running average of each parameter's *squared* gradient, then divides the step by its square root — a direction with a big, steep gradient gets its step shrunk automatically:
+
+  $$
+  v \leftarrow \beta v + (1-\beta)g^2, \qquad \theta \leftarrow \theta - \frac{\eta}{\sqrt{v}+\epsilon}\,g
+  $$
+
+  **Adam** combines this with momentum: it keeps a running average of the gradient itself ($m$, momentum's idea) *and* of its square ($v$, RMSProp's idea), correcting both for their startup bias before combining them the same way RMSProp does.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the distance-to-target numbers rather than the picture. Early on, RMSProp's per-direction scaling lets it beeline almost straight there while momentum is still fighting its own oscillation off the steep axis.
+</Play>
+
+<WorkedExample>
+  At the very first step from $(4,1)$ on $f(x,y)=x^2+10y^2$: the gradient is $(8,20)$. RMSProp's very first update, before its running average has accumulated any history, reduces to $\eta \cdot \text{sign}(g)/\sqrt{1-\beta}$ on each axis — with $\eta=0.3$, $\beta=0.9$, that's a step of $0.3/\sqrt{0.1}\approx0.949$ on *both* axes despite the gradient being $2.5\times$ larger in $y$ than $x$. That's the entire point: RMSProp actively cancels out the difference in steepness between directions, something plain gradient descent and momentum never do.
+</WorkedExample>
+
+<OptimizersCheckpoint />
+
+<Summary>
+  $$
+  v \leftarrow \beta v + (1-\beta)g^2, \qquad \theta \leftarrow \theta - \frac{\eta}{\sqrt{v}+\epsilon}\,g
+  $$
+
+  Adam is the default optimizer for most modern networks precisely because it combines momentum's "keep going in a consistent direction" with RMSProp's "don't let one steep direction dominate the step size." Neither idea alone is enough on landscapes with wildly different curvature in different directions — which every real network has.
+</Summary>

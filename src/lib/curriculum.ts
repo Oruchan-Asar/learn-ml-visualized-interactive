@@ -299,7 +299,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Optimizers: momentum, RMSProp, Adam",
     blurb: "Race three optimizers down the same landscape and watch their paths diverge.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "weight-initialization",

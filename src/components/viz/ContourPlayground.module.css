@@ -26,6 +26,23 @@
 .trailDot {
   fill: var(--ink);
 }
+.trailDotAccent2 {
+  fill: var(--accent2);
+}
+.trailDotInk {
+  fill: var(--ink-soft);
+}
+
+.pointAccent2 {
+  fill: var(--accent2);
+  stroke: var(--paper-raised);
+  stroke-width: 2;
+}
+.pointInk {
+  fill: var(--ink-soft);
+  stroke: var(--paper-raised);
+  stroke-width: 2;
+}
 
 .arrowLine {
   stroke: var(--ink-soft);

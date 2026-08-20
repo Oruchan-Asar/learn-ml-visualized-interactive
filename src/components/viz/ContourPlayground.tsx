@@ -20,6 +20,8 @@ export interface ContourPlaygroundProps {
   passed?: boolean;
   /** Past probe points (e.g. gradient-descent steps), rendered as a fading trail. */
   trail?: { x: number; y: number }[];
+  /** Additional non-interactive point+trail overlays, e.g. other optimizers racing on the same field. */
+  extraSeries?: { point: { x: number; y: number }; trail?: { x: number; y: number }[]; colorClass: "accent2" | "ink" }[];
 }
 
 const DEFAULT_DOMAIN: [number, number] = [-6, 6];
@@ -36,6 +38,7 @@ export function ContourPlayground({
   readout,
   passed = false,
   trail,
+  extraSeries,
 }: ContourPlaygroundProps) {
   const margin = 16;
   const [dMin, dMax] = domain;
@@ -187,6 +190,27 @@ export function ContourPlayground({
             markerEnd={`url(#${passed ? arrowPassedId : arrowId})`}
           />
         )}
+
+        {extraSeries?.map((series, si) => (
+          <g key={si}>
+            {series.trail?.map((p, i) => (
+              <circle
+                key={i}
+                cx={scaleX(p.x)}
+                cy={scaleY(p.y)}
+                r={4}
+                className={series.colorClass === "accent2" ? styles.trailDotAccent2 : styles.trailDotInk}
+                opacity={0.25 + (0.55 * i) / Math.max(1, (series.trail?.length ?? 1) - 1)}
+              />
+            ))}
+            <circle
+              cx={scaleX(series.point.x)}
+              cy={scaleY(series.point.y)}
+              r={7}
+              className={series.colorClass === "accent2" ? styles.pointAccent2 : styles.pointInk}
+            />
+          </g>
+        ))}
 
         <circle
           cx={px}
