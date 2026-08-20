@@ -1,0 +1,56 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, JointEmbeddingCheckpoint } from "./Demos";
+
+<Hook>
+  Part IV's word embeddings put every word in one space, so distance meant "similar meaning." What if a photograph and a sentence describing it could share that exact same space — so a picture and a caption become directly comparable, the same way two words are?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Squares are images, circles are captions, and both live in the same 2D space. Click any point — its nearest neighbor is always the *other* modality's matching item, never another image or another caption. The dog photo sits closest to "a dog running," not to the cat or bird photos.
+</Intuition>
+
+<Formalize>
+  With an image embedding $u$ and a text embedding $v$ in the same space, "how well does this caption describe this image" is just ordinary distance — exactly Part IV's word-embedding formula, now spanning two different kinds of input:
+
+  $$
+  d(u, v) = \sqrt{(u_1-v_1)^2 + (u_2-v_2)^2 + \dots}
+  $$
+
+  Nothing about the distance formula changed. What's new is that $u$ came from a completely different encoder (one built for pixels) than $v$ (one built for text) — and both encoders were trained so that their outputs land in the *same* coordinate system, not just two similar-looking but separate spaces.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Click through every image and caption. The nearest-match pairing holds in both directions — an image's nearest caption is its true one, and a caption's nearest image is its true one. That symmetry is exactly what makes this space useful for search in *either* direction: type text, find images; or show an image, find matching text.
+</Play>
+
+<WorkedExample>
+  The dog photo sits at $(2, 3)$; here's its distance to all three captions:
+
+  <Steps>
+    <Step label="Distance to its true caption">
+      "A dog running" sits at $(2.2, 2.8)$: $d = \sqrt{0.2^2+0.2^2} \approx 0.28$ — very close.
+    </Step>
+    <Step label="Distance to the other two captions">
+      "A cat sleeping" is $\approx 2.78$ away; "a bird flying" is $\approx 3.11$ away — both roughly ten times
+      farther than the true caption.
+    </Step>
+    <Step label="The nearest-neighbor search is unambiguous">
+      There's no contest: the true caption wins by a wide margin, exactly the same way "prince" clearly beat
+      "man" or "queen" as king's nearest neighbor back in Part IV.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<JointEmbeddingCheckpoint />
+
+<Summary>
+  $$
+  d(u, v) = \sqrt{(u_1-v_1)^2 + (u_2-v_2)^2 + \dots}
+  $$
+
+  A joint embedding space turns "does this caption match this image" into the same nearest-neighbor question Part IV already solved for words — the only real difference is that the two points being compared came from entirely different encoders. This chapter hand-placed the coordinates to make the geometry obvious, exactly like Part IV's word space did. The next chapter asks the much harder question: how does a real model learn to place them there itself, with no human ever labeling which caption matches which image?
+</Summary>

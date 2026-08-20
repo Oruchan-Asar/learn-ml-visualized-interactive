@@ -8,6 +8,8 @@ export interface EmbeddingPoint {
   label: string;
   x: number;
   y: number;
+  /** Distinguishes points from different sources/modalities visually — e.g. images vs. captions. Defaults to a circle. */
+  shape?: "circle" | "square";
 }
 
 export interface WordEmbeddingSpaceProps {
@@ -48,7 +50,7 @@ export function WordEmbeddingSpace({
         viewBox={`0 0 ${size} ${size}`}
         className={styles.svg}
         role="img"
-        aria-label="A 2D word embedding space — each point is a word, positioned so distance reflects meaning."
+        aria-label="A 2D embedding space — each point is an item, positioned so distance reflects meaning."
       >
         {extraPoint && (
           <g>
@@ -77,18 +79,19 @@ export function WordEmbeddingSpace({
           const isNearest = w.label === nearestLabel;
           const cx = scaleX(w.x);
           const cy = scaleY(w.y);
+          const r = isQuery || isNearest ? 9 : 6;
+          const pointClass = isQuery ? styles.pointQuery : isNearest ? styles.pointNearest : styles.point;
           return (
             <g
               key={w.label}
               onClick={onSelectWord ? () => onSelectWord(w.label) : undefined}
               className={onSelectWord ? styles.clickable : undefined}
             >
-              <circle
-                cx={cx}
-                cy={cy}
-                r={isQuery || isNearest ? 9 : 6}
-                className={isQuery ? styles.pointQuery : isNearest ? styles.pointNearest : styles.point}
-              />
+              {w.shape === "square" ? (
+                <rect x={cx - r} y={cy - r} width={r * 2} height={r * 2} className={pointClass} />
+              ) : (
+                <circle cx={cx} cy={cy} r={r} className={pointClass} />
+              )}
               <text x={cx} y={cy - 14} textAnchor="middle" className={styles.wordLabel}>
                 {w.label}
               </text>

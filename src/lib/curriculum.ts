@@ -549,7 +549,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Joint embedding spaces",
     blurb: "Put images and text in the same space, and measure the distance between them.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "contrastive-learning",
