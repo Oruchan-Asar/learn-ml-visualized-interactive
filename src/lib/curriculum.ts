@@ -589,7 +589,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "A tiny image–text search engine",
     blurb: "Type a query, retrieve the matching image, using everything from this part.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 ];

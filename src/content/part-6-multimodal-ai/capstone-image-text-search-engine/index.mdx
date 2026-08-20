@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  Type a sentence, get back the photo it describes. That's the entire product — and every piece needed to build it was already built, one chapter at a time, earlier in this part.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Pick a query — the same three captions from Chapter 1, standing in for whatever a user might type. The engine embeds it, searches every image by distance in the shared space, and returns whichever one is closest. That's the whole search engine: an embedding, a nearest-neighbor scan, and a ranking.
+</Intuition>
+
+<Formalize>
+  Type a query $q$, embed it into the shared space (Chapters 1 and 2), and rank every image by distance:
+
+  $$
+  \text{results}(q) = \text{sort}_{\,\text{image} \in \text{index}}\; \lVert q - \text{image} \rVert
+  $$
+
+  There's no separate "search algorithm" beyond this. A real system indexes millions of images instead of three, and uses an approximate nearest-neighbor structure instead of scanning every one — but the underlying question, "which indexed vector sits closest to my query's vector," never changes.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Check the full ranking, not just the winner. Every query's true image wins by a margin of more than $2$ units over the runner-up — the same wide, unambiguous gap Chapter 1 first pointed out, now doing the actual job of a product feature instead of just illustrating a concept.
+</Play>
+
+<WorkedExample>
+  Query: "a bird flying," embedded at $(3.7, 0.4)$:
+
+  <Steps>
+    <Step label="Compute distance to every indexed image">
+      To the bird photo: $0.5$. To the dog photo: $3.11$. To the cat photo: $3.75$.
+    </Step>
+    <Step label="Sort and return the top result">
+      The bird photo wins by a margin of $3.11 - 0.5 = 2.61$ over the next-best result — the same
+      wide-margin pattern every query in this space produces.
+    </Step>
+    <Step label="This is the whole engine">
+      Embed the query (Chapters 1–2), rank by distance (Chapter 1), done. Everything else — a real text
+      encoder, a real image index, approximate search over millions of vectors — is engineering on top of
+      exactly this idea, not a different one.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapstoneCheckpoint />
+
+<Summary>
+  $$
+  \text{results}(q) = \text{sort}_{\,\text{image} \in \text{index}}\; \lVert q - \text{image} \rVert
+  $$
+
+  Every chapter in this part fed into this one: a shared space to make text and images comparable (Chapter 1), a loss that places that space without hand labels (Chapter 2), attention to connect the two modalities at a finer grain than "whole image vs. whole caption" (Chapters 3–4), and retrieval to ground an answer in something looked up rather than merely remembered (Chapter 5). None of it required a new kind of mathematics — every formula in this part was a derivative, a softmax, or a distance, applied across a boundary between two different kinds of data instead of within one.
+</Summary>
