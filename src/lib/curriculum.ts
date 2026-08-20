@@ -777,7 +777,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "ResNet & residual connections",
     blurb: "Stack convolutions past the point where a plain CNN stops learning at all, and watch a skip connection save it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "variational-autoencoders",
