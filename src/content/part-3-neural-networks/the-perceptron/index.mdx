@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, PerceptronCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,9 +28,25 @@ import { IntuitionDemo, PlayDemo, PerceptronCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  Starting at $w=(0,0)$, $b=0$, the first point $(3,6)$ is class A (label $-1$), but $\text{sign}(0) = +1$ — wrong. The update: $w \leftarrow (0,0) + 1\cdot(-1)\cdot(3,6) = (-3,-6)$, $b \leftarrow 0 + 1\cdot(-1) = -1$.
+  Starting at $w=(0,0)$, $b=0$:
 
-  The next three points are already correctly classified by this new line — no change. Point five, $(5,4)$, is class B ($+1$), but the current line predicts $-1$ — wrong again: $w \leftarrow (-3,-6) + (5,4) = (2,-2)$, $b \leftarrow -1+1=0$. From here, all eight points — checked again in a full second pass — are already correct. Just two corrections, out of sixteen checks, and it's converged to $w=(2,-2)$, $b=0$: the line $y=x$.
+  <Steps>
+    <Step label="First point — a mistake">
+      $(3,6)$ is class A (label $-1$), but $\text{sign}(0) = +1$ — wrong. The update:
+      $w \leftarrow (0,0) + 1\cdot(-1)\cdot(3,6) = (-3,-6)$, $b \leftarrow 0 + 1\cdot(-1) = -1$.
+    </Step>
+    <Step label="Next three points — no change">
+      Already correctly classified by this new line.
+    </Step>
+    <Step label="Point five — another mistake">
+      $(5,4)$ is class B ($+1$), but the current line predicts $-1$ — wrong again:
+      $w \leftarrow (-3,-6) + (5,4) = (2,-2)$, $b \leftarrow -1+1=0$.
+    </Step>
+    <Step label="Converged">
+      From here, all eight points — checked again in a full second pass — are already correct. Just two
+      corrections, out of sixteen checks, and it's converged to $w=(2,-2)$, $b=0$: the line $y=x$.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <PerceptronCheckpoint />

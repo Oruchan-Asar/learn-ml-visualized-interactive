@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 
 <Hook>
@@ -26,7 +26,18 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  From this network's particular random start, a single epoch of training barely moves the loss. By epoch 400 it's down to about $0.087$; by epoch 800, about $0.006$ — and every one of the four points is already on the correct side of $0.5$. The hidden layer is what makes this possible at all: each of its four neurons draws its *own* straight line through the input space, and the output layer combines those four lines into a boundary no single line could ever be.
+  <Steps>
+    <Step label="Watch the loss over training">
+      From this network's particular random start, a single epoch barely moves the loss. By epoch 400 it's down to
+      about $0.087$; by epoch 800, about $0.006$ — and every one of the four points is already on the correct side
+      of $0.5$.
+    </Step>
+    <Step label="See what makes it possible">
+      The hidden layer is what makes this possible at all: each of its four neurons draws its *own* straight line
+      through the input space, and the output layer combines those four lines into a boundary no single line could
+      ever be.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <CapstoneCheckpoint />

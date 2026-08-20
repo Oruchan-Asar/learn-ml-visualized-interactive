@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ForwardPassCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,23 @@ import { IntuitionDemo, PlayDemo, ForwardPassCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At $(x_1, x_2) = (2, 2)$: neuron A ($w=(1,-1)$, $b=0$) computes $z = 2 - 2 = 0$, so $\text{ReLU}(0) = 0$. Neuron B ($w=(0.5,0.5)$, $b=-1$) computes $z = 1+1-1 = 1$, so its output is $1$. Neuron C ($w=(-1,2)$, $b=0.5$) computes $z = -2+4+0.5 = 2.5$, output $2.5$. Same $(x_1,x_2)$, fed through three different weight vectors, three completely different answers — that's the entire forward pass.
+  At $(x_1, x_2) = (2, 2)$:
+
+  <Steps>
+    <Step label="Neuron A: w = (1, -1), b = 0">
+      $z = 2 - 2 = 0$, so $\text{ReLU}(0) = 0$.
+    </Step>
+    <Step label="Neuron B: w = (0.5, 0.5), b = -1">
+      $z = 1+1-1 = 1$, so its output is $1$.
+    </Step>
+    <Step label="Neuron C: w = (-1, 2), b = 0.5">
+      $z = -2+4+0.5 = 2.5$, output $2.5$.
+    </Step>
+    <Step label="Compare the three">
+      Same $(x_1,x_2)$, fed through three different weight vectors, three completely different answers — that's
+      the entire forward pass.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <ForwardPassCheckpoint />

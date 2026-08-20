@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BatchNormCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,19 @@ import { IntuitionDemo, PlayDemo, BatchNormCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At scale $0.05$, six layers without batch norm shrink the RMS activation from about $1$ down to under $10^{-5}$ — dead, exactly as in Chapter 8. Insert batch normalization after each layer instead, and every single layer's RMS activation comes out within about $0.5\%$ of exactly $1$ — at *every* scale tried, from $0.05$ all the way to $1.0$. The five-scale spread in final-layer RMS with batch norm is under $0.05$, compared to nine orders of magnitude without it.
+  <Steps>
+    <Step label="Without batch norm, at scale 0.05">
+      Six layers shrink the RMS activation from about $1$ down to under $10^{-5}$ — dead, exactly as in Chapter 8.
+    </Step>
+    <Step label="With batch norm, at every scale tried">
+      Insert batch normalization after each layer instead, and every single layer's RMS activation comes out
+      within about $0.5\%$ of exactly $1$ — from $0.05$ all the way to $1.0$.
+    </Step>
+    <Step label="Compare the spread">
+      The five-scale spread in final-layer RMS with batch norm is under $0.05$, compared to nine orders of
+      magnitude without it.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <BatchNormCheckpoint />

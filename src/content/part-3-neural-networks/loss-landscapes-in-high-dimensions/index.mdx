@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, LandscapeCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,7 +22,21 @@ import { IntuitionDemo, PlayDemo, LandscapeCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  Treat each of $n$ dimensions at a flat point as an independent coin flip: does the function curve up or down along that direction? A true minimum needs *every* coin to land "up." With fair coins, that probability is $(1/2)^n$ — exactly $0.5$ in 1D, $0.25$ in 2D, but already under $1\%$ by 7 dimensions, and under one in a million by 20. Real networks have millions of dimensions. Almost every flat point gradient descent finds is a saddle, not a trap — and saddles have at least one escape direction, which is exactly what noisy, non-exact gradients (Chapter 5 of Part II) are good at stumbling onto.
+  <Steps>
+    <Step label="Model each dimension as a coin flip">
+      Treat each of $n$ dimensions at a flat point as an independent coin flip: does the function curve up or down
+      along that direction? A true minimum needs *every* coin to land "up."
+    </Step>
+    <Step label="Compute the probability as n grows">
+      With fair coins, that probability is $(1/2)^n$ — exactly $0.5$ in 1D, $0.25$ in 2D, but already under $1\%$
+      by 7 dimensions, and under one in a million by 20.
+    </Step>
+    <Step label="Apply it to real networks">
+      Real networks have millions of dimensions. Almost every flat point gradient descent finds is a saddle, not a
+      trap — and saddles have at least one escape direction, which is exactly what noisy, non-exact gradients
+      (Chapter 5 of Part II) are good at stumbling onto.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <LandscapeCheckpoint />

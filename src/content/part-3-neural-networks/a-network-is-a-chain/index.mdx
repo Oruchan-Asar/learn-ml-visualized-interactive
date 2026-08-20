@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ChainCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,9 +28,25 @@ import { IntuitionDemo, PlayDemo, ChainCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At $x=0.5$: $w_1 x + b_1 = 2(0.5)-1 = 0$, so $h = \sigma(0) = 0.5$ and $\frac{dh}{dx} = \sigma'(0)\cdot w_1 = 0.25 \cdot 2 = 0.5$. Then $w_2 h + b_2 = -3(0.5)+1 = -0.5$, so $\frac{dy}{dh} = \sigma'(-0.5)\cdot w_2 \approx 0.235 \cdot (-3) = -0.705$.
+  At $x=0.5$:
 
-  Multiplying: $\frac{dy}{dx} = -0.705 \times 0.5 = -0.353$ — matching the tangent line exactly at that point, and matching a plain numerical derivative to five decimal places.
+  <Steps>
+    <Step label="Compute the first neuron's output and slope">
+      $w_1 x + b_1 = 2(0.5)-1 = 0$, so $h = \sigma(0) = 0.5$ and
+      $\frac{dh}{dx} = \sigma'(0)\cdot w_1 = 0.25 \cdot 2 = 0.5$.
+    </Step>
+    <Step label="Compute the second neuron's slope, at h">
+      $w_2 h + b_2 = -3(0.5)+1 = -0.5$, so $\frac{dy}{dh} = \sigma'(-0.5)\cdot w_2 \approx 0.235 \cdot (-3) = -0.705$.
+    </Step>
+    <Step label="Multiply the two slopes together">
+      $$
+      \frac{dy}{dx} = -0.705 \times 0.5 = -0.353
+      $$
+
+      Matching the tangent line exactly at that point, and matching a plain numerical derivative to five decimal
+      places.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <ChainCheckpoint />

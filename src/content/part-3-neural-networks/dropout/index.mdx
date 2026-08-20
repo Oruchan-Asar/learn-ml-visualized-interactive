@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DropoutCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,21 @@ import { IntuitionDemo, PlayDemo, DropoutCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  Averaged over 200,000 independent random draws at $p=0.5$, the mean output lands within about 1% of the true undropped value — confirming the unbiasedness the rescaling is designed to guarantee. But any *single* draw can differ from the true value by more than the true value's own size: dropout genuinely injects substantial per-step noise. That noise is the point — a network trained this way can't rely on any specific neuron or fixed combination of neurons always being present, so it's forced to spread what it learns across many redundant paths instead of memorizing through one fragile one.
+  <Steps>
+    <Step label="Average many random draws">
+      Over 200,000 independent draws at $p=0.5$, the mean output lands within about 1% of the true undropped value
+      — confirming the unbiasedness the rescaling is designed to guarantee.
+    </Step>
+    <Step label="Look at a single draw instead">
+      Any *single* draw can differ from the true value by more than the true value's own size: dropout genuinely
+      injects substantial per-step noise.
+    </Step>
+    <Step label="See why that noise is the point">
+      A network trained this way can't rely on any specific neuron or fixed combination of neurons always being
+      present, so it's forced to spread what it learns across many redundant paths instead of memorizing through
+      one fragile one.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <DropoutCheckpoint />

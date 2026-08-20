@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, OptimizersCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,22 @@ import { IntuitionDemo, PlayDemo, OptimizersCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  At the very first step from $(4,1)$ on $f(x,y)=x^2+10y^2$: the gradient is $(8,20)$. RMSProp's very first update, before its running average has accumulated any history, reduces to $\eta \cdot \text{sign}(g)/\sqrt{1-\beta}$ on each axis — with $\eta=0.3$, $\beta=0.9$, that's a step of $0.3/\sqrt{0.1}\approx0.949$ on *both* axes despite the gradient being $2.5\times$ larger in $y$ than $x$. That's the entire point: RMSProp actively cancels out the difference in steepness between directions, something plain gradient descent and momentum never do.
+  At the very first step from $(4,1)$ on $f(x,y)=x^2+10y^2$:
+
+  <Steps>
+    <Step label="Find the gradient">
+      $(8,20)$ — $2.5\times$ larger in $y$ than $x$.
+    </Step>
+    <Step label="Compute RMSProp's first update">
+      Before its running average has accumulated any history, the update reduces to
+      $\eta \cdot \text{sign}(g)/\sqrt{1-\beta}$ on each axis — with $\eta=0.3$, $\beta=0.9$, that's a step of
+      $0.3/\sqrt{0.1}\approx0.949$ on *both* axes.
+    </Step>
+    <Step label="See what that means">
+      RMSProp actively cancels out the difference in steepness between directions, something plain gradient
+      descent and momentum never do.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <OptimizersCheckpoint />

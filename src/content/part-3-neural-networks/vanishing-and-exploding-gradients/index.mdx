@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, VanishingCheckpoint } from "./Demos";
 
 <Hook>
@@ -28,7 +28,21 @@ import { IntuitionDemo, PlayDemo, VanishingCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  With weight $w=3$ and a single layer: $\sigma'(z_0)\cdot w$ is at most $0.25\times3=0.75$, so even the very first backward step shrinks the gradient. By depth 6, the gradient reaching the input is about $3.6\times10^{-6}$ — already roughly four orders of magnitude smaller than the loss gradient at the output, $\approx0.056$. One more layer and it drops under $10^{-6}$ entirely: for practical purposes, that weight has stopped learning.
+  With weight $w=3$:
+
+  <Steps>
+    <Step label="Check a single layer">
+      $\sigma'(z_0)\cdot w$ is at most $0.25\times3=0.75$, so even the very first backward step shrinks the
+      gradient.
+    </Step>
+    <Step label="Follow it to depth 6">
+      The gradient reaching the input is about $3.6\times10^{-6}$ — already roughly four orders of magnitude
+      smaller than the loss gradient at the output, $\approx0.056$.
+    </Step>
+    <Step label="One layer further">
+      It drops under $10^{-6}$ entirely: for practical purposes, that weight has stopped learning.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <VanishingCheckpoint />

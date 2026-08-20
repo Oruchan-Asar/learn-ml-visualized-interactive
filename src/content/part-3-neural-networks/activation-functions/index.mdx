@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ActivationCheckpoint } from "./Demos";
 
 <Hook>
@@ -31,7 +31,17 @@ import { IntuitionDemo, PlayDemo, ActivationCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  Tanh isn't a fourth independent shape — it's sigmoid, rescaled: $\tanh(x) = 2\sigma(2x)-1$. At $x=1$: $\sigma(2) = 1/(1+e^{-2}) \approx 0.881$, and $2(0.881)-1 = 0.762$ — exactly $\tanh(1)$. Sigmoid ranges over $(0,1)$; tanh stretches and shifts that same curve to range over $(-1,1)$.
+  Tanh isn't a fourth independent shape — it's sigmoid, rescaled: $\tanh(x) = 2\sigma(2x)-1$.
+
+  <Steps>
+    <Step label="Evaluate sigmoid at 2x">
+      At $x=1$: $\sigma(2) = 1/(1+e^{-2}) \approx 0.881$.
+    </Step>
+    <Step label="Rescale it into tanh's range">
+      $2(0.881)-1 = 0.762$ — exactly $\tanh(1)$. Sigmoid ranges over $(0,1)$; tanh stretches and shifts that same
+      curve to range over $(-1,1)$.
+    </Step>
+  </Steps>
 </WorkedExample>
 
 <ActivationCheckpoint />
