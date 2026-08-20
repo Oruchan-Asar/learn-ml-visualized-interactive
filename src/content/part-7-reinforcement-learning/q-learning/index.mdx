@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, QLearningCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter's value function came from a policy you were simply handed — "always move right" was given, not discovered. Q-learning is the algorithm that discovers a good policy on its own, from nothing but a table of zeros and a sequence of moves.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Instead of one value per state, Q-learning tracks one value per *state-action pair* — $Q(s,a)$, "how good is it to take action $a$ from state $s$?" Step through this fixed sequence of moves and watch individual entries in that table update, one at a time, from a starting table of all zeros.
+</Intuition>
+
+<Formalize>
+  After taking action $a$ from state $s$, landing in $s'$ with reward $r$, the **Q-learning update** nudges $Q(s,a)$ toward a target built from the *best* action available next:
+
+  $$
+  Q(s,a) \leftarrow Q(s,a) + \alpha\Big(r + \gamma \max_{a'} Q(s',a') - Q(s,a)\Big)
+  $$
+
+  The term in parentheses is a **temporal-difference error** — the gap between what $Q(s,a)$ currently predicts and a slightly better estimate built from one real step of experience plus the table's own best guess about what happens after. $\alpha$ controls how much of that gap gets corrected on any one update — exactly a learning rate, doing exactly what a learning rate does in every other optimizer in this course.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  After all six scripted steps, $Q(2,\text{right})$ already shows $5$ — a real signal that reaching the goal from state 2 is good. Everything one state further back is still negative: the reward hasn't had enough steps yet to propagate that far through the table. Run more steps, and it eventually would.
+</Play>
+
+<WorkedExample>
+  With $\alpha=0.5$, $\gamma=0.9$, starting from an all-zero table:
+
+  <Steps>
+    <Step label="An update with no signal yet">
+      From $S_0$, taking "right" lands on $S_1$ with reward $-1$, and $\max_{a'}Q(S_1,a')=0$ (nothing learned
+      there yet). $Q(S_0,\text{right}) \leftarrow 0 + 0.5(-1+0.9(0)-0) = -0.5$.
+    </Step>
+    <Step label="The moment the goal is reached">
+      Three steps later, from $S_2$, "right" reaches the goal directly: reward $+10$, and the goal has no
+      further actions, so $\max_{a'}Q(S_3,a')=0$. $Q(S_2,\text{right}) \leftarrow 0 + 0.5(10+0.9(0)-0) = 5$ —
+      a single update jumps straight to a strongly positive value.
+    </Step>
+    <Step label="One step back, still catching up">
+      $Q(S_1,\text{right})$ was updated twice — first to $-0.5$, then, using $\max_{a'}Q(S_2,a')$ which was
+      *still $0$ at that moment* (the update at $S_2$ hadn't happened yet), it moves to $-0.75$: further from
+      the goal's value, not closer, purely because of the order the updates happened in.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<QLearningCheckpoint />
+
+<Summary>
+  $$
+  Q(s,a) \leftarrow Q(s,a) + \alpha\Big(r + \gamma \max_{a'} Q(s',a') - Q(s,a)\Big)
+  $$
+
+  Q-learning discovers a policy by discovering *values* first — once every $Q(s,a)$ has converged, the best policy is just "take whichever action has the highest $Q$ from here." No policy was ever specified up front; it falls out of the table once enough experience has passed through the same update rule, over and over. The next chapter takes a completely different approach to the same problem: instead of learning values and deriving a policy from them, learn the policy directly.
+</Summary>

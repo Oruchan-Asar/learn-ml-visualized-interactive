@@ -616,7 +616,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Q-learning",
     blurb: "Update a table of action-values step by step, and watch a policy emerge that nobody programmed by hand.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "policy-gradient-methods",
