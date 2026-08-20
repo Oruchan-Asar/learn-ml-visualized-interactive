@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, HyperparameterTuningCheckpoint } from "./Demos";
+
+<Hook>
+  Since Part II you've dragged the learning-rate slider by hand, watching for the value that converges fastest without blowing up. What if, instead of dragging it yourself, you just tried every candidate and let the numbers pick the winner?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same starting point, same loss, same fixed budget of 20 steps — only the learning rate changes. Step through the candidates and watch identical mechanics produce a slow crawl, a perfect landing, an endless bounce, or a runaway explosion.
+</Intuition>
+
+<Formalize>
+  A **hyperparameter** is a setting chosen *before* training — not learned from data, but fixed in advance and left for you to pick. **Grid search** turns picking into search: define a set of candidate values, run the full training procedure once per candidate, and keep whichever one scores best on held-out data (the same evaluation machinery built in the last two chapters).
+
+  $$
+  \text{best} = \arg\min_{\eta \,\in\, \{\eta_1, \dots, \eta_n\}} \text{loss}\big(\text{train}(\eta)\big)
+  $$
+
+  It's exhaustive and it's dumb — nothing here is smarter than you dragging the slider — but it never gets tired, never misses a candidate you forgot to try, and never fools itself into stopping at a "good enough" value it found first.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Six learning rates, one 20-step training run apiece. Most land somewhere between "still far off" and "essentially perfect." One lands on the minimum exactly. One never improves at all. One detonates. Grid search doesn't need to understand *why* — it just measures every outcome and reports the winner.
+</Play>
+
+<WorkedExample>
+  Minimizing $f(x) = (x-3)^2$ from $x_0=0$, 20 steps, six candidate learning rates $\eta$:
+
+  <Steps>
+    <Step label="Too small crawls, symmetric rates tie">
+      $\eta=0.01$ leaves loss $\approx 4.01$ after 20 steps — still visibly short of the minimum. $\eta=0.1$ and
+      $\eta=0.9$ are mirror images of each other around the ideal rate and land on the *exact same* final loss,
+      $\approx 0.0012$, by symmetry: $|1-2\eta|$ is $0.8$ either way.
+    </Step>
+    <Step label="The exact rate lands in one step">
+      For this quadratic, $\eta=0.5=\tfrac{1}{2a}$ (where $a=1$ is the curve's steepness) satisfies $1-2\eta=0$ —
+      the update jumps straight to $x=3$ on step one and stays there. Loss $=0$, not approximately, exactly.
+    </Step>
+    <Step label="Too large stalls, too much larger explodes">
+      $\eta=1.0$ gives $1-2\eta=-1$: the update overshoots to $x=6$, back to $x=0$, forever — the loss never
+      improves past its starting value of $9$. $\eta=1.1$ pushes $|1-2\eta|$ past $1$: the point sails further
+      from the minimum every step, ending 20 steps later with loss over $13{,}000$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<HyperparameterTuningCheckpoint />
+
+<Summary>
+  $$
+  \text{best} = \arg\min_{\eta} \text{loss}\big(\text{train}(\eta)\big)
+  $$
+
+  Grid search is the least clever way to tune a hyperparameter — try everything, keep the best — and that's exactly why it works: it doesn't need to know that $\eta=0.5$ is special for this particular curve, only that it scored lowest. The same idea scales to any hyperparameter this course has quietly fixed by hand: $k$ in k-nearest neighbors, $\varepsilon$ in DBSCAN, the number of trees in a forest. The next chapter turns to a different kind of choice — not a setting on the model, but a transformation of the data itself, before any model ever sees it.
+</Summary>

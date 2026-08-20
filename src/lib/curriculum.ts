@@ -734,7 +734,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Hyperparameter tuning",
     blurb: "Automate the very slider you've been dragging by hand since Part II, and watch a grid search find it faster.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "feature-engineering-and-scaling",
