@@ -339,7 +339,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 12,
     title: "Train a tiny network live, in-browser",
     blurb: "Watch a decision boundary evolve epoch by epoch on real (small) data.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 

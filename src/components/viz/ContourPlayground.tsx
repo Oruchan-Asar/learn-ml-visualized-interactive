@@ -22,6 +22,8 @@ export interface ContourPlaygroundProps {
   trail?: { x: number; y: number }[];
   /** Additional non-interactive point+trail overlays, e.g. other optimizers racing on the same field. */
   extraSeries?: { point: { x: number; y: number }; trail?: { x: number; y: number }[]; colorClass: "accent2" | "ink" }[];
+  /** A fixed labeled dataset overlaid on the field, e.g. training points for a classifier's decision boundary. */
+  labeledPoints?: { x: number; y: number; label: string }[];
 }
 
 const DEFAULT_DOMAIN: [number, number] = [-6, 6];
@@ -39,6 +41,7 @@ export function ContourPlayground({
   passed = false,
   trail,
   extraSeries,
+  labeledPoints,
 }: ContourPlaygroundProps) {
   const margin = 16;
   const [dMin, dMax] = domain;
@@ -168,6 +171,19 @@ export function ContourPlayground({
             fillOpacity={c.opacity}
           />
         ))}
+
+        {labeledPoints?.map((p, i) => {
+          const firstLabel = labeledPoints[0].label;
+          return (
+            <circle
+              key={i}
+              cx={scaleX(p.x)}
+              cy={scaleY(p.y)}
+              r={7}
+              className={p.label === firstLabel ? styles.labeledPointA : styles.labeledPointB}
+            />
+          );
+        })}
 
         {trail?.map((p, i) => (
           <circle

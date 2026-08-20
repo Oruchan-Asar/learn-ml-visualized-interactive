@@ -44,6 +44,17 @@
   stroke-width: 2;
 }
 
+.labeledPointA {
+  fill: var(--accent);
+  stroke: var(--paper-raised);
+  stroke-width: 2;
+}
+.labeledPointB {
+  fill: var(--ink);
+  stroke: var(--paper-raised);
+  stroke-width: 2;
+}
+
 .arrowLine {
   stroke: var(--ink-soft);
   stroke-width: 2.5;

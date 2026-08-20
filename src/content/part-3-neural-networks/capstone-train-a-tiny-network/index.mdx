@@ -1,0 +1,36 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 1 of this part built a perceptron — a single neuron drawing one straight line. Here are four points a single straight line can never separate. Can a whole network do what one neuron can't?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is XOR: $(0,0)$ and $(1,1)$ are one class, $(0,1)$ and $(1,0)$ are the other — diagonal pairs, impossible for any line to separate. Click train and watch the shaded region fold itself around the two "on" corners, something a single neuron's straight boundary could never do.
+</Intuition>
+
+<Formalize>
+  Every piece is one you've already built in this part: a forward pass through a hidden layer (Chapter 3), backprop computing every weight's gradient (Chapter 5), gradient descent applying the update (Part I). The network here is tiny — 2 inputs, 4 hidden neurons, 1 output, all sigmoid — but the training loop is exactly the same loop that trains networks a billion times its size:
+
+  $$
+  \text{forward} \to \text{loss} \to \text{backward} \to \text{update} \to \text{repeat}
+  $$
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the four individual outputs, not just the picture. Two need to climb toward $1$, two need to fall toward $0$ — and they all move together, epoch after epoch, driven by the exact same backward pass computing all of their gradients at once.
+</Play>
+
+<WorkedExample>
+  From this network's particular random start, a single epoch of training barely moves the loss. By epoch 400 it's down to about $0.087$; by epoch 800, about $0.006$ — and every one of the four points is already on the correct side of $0.5$. The hidden layer is what makes this possible at all: each of its four neurons draws its *own* straight line through the input space, and the output layer combines those four lines into a boundary no single line could ever be.
+</WorkedExample>
+
+<CapstoneCheckpoint />
+
+<Summary>
+  Eleven chapters, one small network: activation functions gave it something other than a hard step to squash with, the forward pass showed how one layer's output feeds the next, backprop showed how to get a gradient for every weight at once, and everything from optimizers to dropout was about making that same basic loop work reliably at real scale. The tiny XOR network here and a network with a billion parameters run the identical loop — Part IV starts asking what happens when you make the *pieces themselves* more specialized, starting with images.
+</Summary>
