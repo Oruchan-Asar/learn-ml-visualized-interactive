@@ -1,0 +1,65 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GradCamCheckpoint } from "./Demos";
+
+<Hook>
+  A saliency map scores every pixel independently — 36 separate numbers for a 6×6 image. Grad-CAM asks a coarser, more targeted question instead: which *regions* did the convolution layer's own feature map actually rely on, for *this specific class*?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is the same minimal CNN's 4×4 feature map after ReLU — the exact tensor that gets pooled and fed to the dense layer. Grad-CAM reweights this map by how much each of its cells actually mattered to the predicted class, then clips anything left negative to zero.
+</Intuition>
+
+<Formalize>
+  Grad-CAM has two steps. First, weight each feature-map channel by how much it mattered to class $c$'s logit — averaging that channel's gradient over every spatial location:
+
+  $$
+  \alpha_k^c = \frac{1}{HW}\sum_{i,j} \frac{\partial y^c}{\partial A^k_{ij}}
+  $$
+
+  Then combine the channels using those weights, and clip to only the *positive* evidence:
+
+  $$
+  \text{Grad-CAM}^c = \text{ReLU}\!\left(\sum_k \alpha_k^c A^k\right)
+  $$
+
+  With only one convolution filter, there's just one channel $k$, so $\alpha^c$ collapses to a single number — but that number still depends on *which class* $c$ you ask about, which is exactly what makes Grad-CAM class-discriminative instead of a fixed, class-blind map.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch classes. The weight flips from $+0.5$ to $-0.5$ — same feature map, opposite sign — because "Edge detected" and "No edge" read the identical evidence with opposite-signed dense weights. Watch what that does to the CAM itself once ReLU is applied.
+</Play>
+
+<WorkedExample>
+  The feature map is $\begin{pmatrix}0&0&3&3\end{pmatrix}$ in every one of its 4 rows — the same tied activations from the saliency chapter, one level before pooling:
+
+  <Steps>
+    <Step label="The channel weight, for each class">
+      Every cell's gradient works out to exactly $\pm0.5$ (positive for "Edge detected," negative for "No
+      edge"), so averaging over all 16 cells just gives back $\pm0.5$ — the channel weight is $\alpha^{\text{edge}} = 0.5$
+      and $\alpha^{\text{no edge}} = -0.5$.
+    </Step>
+    <Step label="Grad-CAM for 'Edge detected'">
+      $\text{ReLU}(0.5 \times \begin{pmatrix}0&0&3&3\end{pmatrix}) = \begin{pmatrix}0&0&1.5&1.5\end{pmatrix}$ —
+      the two right-hand columns, exactly where the edge evidence lives.
+    </Step>
+    <Step label="Grad-CAM for 'No edge'">
+      $\text{ReLU}(-0.5 \times \begin{pmatrix}0&0&3&3\end{pmatrix}) = \text{ReLU}\begin{pmatrix}0&0&-1.5&-1.5\end{pmatrix} = \begin{pmatrix}0&0&0&0\end{pmatrix}$
+      — completely zero. There's no region of this image that positively supports "no edge," so ReLU throws
+      all of it away.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GradCamCheckpoint />
+
+<Summary>
+  $$
+  \alpha_k^c = \frac{1}{HW}\sum_{i,j} \frac{\partial y^c}{\partial A^k_{ij}}, \qquad \text{Grad-CAM}^c = \text{ReLU}\!\left(\sum_k \alpha_k^c A^k\right)
+  $$
+
+  Grad-CAM trades saliency's pixel-level precision for something a real, many-channel CNN needs: a way to ask "where, and for *which class*." In a network with hundreds of filters, most channels are irrelevant to any one class — the weighting step is what picks out the handful that actually matter, before painting a coarse heatmap back onto the image. The next two chapters leave images behind entirely and explain a prediction the same way regardless of what kind of model produced it.
+</Summary>

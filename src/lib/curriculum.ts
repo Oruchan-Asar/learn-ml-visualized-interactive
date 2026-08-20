@@ -498,7 +498,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Grad-CAM",
     blurb: "See what a CNN was visually \"looking at\" the moment it decided.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "lime",
