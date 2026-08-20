@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, BertCheckpoint } from "./Demos";
+
+<Hook>
+  Predicting the next word only ever looks left. But "the ___ sat" has a word missing from the *middle* — and the word after the blank, "sat", carries real information a left-to-right model can never use to fill it in.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The same masked word, the same attention mechanism from Part IV — the only thing that changes is which tokens are allowed to be seen. Toggle between a model that only looks left and one that looks both ways, and watch the reconstruction error change.
+</Intuition>
+
+<Formalize>
+  **Masked language modeling** hides a token and asks a model to reconstruct it from context. A **causal** (left-to-right) model restricts attention to only the tokens before the mask:
+
+  $$
+  \text{causal: attend over } \{t_j : j < i\} \qquad \text{bidirectional: attend over } \{t_j : j \neq i\}
+  $$
+
+  BERT uses the second form. Since there's no autoregressive generation step to protect — the whole point is reconstructing a token that's already there — nothing stops the model from using tokens on *both* sides. That's the entire architectural difference from a GPT-style model: which half of the sentence is allowed to inform each prediction.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  "the [MASK] sat" — reconstructing the hidden middle word using attention over the visible tokens. The causal version can only ever see "the"; the bidirectional version sees "the" *and* "sat" and blends both into its guess.
+</Play>
+
+<WorkedExample>
+  Tokens "the" $=(2,0)$, "cat" $=(0,2)$ (masked), "sat" $=(1,1)$, with a generic mask query $(1,1)$:
+
+  <Steps>
+    <Step label="Causal: only the left context exists">
+      With no visible token but "the", attention collapses to weight $1$ on it: the prediction is exactly
+      "the"'s vector, $(2,0)$. Squared error against the true "cat" vector $(0,2)$: $2^2+2^2=8$.
+    </Step>
+    <Step label="Bidirectional: both sides, scored equally">
+      "the" and "sat" score identically against the mask query — $(1\!\cdot\!2+1\!\cdot\!0)/\sqrt2 =
+      (1\!\cdot\!1+1\!\cdot\!1)/\sqrt2$ — so softmax splits attention exactly $0.5/0.5$. The prediction becomes
+      their average, $(1.5, 0.5)$.
+    </Step>
+    <Step label="Using both directions nearly halves the error">
+      Squared error for the bidirectional prediction: $(1.5-0)^2+(0.5-2)^2 = 2.25+2.25=4.5$ — worse than a perfect
+      reconstruction, but a real improvement over the causal model's $8$, purely from being allowed to see "sat"
+      as well as "the".
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<BertCheckpoint />
+
+<Summary>
+  $$
+  \text{causal: only } j<i \qquad\Rightarrow\qquad \text{bidirectional: every } j\neq i \text{, error } 4.5 \text{ vs } 8
+  $$
+
+  BERT's core idea isn't a new attention mechanism — it's the same self-attention from Part IV, just unrestricted in which tokens can talk to which. Removing the left-to-right constraint costs the ability to generate text one token at a time (there's no "next word" to predict when every position already sees everything), but wins a strictly richer context for tasks like this one, where filling in a blank is the whole point. The next chapter takes the same self-attention mechanism somewhere it was never designed for: an image, with no sequence to speak of at all.
+</Summary>

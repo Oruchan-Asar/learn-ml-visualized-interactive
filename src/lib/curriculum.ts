@@ -793,7 +793,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "BERT & masked language modeling",
     blurb: "Hide a word in the middle of a sentence and watch a model reconstruct it from both directions at once.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "vision-transformers",
