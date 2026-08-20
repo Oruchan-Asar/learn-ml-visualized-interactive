@@ -632,7 +632,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Reinforcement learning from human feedback",
     blurb: "Turn a handful of \"this one's better\" comparisons into a reward signal a policy can actually climb.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-train-an-agent-in-a-gridworld",
