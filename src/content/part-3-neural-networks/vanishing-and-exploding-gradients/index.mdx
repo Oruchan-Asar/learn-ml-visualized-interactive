@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, VanishingCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 8 asked whether the forward pass survives depth. Backprop has to travel the exact same distance in reverse — does the gradient survive the trip?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is a chain of sigmoid layers, same weight repeated at every layer. Drag depth up and watch the gradient reaching the input drop — not by a little each layer, but by roughly two more orders of magnitude every single time.
+</Intuition>
+
+<Formalize>
+  Going backward one layer multiplies the gradient by $\sigma'(z)\cdot w$ — Chapter 5's chain rule, once per layer. Sigmoid's derivative peaks at exactly $0.25$ and is smaller everywhere else:
+
+  $$
+  \frac{\partial L}{\partial h_{i-1}} = \frac{\partial L}{\partial h_i}\cdot \sigma'(z_i)\cdot w
+  $$
+
+  Multiply a number smaller than $1$ by itself ten times and it's gone. Unlike Chapter 8's forward pass, there's no weight scale that fixes this for sigmoid — a bigger $w$ pushes $z$ further from $0$, which makes $\sigma'(z)$ *even smaller*, not larger. Sigmoid's derivative is capped at $0.25$, so this particular chain can only ever shrink going backward. The mirror-image failure — *exploding* gradients — shows up instead in linear or ReLU layers with large weights, where nothing caps that per-layer factor above $1$; it's the exact same backward multiplication as Chapter 8's forward one, just run in reverse.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Slide from a shallow to a deep chain. Five layers in, the gradient is already down around $10^{-5}$; by ten layers it's below $10^{-9}$ — utterly unusable for updating a weight that far back. This is the **vanishing gradient problem**, and it's exactly why sigmoid fell out of favor as networks got deep.
+</Play>
+
+<WorkedExample>
+  With weight $w=3$ and a single layer: $\sigma'(z_0)\cdot w$ is at most $0.25\times3=0.75$, so even the very first backward step shrinks the gradient. By depth 6, the gradient reaching the input is about $3.6\times10^{-6}$ — already six orders of magnitude smaller than the loss gradient at the output. One more layer and it drops under $10^{-6}$ entirely: for practical purposes, that weight has stopped learning.
+</WorkedExample>
+
+<VanishingCheckpoint />
+
+<Summary>
+  $$
+  \frac{\partial L}{\partial h_{i-1}} = \frac{\partial L}{\partial h_i}\cdot \sigma'(z_i)\cdot w
+  $$
+
+  A gradient that vanishes on the way back means the earliest layers of a deep network barely update at all — they're effectively frozen at their initial (random) values while only the last few layers learn anything. ReLU's derivative doesn't have this ceiling (it's exactly $1$ wherever the neuron is active), which is a large part of why it replaced sigmoid as the default choice once networks got deep.
+</Summary>

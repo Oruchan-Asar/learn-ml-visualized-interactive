@@ -315,7 +315,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 9,
     title: "Vanishing & exploding gradients",
     blurb: "Watch a gradient shrink toward zero or blow up as it travels backward through depth.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "batch-normalization",
