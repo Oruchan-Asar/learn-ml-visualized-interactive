@@ -608,7 +608,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Markov decision processes",
     blurb: "Drag an agent through a tiny gridworld and watch states, actions, and rewards formalize what it's doing.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "q-learning",

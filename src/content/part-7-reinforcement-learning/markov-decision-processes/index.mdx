@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MdpCheckpoint } from "./Demos";
+
+<Hook>
+  Every pull of a bandit's arm started the same way the last one did — there was no "situation" to carry from one pull to the next. What happens the moment an action doesn't just pay a reward, but also decides where you are for the *next* decision?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A row of four states, the last one a goal. Move left or right — each move costs $-1$, except the one that lands you on the goal, which pays $+10$. Unlike the bandit, your position now depends on every choice you've made so far, and every future choice depends on where those moves left you.
+</Intuition>
+
+<Formalize>
+  A **Markov decision process** is the tuple $(S, A, P, R, \gamma)$ — states, actions, a transition rule, a reward function, and a discount factor. For a fixed policy $\pi$, the **value** of a state is its expected discounted future reward, defined recursively by the **Bellman equation**:
+
+  $$
+  V^\pi(s) = R(s, \pi(s)) + \gamma\, V^\pi\big(P(s,\pi(s))\big)
+  $$
+
+  This is the exact same idea as Part I's chain rule — the value of *right now* depends on the value of *whatever comes next* — just unrolled over an action-dependent sequence of states instead of a fixed chain of functions.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Every state's value is highest closest to the goal and lower further away — not because those states are inherently better, but because $\gamma < 1$ discounts reward that takes longer to arrive. The value function is entirely a consequence of the policy and the discount, not something separately assigned to each state.
+</Play>
+
+<WorkedExample>
+  With $\gamma = 0.9$, under the policy "always move right":
+
+  <Steps>
+    <Step label="Start from the goal and work backward">
+      $V(3) = 0$ (nothing left to earn). $V(2) = 10 + 0.9(0) = 10$ — one move from $+10$.
+    </Step>
+    <Step label="Two states from the goal">
+      $V(1) = -1 + 0.9(10) = 8$. $V(0) = -1 + 0.9(8) = 6.2$.
+    </Step>
+    <Step label="A policy that never arrives">
+      Under "always move left," any state above $0$ eventually gets stuck bouncing at the boundary forever,
+      each bounce costing $-1$. Solving $V = -1 + 0.9V$ for a fixed point gives
+      $V = -1/(1-0.9) = -10$ — a genuinely worse value than even the very first state gets under "always
+      right."
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MdpCheckpoint />
+
+<Summary>
+  $$
+  V^\pi(s) = R(s, \pi(s)) + \gamma\, V^\pi\big(P(s,\pi(s))\big)
+  $$
+
+  Every value in this chapter came from a policy that was already fixed and handed to you — "always right" was simply given, not learned. The real question reinforcement learning exists to answer is the one this chapter sidesteps: which policy should an agent follow, when nobody tells it in advance? The next chapter is the first algorithm that actually learns the answer.
+</Summary>
