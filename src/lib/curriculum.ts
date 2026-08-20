@@ -358,7 +358,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Pooling",
     blurb: "Shrink a feature map on purpose, without losing what actually matters in it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "a-minimal-cnn",

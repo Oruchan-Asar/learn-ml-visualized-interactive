@@ -1,0 +1,42 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PoolingCheckpoint } from "./Demos";
+
+<Hook>
+  Convolution kept the image's spatial size almost intact — a 6×6 image gave a 4×4 feature map. Stack a few more filter layers on top of that and the numbers pile up fast. Something has to shrink.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This feature map has two detections: a strong one (6) in the top-left window, a weaker one (4) in the bottom-right. Toggle between max and average pooling. Max pooling reports the 6 exactly — it just asks "was this feature detected anywhere in the window?" Average pooling reports 3 — it blends the strong detection with the zeros around it, and the signal gets weaker just from being averaged.
+</Intuition>
+
+<Formalize>
+  Pooling slides a window across a feature map like convolution does, but instead of a learned dot product it applies a fixed reduction — usually the max or the mean — to every value in the window:
+
+  $$
+  \text{maxpool}(r,c) = \max_{i,j} \ \text{feature}(r{\cdot}s+i,\ c{\cdot}s+j)
+  $$
+
+  where $s$ is the stride. A $2\times2$ window with stride $2$ turns this $4\times4$ feature map into a $2\times2$ one — a quarter of the values, chosen so nothing important gets thrown away.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Move the window to the bottom-right corner. Max pooling reports $4$ — the one real detection there survives untouched. Average pooling reports $1$ — a quarter of $4$, diluted by three zeros. Now check the other two windows: both poolings agree on $0$, because there's nothing there to lose in the first place. The disagreement only shows up exactly where there's a strong, localized signal — which is exactly why max pooling is the default choice after a convolution layer.
+</Play>
+
+<WorkedExample>
+  Top-left window, rows 0-1 and columns 0-1, holds the values $2, 2, 2, 6$. Max pooling takes $\max(2,2,2,6) = 6$ — the exact strength of the strongest detection, unchanged. Average pooling takes $\frac{2+2+2+6}{4} = 3$ — half of the true peak, because it's been averaged against three much smaller values. The bottom-right window, $4, 0, 0, 0$, tells the same story at a smaller scale: max reports $4$, average reports $\frac{4}{4}=1$.
+</WorkedExample>
+
+<PoolingCheckpoint />
+
+<Summary>
+  $$
+  \text{maxpool}(r,c) = \max_{i,j} \ \text{feature}(r{\cdot}s+i,\ c{\cdot}s+j)
+  $$
+
+  Pooling shrinks a feature map by a fixed, un-learned rule, trading spatial precision (exactly where in the window something was) for a smaller, more manageable representation — while max pooling keeps the actual strength of whatever was detected. The next chapter puts a filter layer and a pooling layer together, back to back, into the first real convolutional network.
+</Summary>
