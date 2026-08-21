@@ -107,7 +107,13 @@ export function ShipAssistantCheckpoint() {
           </button>
         ))}
       </div>
-      {result && <ContributionBars items={[{ label: "answer", value: result.answer }]} formatValue={(v) => v.toFixed(3)} />}
+      {result && (
+        <ContributionBars
+          items={[{ label: "answer", value: result.answer }]}
+          formatValue={(v) => v.toFixed(3)}
+          max={Math.max(...PROMPTS.map((p) => Math.abs(runAssistant(p, 50, 100).answer)))}
+        />
+      )}
     </CheckpointFrame>
   );
 }

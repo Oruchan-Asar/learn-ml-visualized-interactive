@@ -28,6 +28,7 @@ export function IntuitionDemo() {
       <ContributionBars
         items={[{ label: `reconstruction (x=${INPUT_X})`, value: sample.reconstruction }]}
         formatValue={(v) => v.toFixed(4)}
+        max={Math.max(...samples.map((s) => Math.abs(s.reconstruction)))}
         readout={`z = μ + σ·ε = ${sample.z.toFixed(4)} → decoded to ${sample.reconstruction.toFixed(4)}`}
       />
     </>
@@ -82,7 +83,13 @@ export function VAECheckpoint() {
           </button>
         ))}
       </div>
-      {kl !== null && <ContributionBars items={[{ label: `KL divergence (x=${x})`, value: kl }]} formatValue={(v) => v.toFixed(4)} />}
+      {kl !== null && (
+        <ContributionBars
+          items={[{ label: `KL divergence (x=${x})`, value: kl }]}
+          formatValue={(v) => v.toFixed(4)}
+          max={Math.max(...candidates.map((c) => klDivergence(encodeMu(c), encodeLogVar(c))))}
+        />
+      )}
     </CheckpointFrame>
   );
 }

@@ -90,7 +90,7 @@ export function PDPCheckpoint() {
           </button>
         ))}
       </div>
-      {spread !== null && <ContributionBars items={[{ label: "ICE spread", value: spread }]} formatValue={(v) => v.toFixed(1)} />}
+      {spread !== null && <ContributionBars items={[{ label: "ICE spread", value: spread }]} formatValue={(v) => v.toFixed(1)} max={maxSpread} />}
     </CheckpointFrame>
   );
 }

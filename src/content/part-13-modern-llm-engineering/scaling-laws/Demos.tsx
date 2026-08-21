@@ -106,7 +106,13 @@ export function ScalingLawsCheckpoint() {
           </button>
         ))}
       </div>
-      {predicted !== null && <ContributionBars items={[{ label: "predicted loss", value: predicted }]} formatValue={(v) => v.toFixed(2)} />}
+      {predicted !== null && (
+        <ContributionBars
+          items={[{ label: "predicted loss", value: predicted }]}
+          formatValue={(v) => v.toFixed(2)}
+          max={Math.max(Math.abs(predictLossLogLog(LOG_FIT, TEST_SIZE)), Math.abs(predictLossRawLinear(RAW_FIT, TEST_SIZE)))}
+        />
+      )}
     </CheckpointFrame>
   );
 }

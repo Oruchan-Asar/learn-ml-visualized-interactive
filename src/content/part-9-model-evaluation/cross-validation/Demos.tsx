@@ -27,6 +27,7 @@ export function IntuitionDemo() {
       </div>
       <ContributionBars
         items={[{ label: FOLD_LABELS[foldIndex], value: result.mse }]}
+        max={Math.max(...RESULTS.map((r) => r.mse))}
         readout={`train on the other 8 points, test on ${FOLD_LABELS[foldIndex]} → MSE = ${result.mse.toFixed(2)}`}
       />
     </>
@@ -80,7 +81,11 @@ export function CrossValidationCheckpoint() {
         ))}
       </div>
       {foldIndex !== null && (
-        <ContributionBars items={[{ label: FOLD_LABELS[foldIndex], value: RESULTS[foldIndex].mse }]} readout={`MSE = ${RESULTS[foldIndex].mse.toFixed(2)}`} />
+        <ContributionBars
+          items={[{ label: FOLD_LABELS[foldIndex], value: RESULTS[foldIndex].mse }]}
+          max={Math.max(...RESULTS.map((r) => r.mse))}
+          readout={`MSE = ${RESULTS[foldIndex].mse.toFixed(2)}`}
+        />
       )}
     </CheckpointFrame>
   );

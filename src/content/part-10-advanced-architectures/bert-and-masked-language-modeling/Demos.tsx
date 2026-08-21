@@ -93,7 +93,13 @@ export function BertCheckpoint() {
           </button>
         ))}
       </div>
-      {error !== null && <ContributionBars items={[{ label: "squared error", value: error }]} formatValue={(v) => v.toFixed(2)} />}
+      {error !== null && (
+        <ContributionBars
+          items={[{ label: "squared error", value: error }]}
+          formatValue={(v) => v.toFixed(2)}
+          max={Math.max(squaredError(causalPrediction(), truth), squaredError(bidirectionalPrediction(), truth))}
+        />
+      )}
     </CheckpointFrame>
   );
 }

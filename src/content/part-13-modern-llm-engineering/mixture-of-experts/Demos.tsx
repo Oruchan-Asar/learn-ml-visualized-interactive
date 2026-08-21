@@ -89,7 +89,13 @@ export function MoECheckpoint() {
           </button>
         ))}
       </div>
-      {result && <ContributionBars items={[{ label: "selected experts", value: result.selectedIndices.length }]} formatValue={() => `{${result.selectedIndices.join(", ")}}`} />}
+      {result && (
+        <ContributionBars
+          items={EXPERTS.map((_, i) => ({ label: result.expertOutputs[i] === null ? `expert ${i} (not run)` : `expert ${i}`, value: result.expertOutputs[i] ?? 0 }))}
+          formatValue={(v) => v.toFixed(2)}
+          readout={`routes to experts {${result.selectedIndices.join(", ")}}`}
+        />
+      )}
     </CheckpointFrame>
   );
 }

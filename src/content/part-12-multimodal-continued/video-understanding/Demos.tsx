@@ -84,7 +84,7 @@ export function VideoCheckpoint() {
           </button>
         ))}
       </div>
-      {choice !== null && <ContributionBars items={[{ label: `frame ${choice}`, value: weights[choice] }]} formatValue={(v) => v.toFixed(4)} />}
+      {choice !== null && <ContributionBars items={[{ label: `frame ${choice}`, value: weights[choice] }]} formatValue={(v) => v.toFixed(4)} max={1} />}
     </CheckpointFrame>
   );
 }

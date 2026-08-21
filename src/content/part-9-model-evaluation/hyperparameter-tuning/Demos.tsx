@@ -91,7 +91,14 @@ export function HyperparameterTuningCheckpoint() {
           </button>
         ))}
       </div>
-      {finalLoss !== null && <ContributionBars items={[{ label: `lr=${lr}`, value: finalLoss }]} formatValue={(v) => v.toFixed(3)} readout={`final loss = ${finalLoss.toFixed(4)}`} />}
+      {finalLoss !== null && (
+        <ContributionBars
+          items={[{ label: `lr=${lr}`, value: finalLoss }]}
+          formatValue={(v) => v.toFixed(3)}
+          max={Math.max(...LEARNING_RATES.map((rate) => loss(descentTrace(rate)[STEPS])))}
+          readout={`final loss = ${finalLoss.toFixed(4)}`}
+        />
+      )}
     </CheckpointFrame>
   );
 }

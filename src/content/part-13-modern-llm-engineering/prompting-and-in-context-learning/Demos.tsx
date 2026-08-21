@@ -88,7 +88,13 @@ export function ICLCheckpoint() {
           </button>
         ))}
       </div>
-      {answer !== null && <ContributionBars items={[{ label: "answer", value: answer }]} formatValue={(v) => v.toFixed(3)} />}
+      {answer !== null && (
+        <ContributionBars
+          items={[{ label: "answer", value: answer }]}
+          formatValue={(v) => v.toFixed(3)}
+          max={Math.max(...PROMPTS.map((p) => Math.abs(inContextAnswer(p.demos, QUERY_X).answer)))}
+        />
+      )}
     </CheckpointFrame>
   );
 }

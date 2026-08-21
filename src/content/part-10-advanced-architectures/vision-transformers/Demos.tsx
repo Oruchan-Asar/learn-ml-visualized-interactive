@@ -95,7 +95,7 @@ export function ViTCheckpoint() {
           </button>
         ))}
       </div>
-      {choice !== null && <ContributionBars items={[{ label: PATCHES[choice].label, value: weights[choice] }]} formatValue={(v) => v.toFixed(4)} />}
+      {choice !== null && <ContributionBars items={[{ label: PATCHES[choice].label, value: weights[choice] }]} formatValue={(v) => v.toFixed(4)} max={1} />}
     </CheckpointFrame>
   );
 }

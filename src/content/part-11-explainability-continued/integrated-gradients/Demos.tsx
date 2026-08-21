@@ -97,7 +97,13 @@ export function IntegratedGradientsCheckpoint() {
           </button>
         ))}
       </div>
-      {gap !== null && <ContributionBars items={[{ label: "gap from true delta", value: gap }]} formatValue={(v) => v.toFixed(4)} />}
+      {gap !== null && (
+        <ContributionBars
+          items={[{ label: "gap from true delta", value: gap }]}
+          formatValue={(v) => v.toFixed(4)}
+          max={Math.max(...STEP_OPTIONS.map((n) => completenessGap(n)))}
+        />
+      )}
     </CheckpointFrame>
   );
 }

@@ -90,7 +90,13 @@ export function InferenceOptCheckpoint() {
           </button>
         ))}
       </div>
-      {ratio !== null && <ContributionBars items={[{ label: "speedup", value: ratio }]} formatValue={(v) => `${v.toFixed(1)}x`} />}
+      {ratio !== null && (
+        <ContributionBars
+          items={[{ label: "speedup", value: ratio }]}
+          formatValue={(v) => `${v.toFixed(1)}x`}
+          max={Math.max(...SEQUENCE_LENGTHS.map((n) => speedupRatio(n)))}
+        />
+      )}
     </CheckpointFrame>
   );
 }

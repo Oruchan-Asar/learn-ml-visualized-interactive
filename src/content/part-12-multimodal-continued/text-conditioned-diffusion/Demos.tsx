@@ -97,7 +97,13 @@ export function DiffusionCheckpoint() {
           </button>
         ))}
       </div>
-      {chosen !== null && <ContributionBars items={[{ label: "final value", value: chosen }]} formatValue={(v) => v.toFixed(3)} />}
+      {chosen !== null && (
+        <ContributionBars
+          items={[{ label: "final value", value: chosen }]}
+          formatValue={(v) => v.toFixed(3)}
+          max={Math.max(baseline, ...CONDITIONS.map((c) => finalX0(c.noise)))}
+        />
+      )}
     </CheckpointFrame>
   );
 }

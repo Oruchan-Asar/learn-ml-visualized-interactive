@@ -29,6 +29,7 @@ export function IntuitionDemo() {
         <ContributionBars
           items={[{ label: `${split.feature} @ threshold ${split.threshold}`, value: split.gain }]}
           formatValue={(v) => v.toFixed(4)}
+          max={Math.max(TREE.rootSplit?.gain ?? 0, TREE.leftSplit?.gain ?? 0, TREE.rightSplit?.gain ?? 0)}
           readout={`n=${split.nSamples} samples reach this node`}
         />
       ) : (
@@ -90,7 +91,7 @@ export function TreeImportanceCheckpoint() {
         ))}
       </div>
       {pointIndex !== null && (
-        <ContributionBars items={[{ label: `point (x1=${DATA[pointIndex].x1})`, value: DATA[pointIndex].label === "A" ? 1 : -1 }]} formatValue={() => DATA[pointIndex].label} readout={`left child has ${left.length} points; x1 alone predicts "A" for all of them`} />
+        <ContributionBars items={[{ label: `point (x1=${DATA[pointIndex].x1})`, value: DATA[pointIndex].label === "A" ? 1 : -1 }]} formatValue={() => DATA[pointIndex].label} max={1} readout={`left child has ${left.length} points; x1 alone predicts "A" for all of them`} />
       )}
     </CheckpointFrame>
   );
