@@ -1,0 +1,74 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DriftCheckpoint } from "./Demos";
+
+<Hook>
+  A dashboard that only tracks accuracy will tell you a model is fine right up until the moment it isn't.
+  That's not a bug in the dashboard — it's a real blind spot. Accuracy can average out a distribution shift
+  so completely that the two numbers are identical to the decimal.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch snapshots. The bars visibly reshape — traffic that used to sit mostly in the medium bin now spreads
+  across all three — while the accuracy readout barely twitches.
+</Intuition>
+
+<Formalize>
+  Split inputs into bins, each with its own fixed accuracy $a_i$. Overall accuracy is those accuracies
+  weighted by how often each bin occurs:
+
+  $$
+  \text{accuracy} = \sum_i P(\text{bin}_i)\, a_i
+  $$
+
+  Two very different bin distributions can land on the exact same weighted sum — a coincidence of arithmetic,
+  not evidence that nothing changed. A **drift score** measures the distributions directly, independent of
+  what accuracy happens to do:
+
+  $$
+  \text{drift} = D_{KL}(P_{\text{train}} \,\|\, P_{\text{live}})
+  $$
+
+  Above a chosen threshold, the input distribution has moved enough to alert on — regardless of whether
+  accuracy noticed.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Same accuracy, four significant digits deep. A completely different drift score. One of these two numbers
+  is actually watching the thing that changed.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Training distribution: 20% low, 50% medium, 30% high">
+      Weighted accuracy: $0.2(0.95) + 0.5(0.85) + 0.3(0.75) = 0.19 + 0.425 + 0.225 = 0.84$.
+    </Step>
+    <Step label="Live distribution: 30% low, 30% medium, 40% high">
+      Weighted accuracy: $0.3(0.95) + 0.3(0.85) + 0.4(0.75) = 0.285 + 0.255 + 0.3 = 0.84$ — identical, to the
+      hundredth.
+    </Step>
+    <Step label="The distributions are not identical">
+      $D_{KL}(P_{\text{train}} \| P_{\text{live}}) \approx 0.127$ bits — well past a 0.05-bit alert
+      threshold. The medium bin lost a third of its share; the high bin gained a third of its own. Accuracy
+      never had a chance to see it, because the per-bin accuracies happened to average out.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DriftCheckpoint />
+
+<Summary>
+  $$
+  \text{accuracy} = \sum_i P(\text{bin}_i)\, a_i \qquad \text{drift} = D_{KL}(P_{\text{train}} \,\|\, P_{\text{live}})
+  $$
+
+  Accuracy is a lossy summary — it compresses a whole distribution of behavior into one number, and lossy
+  compression can hide exactly the kind of change that matters. A drift score doesn't replace accuracy
+  monitoring; it watches something accuracy structurally cannot: whether the inputs still look like the ones
+  the model was validated on. Real feature stores and monitoring systems track both, because either one alone
+  eventually gets fooled. The next chapter turns from watching a single model in production to training one
+  across many machines at once.
+</Summary>

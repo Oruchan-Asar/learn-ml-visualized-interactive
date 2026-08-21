@@ -1252,7 +1252,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Model monitoring & drift detection",
     blurb: "Watch a model's accuracy hold steady while its input distribution quietly drifts out from under it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "distributed-training",
