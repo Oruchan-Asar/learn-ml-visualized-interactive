@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SmoothingCheckpoint } from "./Demos";
 
 <Hook>
@@ -21,6 +21,14 @@ import { IntuitionDemo, PlayDemo, SmoothingCheckpoint } from "./Demos";
   $$
   h_v^{(k+1)} = \text{AGGREGATE}\Big(h_v^{(k)}, \; \{h_u^{(k)} : u \in \mathcal{N}(v)\}\Big)
   $$
+
+  <Variables>
+    <Variable>**$h_v^{(k)}$** — node $v$'s feature after $k$ rounds of message passing.</Variable>
+    <Variable>**$h_v^{(k+1)}$** — node $v$'s updated feature after one more round of message passing.</Variable>
+    <Variable>**$h_u^{(k)}$** — a neighbor $u$'s current feature, one of the values node $v$ aggregates.</Variable>
+    <Variable>**$\mathcal{N}(v)$** — node $v$'s neighborhood: every node it shares an edge with.</Variable>
+    <Variable>**AGGREGATE** — the combining function; this chapter fixes it to a plain mean of the node and its neighbors.</Variable>
+  </Variables>
 
   The simplest possible choice of AGGREGATE — the one this chapter uses — is a plain **mean**: average
   the node's own value together with every neighbor's. Stack $k$ of these layers, and information from
