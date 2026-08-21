@@ -1260,7 +1260,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Distributed training",
     blurb: "Split a batch across workers, average their gradients, and watch the same update come out — just faster.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "vector-databases-and-ann-search",

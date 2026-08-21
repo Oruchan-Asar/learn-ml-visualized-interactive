@@ -1,0 +1,68 @@
+.workers {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 12px 0;
+}
+
+.workerCard {
+  flex: 1;
+  min-width: 140px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 14px;
+  font-size: 14px;
+}
+
+.workerCard p {
+  margin: 3px 0;
+}
+
+.readout {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  font-size: 14px;
+}
+
+.readout p {
+  margin: 4px 0;
+}
+
+.match {
+  color: var(--accent2-ink);
+  font-weight: 600;
+}
+
+.mismatch {
+  color: #b34437;
+  font-weight: 600;
+}
+
+.candidateList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.candidate {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.candidateActive {
+  composes: candidate;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--paper-raised);
+}

@@ -1,0 +1,75 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DistributedCheckpoint } from "./Demos";
+
+<Hook>
+  Split a batch across machines, have each one compute its own gradient, then combine them — and the update
+  that comes out should be exactly the one a single machine would have computed on the whole batch. Whether
+  that's actually true depends entirely on how "combine" is defined.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same six numbers, split two ways. Toggle between them and watch when the naive combination — just
+  averaging the workers' averages — silently stops matching the single-machine answer.
+</Intuition>
+
+<Formalize>
+  A batch average is the sum of everything divided by the count of everything:
+
+  $$
+  \bar{g} = \frac{1}{n}\sum_{i=1}^{n} g_i
+  $$
+
+  Split into $K$ shards of sizes $n_1, \dots, n_K$, each worker computes its own shard average $\bar{g}_k$.
+  Recombining them **correctly** means weighting by how many examples each worker actually saw:
+
+  $$
+  \bar{g} = \frac{\sum_k n_k \bar{g}_k}{\sum_k n_k}
+  $$
+
+  When every shard is the same size, the weights are all equal and this collapses to a plain average of the
+  workers' averages — which is exactly why the naive version looks correct until the shards stop matching in
+  size.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Equal shards: naive and weighted agree, because with identical $n_k$ the weighting cancels out. Unequal
+  shards: naive quietly drifts to the wrong number, while weighted keeps matching the single-machine batch
+  average — the same equation the whole time, just correctly applied.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Six gradients, one shard of 2 and one shard of 4">
+      Shard sizes 2 and 4: averages 1 and 2.5. Naive average: $(1 + 2.5)/2 = 1.75$.
+    </Step>
+    <Step label="The single machine's answer">
+      All six gradients — $4, -2, 6, 0, -8, 12$ — sum to 12, divided by 6 is exactly $2$. Naive averaging
+      missed it by 0.25, because the 4-example shard's average deserved twice the weight of the 2-example
+      shard's.
+    </Step>
+    <Step label="Weighting by shard size fixes it">
+      $\dfrac{1(2) + 2.5(4)}{2 + 4} = \dfrac{2 + 10}{6} = 2$ — exactly the single-machine value, regardless
+      of how unevenly the batch was split.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DistributedCheckpoint />
+
+<Summary>
+  $$
+  \bar{g} = \frac{\sum_k n_k \bar{g}_k}{\sum_k n_k}
+  $$
+
+  Data-parallel training only produces the "same update, just faster" promise when the combination step
+  actually implements this weighted average — which is exactly what a correct all-reduce does under the
+  hood. Get the weighting wrong (uneven shards, a straggler worker silently dropped, a partial batch on the
+  last step) and distributed training isn't an accelerated version of single-machine training anymore; it's
+  a different, uncontrolled algorithm that happens to look similar. The next chapter turns to what a trained
+  model does with a query at serving time: searching a huge index of vectors for the nearest few, without
+  comparing against every single one.
+</Summary>
