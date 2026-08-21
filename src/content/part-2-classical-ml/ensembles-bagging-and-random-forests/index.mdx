@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BaggingCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, BaggingCheckpoint } from "./Demos";
   $$
   \hat{y}(x) = \text{majority}\big(T_1(x), T_2(x), \ldots, T_N(x)\big)
   $$
+
+  <Variables>
+    <Variable>**$\hat{y}(x)$** — the ensemble's final prediction for input $x$.</Variable>
+    <Variable>**$T_i(x)$** — the prediction of the $i$-th tree in the forest.</Variable>
+    <Variable>**$N$** — the number of trees in the ensemble.</Variable>
+    <Variable>**majority** — the vote rule: whichever label the most trees predicted wins.</Variable>
+  </Variables>
 
   Each $T_i$ still overfits its own bootstrap sample. But the noise it overfits to is specific to *which* points that resample happened to include — different resamples chase different noise, so it rarely lines up. A **random forest** adds one more trick on top: at every split, each tree only gets to consider a random subset of the available features. With just one feature here, that trick has nothing to act on — bagging alone is already the whole story.
 </Formalize>
