@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DotProductCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, DotProductCheckpoint } from "./Demos";
   $$
   a \cdot b = a_x b_x + a_y b_y
   $$
+
+  <Variables>
+    <Variable>**$a$, $b$** — the two vectors being compared.</Variable>
+    <Variable>**$a_x, a_y$** — the components of vector $a$.</Variable>
+    <Variable>**$b_x, b_y$** — the components of vector $b$.</Variable>
+    <Variable>**$a \cdot b$** — the dot product itself: a single number measuring alignment.</Variable>
+  </Variables>
 
   which is exactly equal to $|a|\,|b|\cos\theta$. Its sign tells the story: positive when $\theta < 90°$ (roughly the same direction), zero at exactly $90°$ (perpendicular), negative beyond that (roughly opposite).
 </Formalize>
