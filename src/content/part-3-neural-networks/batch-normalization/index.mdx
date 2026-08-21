@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BatchNormCheckpoint } from "./Demos";
 
 <Hook>
@@ -18,6 +18,14 @@ import { IntuitionDemo, PlayDemo, BatchNormCheckpoint } from "./Demos";
   \hat h_j = \frac{h_j - \mu_j}{\sqrt{\sigma_j^2 + \epsilon}}
   $$
 
+  <Variables>
+    <Variable>**$\hat h_j$** — neuron $j$'s output after normalization, mean $0$ and variance $1$ by construction.</Variable>
+    <Variable>**$h_j$** — neuron $j$'s raw output, before normalization.</Variable>
+    <Variable>**$\mu_j$** — the mean of neuron $j$'s output, measured across the current batch.</Variable>
+    <Variable>**$\sigma_j^2$** — the variance of neuron $j$'s output, measured across the current batch.</Variable>
+    <Variable>**$\epsilon$** — a tiny constant that keeps the division from blowing up when the variance is near zero.</Variable>
+  </Variables>
+
   $\mu_j$ and $\sigma_j^2$ are the mean and variance of neuron $j$'s output, measured across the current batch. After this, every neuron has mean $0$ and variance $1$ — by construction, not by hoping the weight scale happened to be right.
 </Formalize>
 
@@ -30,7 +38,7 @@ import { IntuitionDemo, PlayDemo, BatchNormCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Without batch norm, at scale 0.05">
-      Six layers shrink the RMS activation from about $1$ down to under $10^{-5}$ — dead, exactly as in Chapter 8.
+      Six layers shrink the **RMS** (short for **Root Mean Square**) activation from about $1$ down to under $10^{-5}$ — dead, exactly as in Chapter 8.
     </Step>
     <Step label="With batch norm, at every scale tried">
       Insert batch normalization after each layer instead, and every single layer's RMS activation comes out
