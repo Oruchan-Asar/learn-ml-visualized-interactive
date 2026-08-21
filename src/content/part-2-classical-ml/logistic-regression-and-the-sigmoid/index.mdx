@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SigmoidCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,11 @@ import { IntuitionDemo, PlayDemo, SigmoidCheckpoint } from "./Demos";
   $$
   \sigma(z) = \frac{1}{1 + e^{-z}}
   $$
+
+  <Variables>
+    <Variable>**$\sigma(z)$** — the sigmoid function: squashes any real number into a probability between 0 and 1.</Variable>
+    <Variable>**$z$** — the raw input score being squashed, before it's turned into a probability.</Variable>
+  </Variables>
 
   applied to the same linear score from Chapter 1 of this part: $z = wx + b$. Together, $\sigma(wx+b)$ turns any real number into a valid probability. The point where it crosses exactly $0.5$ — where $wx+b=0$ — is the **decision boundary**.
 </Formalize>
