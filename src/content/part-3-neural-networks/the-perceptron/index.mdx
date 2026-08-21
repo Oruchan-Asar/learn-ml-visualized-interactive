@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, PerceptronCheckpoint } from "./Demos";
 
 <Hook>
@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, PerceptronCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  Same two clusters as the SVM chapter. Take a step: one point gets checked against the current line. If it's already on the right side, nothing happens. If it's wrong, the line moves — just enough to nudge that one point onto its correct side.
+  Same two clusters as the **SVM** — short for **Support Vector Machine** — chapter. Take a step: one point gets checked against the current line. If it's already on the right side, nothing happens. If it's wrong, the line moves — just enough to nudge that one point onto its correct side.
 </Intuition>
 
 <Formalize>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, PerceptronCheckpoint } from "./Demos";
   $$
   w \leftarrow w + \eta\, y\, x, \qquad b \leftarrow b + \eta\, y
   $$
+
+  <Variables>
+    <Variable>**$w$** — the weight vector, the perceptron's current line direction.</Variable>
+    <Variable>**$b$** — the bias, shifting the line away from the origin.</Variable>
+    <Variable>**$\eta$** — the learning rate, controlling how big a correction each mistake causes.</Variable>
+    <Variable>**$y$** — the true label of the point just checked, $+1$ or $-1$.</Variable>
+    <Variable>**$x$** — the input point's coordinates.</Variable>
+  </Variables>
 
   where $y$ is the true label ($+1$ or $-1$). No calculus, no loss function to minimize — just "if wrong, shift toward being right."
 </Formalize>
