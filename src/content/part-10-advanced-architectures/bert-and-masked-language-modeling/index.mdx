@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BertCheckpoint } from "./Demos";
 
 <Hook>
@@ -18,7 +18,14 @@ import { IntuitionDemo, PlayDemo, BertCheckpoint } from "./Demos";
   \text{causal: attend over } \{t_j : j < i\} \qquad \text{bidirectional: attend over } \{t_j : j \neq i\}
   $$
 
-  BERT uses the second form. Since there's no autoregressive generation step to protect — the whole point is reconstructing a token that's already there — nothing stops the model from using tokens on *both* sides. That's the entire architectural difference from a GPT-style model: which half of the sentence is allowed to inform each prediction.
+  <Variables>
+    <Variable>**$t_j$** — the token at position $j$ in the sequence.</Variable>
+    <Variable>**$i$** — the position of the masked (currently predicted) token.</Variable>
+    <Variable>**$\{t_j : j < i\}$** — the causal context: only tokens strictly before the mask.</Variable>
+    <Variable>**$\{t_j : j \neq i\}$** — the bidirectional context: every token except the mask itself, on both sides.</Variable>
+  </Variables>
+
+  **BERT** — short for **Bidirectional Encoder Representations from Transformers** — uses the second form. Since there's no autoregressive generation step to protect — the whole point is reconstructing a token that's already there — nothing stops the model from using tokens on *both* sides. That's the entire architectural difference from a **GPT** (short for **Generative Pre-trained Transformer**)-style model: which half of the sentence is allowed to inform each prediction.
 </Formalize>
 
 <Play>
