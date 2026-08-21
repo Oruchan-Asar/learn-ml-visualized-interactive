@@ -1,0 +1,68 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ReproCheckpoint } from "./Demos";
+
+<Hook>
+  "Just rerun it with the same hyperparameters" sounds like it should be enough to reproduce a result. It
+  isn't — because a hyperparameter file only ever records the settings someone remembered to write down, and
+  a training run depends on more than that.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Every seed gets the exact same learning rate, the exact same gradient schedule, the exact same starting
+  weight. Only the seed changes — and the final weight changes with it.
+</Intuition>
+
+<Formalize>
+  A training run's outcome is a function of everything that fed into it — not just the hyperparameters that
+  happen to live in a config file:
+
+  $$
+  w_{\text{final}} = f(\;\underbrace{\text{lr}, \text{gradients}, w_0}_{\text{usually logged}},\ \underbrace{\text{seed}}_{\text{often not}}\;)
+  $$
+
+  A **reproducibility** claim is only as strong as the set of inputs it actually pins down. Log the
+  hyperparameters but not the seed, and "same config" silently means "one of many possible outcomes" instead
+  of "this exact outcome."
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Same lr, same gradient schedule, same starting weight — printed on both cards, character for character. The
+  only difference between the two runs is a single integer neither card would show you unless someone thought
+  to log it.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Seed 1's noise sequence: -1, -2, 0">
+      Step 1: $10 - 1 \times (2 + (-1)) = 9$. Step 2: $9 - 1 \times (1 + (-2)) = 10$. Step 3:
+      $10 - 1 \times (3 + 0) = 7$.
+    </Step>
+    <Step label="Seed 2's noise sequence: -1, 1, 2 — same lr, same gradients">
+      Step 1: $10 - 1 \times (2 + (-1)) = 9$ — identical so far. Step 2: $9 - 1 \times (1 + 1) = 7$ — already
+      diverged. Step 3: $7 - 1 \times (3 + 2) = 2$.
+    </Step>
+    <Step label="Two final weights, one logged config">
+      7 versus 2. A config file listing only lr=1 and the gradient schedule describes both runs equally well
+      — and neither one exactly.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ReproCheckpoint />
+
+<Summary>
+  $$
+  w_{\text{final}} = f(\text{lr}, \text{gradients}, w_0, \text{seed})
+  $$
+
+  Nothing here is exotic randomness — it's a plain linear congruential generator, the same kind of
+  determinism a real training run's data shuffling, dropout masks, and weight initialization all rely on.
+  The lesson isn't "randomness is bad," it's that reproducibility is only as complete as the list of things an
+  experiment tracker actually captures. Seeds are the obvious member of that list; real pipelines also need
+  the library versions, hardware, and data snapshot pinned down, for exactly the same reason. The next
+  chapter turns to what happens when the *data* a deployed model sees drifts away from what it was trained on.
+</Summary>

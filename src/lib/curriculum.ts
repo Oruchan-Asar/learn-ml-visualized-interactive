@@ -1244,7 +1244,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Experiment tracking & reproducibility",
     blurb: "Change one hyperparameter, keep everything else fixed, and see why \"everything else\" is the hard part to guarantee.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "model-monitoring-and-drift",
