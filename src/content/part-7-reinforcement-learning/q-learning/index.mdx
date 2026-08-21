@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, QLearningCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, QLearningCheckpoint } from "./Demos";
   $$
   Q(s,a) \leftarrow Q(s,a) + \alpha\Big(r + \gamma \max_{a'} Q(s',a') - Q(s,a)\Big)
   $$
+
+  <Variables>
+    <Variable>**$Q(s,a)$** — the learned value of taking action $a$ from state $s$: how good that state-action pair looks so far.</Variable>
+    <Variable>**$r$** — the reward received for that step.</Variable>
+    <Variable>**$s'$** — the state landed in after taking the action.</Variable>
+    <Variable>**$a'$** — a candidate next action to take from that new state.</Variable>
+    <Variable>**$\gamma$** — the discount factor applied to future value.</Variable>
+    <Variable>**$\alpha$** — the learning rate: how much of the gap gets corrected on any one update.</Variable>
+  </Variables>
 
   The term in parentheses is a **temporal-difference error** — the gap between what $Q(s,a)$ currently predicts and a slightly better estimate built from one real step of experience plus the table's own best guess about what happens after. $\alpha$ controls how much of that gap gets corrected on any one update — exactly a learning rate, doing exactly what a learning rate does in every other optimizer in this course.
 </Formalize>
