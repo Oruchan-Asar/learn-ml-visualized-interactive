@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, VQVAECheckpoint } from "./Demos";
 
 <Hook>
@@ -16,13 +16,21 @@ import { IntuitionDemo, PlayDemo, VQVAECheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  A **VQ-VAE** (Vector-Quantized VAE) keeps a small, learned **codebook** of $K$ vectors
-  $\{e_1, \ldots, e_K\}$. The encoder still outputs a continuous $z_e(x)$, but before decoding it's
-  replaced by its nearest codebook entry:
+  A **VQ-VAE** — short for **Vector-Quantized Variational Autoencoder** — keeps a small, learned
+  **codebook** of $K$ vectors $\{e_1, \ldots, e_K\}$. The encoder still outputs a continuous $z_e(x)$, but
+  before decoding it's replaced by its nearest codebook entry:
 
   $$
   z_q(x) = e_k, \qquad k = \arg\min_j \lVert z_e(x) - e_j \rVert
   $$
+
+  <Variables>
+    <Variable>**$z_e(x)$** — the encoder's continuous output for input $x$, before quantization.</Variable>
+    <Variable>**$z_q(x)$** — the quantized latent actually passed to the decoder.</Variable>
+    <Variable>**$e_k$** — the codebook vector selected as the nearest match to $z_e(x)$.</Variable>
+    <Variable>**$e_j$** — one of the $K$ learned codebook vectors, indexed by $j$.</Variable>
+    <Variable>**$k$** — the index of the nearest codebook entry.</Variable>
+  </Variables>
 
   That's the entire mechanism: nearest-neighbor lookup, nothing learned about the *lookup* itself. What's
   learned is the codebook's $K$ locations and the encoder/decoder around them, so that whichever code a
