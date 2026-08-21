@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SAECheckpoint } from "./Demos";
 
 <Hook>
@@ -24,6 +24,13 @@ import { IntuitionDemo, PlayDemo, SAECheckpoint } from "./Demos";
   $$
   \text{raw} = M \cdot \text{concepts}, \qquad \text{concepts} = M^{-1} \cdot \text{raw}
   $$
+
+  <Variables>
+    <Variable>**$\text{raw}$** — the raw activation vector, where concepts are overlapped together.</Variable>
+    <Variable>**$M$** — the mixing matrix describing how concepts combine into raw activations.</Variable>
+    <Variable>**$\text{concepts}$** — the vector of clean, disentangled concept strengths the SAE tries to recover.</Variable>
+    <Variable>**$M^{-1}$** — the inverse mixing matrix, used to reverse the overlap back to clean concepts (only well-defined here because $M$ is known and invertible).</Variable>
+  </Variables>
 
   This chapter's $M$ is known and exactly invertible, so "training" the SAE is just matrix inversion —
   real SAEs face a much harder version of this problem: $M$ is unknown, the true concept count is
