@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, RocCheckpoint } from "./Demos";
 
 <Hook>
@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, RocCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  Drag the decision threshold. Every value traces out one point on the ROC curve — the true-positive rate against the false-positive rate at that exact cutoff. Slide it all the way and you retrace the entire curve, one threshold at a time.
+  Drag the decision threshold. Every value traces out one point on the **ROC** curve — short for **Receiver Operating Characteristic** — the true-positive rate against the false-positive rate at that exact cutoff. Slide it all the way and you retrace the entire curve, one threshold at a time.
 </Intuition>
 
 <Formalize>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, RocCheckpoint } from "./Demos";
   $$
   \text{TPR} = \frac{TP}{TP+FN} = \text{recall}, \qquad \text{FPR} = \frac{FP}{FP+TN}
   $$
+
+  <Variables>
+    <Variable>**TPR** — true-positive rate: the fraction of actual positives the model catches at this threshold; the same quantity as recall.</Variable>
+    <Variable>**FPR** — false-positive rate: the fraction of actual negatives the model wrongly flags as positive at this threshold.</Variable>
+    <Variable>**$TP$**, **$FN$** — true positives and false negatives at this threshold, the counts TPR is built from.</Variable>
+    <Variable>**$FP$**, **$TN$** — false positives and true negatives at this threshold, the counts FPR is built from.</Variable>
+  </Variables>
 
   A model that separates classes perfectly traces a curve that shoots straight up to $(0,1)$ before moving right at all. A model no better than a coin flip traces the diagonal exactly. The **area under this curve (AUC)** condenses the whole sweep into one number: the probability a random positive example gets a higher score than a random negative one.
 </Formalize>
