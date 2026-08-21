@@ -1,21 +1,16 @@
-export type ChapterStatus = "shipped" | "planned";
-
 export interface ChapterMeta {
   slug: string;
   part: string;
   chapterNumber: number;
   title: string;
   blurb: string;
-  status: ChapterStatus;
   capstone?: boolean;
 }
 
 /**
- * The full curriculum — every part, every planned chapter, not just the
- * shipped ones. Single source of truth for the home page, the sidebar
- * overview, chapter headers, and prev/next nav. Planned chapters have no
- * route yet; getChapterNeighbors and the "chapter N of M" count only ever
- * consider shipped ones, so nav never points at a page that doesn't exist.
+ * The full curriculum — every part, every chapter. Single source of truth
+ * for the home page, the sidebar overview, chapter headers, and prev/next
+ * nav.
  */
 export const CURRICULUM: ChapterMeta[] = [
   // ---------- Part I — Foundations ----------
@@ -26,7 +21,6 @@ export const CURRICULUM: ChapterMeta[] = [
     title: "What is a gradient?",
     blurb:
       "Drag a point along a curve, watch the tangent line, and find the exact spot where the gradient hits zero.",
-    status: "shipped",
   },
   {
     slug: "gradient-descent",
@@ -35,7 +29,6 @@ export const CURRICULUM: ChapterMeta[] = [
     title: "Gradient descent",
     blurb:
       "Take steps against the gradient, tune the learning rate, and see exactly how it can overshoot or diverge.",
-    status: "shipped",
   },
   {
     slug: "the-chain-rule",
@@ -44,7 +37,6 @@ export const CURRICULUM: ChapterMeta[] = [
     title: "The chain rule",
     blurb:
       "Drag a point through two linked curves and watch two slopes multiply into the slope of the whole chain.",
-    status: "shipped",
   },
   {
     slug: "vectors-and-dot-products",
@@ -53,7 +45,6 @@ export const CURRICULUM: ChapterMeta[] = [
     title: "Vectors & the dot product",
     blurb:
       "Drag an arrow around a fixed one and watch a single number reveal agreement, opposition, or a right angle.",
-    status: "shipped",
   },
   {
     slug: "matrices-as-transformations",
@@ -61,7 +52,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Matrices as transformations",
     blurb: "Watch a matrix stretch, rotate, and flip a vector in real time.",
-    status: "shipped",
   },
   {
     slug: "gradient-in-multiple-dimensions",
@@ -69,7 +59,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "The gradient in multiple dimensions",
     blurb: "Extend \"downhill\" to two parameters at once, on a loss surface instead of a curve.",
-    status: "shipped",
   },
   {
     slug: "probability-outcomes-and-distributions",
@@ -77,7 +66,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Probability: outcomes & distributions",
     blurb: "Build a distribution by dragging probability mass around, and watch it always sum to one.",
-    status: "shipped",
   },
   {
     slug: "conditional-probability-and-bayes-rule",
@@ -85,7 +73,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Conditional probability & Bayes' rule",
     blurb: "Update a belief live as new evidence arrives, and see why the base rate keeps surprising people.",
-    status: "shipped",
   },
   {
     slug: "information-and-entropy",
@@ -93,7 +80,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 9,
     title: "Information & entropy",
     blurb: "Measure surprise in bits, and notice it's the same math a decision tree uses to pick a split.",
-    status: "shipped",
   },
   {
     slug: "svd-and-eigendecomposition",
@@ -101,7 +87,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "SVD & eigendecomposition",
     blurb: "Decompose a matrix into rotate–stretch–rotate, and watch a data cloud's true axes fall out of the stretch.",
-    status: "shipped",
   },
   {
     slug: "kl-divergence-and-mutual-information",
@@ -109,7 +94,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 11,
     title: "KL divergence & mutual information",
     blurb: "Drag one distribution away from another and watch a single number measure exactly how surprised you'd be.",
-    status: "shipped",
   },
   {
     slug: "convex-optimization-basics",
@@ -117,7 +101,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 12,
     title: "Convex optimization basics",
     blurb: "Split a bowl into a double well and watch gradient descent's one guarantee — a single global minimum — quietly disappear.",
-    status: "shipped",
   },
   {
     slug: "capstone-two-parameter-descent",
@@ -125,7 +108,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 13,
     title: "Descend a two-parameter loss by hand",
     blurb: "Combine the gradient vector and gradient descent into one hands-on optimization from scratch.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -136,7 +118,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Linear regression: fitting a line",
     blurb: "Drag a line's slope and intercept and watch the loss surface respond underneath it.",
-    status: "shipped",
   },
   {
     slug: "loss-functions-mse-vs-mae",
@@ -144,7 +125,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Loss functions: MSE vs. MAE",
     blurb: "See one outlier hijack a fit, and how the choice of loss function decides how much it matters.",
-    status: "shipped",
   },
   {
     slug: "logistic-regression-and-the-sigmoid",
@@ -152,7 +132,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Logistic regression & the sigmoid",
     blurb: "Squash a line into a probability and watch a decision boundary form between two classes.",
-    status: "shipped",
   },
   {
     slug: "cross-entropy-loss",
@@ -160,7 +139,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Cross-entropy loss",
     blurb: "Why classification needs a different loss than regression, and what it penalizes harder.",
-    status: "shipped",
   },
   {
     slug: "gradient-descent-variants",
@@ -168,7 +146,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Gradient descent variants",
     blurb: "Batch, stochastic, and mini-batch — the same hill, three different ways down it.",
-    status: "shipped",
   },
   {
     slug: "momentum",
@@ -176,7 +153,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Momentum",
     blurb: "Give descent a memory and watch it roll straight through small bumps that used to stall it.",
-    status: "shipped",
   },
   {
     slug: "decision-trees-information-gain",
@@ -184,7 +160,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Decision trees: splitting on information gain",
     blurb: "Grow a tree one split at a time, each one scored by the entropy chapter's own formula.",
-    status: "shipped",
   },
   {
     slug: "overfitting-a-tree",
@@ -192,7 +167,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Overfitting a tree",
     blurb: "Watch a tree memorize noise, then prune it back until it generalizes again.",
-    status: "shipped",
   },
   {
     slug: "ensembles-bagging-and-random-forests",
@@ -200,7 +174,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 9,
     title: "Ensembles I: bagging & random forests",
     blurb: "Average many overfit trees into one model that suddenly generalizes well.",
-    status: "shipped",
   },
   {
     slug: "ensembles-boosting",
@@ -208,7 +181,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "Ensembles II: boosting",
     blurb: "Chain weak learners so each one fixes the mistakes the last one made.",
-    status: "shipped",
   },
   {
     slug: "support-vector-machines",
@@ -216,7 +188,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 11,
     title: "Support vector machines",
     blurb: "Drag the widest possible street between two classes, anchored by the points closest to it.",
-    status: "shipped",
   },
   {
     slug: "the-kernel-trick",
@@ -224,7 +195,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 12,
     title: "The kernel trick",
     blurb: "Lift unseparable data into another dimension where a straight line suddenly works.",
-    status: "shipped",
   },
   {
     slug: "k-means-clustering",
@@ -232,7 +202,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 13,
     title: "k-means clustering",
     blurb: "Watch cluster centers wander step by step until they settle on the data.",
-    status: "shipped",
   },
   {
     slug: "pca-directions-of-maximum-variance",
@@ -240,7 +209,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 14,
     title: "PCA: directions of maximum variance",
     blurb: "Find the axis a cloud of points is most stretched along, and project onto it.",
-    status: "shipped",
   },
   {
     slug: "bias-variance-tradeoff",
@@ -248,7 +216,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 15,
     title: "Bias–variance tradeoff",
     blurb: "Tune model complexity and watch two different error sources trade off against each other.",
-    status: "shipped",
   },
   {
     slug: "regularization-l1-vs-l2",
@@ -256,7 +223,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 16,
     title: "Regularization: L1 vs. L2",
     blurb: "Penalize large weights and watch a model simplify itself two different ways.",
-    status: "shipped",
   },
   {
     slug: "capstone-classifier-pipeline",
@@ -264,7 +230,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 17,
     title: "Build and compare a full classifier pipeline",
     blurb: "Same dataset, several models from this part, one scoreboard.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -275,7 +240,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "The perceptron",
     blurb: "A single artificial neuron, drawing its very first line.",
-    status: "shipped",
   },
   {
     slug: "activation-functions",
@@ -283,7 +247,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Activation functions",
     blurb: "Compare step, sigmoid, tanh, and ReLU side by side on the same input.",
-    status: "shipped",
   },
   {
     slug: "the-forward-pass",
@@ -291,7 +254,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "The forward pass",
     blurb: "Stack neurons into a layer and watch numbers flow through it live.",
-    status: "shipped",
   },
   {
     slug: "a-network-is-a-chain",
@@ -299,7 +261,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "A network is a chain",
     blurb: "See why backprop is just Part I's chain rule, applied once per layer.",
-    status: "shipped",
   },
   {
     slug: "backpropagation-step-by-step",
@@ -307,7 +268,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Backpropagation, step by step",
     blurb: "Walk a full two-layer gradient computation by hand, then check it against autograd.",
-    status: "shipped",
   },
   {
     slug: "loss-landscapes-in-high-dimensions",
@@ -315,7 +275,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Loss landscapes in high dimensions",
     blurb: "Why \"stuck in a local minimum\" is rarer in practice than it sounds in theory.",
-    status: "shipped",
   },
   {
     slug: "optimizers-momentum-rmsprop-adam",
@@ -323,7 +282,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Optimizers: momentum, RMSProp, Adam",
     blurb: "Race three optimizers down the same landscape and watch their paths diverge.",
-    status: "shipped",
   },
   {
     slug: "weight-initialization",
@@ -331,7 +289,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Weight initialization",
     blurb: "Watch a network start dead on arrival, then come alive with better init.",
-    status: "shipped",
   },
   {
     slug: "vanishing-and-exploding-gradients",
@@ -339,7 +296,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 9,
     title: "Vanishing & exploding gradients",
     blurb: "Watch a gradient shrink toward zero or blow up as it travels backward through depth.",
-    status: "shipped",
   },
   {
     slug: "batch-normalization",
@@ -347,7 +303,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "Batch normalization",
     blurb: "Re-center activations mid-network and watch a wobbly training run stabilize.",
-    status: "shipped",
   },
   {
     slug: "dropout",
@@ -355,7 +310,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 11,
     title: "Dropout",
     blurb: "Randomly silence neurons during training and watch a network stop memorizing.",
-    status: "shipped",
   },
   {
     slug: "capstone-train-a-tiny-network",
@@ -363,7 +317,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 12,
     title: "Train a tiny network live, in-browser",
     blurb: "Watch a decision boundary evolve epoch by epoch on real (small) data.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -374,7 +327,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Convolution",
     blurb: "Slide a filter over an image and watch a feature map appear underneath it.",
-    status: "shipped",
   },
   {
     slug: "pooling",
@@ -382,7 +334,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Pooling",
     blurb: "Shrink a feature map on purpose, without losing what actually matters in it.",
-    status: "shipped",
   },
   {
     slug: "a-minimal-cnn",
@@ -390,7 +341,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "A minimal CNN",
     blurb: "Assemble filters and pooling into a real, small, working network.",
-    status: "shipped",
   },
   {
     slug: "capstone-classify-digits",
@@ -398,7 +348,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Classify digits, visualize the filters",
     blurb: "Train the minimal CNN live, then look at what its filters actually learned to detect.",
-    status: "shipped",
     capstone: true,
   },
   {
@@ -407,7 +356,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Why sequences break feedforward nets",
     blurb: "Watch a plain network fail on data where order is the whole point.",
-    status: "shipped",
   },
   {
     slug: "recurrent-neural-networks",
@@ -415,7 +363,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Recurrent neural networks",
     blurb: "Carry a hidden state forward, one token at a time, through a sequence.",
-    status: "shipped",
   },
   {
     slug: "vanishing-gradients-and-lstms",
@@ -423,7 +370,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Vanishing gradients in RNNs, and LSTMs",
     blurb: "Watch gates rescue a memory that plain recurrence would have forgotten.",
-    status: "shipped",
   },
   {
     slug: "word-embeddings",
@@ -431,7 +377,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Word embeddings",
     blurb: "Turn words into vectors, then find their nearest neighbors in meaning.",
-    status: "shipped",
   },
   {
     slug: "tokenization",
@@ -439,7 +384,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 9,
     title: "Tokenization",
     blurb: "See exactly how a sentence gets cut into the numbers a model actually sees.",
-    status: "shipped",
   },
   {
     slug: "attention",
@@ -447,7 +391,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "Attention",
     blurb: "Let a model look at an entire sequence at once, not just its previous neighbor.",
-    status: "shipped",
   },
   {
     slug: "self-attention-and-multi-head-attention",
@@ -455,7 +398,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 11,
     title: "Self-attention & multi-head attention",
     blurb: "Several attention \"views\" of the same sequence, running in parallel.",
-    status: "shipped",
   },
   {
     slug: "the-transformer-block",
@@ -463,7 +405,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 12,
     title: "The Transformer block",
     blurb: "Assemble attention, a feedforward layer, and residual connections into one block.",
-    status: "shipped",
   },
   {
     slug: "capstone-generate-text",
@@ -471,7 +412,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 13,
     title: "Generate text with a tiny Transformer",
     blurb: "A character-level model, trained and sampled live, one token at a time.",
-    status: "shipped",
     capstone: true,
   },
   {
@@ -480,7 +420,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 14,
     title: "Autoencoders",
     blurb: "Compress data down to a bottleneck, reconstruct it, and see exactly what's lost.",
-    status: "shipped",
   },
   {
     slug: "generative-adversarial-networks",
@@ -488,7 +427,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 15,
     title: "Generative adversarial networks",
     blurb: "Two networks compete — one forges, one detects — and both get better together.",
-    status: "shipped",
   },
   {
     slug: "diffusion-models",
@@ -496,7 +434,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 16,
     title: "Diffusion models",
     blurb: "Generate an image by learning to reverse noise, one small step at a time.",
-    status: "shipped",
   },
 
   // ---------- Part V — Explainable AI ----------
@@ -506,7 +443,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "The interpretability–accuracy tradeoff",
     blurb: "Why the most accurate model on the leaderboard is often the least explainable.",
-    status: "shipped",
   },
   {
     slug: "saliency-maps",
@@ -514,7 +450,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Saliency maps",
     blurb: "Highlight exactly which pixels actually moved a prediction.",
-    status: "shipped",
   },
   {
     slug: "grad-cam",
@@ -522,7 +457,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Grad-CAM",
     blurb: "See what a CNN was visually \"looking at\" the moment it decided.",
-    status: "shipped",
   },
   {
     slug: "lime",
@@ -530,7 +464,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "LIME",
     blurb: "Explain any black-box model by locally approximating it with something simple.",
-    status: "shipped",
   },
   {
     slug: "shapley-values",
@@ -538,7 +471,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Shapley values",
     blurb: "A game-theoretic, provably fair way to split credit among features.",
-    status: "shipped",
   },
   {
     slug: "shap-for-real-models",
@@ -546,7 +478,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "SHAP for real models",
     blurb: "Shapley values made practical and applied to an actual trained classifier.",
-    status: "shipped",
   },
   {
     slug: "counterfactual-explanations",
@@ -554,7 +485,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Counterfactual explanations",
     blurb: "\"What's the smallest change that would have flipped this decision?\"",
-    status: "shipped",
   },
   {
     slug: "capstone-explain-one-prediction-three-ways",
@@ -562,7 +492,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Explain one prediction three ways",
     blurb: "Saliency, SHAP, and a counterfactual on the same case, compared side by side.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -573,7 +502,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Joint embedding spaces",
     blurb: "Put images and text in the same space, and measure the distance between them.",
-    status: "shipped",
   },
   {
     slug: "contrastive-learning",
@@ -581,7 +509,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Contrastive learning",
     blurb: "How CLIP-style models learn that shared space without a single hand-written label.",
-    status: "shipped",
   },
   {
     slug: "cross-attention",
@@ -589,7 +516,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Cross-attention",
     blurb: "Let one modality directly query another instead of just sharing a space with it.",
-    status: "shipped",
   },
   {
     slug: "vision-language-models-assembled",
@@ -597,7 +523,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Vision-language models, assembled",
     blurb: "Put joint embeddings and cross-attention together into one working model.",
-    status: "shipped",
   },
   {
     slug: "retrieval-augmented-generation",
@@ -605,7 +530,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Retrieval-augmented generation",
     blurb: "Ground a model's answer in evidence it retrieved a moment before answering.",
-    status: "shipped",
   },
   {
     slug: "capstone-image-text-search-engine",
@@ -613,7 +537,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "A tiny image–text search engine",
     blurb: "Type a query, retrieve the matching image, using everything from this part.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -624,7 +547,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Multi-armed bandits",
     blurb: "Pull one of several arms and watch a policy learn when to explore versus cash in on what already works.",
-    status: "shipped",
   },
   {
     slug: "markov-decision-processes",
@@ -632,7 +554,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Markov decision processes",
     blurb: "Drag an agent through a tiny gridworld and watch states, actions, and rewards formalize what it's doing.",
-    status: "shipped",
   },
   {
     slug: "q-learning",
@@ -640,7 +561,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Q-learning",
     blurb: "Update a table of action-values step by step, and watch a policy emerge that nobody programmed by hand.",
-    status: "shipped",
   },
   {
     slug: "policy-gradient-methods",
@@ -648,7 +568,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Policy gradient methods",
     blurb: "Skip the value table and climb the reward gradient directly — the same ascent as every optimizer in this course, on a different objective.",
-    status: "shipped",
   },
   {
     slug: "reinforcement-learning-from-human-feedback",
@@ -656,7 +575,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Reinforcement learning from human feedback",
     blurb: "Turn a handful of \"this one's better\" comparisons into a reward signal a policy can actually climb.",
-    status: "shipped",
   },
   {
     slug: "capstone-train-an-agent-in-a-gridworld",
@@ -664,7 +582,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Solve a gridworld from scratch",
     blurb: "Watch Q-learning solve a maze live, one epsilon-greedy step at a time, starting from a table of zeros.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -675,7 +592,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "k-Nearest Neighbors",
     blurb: "Classify a new point by vote of its closest neighbors — no training step required at all.",
-    status: "shipped",
   },
   {
     slug: "naive-bayes-classifier",
@@ -683,7 +599,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "The naive Bayes classifier",
     blurb: "Turn Part I's Bayes' rule into a full classifier, one independent feature at a time.",
-    status: "shipped",
   },
   {
     slug: "alternative-clustering-dbscan",
@@ -691,7 +606,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Beyond k-means: DBSCAN",
     blurb: "Watch a density-based cluster shape survive exactly where k-means falls apart.",
-    status: "shipped",
   },
   {
     slug: "time-series-forecasting",
@@ -699,7 +613,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Time series forecasting",
     blurb: "Fit a trend and a season separately, then add them back together to predict what's next.",
-    status: "shipped",
   },
   {
     slug: "recommender-systems",
@@ -707,7 +620,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Recommender systems",
     blurb: "Factor a ratings matrix into two smaller ones, and watch it predict a rating nobody typed in.",
-    status: "shipped",
   },
   {
     slug: "anomaly-detection",
@@ -715,7 +627,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Anomaly detection",
     blurb: "Isolate the one point that takes fewer random splits than all the rest to separate from the pack.",
-    status: "shipped",
   },
   {
     slug: "capstone-classical-ml-grab-bag",
@@ -723,7 +634,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Pick the right classical tool",
     blurb: "Same messy dataset, run through kNN, Naive Bayes, and DBSCAN — see which one actually fits its shape.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -734,7 +644,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Confusion matrix, precision, recall & F1",
     blurb: "Watch accuracy stay high while a classifier misses every positive case, and see the one number that catches it.",
-    status: "shipped",
   },
   {
     slug: "roc-curve-and-auc",
@@ -742,7 +651,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "The ROC curve & AUC",
     blurb: "Sweep a classifier's decision threshold and trace out the one curve that doesn't depend on where you set it.",
-    status: "shipped",
   },
   {
     slug: "cross-validation",
@@ -750,7 +658,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "k-fold cross-validation",
     blurb: "Split the same data five different ways and watch how much the \"best\" model changes each time.",
-    status: "shipped",
   },
   {
     slug: "hyperparameter-tuning",
@@ -758,7 +665,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Hyperparameter tuning",
     blurb: "Automate the very slider you've been dragging by hand since Part II, and watch a grid search find it faster.",
-    status: "shipped",
   },
   {
     slug: "feature-engineering-and-scaling",
@@ -766,7 +672,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Feature engineering & scaling",
     blurb: "Watch two features on wildly different scales silently sabotage a descent that never sees it coming.",
-    status: "shipped",
   },
   {
     slug: "capstone-evaluate-a-real-pipeline",
@@ -774,7 +679,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Grade a model against a scoreboard, honestly",
     blurb: "Run every metric from this part against one classifier, and see which score actually changes your mind.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -785,7 +689,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "The GRU",
     blurb: "Same fix as the LSTM's gates, with one fewer of them — watch it hold on to the same memory.",
-    status: "shipped",
   },
   {
     slug: "sequence-to-sequence",
@@ -793,7 +696,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Sequence-to-sequence models",
     blurb: "Encode a whole sentence into one vector, then decode it back out into a different language.",
-    status: "shipped",
   },
   {
     slug: "resnet-and-residual-connections",
@@ -801,7 +703,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "ResNet & residual connections",
     blurb: "Stack convolutions past the point where a plain CNN stops learning at all, and watch a skip connection save it.",
-    status: "shipped",
   },
   {
     slug: "variational-autoencoders",
@@ -809,7 +710,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Variational autoencoders",
     blurb: "Add a random draw to the bottleneck, and watch the decoder learn to generate points it never saw.",
-    status: "shipped",
   },
   {
     slug: "bert-and-masked-language-modeling",
@@ -817,7 +717,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "BERT & masked language modeling",
     blurb: "Hide a word in the middle of a sentence and watch a model reconstruct it from both directions at once.",
-    status: "shipped",
   },
   {
     slug: "vision-transformers",
@@ -825,7 +724,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Vision Transformers",
     blurb: "Cut an image into patches, and feed them to the exact same block that already reads sentences.",
-    status: "shipped",
   },
   {
     slug: "transfer-learning-and-fine-tuning",
@@ -833,7 +731,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Transfer learning & fine-tuning",
     blurb: "Start from someone else's trained weights, freeze most of them, and see how little data specializes the rest.",
-    status: "shipped",
   },
   {
     slug: "object-detection-and-segmentation",
@@ -841,7 +738,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 8,
     title: "Object detection & segmentation",
     blurb: "Ask a network not just \"what,\" but \"where\" — one bounding box, one pixel mask at a time.",
-    status: "shipped",
   },
   {
     slug: "capstone-fine-tune-a-pretrained-model",
@@ -849,7 +745,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 9,
     title: "Fine-tune a small pretrained model",
     blurb: "Take a network that already works, and specialize it to a new task in a fraction of the steps.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -860,7 +755,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Integrated gradients",
     blurb: "Walk a straight line from a blank baseline to the real input, and integrate the gradient the whole way there.",
-    status: "shipped",
   },
   {
     slug: "partial-dependence-plots",
@@ -868,7 +762,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Partial dependence & ICE plots",
     blurb: "Sweep one feature across its whole range and watch the model's average answer trace a curve.",
-    status: "shipped",
   },
   {
     slug: "tree-feature-importance",
@@ -876,7 +769,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Tree-based feature importance",
     blurb: "Read off which feature did the most work — for free, from a forest you already trained.",
-    status: "shipped",
   },
   {
     slug: "anchors-rule-based-explanations",
@@ -884,7 +776,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Anchors: rule-based explanations",
     blurb: "Replace a linear local approximation with a simple if-then rule that's true almost everywhere nearby.",
-    status: "shipped",
   },
   {
     slug: "capstone-audit-a-model-five-ways",
@@ -892,7 +783,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Audit one model, five different ways",
     blurb: "Saliency, SHAP, PDP, tree importance, and an Anchor rule, on the exact same prediction.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -903,7 +793,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Audio & speech embeddings",
     blurb: "Add a third modality to the shared space, and watch a spoken word land right next to its transcript.",
-    status: "shipped",
   },
   {
     slug: "text-conditioned-diffusion",
@@ -911,7 +800,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Text-conditioned diffusion",
     blurb: "Steer the reverse-noise process with a caption, and watch the same denoiser draw a different picture.",
-    status: "shipped",
   },
   {
     slug: "video-understanding",
@@ -919,7 +807,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Video understanding",
     blurb: "Extend attention across frames instead of just across a sentence.",
-    status: "shipped",
   },
   {
     slug: "capstone-multimodal-assistant",
@@ -927,7 +814,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Assemble a tiny multimodal assistant",
     blurb: "Audio in, retrieval in the middle, an image out — every modality from this course, in one pipeline.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -938,7 +824,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "LoRA & parameter-efficient fine-tuning",
     blurb: "Freeze a huge weight matrix, and learn only a tiny low-rank update instead.",
-    status: "shipped",
   },
   {
     slug: "mixture-of-experts",
@@ -946,7 +831,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Mixture-of-experts",
     blurb: "Add a router that sends each token to only two of dozens of feedforward blocks.",
-    status: "shipped",
   },
   {
     slug: "scaling-laws",
@@ -954,7 +838,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Scaling laws",
     blurb: "Fit a straight line through a log-log plot, and predict a loss you haven't trained for yet.",
-    status: "shipped",
   },
   {
     slug: "prompting-and-in-context-learning",
@@ -962,7 +845,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Prompting & in-context learning",
     blurb: "Change nothing but the input, and watch a frozen model's answer change anyway.",
-    status: "shipped",
   },
   {
     slug: "inference-optimization-and-deployment",
@@ -970,7 +852,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Inference optimization & deployment",
     blurb: "Cache what's already been computed, shrink every weight's precision, and watch the same answer arrive faster.",
-    status: "shipped",
   },
   {
     slug: "capstone-ship-a-tiny-assistant",
@@ -978,7 +859,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Ship a tiny fine-tuned assistant",
     blurb: "LoRA, a system prompt, and a KV-cache — the whole gap between a capstone and a product.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -989,7 +869,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Graphs as data",
     blurb: "Turn a handful of dots and lines into an adjacency matrix, and see why a grid convolution has nowhere to slide.",
-    status: "shipped",
   },
   {
     slug: "message-passing-and-gcn",
@@ -997,7 +876,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Message passing & the GCN",
     blurb: "Watch a node's feature update by averaging its neighbors', layer after layer, until far-apart nodes start to look alike.",
-    status: "shipped",
   },
   {
     slug: "graphsage-inductive-learning",
@@ -1005,7 +883,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "GraphSAGE: inductive learning on graphs",
     blurb: "Sample a handful of neighbors instead of all of them, then apply the same rule to a node the network has never seen.",
-    status: "shipped",
   },
   {
     slug: "graph-attention-networks",
@@ -1013,7 +890,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Graph attention networks",
     blurb: "Give every neighbor its own attention weight instead of a flat average, and watch the important ones dominate.",
-    status: "shipped",
   },
   {
     slug: "capstone-predict-a-molecules-property",
@@ -1021,7 +897,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Predict a molecule's property from its bonds",
     blurb: "Wire message passing and attention together to guess a tiny molecule's property from its atoms and bonds alone.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -1032,7 +907,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "The quadratic bottleneck",
     blurb: "Count attention's dot products as the sequence grows, and watch the cost curve leave the line for a parabola.",
-    status: "shipped",
   },
   {
     slug: "linear-attention",
@@ -1040,7 +914,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Linear attention",
     blurb: "Swap softmax for a kernel trick and watch the same attention answer come out of a running sum instead of a full matrix.",
-    status: "shipped",
   },
   {
     slug: "state-space-models",
@@ -1048,7 +921,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "State-space models",
     blurb: "Replace attention with a single hidden state that updates once per token, and watch memory cost dislodge from context length.",
-    status: "shipped",
   },
   {
     slug: "selective-state-spaces",
@@ -1056,7 +928,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Selective state spaces",
     blurb: "Let the update rule itself depend on the current token, and watch a model finally learn to forget on purpose.",
-    status: "shipped",
   },
   {
     slug: "capstone-transformer-vs-mamba",
@@ -1064,7 +935,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Transformer vs. Mamba on a long sequence",
     blurb: "Feed both architectures a signal buried deep in a long sequence and watch cost and memory diverge.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -1075,7 +945,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Normalizing flows",
     blurb: "Push a simple distribution through an invertible function and track the exact density, warp for warp.",
-    status: "shipped",
   },
   {
     slug: "score-based-generative-models",
@@ -1083,7 +952,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Score-based generative models",
     blurb: "Follow the gradient of the log-density uphill and watch pure noise crawl back toward the data.",
-    status: "shipped",
   },
   {
     slug: "flow-matching",
@@ -1091,7 +959,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Flow matching",
     blurb: "Draw a straight line from noise to data and train a model to match its velocity — no diffusion schedule required.",
-    status: "shipped",
   },
   {
     slug: "consistency-models",
@@ -1099,7 +966,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Consistency models",
     blurb: "Collapse an entire denoising trajectory onto one endpoint, and generate a sample in a single jump.",
-    status: "shipped",
   },
   {
     slug: "vq-vae-discrete-latents",
@@ -1107,7 +973,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "VQ-VAE & discrete latents",
     blurb: "Snap a continuous code onto the nearest entry in a small codebook, and watch a discrete vocabulary emerge from images.",
-    status: "shipped",
   },
   {
     slug: "capstone-build-a-flow-matching-sampler",
@@ -1115,7 +980,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Build a flow-matching sampler",
     blurb: "Train a tiny velocity field on paper and integrate it from noise to a target distribution, step by step.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -1126,7 +990,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Function calling & tool use",
     blurb: "Watch a model's free-text answer turn into a structured call the moment a calculator becomes available.",
-    status: "shipped",
   },
   {
     slug: "react-reasoning-and-acting",
@@ -1134,7 +997,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "ReAct: reasoning and acting",
     blurb: "Interleave a thought, an action, and an observation in a loop, and watch a wrong first guess correct itself.",
-    status: "shipped",
   },
   {
     slug: "planning-and-task-decomposition",
@@ -1142,7 +1004,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Planning & task decomposition",
     blurb: "Break one big ambiguous goal into an ordered list of small unambiguous ones, then execute them one at a time.",
-    status: "shipped",
   },
   {
     slug: "agent-memory",
@@ -1150,7 +1011,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Agent memory: context vs. retrieval",
     blurb: "Watch a fact fall out of a shrinking context window, then watch retrieval pull it back in from outside.",
-    status: "shipped",
   },
   {
     slug: "multi-agent-orchestration",
@@ -1158,7 +1018,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Multi-agent orchestration",
     blurb: "Split one task across two specialized agents and a coordinator, and watch the handoff where it can go wrong.",
-    status: "shipped",
   },
   {
     slug: "capstone-build-a-tool-using-agent",
@@ -1166,7 +1025,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Build a tool-using agent",
     blurb: "Wire planning, a tool call, and memory into one loop that solves a task no single call could.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -1177,7 +1035,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Direct Preference Optimization",
     blurb: "Fit the same preference data as RLHF's reward model, but skip the reward model and the RL loop entirely.",
-    status: "shipped",
   },
   {
     slug: "constitutional-ai-and-rlaif",
@@ -1185,7 +1042,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Constitutional AI & RLAIF",
     blurb: "Replace a human's thumbs-up with a model critiquing its own answer against a written principle.",
-    status: "shipped",
   },
   {
     slug: "adversarial-examples-and-robustness",
@@ -1193,7 +1049,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Adversarial examples & robustness",
     blurb: "Nudge an input by an amount too small to see and watch a confident classifier flip its answer.",
-    status: "shipped",
   },
   {
     slug: "jailbreaks-and-red-teaming",
@@ -1201,7 +1056,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Jailbreaks & red-teaming",
     blurb: "Watch a safety filter trained on direct requests get walked around by an indirect one.",
-    status: "shipped",
   },
   {
     slug: "fairness-metrics-and-bias-auditing",
@@ -1209,7 +1063,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Fairness metrics & bias auditing",
     blurb: "Compute three different, individually reasonable definitions of \"fair\" on the same data, and watch them disagree.",
-    status: "shipped",
   },
   {
     slug: "mechanistic-interpretability-and-saes",
@@ -1217,7 +1070,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Mechanistic interpretability & sparse autoencoders",
     blurb: "Decompose one tangled neuron's activation into a handful of clean, individually meaningful features.",
-    status: "shipped",
   },
   {
     slug: "capstone-red-team-and-patch-a-model",
@@ -1225,7 +1077,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Red-team and patch a model",
     blurb: "Find a toy model's failure mode on purpose, then fix it and confirm the fix without breaking anything else.",
-    status: "shipped",
     capstone: true,
   },
 
@@ -1236,7 +1087,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Data pipelines & feature stores",
     blurb: "Watch the same raw event produce two different feature values depending on when the pipeline looks at it.",
-    status: "shipped",
   },
   {
     slug: "experiment-tracking-and-reproducibility",
@@ -1244,7 +1094,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Experiment tracking & reproducibility",
     blurb: "Change one hyperparameter, keep everything else fixed, and see why \"everything else\" is the hard part to guarantee.",
-    status: "shipped",
   },
   {
     slug: "model-monitoring-and-drift",
@@ -1252,7 +1101,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Model monitoring & drift detection",
     blurb: "Watch a model's accuracy hold steady while its input distribution quietly drifts out from under it.",
-    status: "shipped",
   },
   {
     slug: "distributed-training",
@@ -1260,7 +1108,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Distributed training",
     blurb: "Split a batch across workers, average their gradients, and watch the same update come out — just faster.",
-    status: "shipped",
   },
   {
     slug: "vector-databases-and-ann-search",
@@ -1268,7 +1115,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Vector databases & ANN search",
     blurb: "Skip comparing a query to every vector in the index, and watch an approximate search find nearly the same answer for a fraction of the work.",
-    status: "shipped",
   },
   {
     slug: "capstone-design-a-monitored-serving-pipeline",
@@ -1276,7 +1122,6 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Design a monitored serving pipeline",
     blurb: "Wire ingestion, serving, and a drift alarm into one pipeline and watch it catch a problem a static test would have missed.",
-    status: "shipped",
     capstone: true,
   },
 ];
@@ -1287,11 +1132,6 @@ export function getChapterMeta(slug: string): ChapterMeta {
   return meta;
 }
 
-/** Chapters that actually have a page. Prev/next nav is scoped to these only. */
-export function getShippedChapters(): ChapterMeta[] {
-  return CURRICULUM.filter((c) => c.status === "shipped");
-}
-
 export interface ChapterNeighbors {
   index: number;
   prev: ChapterMeta | null;
@@ -1299,11 +1139,10 @@ export interface ChapterNeighbors {
 }
 
 export function getChapterNeighbors(slug: string): ChapterNeighbors {
-  const shipped = getShippedChapters();
-  const index = shipped.findIndex((c) => c.slug === slug);
+  const index = CURRICULUM.findIndex((c) => c.slug === slug);
   return {
     index,
-    prev: index > 0 ? shipped[index - 1] : null,
-    next: index >= 0 && index < shipped.length - 1 ? shipped[index + 1] : null,
+    prev: index > 0 ? CURRICULUM[index - 1] : null,
+    next: index >= 0 && index < CURRICULUM.length - 1 ? CURRICULUM[index + 1] : null,
   };
 }

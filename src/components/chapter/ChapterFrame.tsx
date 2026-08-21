@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
-import { CURRICULUM, getChapterMeta, getChapterNeighbors, getShippedChapters } from "@/lib/curriculum";
+import { CURRICULUM, getChapterMeta, getChapterNeighbors } from "@/lib/curriculum";
 import { useCheckpointPassed } from "@/lib/mastery/useCheckpointPassed";
 import styles from "./ChapterFrame.module.css";
 
@@ -25,7 +25,6 @@ function MasteryCheck({ slug }: { slug: string }) {
 export function ChapterFrame({ slug, children }: ChapterFrameProps) {
   const meta = getChapterMeta(slug);
   const { index, prev, next } = getChapterNeighbors(slug);
-  const shippedCount = getShippedChapters().length;
   const parts = [...new Set(CURRICULUM.map((c) => c.part))];
 
   // The current chapter's part auto-expands, but for a chapter deep into the curriculum that part can
@@ -43,7 +42,7 @@ export function ChapterFrame({ slug, children }: ChapterFrameProps) {
           ← All chapters
         </Link>
         <p className={styles.position}>
-          Chapter {index + 1} of {shippedCount}
+          Chapter {index + 1} of {CURRICULUM.length}
         </p>
 
         <details className={styles.overview} open>
@@ -51,28 +50,16 @@ export function ChapterFrame({ slug, children }: ChapterFrameProps) {
           <div className={styles.overviewBody}>
             {parts.map((part) => {
               const chaptersInPart = CURRICULUM.filter((c) => c.part === part);
-              const shippedInPart = chaptersInPart.filter((c) => c.status === "shipped").length;
               const isCurrentPart = part === meta.part;
               return (
                 <details key={part} className={styles.overviewPart} open={isCurrentPart}>
                   <summary className={styles.overviewPartSummary}>
                     <span>{part}</span>
-                    <span className={styles.overviewPartCount}>
-                      {shippedInPart}/{chaptersInPart.length}
-                    </span>
+                    <span className={styles.overviewPartCount}>{chaptersInPart.length}</span>
                   </summary>
                   <ol className={styles.overviewPartList}>
                     {chaptersInPart.map((c) => {
                       const isCurrent = c.slug === slug;
-                      if (c.status !== "shipped") {
-                        return (
-                          <li key={c.slug}>
-                            <span className={styles.overviewLinkPlanned} aria-disabled="true">
-                              Chapter {c.chapterNumber} — {c.title}
-                            </span>
-                          </li>
-                        );
-                      }
                       return (
                         <li key={c.slug}>
                           <Link
@@ -121,7 +108,7 @@ export function ChapterFrame({ slug, children }: ChapterFrameProps) {
               <span className={styles.navTitle}>{next.title}</span>
             </Link>
           ) : (
-            <span className={styles.navEnd}>You&rsquo;ve reached the end — more chapters coming soon.</span>
+            <span className={styles.navEnd}>You&rsquo;ve reached the end of the curriculum.</span>
           )}
         </nav>
       </div>

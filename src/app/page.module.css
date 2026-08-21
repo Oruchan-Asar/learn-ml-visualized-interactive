@@ -58,13 +58,6 @@
   color: var(--ink-faint);
 }
 
-.searchCount {
-  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12px;
-  color: var(--ink-faint);
-  white-space: nowrap;
-}
-
 .noResults {
   color: var(--ink-faint);
   font-size: 14px;
@@ -141,13 +134,6 @@
   border-color: var(--accent);
 }
 
-.cardPlanned {
-  composes: card;
-  cursor: default;
-  position: relative;
-  opacity: 0.7;
-}
-
 .cardHeader {
   display: flex;
   align-items: center;
@@ -168,33 +154,13 @@
   font-weight: 700;
 }
 
-.plannedTag {
-  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  padding: 2px 9px;
-  flex-shrink: 0;
-}
-
 .cardTitle {
   font-size: 1.1rem;
   margin: 4px 0 6px;
-}
-
-.cardPlanned .cardTitle {
-  color: var(--ink-soft);
 }
 
 .cardBlurb {
   color: var(--ink-soft);
   font-size: 14px;
   margin: 0;
-}
-
-.cardPlanned .cardBlurb {
-  color: var(--ink-faint);
 }

@@ -175,8 +175,7 @@
 }
 
 .overviewLink,
-.overviewLinkCurrent,
-.overviewLinkPlanned {
+.overviewLinkCurrent {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -197,10 +196,6 @@
 .overviewLinkCurrent {
   color: var(--accent-ink);
   font-weight: 600;
-}
-.overviewLinkPlanned {
-  color: var(--ink-faint);
-  cursor: default;
 }
 
 .masteryCheck {
