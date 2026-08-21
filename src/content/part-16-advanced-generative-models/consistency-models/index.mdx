@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ConsistencyCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,6 +22,14 @@ import { IntuitionDemo, PlayDemo, ConsistencyCheckpoint } from "./Demos";
   $$
   f(x_t, t) = x_t + (1-t)\big(x_1 - x_0\big) = x_1, \qquad \text{for every } t
   $$
+
+  <Variables>
+    <Variable>**$f(x_t, t)$** — the consistency function: maps any point on a trajectory, at any time $t$, straight to that trajectory's endpoint.</Variable>
+    <Variable>**$x_t$** — the point on the trajectory at time $t$.</Variable>
+    <Variable>**$x_0$** — the trajectory's starting point (noise, at $t=0$).</Variable>
+    <Variable>**$x_1$** — the trajectory's endpoint (data, at $t=1$) that $f$ should output for every $t$ on this trajectory.</Variable>
+    <Variable>**$t$** — the time parameter identifying where along the trajectory the input point sits.</Variable>
+  </Variables>
 
   The self-consistency property is the middle expression holding for *any* $t$ — $f$ doesn't care how far
   along the trajectory it's asked to evaluate, it always outputs the endpoint. Real consistency models are
