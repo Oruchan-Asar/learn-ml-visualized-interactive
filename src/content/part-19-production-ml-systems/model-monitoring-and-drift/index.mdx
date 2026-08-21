@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DriftCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,6 +22,13 @@ import { IntuitionDemo, PlayDemo, DriftCheckpoint } from "./Demos";
   \text{accuracy} = \sum_i P(\text{bin}_i)\, a_i
   $$
 
+  <Variables>
+    <Variable>**$\text{accuracy}$** — the overall model accuracy on live traffic, averaged across bins.</Variable>
+    <Variable>**$i$** — index ranging over each bin the inputs are split into.</Variable>
+    <Variable>**$P(\text{bin}_i)$** — the fraction of inputs that fall into bin $i$.</Variable>
+    <Variable>**$a_i$** — the fixed accuracy the model gets on inputs in bin $i$.</Variable>
+  </Variables>
+
   Two very different bin distributions can land on the exact same weighted sum — a coincidence of arithmetic,
   not evidence that nothing changed. A **drift score** measures the distributions directly, independent of
   what accuracy happens to do:
@@ -29,6 +36,13 @@ import { IntuitionDemo, PlayDemo, DriftCheckpoint } from "./Demos";
   $$
   \text{drift} = D_{KL}(P_{\text{train}} \,\|\, P_{\text{live}})
   $$
+
+  <Variables>
+    <Variable>**$\text{drift}$** — the drift score: how far the live input distribution has moved from the training one.</Variable>
+    <Variable>**$D_{KL}(\cdot \Vert \cdot)$** — the **KL divergence**, short for **Kullback–Leibler divergence**: the extra bits it costs to describe one distribution using a code built for the other.</Variable>
+    <Variable>**$P_{\text{train}}$** — the distribution of inputs the model was trained and validated on.</Variable>
+    <Variable>**$P_{\text{live}}$** — the distribution of inputs the model is actually seeing in production right now.</Variable>
+  </Variables>
 
   Above a chosen threshold, the input distribution has moved enough to alert on — regardless of whether
   accuracy noticed.
