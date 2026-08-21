@@ -1,0 +1,73 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, KLCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 9 measured surprise in bits for a single distribution. What if you have two distributions — the
+  real one, and your model's guess at it — and want to measure how *far apart* they are?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  P is fixed. Drag Q's bars around and watch the readout shrink toward zero as Q starts to look like P —
+  and grow the more they disagree.
+</Intuition>
+
+<Formalize>
+  The **KL divergence** measures the extra bits it costs to describe data from $P$ using a code built for
+  $Q$ instead of $P$'s own optimal code:
+
+  $$
+  D_{KL}(P \Vert Q) = \sum_x P(x) \log_2 \frac{P(x)}{Q(x)}
+  $$
+
+  It's always $\geq 0$, and exactly $0$ only when $P=Q$ everywhere. But it is **not symmetric** —
+  $D_{KL}(P\Vert Q) \neq D_{KL}(Q\Vert P)$ in general, so it isn't a true distance. Related: **cross-entropy**
+  $H(P,Q) = -\sum_x P(x)\log_2 Q(x)$ always decomposes as $H(P,Q) = H(P) + D_{KL}(P\Vert Q)$ — Part II's
+  cross-entropy loss chapter is exactly this $H(P,Q)$, with $P$ the true one-hot label.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Now watch both directions at once. $D_{KL}(P\Vert Q)$ and $D_{KL}(Q\Vert P)$ move together, roughly, but
+  they're never quite equal — drag until they're close and notice they still don't match exactly.
+</Play>
+
+<WorkedExample>
+  With $P=(0.5,0.3,0.2)$ and $Q=(0.4,0.4,0.2)$:
+
+  <Steps>
+    <Step label="KL divergence, one direction">
+      $D_{KL}(P\Vert Q) = 0.5\log_2\frac{0.5}{0.4} + 0.3\log_2\frac{0.3}{0.4} + 0.2\log_2\frac{0.2}{0.2}
+      \approx 0.0365$ bits. The third term is exactly $0$ since $P$ and $Q$ agree there.
+    </Step>
+    <Step label="The reverse direction gives a different number">
+      $D_{KL}(Q\Vert P) = 0.4\log_2\frac{0.4}{0.5} + 0.4\log_2\frac{0.4}{0.3} + 0.2\log_2\frac{0.2}{0.2}
+      \approx 0.0372$ bits — close to the forward value here, but not identical, confirming the asymmetry.
+    </Step>
+    <Step label="Mutual information: KL applied to independence itself">
+      For a joint distribution over two binary variables, $P(X{=}0,Y{=}0){=}P(X{=}1,Y{=}1){=}0.4$ and
+      $P(X{=}0,Y{=}1){=}P(X{=}1,Y{=}0){=}0.1$ — $X$ and $Y$ agree far more than chance. Both marginals are
+      uniform, $(0.5,0.5)$, so $H(X)=H(Y)=1$ bit, while the joint entropy $H(X,Y)\approx1.7219$ bits.
+      **Mutual information** is exactly the gap: $I(X;Y)=H(X)+H(Y)-H(X,Y)\approx 0.2781$ bits — equivalently,
+      it's the KL divergence between the real joint distribution and the independent one its own marginals
+      would predict. Zero mutual information means knowing $X$ tells you nothing about $Y$; here, it tells
+      you a fair amount.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<KLCheckpoint />
+
+<Summary>
+  $$
+  D_{KL}(P\Vert Q) = \sum_x P(x)\log_2\frac{P(x)}{Q(x)} \qquad\qquad I(X;Y) = \sum_{x,y} P(x,y)\log_2\frac{P(x,y)}{P(x)P(y)}
+  $$
+
+  KL divergence is entropy's natural extension to *comparing* two distributions instead of describing one;
+  mutual information is what happens when you apply that same comparison to a joint distribution against
+  the independent version of itself. Both show up constantly downstream — in cross-entropy loss, in
+  variational autoencoders' regularizer, and in feature-selection methods that rank inputs by how much
+  information they share with the target.
+</Summary>

@@ -109,7 +109,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 11,
     title: "KL divergence & mutual information",
     blurb: "Drag one distribution away from another and watch a single number measure exactly how surprised you'd be.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "convex-optimization-basics",
