@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, JointEmbeddingCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,12 @@ import { IntuitionDemo, PlayDemo, JointEmbeddingCheckpoint } from "./Demos";
   $$
   d(u, v) = \sqrt{(u_1-v_1)^2 + (u_2-v_2)^2 + \dots}
   $$
+
+  <Variables>
+    <Variable>**$u$** — the image embedding, produced by an encoder built for pixels.</Variable>
+    <Variable>**$v$** — the text embedding, produced by a separate encoder built for text.</Variable>
+    <Variable>**$d(u, v)$** — the distance between the two embeddings: how well the caption matches the image.</Variable>
+  </Variables>
 
   Nothing about the distance formula changed. What's new is that $u$ came from a completely different encoder (one built for pixels) than $v$ (one built for text) — and both encoders were trained so that their outputs land in the *same* coordinate system, not just two similar-looking but separate spaces.
 </Formalize>
