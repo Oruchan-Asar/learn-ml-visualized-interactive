@@ -80,29 +80,27 @@ export function PlayDemo() {
 }
 
 /**
- * Checkpoint: predict, before seeing it, which question's ungrounded answer would be wrong — then turn
- * retrieval off and check. The generated answer is hidden until "Check answer" is clicked (and hides
- * again the moment either control changes), so there's no live text to read through all three options
- * and pattern-match against — the learner has to reason from the one fact given up front (the model's
- * only fallback, with no retrieval, is always "Paris") to which of the other two facts it would get wrong.
+ * Checkpoint: predict which question's ungrounded answer would be wrong, then turn retrieval off and
+ * pick it. The instructions give the one fact needed to reason it out — the model's only fallback, with
+ * no retrieval, is always "Paris" — so the question is which of the other two facts that fallback
+ * contradicts, not which text looks right after reading all three.
  */
 export function RagCheckpoint() {
   const [query, setQuery] = useState<string | null>(null);
   const [useRetrieval, setUseRetrieval] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const [revealed, setRevealed] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
   const q = query ? findQuery(query) : null;
+  const answer = q ? generate(q, useRetrieval) : null;
   const passed = q !== null && !useRetrieval && generate(q, false) !== retrieve(q).answer;
 
   useEffect(() => {
-    if (revealed && passed) recordCheckpointAttempt(CONCEPT_ID, true);
-  }, [revealed, passed]);
+    if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
+  }, [passed]);
 
   const select = <T,>(setter: (v: T) => void) => (v: T) => {
     setHasInteracted(true);
-    setRevealed(false);
     setter(v);
   };
 
@@ -112,15 +110,12 @@ export function RagCheckpoint() {
         <>
           Every question falls back on the exact same default guess, <strong>&ldquo;{DEFAULT_PRIOR_ANSWER}&rdquo;</strong>,
           whenever retrieval is off. Predict which question that guess is <strong>wrong</strong> for, turn
-          retrieval <strong>off</strong>, pick it, then check.
+          retrieval <strong>off</strong>, and pick it.
         </>
       }
       passed={passed || everPassed}
       hasInteracted={hasInteracted}
-      checkable
-      revealed={revealed}
-      onCheck={() => setRevealed(true)}
-      idleLabel="Pick a question and toggle retrieval, then check"
+      idleLabel="Pick a question and toggle retrieval"
     >
       <div className={styles.buttons}>
         {QUERIES.map((item) => (
@@ -142,7 +137,7 @@ export function RagCheckpoint() {
           With retrieval
         </button>
       </div>
-      <div>{revealed && q ? `answer: "${generate(q, useRetrieval)}" (truth: "${retrieve(q).answer}")` : "answer hidden until checked"}</div>
+      <div>{answer ? `answer: "${answer}" (truth: "${retrieve(q!).answer}")` : "pick a question"}</div>
     </CheckpointFrame>
   );
 }

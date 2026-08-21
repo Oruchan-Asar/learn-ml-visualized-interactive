@@ -69,38 +69,34 @@ export function PlayDemo() {
 
 /**
  * Checkpoint: three rules never shown above — not the two from Intuition/Play, whose precision is
- * already on screen a moment earlier. Precision is hidden until "Check answer," so picking one requires
- * actually working through whether every point it covers shares the model's prediction, not reading a
- * bar chart. One rule (x2 > 0) is obviously too loose; the other two both add a second condition, but
- * only the correctly-thresholded one is actually reliable — "add a second condition" alone isn't enough.
+ * already on screen a moment earlier. One rule (x2 > 0) is obviously too loose; the other two both add
+ * a second condition, but only the correctly-thresholded one is actually reliable — "add a second
+ * condition" alone isn't enough, so picking the right one takes working through what each rule actually
+ * covers, not pattern-matching against the two rules seen earlier.
  */
 export function AnchorsCheckpoint() {
   const [ruleIndex, setRuleIndex] = useState<number | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const [revealed, setRevealed] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
   const stats = ruleIndex === null ? null : evaluateAnchor(CHECKPOINT_RULES[ruleIndex]);
   const passed = stats !== null && stats.precision >= PRECISION_THRESHOLD;
 
   useEffect(() => {
-    if (revealed && passed) recordCheckpointAttempt(CONCEPT_ID, true);
-  }, [revealed, passed]);
+    if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
+  }, [passed]);
 
   return (
     <CheckpointFrame
       instructions={
         <>
-          None of these three rules appeared earlier. Work out which one clears the anchor algorithm&apos;s{" "}
-          <strong>{PRECISION_THRESHOLD}</strong> precision requirement, pick it, then check.
+          None of these three rules appeared earlier. Find the one that clears the anchor algorithm&apos;s{" "}
+          <strong>{PRECISION_THRESHOLD}</strong> precision requirement.
         </>
       }
       passed={passed || everPassed}
       hasInteracted={hasInteracted}
-      checkable
-      revealed={revealed}
-      onCheck={() => setRevealed(true)}
-      idleLabel="Pick a rule, then check"
+      idleLabel="Pick a rule to try it"
     >
       <div className={styles.buttons}>
         {CHECKPOINT_RULES.map((r, i) => (
@@ -110,7 +106,6 @@ export function AnchorsCheckpoint() {
             className={i === ruleIndex ? styles.buttonActive : styles.button}
             onClick={() => {
               setHasInteracted(true);
-              setRevealed(false);
               setRuleIndex(i);
             }}
           >
@@ -118,7 +113,7 @@ export function AnchorsCheckpoint() {
           </button>
         ))}
       </div>
-      {revealed && stats && <ContributionBars items={[{ label: "precision", value: stats.precision }]} formatValue={(v) => v.toFixed(3)} max={1} />}
+      {stats && <ContributionBars items={[{ label: "precision", value: stats.precision }]} formatValue={(v) => v.toFixed(3)} max={1} />}
     </CheckpointFrame>
   );
 }

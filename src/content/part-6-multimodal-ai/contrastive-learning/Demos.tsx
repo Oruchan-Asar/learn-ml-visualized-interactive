@@ -69,15 +69,13 @@ const TOLERANCE = 0.02;
 /**
  * Checkpoint: land training progress so the loss comes within 0.02 of exactly 0.2 — not "anything past
  * some threshold." That target sits in a narrow band, roughly progress 74-82%, so sliding to either
- * extreme and calling it done doesn't work. The loss number itself is hidden until "Check answer" is
- * clicked (and hides again the moment the slider moves), so there's no live readout to hill-climb
- * against — the learner has to predict roughly where 0.2 falls from the worked example's numbers, then
- * verify, rather than watching a number tick down while dragging.
+ * extreme and calling it done doesn't work — reaching it takes the same kind of estimate-then-refine
+ * dragging as the worked example's own numbers (1.099 at 0%, 0.39 at 50%, 0.112 at 100%), not a single
+ * lucky guess.
  */
 export function ContrastiveCheckpoint() {
   const [progress, setProgress] = useState(0);
   const [hasInteracted, setHasInteracted] = useState(false);
-  const [revealed, setRevealed] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
   const images = lerpPoints(IMAGES_BEFORE, IMAGES_AFTER, progress);
@@ -86,28 +84,25 @@ export function ContrastiveCheckpoint() {
   const passed = Math.abs(loss - TARGET_LOSS) <= TOLERANCE;
 
   useEffect(() => {
-    if (revealed && passed) recordCheckpointAttempt(CONCEPT_ID, true);
-  }, [revealed, passed]);
+    if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
+  }, [passed]);
 
   return (
     <CheckpointFrame
       instructions={
         <>
           Set training progress so the contrastive loss lands within <strong>0.02</strong> of exactly{" "}
-          <strong>{TARGET_LOSS}</strong> — not just below it. Predict where, then check.
+          <strong>{TARGET_LOSS}</strong> — not just below it.
         </>
       }
       passed={passed || everPassed}
       hasInteracted={hasInteracted}
-      checkable
-      revealed={revealed}
-      onCheck={() => setRevealed(true)}
-      idleLabel="Drag, then click Check answer"
+      idleLabel="Drag to set training progress"
     >
       <KernelHeatmap
         kernel={rowSoftmax(similarityMatrix(images, captions))}
         width={200}
-        label={`training progress ${(progress * 100).toFixed(0)}%${revealed ? `  —  loss ${loss.toFixed(3)}` : ""}`}
+        label={`training progress ${(progress * 100).toFixed(0)}%  —  loss ${loss.toFixed(3)}`}
       />
       <label className={styles.sliderRow}>
         training progress
@@ -119,7 +114,6 @@ export function ContrastiveCheckpoint() {
           value={progress}
           onChange={(e) => {
             setHasInteracted(true);
-            setRevealed(false);
             setProgress(Number(e.target.value));
           }}
         />
