@@ -1,0 +1,58 @@
+.readout {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  font-size: 14px;
+}
+
+.readout p {
+  margin: 4px 0;
+}
+
+.hit {
+  color: var(--accent2-ink);
+  font-weight: 600;
+}
+
+.miss {
+  color: #b34437;
+  font-weight: 600;
+}
+
+.table {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.candidateList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.candidate {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.candidateActive {
+  composes: candidate;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--paper-raised);
+}

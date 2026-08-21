@@ -1,0 +1,75 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, AnnCheckpoint } from "./Demos";
+
+<Hook>
+  Finding the nearest vector to a query, exactly, means comparing it to every single vector in the index.
+  That's fine for eight vectors. It stops being fine somewhere around a million. The fix is to stop looking
+  everywhere — and accept that "nearly the right answer" is what that trade buys you.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Eight vectors, two clusters. Switch queries and watch the search check a handful of points instead of all
+  eight — and watch whether that handful still contains the actual answer.
+</Intuition>
+
+<Formalize>
+  An **exact** nearest-neighbor search compares a query against every indexed vector:
+
+  $$
+  \text{nearest}(q) = \arg\min_{p \in \text{index}} \; \lVert q - p \rVert^2
+  $$
+
+  An **approximate** index (here, a tiny IVF-style partition) precomputes a few centroids, assigns every
+  indexed vector to its nearest one, and at query time only searches the query's own assigned cluster:
+
+  $$
+  \text{ann}(q) = \arg\min_{p \in \text{cluster}(\text{nearest-centroid}(q))} \; \lVert q - p \rVert^2
+  $$
+
+  This is cheap — a handful of comparisons instead of the whole index — precisely because it never looks at
+  most of the data. When the true nearest neighbor happens to live in a *different* cluster than the one the
+  query got assigned to, the approximate search never sees it at all.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  A query deep inside a cluster's territory: the approximate search checks a fraction of the index and finds
+  exactly what brute force would have found. A query near the boundary between clusters: same fraction of
+  work, but the assigned cluster doesn't contain the true nearest neighbor — it's sitting just across the
+  line, in the cluster that never got searched.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="A boundary query at (5, 4)">
+      Distance to centroid A, (0, 0): 41. Distance to centroid B, (10, 10): 61. Closer to A, so the index
+      only searches cluster A's four points.
+    </Step>
+    <Step label="The best answer within cluster A">
+      The nearest cluster-A point is at distance 8. The approximate search returns it confidently — it has no
+      way to know what it didn't look at.
+    </Step>
+    <Step label="The true nearest neighbor was in cluster B all along">
+      A single boundary point in cluster B sits at distance 5 from the query — closer than anything in
+      cluster A, but invisible to a search that only ever considered one cluster.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<AnnCheckpoint />
+
+<Summary>
+  $$
+  \text{ann}(q) = \arg\min_{p \in \text{cluster}(\text{nearest-centroid}(q))} \; \lVert q - p \rVert^2 \;\neq\; \arg\min_{p \in \text{index}} \; \lVert q - p \rVert^2
+  $$
+
+  Every real vector database — FAISS's IVF, HNSW's graph layers, ScaNN's quantized clusters — makes this
+  exact trade in some form: search a shortlist instead of the whole index, and accept a small, bounded chance
+  of missing the true best match in exchange for search times that don't grow linearly with the index size.
+  Probing more than one cluster near a boundary shrinks that miss rate at the cost of some of the speedup;
+  it's a dial, not a fixed answer. This closes Part XIX's tour of production systems — the last chapter draws
+  ingestion, serving, and drift detection from every chapter in this part into one monitored pipeline.
+</Summary>

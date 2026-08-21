@@ -1268,7 +1268,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Vector databases & ANN search",
     blurb: "Skip comparing a query to every vector in the index, and watch an approximate search find nearly the same answer for a fraction of the work.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-design-a-monitored-serving-pipeline",
