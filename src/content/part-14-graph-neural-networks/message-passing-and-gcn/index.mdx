@@ -1,0 +1,72 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SmoothingCheckpoint } from "./Demos";
+
+<Hook>
+  Every node in the last chapter's graph carries its own number. What's the simplest possible way to let
+  a node's value be influenced by *where it sits in the graph*, not just its own starting value?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click "pass one round of messages" a few times. Every node's number nudges toward the average of
+  itself and its direct neighbors — nothing fancier than that.
+</Intuition>
+
+<Formalize>
+  A **Graph Convolutional Network (GCN)** layer replaces the standard neural-net update with **message
+  passing**: each node's new feature is a function of the (multi-)set of its neighbors' current features,
+  plus its own:
+
+  $$
+  h_v^{(k+1)} = \text{AGGREGATE}\Big(h_v^{(k)}, \; \{h_u^{(k)} : u \in \mathcal{N}(v)\}\Big)
+  $$
+
+  The simplest possible choice of AGGREGATE — the one this chapter uses — is a plain **mean**: average
+  the node's own value together with every neighbor's. Stack $k$ of these layers, and information from
+  nodes up to $k$ hops away has had a chance to reach any given node.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the variance number, not just the graph. It shrinks every single round — nodes that started far
+  apart in value are ending up closer and closer together. That's not a bug; it's exactly what averaging
+  repeatedly does, and it's the double-edged sword of stacking too many GCN layers: **over-smoothing**.
+</Play>
+
+<WorkedExample>
+  Starting features $x=(1,2,0,3,1,2)$ for nodes $(0,1,2,3,4,5)$:
+
+  <Steps>
+    <Step label="One round, computed by hand for a leaf and a hub">
+      Node $4$ (a leaf, neighbor $\{3\}$): $h_4^{(1)} = \frac{1+3}{2} = 2$. Node $3$ (a hub, neighbors
+      $\{1,4,5\}$): $h_3^{(1)} = \frac{3+2+1+2}{4} = 2$. Every node's group size is $1+\deg(v)$ — the
+      denominator changes depending on the node, since degrees aren't uniform (Chapter 1).
+    </Step>
+    <Step label="Full round 1">
+      $h^{(1)} = (1.0,\ 1.5,\ 1.0,\ 2.0,\ 2.0,\ 2.5)$ — variance across all six values drops from
+      $\frac{11}{12}\approx0.917$ to about $0.306$, already less than a third of where it started.
+    </Step>
+    <Step label="Keep going and it keeps shrinking">
+      By round $4$, variance is down to about $0.093$ — every node's value is crawling toward the graph's
+      overall average. Nodes $0$ and $5$ started a full $1.0$ apart; a few rounds of *pure local
+      averaging* is already enough to blur that gap.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SmoothingCheckpoint />
+
+<Summary>
+  $$
+  h_v^{(k+1)} = \text{mean}\Big(h_v^{(k)}, \{h_u^{(k)}: u\in\mathcal{N}(v)\}\Big)
+  $$
+
+  Message passing is the graph generalization of convolution: instead of a fixed spatial window, every
+  node aggregates whatever neighbors it actually has. But stacking too many rounds washes out exactly the
+  local structure that made the graph interesting in the first place — real GCNs use a learned weight
+  matrix per layer (not just a mean) and rarely go past 2-3 layers for precisely this reason. The next
+  chapter tackles a different problem the mean rule quietly assumes away: what happens when a node has
+  thousands of neighbors, not six?
+</Summary>

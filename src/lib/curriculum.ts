@@ -997,7 +997,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Message passing & the GCN",
     blurb: "Watch a node's feature update by averaging its neighbors', layer after layer, until far-apart nodes start to look alike.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "graphsage-inductive-learning",
