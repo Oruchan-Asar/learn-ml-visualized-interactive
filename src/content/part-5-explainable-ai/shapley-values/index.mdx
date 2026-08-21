@@ -1,8 +1,8 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ShapleyCheckpoint } from "./Demos";
 
 <Hook>
-  LIME's local line has a slope, but splitting a *single* prediction's credit fairly among several features isn't the same problem — especially when two features are worth far more together than either is alone. Shapley values, borrowed whole from 1950s game theory, are the one way to do that split that's provably fair.
+  **LIME** — short for **Local Interpretable Model-agnostic Explanations** — has a local line with a slope, but splitting a *single* prediction's credit fairly among several features isn't the same problem — especially when two features are worth far more together than either is alone. Shapley values, borrowed whole from 1950s game theory, are the one way to do that split that's provably fair.
 </Hook>
 
 <Intuition>
@@ -18,11 +18,23 @@ import { IntuitionDemo, PlayDemo, ShapleyCheckpoint } from "./Demos";
   \text{marginal}(\pi, i) = v(\{\text{features before } i \text{ in order } \pi\} \cup \{i\}) - v(\{\text{features before } i \text{ in order } \pi\})
   $$
 
+  <Variables>
+    <Variable>**$\pi$** — one possible order in which features could arrive.</Variable>
+    <Variable>**$i$** — the feature whose contribution is being measured.</Variable>
+    <Variable>**$v(S)$** — the value function: the score achieved by a coalition (subset of features) $S$.</Variable>
+    <Variable>**$\text{marginal}(\pi, i)$** — how much the score jumps when feature $i$ joins, given the features already present ahead of it in order $\pi$.</Variable>
+  </Variables>
+
   A feature's Shapley value is that marginal contribution, averaged over *every possible order* features could arrive in:
 
   $$
   \phi_i = \frac{1}{n!}\sum_{\pi} \text{marginal}(\pi, i)
   $$
+
+  <Variables>
+    <Variable>**$\phi_i$** — feature $i$'s Shapley value: its marginal contribution, averaged over every possible arrival order.</Variable>
+    <Variable>**$n$** — the total number of features being split credit among.</Variable>
+  </Variables>
 
   Averaging over every order is what makes this fair rather than arbitrary — a feature that only pays off *in combination* with another gets credit for that exactly as often as the ordering happens to reward it.
 </Formalize>
