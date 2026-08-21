@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, PolicyGradientCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, PolicyGradientCheckpoint } from "./Demos";
   $$
   \theta_i \leftarrow \theta_i + \alpha\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)\,G
   $$
+
+  <Variables>
+    <Variable>**$\theta_i$** — the preference parameter for action $i$, before being run through softmax.</Variable>
+    <Variable>**$\pi_\theta(i)$** — the current policy's probability of picking action $i$: softmax of the preferences.</Variable>
+    <Variable>**$a$** — the action that was actually taken.</Variable>
+    <Variable>**$\mathbb{1}[i{=}a]$** — equals $1$ if $i$ is the action actually taken, $0$ otherwise.</Variable>
+    <Variable>**$G$** — the return observed for that action.</Variable>
+    <Variable>**$\alpha$** — the learning rate controlling the update size.</Variable>
+  </Variables>
 
   Look closely at $\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)$ — it's *exactly* the softmax cross-entropy gradient from Part II, indicator minus predicted probability. The only difference is what it's scaled by: cross-entropy always scales by $1$ (the true label is certain), while REINFORCE scales by $G$, whatever return that action happened to earn. A big positive return pushes hard toward that action; a return of exactly zero pushes not at all.
 </Formalize>
