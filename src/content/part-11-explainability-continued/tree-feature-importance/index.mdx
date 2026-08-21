@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, TreeImportanceCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, TreeImportanceCheckpoint } from "./Demos";
   $$
   \text{importance}(f) = \sum_{\text{nodes splitting on } f} \frac{n_{\text{node}}}{n_{\text{total}}} \cdot \text{gain}_{\text{node}}
   $$
+
+  <Variables>
+    <Variable>**$\text{importance}(f)$** — the total importance score credited to feature $f$ across the whole tree.</Variable>
+    <Variable>**$f$** — the feature being scored, i.e. whichever feature a node happened to split on.</Variable>
+    <Variable>**$n_{\text{node}}$** — the number of samples that reached a given splitting node.</Variable>
+    <Variable>**$n_{\text{total}}$** — the total number of samples in the whole tree.</Variable>
+    <Variable>**$\text{gain}_{\text{node}}$** — the reduction in impurity that node's split achieved.</Variable>
+  </Variables>
 
   No perturbation, no gradients, no separate explanation step — the number was already computed the moment the tree finished training.
 </Formalize>
