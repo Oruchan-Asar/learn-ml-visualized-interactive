@@ -1,8 +1,8 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SaliencyCheckpoint } from "./Demos";
 
 <Hook>
-  Chapter 3's minimal CNN predicted "Edge detected" for a striped image. It never said *which pixels* it actually used to get there — and a network with millions of weights can't be read off the way four dense weights can. A saliency map asks the network directly: nudge one pixel, and see how much the answer moves.
+  Chapter 3's minimal **CNN** — short for **Convolutional Neural Network** — predicted "Edge detected" for a striped image. It never said *which pixels* it actually used to get there — and a network with millions of weights can't be read off the way four dense weights can. A saliency map asks the network directly: nudge one pixel, and see how much the answer moves.
 </Hook>
 
 <Intuition>
@@ -18,7 +18,15 @@ import { IntuitionDemo, PlayDemo, SaliencyCheckpoint } from "./Demos";
   \text{saliency}(i,j) = \left| \frac{f(\text{image} + \epsilon\, e_{ij}) - f(\text{image} - \epsilon\, e_{ij})}{2\epsilon} \right|
   $$
 
-  where $f$ is the predicted class's logit and $e_{ij}$ nudges only pixel $(i,j)$. A pixel earns a high score exactly when perturbing it moves the logit a lot — which, through a convolution, ReLU, and max-pool, only happens for pixels that reach a surviving, active path all the way to the output.
+  <Variables>
+    <Variable>**$\text{saliency}(i,j)$** — the importance score assigned to pixel $(i,j)$.</Variable>
+    <Variable>**$f$** — the predicted class's logit, the model output being explained.</Variable>
+    <Variable>**$\text{image}$** — the input image, as a grid of pixel values.</Variable>
+    <Variable>**$\epsilon$** — the size of the small nudge applied to one pixel.</Variable>
+    <Variable>**$e_{ij}$** — a perturbation that nudges only pixel $(i,j)$, leaving every other pixel fixed.</Variable>
+  </Variables>
+
+  where $f$ is the predicted class's logit and $e_{ij}$ nudges only pixel $(i,j)$. A pixel earns a high score exactly when perturbing it moves the logit a lot — which, through a convolution, **ReLU** (short for **Rectified Linear Unit**), and max-pool, only happens for pixels that reach a surviving, active path all the way to the output.
 </Formalize>
 
 <Play>
