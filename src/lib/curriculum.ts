@@ -1115,7 +1115,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Build a flow-matching sampler",
     blurb: "Train a tiny velocity field on paper and integrate it from noise to a target distribution, step by step.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 

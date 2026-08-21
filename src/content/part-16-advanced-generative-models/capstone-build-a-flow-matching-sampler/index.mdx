@@ -1,0 +1,74 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SamplerCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 3 computed one training pair's exact velocity by hand — a fine warm-up, but not a generative
+  model. A real sampler has to work on noise it's *never seen*. Can training on a handful of pairs
+  produce a velocity field that generalizes to a brand-new starting point?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Pick a starting noise value and take Euler steps. None of these four starting points were in the
+  training set — the field being applied was fit once, on four completely different pairs, and now
+  generates from anywhere.
+</Intuition>
+
+<Formalize>
+  Fitting a *constant* velocity field $v_\theta \equiv \bar v$ by least squares against training pairs'
+  velocities has a closed form — the mean:
+
+  $$
+  \bar v = \frac{1}{N}\sum_{i=1}^N (x_1^{(i)} - x_0^{(i)})
+  $$
+
+  This is the smallest possible flow-matching model: no dependence on $x$ or $t$ at all, just one number.
+  Real flow-matching networks condition on both, so different starting points and different times along
+  the path get genuinely different corrections — but the training objective being minimized is the exact
+  same squared error between a predicted velocity and $x_1-x_0$, just with a far more expressive model
+  fitting it.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The trained field doesn't equal any single training pair's velocity — it's their average. Every pair
+  pulled the fit a little differently, and the least-squares solution is the one number that minimizes
+  total squared disagreement across all four, not the best match to any one of them.
+</Play>
+
+<WorkedExample>
+  Four training pairs: $({-}3,6)$, $({-}1,4)$, $({-}4,8)$, $({-}2,5)$:
+
+  <Steps>
+    <Step label="Each pair's velocity">
+      $9,\ 5,\ 12,\ 7$ — computed exactly as in Chapter 3, one subtraction each.
+    </Step>
+    <Step label="Train: average them">
+      $\bar v = (9+5+12+7)/4 = 8.25$. This is the entire training procedure for this model.
+    </Step>
+    <Step label="Generate from noise the model never trained on">
+      $x_0 = -2$ (not one of the four training points): $x_1 = -2 + 8.25(1) = 6.25$ — one Euler step,
+      exact, since the trained field is constant.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SamplerCheckpoint />
+
+<Summary>
+  $$
+  \bar v = \frac{1}{N}\sum_i (x_1^{(i)} - x_0^{(i)}), \qquad x_1 = x_0 + \bar v
+  $$
+
+  This sampler generalizes in the most limited way possible — it applies the exact same shift to every
+  starting point, so it can never do more than translate the noise distribution. A real flow-matching
+  network's velocity depends on $x$ and $t$, which is what lets different starting points end up in
+  different parts of a genuinely multi-modal data distribution instead of all landing exactly $\bar v$
+  apart. This closes Part XVI. The mechanisms covered — exact densities via invertible maps, score
+  fields, straight-line training targets, single-step distillation, and discrete codebooks — are the
+  building blocks behind essentially every modern image, audio, and video generator shipped today. The
+  next part turns from generating a single output to a model that takes *actions*: calling tools,
+  planning multi-step tasks, and orchestrating other models to get something done.
+</Summary>
