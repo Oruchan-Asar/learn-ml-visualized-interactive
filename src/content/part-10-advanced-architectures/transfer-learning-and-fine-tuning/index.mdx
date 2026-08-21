@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, TransferLearningCheckpoint } from "./Demos";
 
 <Hook>
@@ -18,6 +18,11 @@ import { IntuitionDemo, PlayDemo, TransferLearningCheckpoint } from "./Demos";
   \underbrace{w_{\text{frozen}}}_{\text{from pretraining}}, \qquad b_{\text{fine-tuned}} \leftarrow \arg\min_b \; \mathcal{L}(w_{\text{frozen}}, b; \; \text{target data})
   $$
 
+  <Variables>
+    <Variable>**$w_{\text{frozen}}$** — the pretrained weight, kept fixed during fine-tuning.</Variable>
+    <Variable>**$b_{\text{fine-tuned}}$** — the one remaining parameter, updated to fit the target task.</Variable>
+  </Variables>
+
   Training from scratch instead optimizes every parameter jointly, starting from nothing. Freezing turns a coupled, multi-parameter optimization problem into a much simpler one — often, as here, a single parameter with an easy, well-behaved loss curve.
 </Formalize>
 
@@ -34,7 +39,7 @@ import { IntuitionDemo, PlayDemo, TransferLearningCheckpoint } from "./Demos";
     <Step label="Freezing turns two unknowns into one">
       With $w$ fixed at $2$, the loss in $b$ alone is exactly $2(b-5)^2$-shaped — the same quadratic form from
       the hyperparameter-tuning chapter. Its ideal learning rate, $\eta=0.5$, lands $b=5$ exactly, in one step.
-      MSE: $0$.
+      **MSE** (short for **Mean Squared Error**): $0$.
     </Step>
     <Step label="The same rate wrecks the joint problem">
       Training $w$ and $b$ together from $(0,0)$ at that same $\eta=0.5$ overshoots on step one, overshoots
