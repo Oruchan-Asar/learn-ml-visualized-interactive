@@ -1,0 +1,78 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ComparisonCheckpoint } from "./Demos";
+
+<Hook>
+  One important fact, buried in an otherwise empty sequence, at some fixed position. A Transformer can
+  find it — attention can look anywhere, regardless of distance. So can the selective state-space model
+  from two chapters ago — it just writes the fact into its state and freezes there. Same right answer,
+  every length. So what was this whole part actually about?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Change the sequence length. The recovered value never changes — both architectures get it exactly
+  right, every time. The bars do change, and they're the entire point: getting the right answer was never
+  in question. Paying for it was.
+</Intuition>
+
+<Formalize>
+  Two architectures, the exact same task, two completely different cost profiles:
+
+  $$
+  \text{Transformer: } O(n^2) \text{ compute}, \ O(n) \text{ memory} \qquad\qquad \text{Mamba: } O(n) \text{ compute}, \ O(1) \text{ memory}
+  $$
+
+  Every number here is a fact this part already proved, one chapter at a time: the $n^2$ from Chapter 1's
+  attention matrix, the $O(n)$ key-value cache from Chapter 3, and Chapter 4's selective state collapsing
+  an entire sequence's history into one fixed-size number. This capstone doesn't add a new mechanism — it
+  puts the two totals next to each other on the one task where both happen to get the same right answer.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  This is Chapter 1's exact chart, finished. The dashed line was always the alternative worth reaching
+  for; the last three chapters were about building an architecture that actually lives on it, on a real
+  task, without sacrificing correctness to get there.
+</Play>
+
+<WorkedExample>
+  The buried-fact task at $n=32$, signal value $7$ at position $5$:
+
+  <Steps>
+    <Step label="Both get the right answer">
+      Transformer: attention weights concentrate on position $5$ regardless of $n$; the retrieved value is
+      exactly $7$. Mamba: the selective rule writes $7$ into its state at position $5$ and freezes it
+      through all $26$ remaining filler tokens. Also exactly $7$.
+    </Step>
+    <Step label="The costs already aren't close">
+      Transformer: $32^2 \times 8 = 8{,}192$ ops. Mamba: $32$ ops — a single pass, one step per token.
+      That's already a $256\times$ gap, for a sequence barely long enough to need a computer at all.
+    </Step>
+    <Step label="The memory gap is just as stark">
+      Transformer: $32$ cached key-value pairs, one per token processed so far. Mamba: $1$ state. Neither
+      number depends on *where* in the sequence the signal was — only on how long the sequence got before
+      an answer was needed.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ComparisonCheckpoint />
+
+<Summary>
+  $$
+  \text{Transformer: } O(n^2)\text{ compute} \qquad \text{Mamba: } O(n) \text{ compute}, \ O(1) \text{ memory}
+  $$
+
+  Neither architecture is strictly better — a Transformer's full attention matrix is also *exactly*
+  computable and easy to parallelize across an entire sequence at once, which a strictly sequential
+  recurrence gives up. What this part actually established is narrower and more useful than "Mamba wins":
+  the quadratic cost this part opened with is a real, measurable consequence of one specific design
+  choice (an explicit pairwise comparison), not an unavoidable tax on processing sequences at all — and an
+  architecture built around a different choice can match a Transformer's correctness on tasks like this
+  one while asking for a very different amount of compute and memory to get there. The next part turns
+  from *how* a model processes a sequence to *what kind of thing* it can generate from one, picking up
+  the generative architectures — GANs, diffusion, VAEs — from Part IV and pushing every one of them
+  further.
+</Summary>

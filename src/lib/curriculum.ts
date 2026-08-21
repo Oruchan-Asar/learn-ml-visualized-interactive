@@ -1064,7 +1064,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Transformer vs. Mamba on a long sequence",
     blurb: "Feed both architectures a signal buried deep in a long sequence and watch cost and memory diverge.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 
