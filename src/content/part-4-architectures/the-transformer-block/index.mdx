@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, TransformerBlockCheckpoint } from "./Demos";
 
 <Hook>
@@ -16,13 +16,19 @@ import { IntuitionDemo, PlayDemo, TransformerBlockCheckpoint } from "./Demos";
   z = \text{LayerNorm}(x + \text{Attention}(x)), \qquad \text{output} = \text{LayerNorm}(z + \text{FFN}(z))
   $$
 
-  The residual "$x + \dots$" means each sublayer only has to learn a *correction* to its input, not reproduce the whole thing from scratch — and it gives the gradient a direct, addition-only path back through the block, exactly like the LSTM's cell state in Chapter 7. LayerNorm rescales each token's vector to zero mean and unit variance, independently of every other token, which keeps values from drifting as they pass through dozens of stacked blocks.
+  <Variables>
+    <Variable>**$x$** — the block's input: one token's vector before this block touches it.</Variable>
+    <Variable>**$z$** — the intermediate result after self-attention, the residual add, and the first LayerNorm.</Variable>
+    <Variable>**output** — the block's final result, after the feedforward sublayer, its own residual add, and the second LayerNorm.</Variable>
+  </Variables>
+
+  The residual "$x + \dots$" means each sublayer only has to learn a *correction* to its input, not reproduce the whole thing from scratch — and it gives the gradient a direct, addition-only path back through the block, exactly like the **LSTM**'s — short for **Long Short-Term Memory** — cell state in Chapter 7. LayerNorm rescales each token's vector to zero mean and unit variance, independently of every other token, which keeps values from drifting as they pass through dozens of stacked blocks.
 </Formalize>
 
 <Play>
   <PlayDemo />
 
-  Drag the feedforward bias down toward the bottom of its range. Watch <strong>x1</strong>'s hidden units in the feedforward stage: both stuck at exactly $0$ — a dead ReLU, contributing nothing. And yet x1's final output is still perfectly well-defined, identical to its post-attention value. That's the residual connection doing its job: even when a sublayer computes nothing useful for a given token, the block doesn't break — it just passes that token through unchanged.
+  Drag the feedforward bias down toward the bottom of its range. Watch <strong>x1</strong>'s hidden units in the feedforward stage: both stuck at exactly $0$ — a dead **ReLU** (short for **Rectified Linear Unit**), contributing nothing. And yet x1's final output is still perfectly well-defined, identical to its post-attention value. That's the residual connection doing its job: even when a sublayer computes nothing useful for a given token, the block doesn't break — it just passes that token through unchanged.
 </Play>
 
 <WorkedExample>
