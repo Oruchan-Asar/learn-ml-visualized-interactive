@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, RedTeamCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,6 +22,13 @@ import { IntuitionDemo, PlayDemo, RedTeamCheckpoint } from "./Demos";
   $$
   \text{patch passes} \iff \forall\, r \in \text{suite}:\ \text{filter}(r) = \text{isRestricted}(r)
   $$
+
+  <Variables>
+    <Variable>**$r$** — one request drawn from the regression suite.</Variable>
+    <Variable>**$\text{suite}$** — the fixed set of known restricted and safe requests every filter version gets checked against.</Variable>
+    <Variable>**$\text{filter}(r)$** — the current patch's verdict (block or allow) on request $r$.</Variable>
+    <Variable>**$\text{isRestricted}(r)$** — the ground-truth label for whether $r$ actually carries restricted intent.</Variable>
+  </Variables>
 
   A patch that fixes the one case a red-teamer found without being checked against everything else can
   introduce a brand-new failure nobody was looking for. The suite is what turns "I fixed it" into a
