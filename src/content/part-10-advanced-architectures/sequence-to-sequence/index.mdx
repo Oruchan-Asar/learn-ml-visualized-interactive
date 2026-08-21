@@ -1,8 +1,8 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SeqToSeqCheckpoint } from "./Demos";
 
 <Hook>
-  Every RNN and gated cell so far has produced one output per input step — same length in, same length out. Translation doesn't work that way: a 3-word sentence in one language might need 5 words in another. How do you connect two sequences that don't even agree on length?
+  Every **RNN** — short for **Recurrent Neural Network** — and gated cell so far has produced one output per input step — same length in, same length out. Translation doesn't work that way: a 3-word sentence in one language might need 5 words in another. How do you connect two sequences that don't even agree on length?
 </Hook>
 
 <Intuition>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, SeqToSeqCheckpoint } from "./Demos";
   $$
   c = \text{Encoder}(x_1, \dots, x_n), \qquad y_1, \dots, y_m = \text{Decoder}(c)
   $$
+
+  <Variables>
+    <Variable>**$c$** — the context vector: the encoder's final hidden state, and the only channel of information passed to the decoder.</Variable>
+    <Variable>**$x_1, \dots, x_n$** — the input sequence, of length $n$.</Variable>
+    <Variable>**$y_1, \dots, y_m$** — the output sequence, of length $m$, produced by the decoder.</Variable>
+    <Variable>**$\text{Encoder}$** — the RNN that reads the entire input sequence and compresses it down to the context vector.</Variable>
+    <Variable>**$\text{Decoder}$** — the RNN that unrolls its own sequence starting from the context vector.</Variable>
+  </Variables>
 
   Nothing ties $n$ and $m$ together. The encoder's job is compression; the decoder's job is generation — and the context vector is the only channel between them.
 </Formalize>
