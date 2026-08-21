@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SSMCheckpoint } from "./Demos";
 
 <Hook>
@@ -23,6 +23,16 @@ import { IntuitionDemo, PlayDemo, SSMCheckpoint } from "./Demos";
   $$
   h_t = A\,h_{t-1} + B\,x_t, \qquad y_t = C\,h_t
   $$
+
+  <Variables>
+    <Variable>**$h_t$** — the hidden state at time step $t$: the one number the model carries forward.</Variable>
+    <Variable>**$h_{t-1}$** — the hidden state carried over from the previous time step.</Variable>
+    <Variable>**$x_t$** — the input at time step $t$.</Variable>
+    <Variable>**$y_t$** — the output at time step $t$, read straight from the hidden state.</Variable>
+    <Variable>**$A$** — the decay constant: with $|A|<1$, how much of the previous state survives each step.</Variable>
+    <Variable>**$B$** — the constant controlling how much of the current input gets mixed into the state.</Variable>
+    <Variable>**$C$** — the constant mapping the hidden state to the output.</Variable>
+  </Variables>
 
   $A$, $B$, $C$ are fixed numbers (in a real model, learned; here, chosen so every value is checkable by
   hand). $A$ is a **decay** — with $|A|<1$, older inputs' contributions shrink geometrically every step,
