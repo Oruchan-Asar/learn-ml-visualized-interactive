@@ -1,8 +1,9 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, FlowCheckpoint } from "./Demos";
 
 <Hook>
-  Part IV's GAN and Part X's VAE both generate samples from a simple noise source, but neither one tells
+  Part IV's **GAN** — short for **Generative Adversarial Network** — and Part X's **VAE** — short for
+  **Variational Autoencoder** — both generate samples from a simple noise source, but neither one tells
   you the exact probability of any particular output — a VAE only bounds it, a GAN doesn't define one at
   all. What if the generator were built so that density stayed exactly computable, every step of the way?
 </Hook>
@@ -22,6 +23,15 @@ import { IntuitionDemo, PlayDemo, FlowCheckpoint } from "./Demos";
   $$
   p_X(x) = \frac{p_Z\big(f^{-1}(x)\big)}{\left|\, df/dz \,\right|}, \qquad \text{evaluated at } z = f^{-1}(x)
   $$
+
+  <Variables>
+    <Variable>**$p_X(x)$** — the density of the generated data $x$, computed exactly rather than merely bounded or left undefined.</Variable>
+    <Variable>**$p_Z(z)$** — the trivial base density (e.g. uniform) that the flow starts from.</Variable>
+    <Variable>**$f$** — the invertible, differentiable function (the flow) that maps a base-space point $z$ to a data-space point $x$.</Variable>
+    <Variable>**$f^{-1}(x)$** — the flow's inverse, recovering the base-space point $z$ that produced a given $x$.</Variable>
+    <Variable>**$df/dz$** — the derivative of $f$ at $z$ (in higher dimensions, the Jacobian determinant), measuring how much the flow stretches or compresses space there.</Variable>
+    <Variable>**$x$, $z$** — a point in data space and its corresponding point in the simple base (latent) space.</Variable>
+  </Variables>
 
   Wherever $f$ *stretches* space ($|df/dz|>1$), the same probability mass spreads over a wider region, so
   density there goes *down*. Wherever $f$ *compresses* space ($|df/dz|<1$), density goes *up*. Total
