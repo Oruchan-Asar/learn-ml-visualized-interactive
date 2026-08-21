@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, VanishingRnnCheckpoint } from "./Demos";
 
 <Hook>
@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, VanishingRnnCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  An RNN unrolled over $T$ timesteps is a $T$-layer chain with the *same* weight reused at every layer — Part III's vanishing-gradient math, applied to time. Slide the timestep count and watch the plain RNN's gradient (dim line) collapse by roughly an order of magnitude every step, while an LSTM's cell-state gradient (bold line) barely bends.
+  An **RNN (Recurrent Neural Network)** unrolled over $T$ timesteps is a $T$-layer chain with the *same* weight reused at every layer — Part III's vanishing-gradient math, applied to time. Slide the timestep count and watch the plain RNN's gradient (dim line) collapse by roughly an order of magnitude every step, while an **LSTM (Long Short-Term Memory)**'s cell-state gradient (bold line) barely bends.
 </Intuition>
 
 <Formalize>
@@ -18,11 +18,24 @@ import { IntuitionDemo, PlayDemo, VanishingRnnCheckpoint } from "./Demos";
   \frac{\partial h_T}{\partial h_1} = \prod_{t=2}^{T} \tanh'(z_t)\, W_h
   $$
 
+  <Variables>
+    <Variable>**$\dfrac{\partial h_T}{\partial h_1}$** — the gradient of the last hidden state with respect to the first: how much a change at step 1 still affects step $T$.</Variable>
+    <Variable>**$\tanh'(z_t)$** — the derivative of the tanh activation at timestep $t$'s pre-activation, a value always less than $1$ that shrinks the gradient at every step.</Variable>
+    <Variable>**$W_h$** — the recurrent weight reused at every timestep.</Variable>
+    <Variable>**$T, t$** — the total number of timesteps, and $t$ the index running from $2$ up to $T$.</Variable>
+  </Variables>
+
   An LSTM keeps a separate **cell state** $c_t = f_t \, c_{t-1} + i_t \, g_t$, and its backward path through the cell state is just:
 
   $$
   \frac{\partial c_T}{\partial c_1} = \prod_{t=2}^{T} f_t
   $$
+
+  <Variables>
+    <Variable>**$\dfrac{\partial c_T}{\partial c_1}$** — the gradient of the final cell state with respect to the first cell state.</Variable>
+    <Variable>**$c_t$** — the LSTM's cell state at timestep $t$: a separate running memory, distinct from the hidden state.</Variable>
+    <Variable>**$f_t$** — the forget gate at timestep $t$: how much of the previous cell state to keep, between $0$ and $1$.</Variable>
+  </Variables>
 
   No $\tanh'$ factor. If the forget gate $f_t$ stays close to $1$, this product barely shrinks at all — the "constant error carousel" that gives LSTMs their long memory.
 </Formalize>
