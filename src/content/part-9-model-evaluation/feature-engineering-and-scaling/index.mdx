@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, FeatureScalingCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, FeatureScalingCheckpoint } from "./Demos";
   $$
   \frac{\partial^2 \mathcal{L}}{\partial w_j^2} \propto \sum_i x_{ij}^2
   $$
+
+  <Variables>
+    <Variable>**$\mathcal{L}$** — the loss function being minimized.</Variable>
+    <Variable>**$w_j$** — the weight (parameter) for feature $j$.</Variable>
+    <Variable>**$x_{ij}$** — the value of feature $j$ for training example $i$.</Variable>
+    <Variable>**$j$** — index running over features.</Variable>
+    <Variable>**$i$** — index running over training examples.</Variable>
+  </Variables>
 
   A feature on a 100x larger scale produces roughly $100^2 = 10{,}000\times$ more curvature along its own weight axis. Since a single learning rate must stay below $2/\text{curvature}$ everywhere to avoid diverging, the large-scale feature forces the *whole* learning rate down — including for every feature that didn't need it to be that small.
 </Formalize>
