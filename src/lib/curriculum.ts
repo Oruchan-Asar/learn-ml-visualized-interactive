@@ -1107,7 +1107,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "VQ-VAE & discrete latents",
     blurb: "Snap a continuous code onto the nearest entry in a small codebook, and watch a discrete vocabulary emerge from images.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-build-a-flow-matching-sampler",

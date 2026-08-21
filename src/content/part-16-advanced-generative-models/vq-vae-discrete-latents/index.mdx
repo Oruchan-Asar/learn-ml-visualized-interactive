@@ -1,0 +1,75 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, VQVAECheckpoint } from "./Demos";
+
+<Hook>
+  Every generative model in this part so far has a continuous latent space — noise, a smooth density, a
+  point anywhere along a path. But a lot of real data is naturally discrete: words come from a fixed
+  vocabulary, not a continuum. Can an autoencoder's latent space be discrete too?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch images. The continuous "×" never sits exactly on a code — it gets replaced by whichever square
+  is closest, every time. The decoder that comes after this never sees the "×"; it only ever sees one of
+  the four fixed squares.
+</Intuition>
+
+<Formalize>
+  A **VQ-VAE** (Vector-Quantized VAE) keeps a small, learned **codebook** of $K$ vectors
+  $\{e_1, \ldots, e_K\}$. The encoder still outputs a continuous $z_e(x)$, but before decoding it's
+  replaced by its nearest codebook entry:
+
+  $$
+  z_q(x) = e_k, \qquad k = \arg\min_j \lVert z_e(x) - e_j \rVert
+  $$
+
+  That's the entire mechanism: nearest-neighbor lookup, nothing learned about the *lookup* itself. What's
+  learned is the codebook's $K$ locations and the encoder/decoder around them, so that whichever code a
+  given input snaps to still decodes back into something close to the original — training has to shape
+  the encoder's outputs to cluster near useful codes, not just quantize whatever it would have produced
+  anyway.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Four different images, four different codes used — a discrete vocabulary, four entries deep, emerging
+  entirely from where the encoder happens to place each image's continuous output. A fifth image mapping
+  to `code 0` again would mean the model judged it more similar to image 0 than to the other three.
+</Play>
+
+<WorkedExample>
+  Codebook at $(0,0)$, $(3,0)$, $(0,3)$, $(3,3)$; encoder output $z_e=(1,1)$:
+
+  <Steps>
+    <Step label="Distance to every code">
+      To $(0,0)$: $\sqrt{1^2+1^2}=\sqrt{2}\approx1.414$. To $(3,0)$: $\sqrt{2^2+1^2}=\sqrt{5}\approx2.236$.
+      To $(0,3)$: also $\sqrt{5}$. To $(3,3)$: $\sqrt{2^2+2^2}=\sqrt{8}\approx2.828$.
+    </Step>
+    <Step label="Snap to the nearest">
+      $(0,0)$ is closest, so $z_q = (0,0)$ — the decoder receives exactly $(0,0)$, never $(1,1)$.
+    </Step>
+    <Step label="The gap that's thrown away">
+      The quantization error is $\sqrt{2}\approx1.414$ — everything about $z_e$ beyond "closest to code
+      0" is gone. A different image whose encoder output was $(0.1, 0.1)$ would round to the *exact same*
+      code, indistinguishable to the decoder from this one.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<VQVAECheckpoint />
+
+<Summary>
+  $$
+  z_q(x) = \arg\min_{e_j} \lVert z_e(x) - e_j \rVert
+  $$
+
+  A discrete latent space means a generative model over it can be a genuinely categorical model — an
+  autoregressive Transformer over a sequence of codebook indices, exactly like Part IV's tiny text
+  generator, but over image patches instead of words. That's the real payoff: PixelCNN- and Transformer-
+  based image generators, and models like DALL-E's first version, generate by predicting discrete codes
+  one at a time, the same mechanism this whole course already built for text. This closes out the
+  mechanism side of Part XVI's generative models. The capstone wires flow matching's straight-line
+  training target into an actual multi-step sampler, trained (on paper) and run end to end.
+</Summary>
