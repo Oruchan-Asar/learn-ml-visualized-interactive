@@ -33,6 +33,14 @@ export interface AnchorRule {
 export const ANCHOR_SINGLE: AnchorRule = { predicate: (p) => p.x1 > 3, label: "x1 > 3" };
 export const ANCHOR_CONJUNCTION: AnchorRule = { predicate: (p) => p.x1 > 3 && p.x2 > 3, label: "x1 > 3 AND x2 > 3" };
 
+/**
+ * Three more candidates, unused in the Intuition/Play demos above, reserved for the checkpoint so it
+ * tests fresh reasoning instead of a number the learner already saw on screen a moment ago.
+ */
+export const ANCHOR_LOOSE_SINGLE: AnchorRule = { predicate: (p) => p.x2 > 0, label: "x2 > 0" };
+export const ANCHOR_LOOSE_CONJUNCTION: AnchorRule = { predicate: (p) => p.x1 > 3 && p.x2 > 2, label: "x1 > 3 AND x2 > 2" };
+export const ANCHOR_TIGHT_CONJUNCTION: AnchorRule = { predicate: (p) => p.x1 > 4 && p.x2 > 4, label: "x1 > 4 AND x2 > 4" };
+
 export interface AnchorStats {
   precision: number;
   coverage: number;

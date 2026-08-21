@@ -34,3 +34,24 @@
   composes: status;
   color: var(--accent2-ink);
 }
+
+.checkButton {
+  font: inherit;
+  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  padding: 6px 14px;
+  color: var(--paper-raised);
+  cursor: pointer;
+  margin-top: 14px;
+}
+.checkButton:hover {
+  filter: brightness(1.05);
+}
+.checkButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

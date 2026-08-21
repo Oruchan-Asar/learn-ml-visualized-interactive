@@ -44,6 +44,11 @@ import { IntuitionDemo, PlayDemo, ContrastiveCheckpoint } from "./Demos";
       Averaged over both directions and all three pairs, the loss drops to about $0.112$ — roughly a tenth of
       where it started, without a single hand-written label anywhere in the process.
     </Step>
+    <Step label="It falls smoothly, not in one jump">
+      Halfway through training (linearly interpolating every embedding between its start and end position),
+      the loss sits at about $0.39$ — already down from $1.099$, but nowhere near $0.112$ yet. The curve is
+      concave: most of the improvement happens in the *second* half of training, not the first.
+    </Step>
   </Steps>
 </WorkedExample>
 

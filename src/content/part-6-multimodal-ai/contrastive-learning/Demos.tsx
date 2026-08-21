@@ -63,36 +63,51 @@ export function PlayDemo() {
   );
 }
 
+const TARGET_LOSS = 0.2;
+const TOLERANCE = 0.02;
+
 /**
- * Checkpoint: drag a continuous "training progress" slider (0 = BEFORE, 1 = AFTER) until the loss drops
- * below the target — the loss falls smoothly and only crosses 0.2 around 78% of the way through, so
- * there's no shortcut label to read off; the learner has to actually watch the number.
+ * Checkpoint: land training progress so the loss comes within 0.02 of exactly 0.2 — not "anything past
+ * some threshold." That target sits in a narrow band, roughly progress 74-82%, so sliding to either
+ * extreme and calling it done doesn't work. The loss number itself is hidden until "Check answer" is
+ * clicked (and hides again the moment the slider moves), so there's no live readout to hill-climb
+ * against — the learner has to predict roughly where 0.2 falls from the worked example's numbers, then
+ * verify, rather than watching a number tick down while dragging.
  */
 export function ContrastiveCheckpoint() {
   const [progress, setProgress] = useState(0);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [revealed, setRevealed] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
   const images = lerpPoints(IMAGES_BEFORE, IMAGES_AFTER, progress);
   const captions = lerpPoints(CAPTIONS_BEFORE, CAPTIONS_AFTER, progress);
   const loss = contrastiveLoss(images, captions);
-  const passed = loss < 0.2;
+  const passed = Math.abs(loss - TARGET_LOSS) <= TOLERANCE;
 
   useEffect(() => {
-    if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
-  }, [passed]);
+    if (revealed && passed) recordCheckpointAttempt(CONCEPT_ID, true);
+  }, [revealed, passed]);
 
   return (
     <CheckpointFrame
-      instructions={<>Drag training progress until the contrastive loss drops below <strong>0.2</strong>.</>}
+      instructions={
+        <>
+          Set training progress so the contrastive loss lands within <strong>0.02</strong> of exactly{" "}
+          <strong>{TARGET_LOSS}</strong> — not just below it. Predict where, then check.
+        </>
+      }
       passed={passed || everPassed}
       hasInteracted={hasInteracted}
-      idleLabel="Drag the slider to try it"
+      checkable
+      revealed={revealed}
+      onCheck={() => setRevealed(true)}
+      idleLabel="Drag, then click Check answer"
     >
       <KernelHeatmap
         kernel={rowSoftmax(similarityMatrix(images, captions))}
         width={200}
-        label={`training progress ${(progress * 100).toFixed(0)}%  —  loss ${loss.toFixed(3)}`}
+        label={`training progress ${(progress * 100).toFixed(0)}%${revealed ? `  —  loss ${loss.toFixed(3)}` : ""}`}
       />
       <label className={styles.sliderRow}>
         training progress
@@ -104,6 +119,7 @@ export function ContrastiveCheckpoint() {
           value={progress}
           onChange={(e) => {
             setHasInteracted(true);
+            setRevealed(false);
             setProgress(Number(e.target.value));
           }}
         />

@@ -77,26 +77,48 @@ export function PlayDemo() {
   );
 }
 
-/** Checkpoint: turn retrieval off, and pick the question whose answer becomes wrong without it. */
+/**
+ * Checkpoint: predict, before seeing it, which question's ungrounded answer would be wrong — then turn
+ * retrieval off and check. The generated answer is hidden until "Check answer" is clicked (and hides
+ * again the moment either control changes), so there's no live text to read through all three options
+ * and pattern-match against — the learner has to reason from the one fact given up front (the model's
+ * only fallback, with no retrieval, is always "Paris") to which of the other two facts it would get wrong.
+ */
 export function RagCheckpoint() {
   const [query, setQuery] = useState<string | null>(null);
   const [useRetrieval, setUseRetrieval] = useState(true);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [revealed, setRevealed] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
   const q = query ? findQuery(query) : null;
   const passed = q !== null && !useRetrieval && generate(q, false) !== retrieve(q).answer;
 
   useEffect(() => {
-    if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
-  }, [passed]);
+    if (revealed && passed) recordCheckpointAttempt(CONCEPT_ID, true);
+  }, [revealed, passed]);
+
+  const select = <T,>(setter: (v: T) => void) => (v: T) => {
+    setHasInteracted(true);
+    setRevealed(false);
+    setter(v);
+  };
 
   return (
     <CheckpointFrame
-      instructions={<>Turn retrieval <strong>off</strong>, then pick the question whose answer becomes <strong>wrong</strong> without it.</>}
+      instructions={
+        <>
+          Every question falls back on the exact same default guess, <strong>&ldquo;{DEFAULT_PRIOR_ANSWER}&rdquo;</strong>,
+          whenever retrieval is off. Predict which question that guess is <strong>wrong</strong> for, turn
+          retrieval <strong>off</strong>, pick it, then check.
+        </>
+      }
       passed={passed || everPassed}
       hasInteracted={hasInteracted}
-      idleLabel="Pick a question and toggle retrieval to try it"
+      checkable
+      revealed={revealed}
+      onCheck={() => setRevealed(true)}
+      idleLabel="Pick a question and toggle retrieval, then check"
     >
       <div className={styles.buttons}>
         {QUERIES.map((item) => (
@@ -104,38 +126,21 @@ export function RagCheckpoint() {
             type="button"
             key={item.label}
             className={item.label === query ? styles.buttonActive : styles.button}
-            onClick={() => {
-              setHasInteracted(true);
-              setQuery(item.label);
-            }}
+            onClick={() => select<string>(setQuery)(item.label)}
           >
             {item.label.replace("Q: ", "")}
           </button>
         ))}
       </div>
       <div className={styles.buttons}>
-        <button
-          type="button"
-          className={!useRetrieval ? styles.buttonActive : styles.button}
-          onClick={() => {
-            setHasInteracted(true);
-            setUseRetrieval(false);
-          }}
-        >
+        <button type="button" className={!useRetrieval ? styles.buttonActive : styles.button} onClick={() => select<boolean>(setUseRetrieval)(false)}>
           No retrieval
         </button>
-        <button
-          type="button"
-          className={useRetrieval ? styles.buttonActive : styles.button}
-          onClick={() => {
-            setHasInteracted(true);
-            setUseRetrieval(true);
-          }}
-        >
+        <button type="button" className={useRetrieval ? styles.buttonActive : styles.button} onClick={() => select<boolean>(setUseRetrieval)(true)}>
           With retrieval
         </button>
       </div>
-      <div>{q ? `answer: "${generate(q, useRetrieval)}"` : `default prior: "${DEFAULT_PRIOR_ANSWER}"`}</div>
+      <div>{revealed && q ? `answer: "${generate(q, useRetrieval)}" (truth: "${retrieve(q).answer}")` : "answer hidden until checked"}</div>
     </CheckpointFrame>
   );
 }

@@ -20,12 +20,18 @@ export function KernelHeatmap({ kernel, label, width = 130, onCellClick, selecte
   // Font size was a fixed 11 regardless of grid size, so a 7x7+ grid (much smaller cells than the 3x3
   // this was designed around) rendered text larger than its own cell, overlapping every neighbor.
   // Scale with the cell instead, and drop the label entirely once a cell is too small to hold it.
-  const fontSize = Math.min(11, cell * 0.42);
+  const fontSize = Math.min(9, cell * 0.3);
   const showText = cell >= 9;
 
   return (
     <div className={styles.wrap}>
-      <svg viewBox={`0 0 ${width} ${width}`} className={styles.svg} role="img" aria-label={label ?? "A kernel, shown as a heatmap of its weights."}>
+      <svg
+        viewBox={`0 0 ${width} ${width}`}
+        className={styles.svg}
+        role="img"
+        aria-label={label ?? "A kernel, shown as a heatmap of its weights."}
+        style={{ maxWidth: width }}
+      >
         {kernel.map((row, r) =>
           row.map((v, c) => {
             const normalized = Math.abs(v) / maxAbs;
