@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SplitCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, SplitCheckpoint } from "./Demos";
   $$
   \text{IG} = H(\text{parent}) - \left(\frac{n_L}{n}H(\text{left}) + \frac{n_R}{n}H(\text{right})\right)
   $$
+
+  <Variables>
+    <Variable>**IG** — the information gain: how much uncertainty a split removes.</Variable>
+    <Variable>**$H(\text{parent})$** — the entropy of the node before splitting.</Variable>
+    <Variable>**$H(\text{left})$, $H(\text{right})$** — the entropy of each child node after splitting.</Variable>
+    <Variable>**$n_L$, $n_R$** — the number of points that land in the left and right child.</Variable>
+    <Variable>**$n$** — the total number of points at the parent node.</Variable>
+  </Variables>
 
   The second term is the children's entropy, weighted by how many points landed on each side. A split is good exactly when that weighted average is much lower than where you started.
 </Formalize>
