@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, RecommenderCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, RecommenderCheckpoint } from "./Demos";
   $$
   \hat{r}_{ij} = u_i \cdot v_j, \qquad \mathcal{L} = \sum_{(i,j)\,\text{observed}} (r_{ij} - \hat{r}_{ij})^2
   $$
+
+  <Variables>
+    <Variable>**$\hat{r}_{ij}$** — the predicted rating of item $j$ by user $i$.</Variable>
+    <Variable>**$u_i$** — user $i$'s latent factor vector.</Variable>
+    <Variable>**$v_j$** — item $j$'s latent factor vector.</Variable>
+    <Variable>**$r_{ij}$** — the actual observed rating, when one exists.</Variable>
+    <Variable>**$\mathcal{L}$** — the total squared-error loss, summed only over ratings that are actually observed.</Variable>
+  </Variables>
 
   Gradient descent updates every $u_i$ and $v_j$ to reduce that squared error — but only summing over ratings that actually exist. The missing entry never appears in the loss at all; once training finishes, predicting it is just plugging its user and item vectors into the same dot product.
 </Formalize>
