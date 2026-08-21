@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
+
+<Hook>
+  The diffusion chapter's denoiser always undid noise the same way, regardless of what it was denoising toward. A real image generator starts from the same random noise every time and still needs to draw something different for "a cat" than for "a dog" — so what changes?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The exact same starting noise, run through the exact same reverse-diffusion formula from the earlier chapter — the only thing that changes between runs is which caption's predicted-noise sequence gets used at each step.
+</Intuition>
+
+<Formalize>
+  Nothing about the reverse step changes:
+
+  $$
+  x_{t-1} = \frac{x_t - \sqrt{\beta_t}\,\hat\epsilon(x_t, t, \mathbf{c})}{\sqrt{\alpha_t}}
+  $$
+
+  The only addition is $\mathbf{c}$ — a text embedding fed into the denoiser alongside $x_t$ and $t$. A denoiser trained on captioned images learns to predict *different* noise, at the *same* $(x_t, t)$, depending on $\mathbf{c}$ — which means the same starting noise unrolls into a different final image for every different caption.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  One shared starting point, three trajectories. The unconditional path (no caption at all) takes a middle course; "a cat" and "a dog" each pull the same starting noise toward a different final value, in opposite directions.
+</Play>
+
+<WorkedExample>
+  Shared starting noise $x_T = 2.0$, same noise schedule as the earlier chapter, three different predicted-noise sequences:
+
+  <Steps>
+    <Step label="No conditioning: a generic middle-ground result">
+      Predicting zero noise at every step (no caption at all) reverses $x_T=2.0$ to a final value
+      $\approx3.637$ — a plain, unconditioned denoising.
+    </Step>
+    <Step label="'A cat': the same starting noise, steered higher">
+      Swapping in a cat-conditioned predicted-noise sequence at each step — otherwise identical math — reverses
+      the *same* $x_T=2.0$ to $\approx4.330$ instead.
+    </Step>
+    <Step label="'A dog': the same starting noise, steered lower">
+      A dog-conditioned sequence pulls that same $x_T=2.0$ down to $\approx2.789$ — on the opposite side of the
+      unconditional baseline from the cat result.
+    </Step>
+  </Steps>
+
+  Same schedule, same formula, same starting noise. Three different captions, three different destinations.
+</WorkedExample>
+
+<DiffusionCheckpoint />
+
+<Summary>
+  $$
+  \hat\epsilon(x_t, t, \mathbf{c}) \quad\text{— add one argument to the denoiser, and the entire generation becomes steerable}
+  $$
+
+  Text-conditioned diffusion isn't a different algorithm from plain diffusion — it's the identical reverse process with one extra input threaded through the noise predictor. That single addition is what turns a denoiser into a generator you can actually direct: same random seed, same math, a different picture for every different prompt. The next chapter turns to a modality with its own extra structure that neither images nor audio have on their own: time unfolding across a whole sequence of frames.
+</Summary>

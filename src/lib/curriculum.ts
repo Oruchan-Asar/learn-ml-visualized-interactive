@@ -887,7 +887,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Text-conditioned diffusion",
     blurb: "Steer the reverse-noise process with a caption, and watch the same denoiser draw a different picture.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "video-understanding",
