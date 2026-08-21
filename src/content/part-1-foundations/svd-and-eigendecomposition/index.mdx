@@ -1,0 +1,81 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 5 showed a matrix stretching, rotating, and flipping a vector. Every direction you dragged got
+  bent somewhere else — except, it turns out, two of them. Are there directions a matrix leaves alone?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag $v$ around. Most of the time, $Av$ points somewhere completely different — the angle between them
+  swings all over the place. But two opposite directions are special: keep dragging near the diagonal and
+  watch that rotation angle collapse toward $0°$.
+</Intuition>
+
+<Formalize>
+  A vector $v$ is an **eigenvector** of $A$ if $A$ doesn't rotate it at all — only scales it:
+
+  $$
+  Av = \lambda v
+  $$
+
+  $\lambda$ is the corresponding **eigenvalue**: how much that direction gets stretched (or, if $\lambda<0$,
+  stretched *and flipped*). For a symmetric matrix, the eigenvectors are always perpendicular to each
+  other, and $A$ can be rebuilt exactly from them:
+
+  $$
+  A = Q\Lambda Q^\top
+  $$
+
+  where $Q$'s columns are the (unit) eigenvectors and $\Lambda$ is diagonal with the eigenvalues on it.
+  This is the **eigendecomposition**. The **singular value decomposition (SVD)**, $A = U\Sigma V^\top$,
+  is the same idea generalized to *any* matrix, square or not — but its diagonal $\Sigma$ is always
+  non-negative, so a negative eigenvalue's direction gets its sign absorbed into $U$ instead.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the stretch ratio $|Av|/|v|$ alongside the rotation angle. At the two special directions, the
+  ratio locks onto a fixed number — that number *is* $|\lambda|$ for that direction, no matter how far out
+  you drag $v$ along it.
+</Play>
+
+<WorkedExample>
+  For $A = \begin{pmatrix}1&2\\2&1\end{pmatrix}$:
+
+  <Steps>
+    <Step label="Solve the characteristic equation">
+      $\det(A-\lambda I) = (1-\lambda)^2 - 4 = \lambda^2 - 2\lambda - 3 = (\lambda-3)(\lambda+1) = 0$, so
+      $\lambda_1 = 3$ and $\lambda_2 = -1$.
+    </Step>
+    <Step label="Solve for each eigenvector">
+      For $\lambda_1=3$: $(A-3I)v=0 \Rightarrow -2x+2y=0 \Rightarrow x=y$, giving direction $(1,1)$. For
+      $\lambda_2=-1$: $(A+I)v=0 \Rightarrow x+y=0$, giving direction $(1,-1)$. Normalized, these are
+      $v_1=(\tfrac{1}{\sqrt2},\tfrac{1}{\sqrt2})$ and $v_2=(\tfrac{1}{\sqrt2},-\tfrac{1}{\sqrt2})$ — exactly
+      the $45°$ and $-45°$ directions from the demo above.
+    </Step>
+    <Step label="Turn it into an SVD">
+      Singular values are $|\lambda|$, sorted: $\sigma_1=3$, $\sigma_2=1$. Since $\lambda_2$ is negative,
+      its left singular vector flips sign: $u_1=v_1$, but $u_2=-v_2$. Reconstructing
+      $U\Sigma V^\top = \sigma_1 u_1 v_1^\top + \sigma_2 u_2 v_2^\top$ gives back
+      $\begin{pmatrix}1&2\\2&1\end{pmatrix}$ exactly — check it by hand, term by term.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<EigenvectorCheckpoint />
+
+<Summary>
+  $$
+  Av = \lambda v \qquad\qquad A = Q\Lambda Q^\top \quad(\text{symmetric}) \qquad\qquad A = U\Sigma V^\top \quad(\text{any matrix})
+  $$
+
+  Every matrix has a set of directions it only stretches, never rotates — the eigendecomposition finds
+  them exactly, by solving one polynomial. This isn't just an algebra exercise: later, Part II's PCA
+  chapter finds "the direction of maximum variance" by eyeballing a scatter plot. That direction is the
+  top eigenvector of the data's covariance matrix — this chapter's machinery is what actually computes
+  it, instead of eyeballing it.
+</Summary>

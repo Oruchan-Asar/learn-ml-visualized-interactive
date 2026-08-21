@@ -101,7 +101,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "SVD & eigendecomposition",
     blurb: "Decompose a matrix into rotate–stretch–rotate, and watch a data cloud's true axes fall out of the stretch.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "kl-divergence-and-mutual-information",
