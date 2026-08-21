@@ -1,0 +1,73 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SamplingGapCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter's mean aggregated *every* neighbor a node has. Fine for a six-node toy graph — but a real
+  social network node can have thousands of neighbors, and a brand-new user shows up after training is
+  already done. What breaks first, and how do you fix it without starting over?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click node 1 — it has three neighbors, but only two get highlighted. That's a fixed-size *sample*, not
+  the full neighborhood. Compare the two readouts: sampling and using everything don't always agree.
+</Intuition>
+
+<Formalize>
+  **GraphSAGE** ("SAmple and aggreGatE") changes two things about the previous chapter's GCN. First, it
+  aggregates a **fixed-size random sample** of neighbors instead of all of them — bounded work per node,
+  no matter how high the degree gets:
+
+  $$
+  h_v^{(k+1)} = \text{AGGREGATE}\Big(h_v^{(k)}, \; \{h_u^{(k)} : u \in \text{SAMPLE}(\mathcal{N}(v), K)\}\Big)
+  $$
+
+  Second — and this is the bigger idea — it learns an aggregation *function*, not a per-node lookup
+  table. A method that memorizes one embedding vector per node (like node2vec) is **transductive**: it
+  has nothing to say about a node it never saw. GraphSAGE's function takes *any* neighborhood as input, so
+  it's **inductive**: hand it a brand-new node's neighborhood and it produces an answer immediately.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Add the new node. It was never part of the original six-node graph, never "trained on" — but the exact
+  same aggregation function runs on it instantly, because the function only ever looked at neighbor
+  values, never at a fixed table of node identities.
+</Play>
+
+<WorkedExample>
+  With sample size $K=2$ (always take the two lowest-numbered neighbors, standing in for a random draw):
+
+  <Steps>
+    <Step label="A low-degree node: sampling changes nothing">
+      Node $0$ has exactly two neighbors, $\{1,2\}$ — sampling two out of two keeps everything. Sampled
+      mean $=\frac{1+2+0}{3}=1.0$, identical to the full mean.
+    </Step>
+    <Step label="A high-degree node: sampling genuinely loses information">
+      Node $1$ has three neighbors, $\{0,2,3\}$. Sampling keeps only $\{0,2\}$, dropping neighbor $3$
+      (feature $3$). Sampled mean $=\frac{2+1+0}{3}=1.0$; the true full-neighborhood mean is
+      $\frac{2+1+0+3}{4}=1.5$ — a real, measurable gap, the price of bounding the work per node.
+    </Step>
+    <Step label="A node that never existed during training">
+      A new node with feature $4$, connected only to node $0$ (feature $1$): its aggregate is
+      $\frac{4+1}{2}=2.5$, using *the same function* as every original node — no new parameters, no
+      retraining pass, just one more function call.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SamplingGapCheckpoint />
+
+<Summary>
+  $$
+  h_v^{(k+1)} = \text{AGGREGATE}\Big(h_v^{(k)}, \{h_u^{(k)} : u\in\text{SAMPLE}(\mathcal{N}(v),K)\}\Big)
+  $$
+
+  Sampling trades a little accuracy for a hard cap on cost per node — essential once "neighbor count" can
+  be in the thousands. Being inductive is the deeper payoff: any model built to *learn a function of a
+  neighborhood* generalizes to graphs it's never seen, the same way a CNN's learned filters generalize to
+  images it's never seen. The next chapter asks whether "sample K neighbors and average them equally" is
+  really the best way to combine them — or whether some neighbors should just count for more.
+</Summary>

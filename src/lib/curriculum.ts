@@ -1005,7 +1005,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "GraphSAGE: inductive learning on graphs",
     blurb: "Sample a handful of neighbors instead of all of them, then apply the same rule to a node the network has never seen.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "graph-attention-networks",

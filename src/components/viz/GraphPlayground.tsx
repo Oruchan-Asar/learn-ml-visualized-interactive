@@ -26,6 +26,8 @@ export interface GraphPlaygroundProps {
   width?: number;
   height?: number;
   readout?: ReactNode;
+  /** Recolors the focus node, e.g. once a checkpoint has passed. */
+  passed?: boolean;
 }
 
 function edgeKey(a: string, b: string): string {
@@ -42,6 +44,7 @@ export function GraphPlayground({
   width = 320,
   height = 220,
   readout,
+  passed = false,
 }: GraphPlaygroundProps) {
   const byId = new Map(nodes.map((n) => [n.id, n]));
   const highlighted = new Set(highlightedNodeIds);
@@ -76,7 +79,13 @@ export function GraphPlayground({
           const isFocus = n.id === focusNodeId;
           const isHighlighted = highlighted.has(n.id);
           const r = isFocus ? 15 : 12;
-          const nodeClass = isFocus ? styles.nodeFocus : isHighlighted ? styles.nodeHighlighted : styles.node;
+          const nodeClass = isFocus
+            ? passed
+              ? styles.nodeFocusPassed
+              : styles.nodeFocus
+            : isHighlighted
+              ? styles.nodeHighlighted
+              : styles.node;
           return (
             <g
               key={n.id}

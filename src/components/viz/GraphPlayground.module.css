@@ -40,6 +40,12 @@
   stroke-width: 2;
 }
 
+.nodeFocusPassed {
+  fill: var(--accent2);
+  stroke: var(--accent2);
+  stroke-width: 2;
+}
+
 .clickable {
   cursor: pointer;
 }
