@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AnnCheckpoint } from "./Demos";
 
 <Hook>
@@ -21,12 +21,26 @@ import { IntuitionDemo, PlayDemo, AnnCheckpoint } from "./Demos";
   \text{nearest}(q) = \arg\min_{p \in \text{index}} \; \lVert q - p \rVert^2
   $$
 
-  An **approximate** index (here, a tiny IVF-style partition) precomputes a few centroids, assigns every
-  indexed vector to its nearest one, and at query time only searches the query's own assigned cluster:
+  <Variables>
+    <Variable>**$\text{nearest}(q)$** — the true nearest neighbor to query $q$, found by exact search.</Variable>
+    <Variable>**$q$** — the query vector.</Variable>
+    <Variable>**$p$** — a candidate vector being compared against the query.</Variable>
+    <Variable>**$\text{index}$** — the full set of stored vectors.</Variable>
+  </Variables>
+
+  An **approximate** index (here, a tiny **IVF (Inverted File index)**-style partition) precomputes a few
+  centroids, assigns every indexed vector to its nearest one, and at query time only searches the query's own
+  assigned cluster:
 
   $$
   \text{ann}(q) = \arg\min_{p \in \text{cluster}(\text{nearest-centroid}(q))} \; \lVert q - p \rVert^2
   $$
+
+  <Variables>
+    <Variable>**$\text{ann}(q)$** — the approximate nearest neighbor the index actually returns for query $q$.</Variable>
+    <Variable>**$\text{nearest-centroid}(q)$** — the single precomputed centroid closest to the query.</Variable>
+    <Variable>**$\text{cluster}(\cdot)$** — the set of indexed vectors assigned to a given centroid; only this set gets searched.</Variable>
+  </Variables>
 
   This is cheap — a handful of comparisons instead of the whole index — precisely because it never looks at
   most of the data. When the true nearest neighbor happens to live in a *different* cluster than the one the
@@ -66,7 +80,9 @@ import { IntuitionDemo, PlayDemo, AnnCheckpoint } from "./Demos";
   \text{ann}(q) = \arg\min_{p \in \text{cluster}(\text{nearest-centroid}(q))} \; \lVert q - p \rVert^2 \;\neq\; \arg\min_{p \in \text{index}} \; \lVert q - p \rVert^2
   $$
 
-  Every real vector database — FAISS's IVF, HNSW's graph layers, ScaNN's quantized clusters — makes this
+  Every real vector database — **FAISS** (short for **Facebook AI Similarity Search**)'s IVF, **HNSW**
+  (short for **Hierarchical Navigable Small World**)'s graph layers, **ScaNN** (short for **Scalable
+  Nearest Neighbors**)'s quantized clusters — makes this
   exact trade in some form: search a shortlist instead of the whole index, and accept a small, bounded chance
   of missing the true best match in exchange for search times that don't grow linearly with the index size.
   Probing more than one cluster near a boundary shrinks that miss rate at the cost of some of the speedup;
