@@ -1126,7 +1126,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Function calling & tool use",
     blurb: "Watch a model's free-text answer turn into a structured call the moment a calculator becomes available.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "react-reasoning-and-acting",
