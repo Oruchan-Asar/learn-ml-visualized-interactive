@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ScalingLawsCheckpoint } from "./Demos";
+
+<Hook>
+  Training a model 10x larger, just to see if it's worth it, can cost more than the entire rest of a project. What if four small, cheap training runs could tell you almost exactly what the expensive one would have shown, before you ever ran it?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The same four training runs, fit two different ways. One method transforms the data before fitting a line; the other fits the raw numbers directly. Only one of them produces a sane prediction at a size fifty times bigger than anything actually trained.
+</Intuition>
+
+<Formalize>
+  Loss often follows a **power law** in model size: $L(N) = A \cdot N^{-\alpha}$. Taking logs turns this into something linear:
+
+  $$
+  \log L = \log A - \alpha \log N
+  $$
+
+  Fitting ordinary least squares to $(\log N, \log L)$ recovers $\alpha$ and $A$ directly — the exact same OLS machinery from Part IX, just applied after a log transform. Fitting a line to the *raw* $(N, L)$ pairs instead assumes a linear relationship that was never true, and extrapolates accordingly.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Four training runs at sizes 1, 4, 9, and 16 — and a fifth point at $N=100$, never trained, just computed from the true law for comparison. All five points sit exactly on one straight line in log-log space, because that line *is* the power law.
+</Play>
+
+<WorkedExample>
+  True law $L(N) = 100 \cdot N^{-0.5}$, observed at $N \in \{1, 4, 9, 16\}$ giving losses $\{100, 50, 33.\overline{3}, 25\}$:
+
+  <Steps>
+    <Step label="Log-log OLS recovers the law exactly">
+      Fitting $\log L$ against $\log N$ gives slope $\approx-0.500$ and intercept $\approx\ln(100)$ — both
+      matching the true law to full floating-point precision, since the training data has no noise at all.
+    </Step>
+    <Step label="Extrapolating to N=100: almost exactly right">
+      Plugging $N=100$ into the fitted log-log line and exponentiating back gives a predicted loss of
+      $\approx10.000$ — matching the true value of exactly $10$, despite $N=100$ being far outside the training
+      range of $1$ to $16$.
+    </Step>
+    <Step label="Fitting the raw numbers instead: a nonsensical answer">
+      A straight line fit directly to $(N, L)$ — no log transform — predicts a loss of $\approx-351.26$ at
+      $N=100$. A negative loss is meaningless; the raw-linear model was extrapolating a relationship that was
+      never actually linear.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ScalingLawsCheckpoint />
+
+<Summary>
+  $$
+  \log L = \log A - \alpha \log N \qquad\text{— the same line, just plotted on the axes the relationship actually lives on}
+  $$
+
+  A scaling law isn't a prediction trick specific to language models — it's ordinary least squares, applied after recognizing that a power-law relationship becomes linear in log space. Get the transform right, and four cheap runs can extrapolate to a size fifty times larger with almost no error; get it wrong, and the same four runs produce a nonsensical negative loss. The next chapter turns from what to train to how to use a model once it's trained: getting useful behavior out of a frozen model through the prompt alone, no gradient updates at all.
+</Summary>

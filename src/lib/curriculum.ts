@@ -930,7 +930,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Scaling laws",
     blurb: "Fit a straight line through a log-log plot, and predict a loss you haven't trained for yet.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "prompting-and-in-context-learning",
