@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, MemoryCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,11 +17,19 @@ import { IntuitionDemo, PlayDemo, MemoryCheckpoint } from "./Demos";
 
 <Formalize>
   A **context window** holds only the most recent $k$ messages — a plain sliding window, identical in
-  spirit to Part XV's fixed-size state, except here the eviction rule is FIFO rather than a learned decay:
+  spirit to Part XV's fixed-size state, except here the eviction rule is **FIFO (First In, First Out)**
+  rather than a learned decay:
 
   $$
   \text{window}(t) = \{\, m_{t-k+1}, \ldots, m_t \,\}
   $$
+
+  <Variables>
+    <Variable>**$\text{window}(t)$** — the set of messages the agent can actually see at time $t$.</Variable>
+    <Variable>**$t$** — the current time step, counted in messages.</Variable>
+    <Variable>**$k$** — the fixed window size: how many of the most recent messages are kept.</Variable>
+    <Variable>**$m_i$** — the message (or fact) at position $i$ in the conversation.</Variable>
+  </Variables>
 
   A fact at position $i$ is visible at time $t$ exactly when $i \geq t-k+1$ — once $t$ grows past
   $i+k-1$, it's gone, permanently, unless something else keeps a copy. **Retrieval** is that something
