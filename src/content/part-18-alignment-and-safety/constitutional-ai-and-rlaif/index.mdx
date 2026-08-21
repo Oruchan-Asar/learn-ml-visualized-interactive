@@ -1,8 +1,9 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ConstitutionalCheckpoint } from "./Demos";
 
 <Hook>
-  RLHF and last chapter's DPO both need preference labels — a person deciding which of two responses is
+  **RLHF** (**Reinforcement Learning from Human Feedback**) and last chapter's **DPO** (**Direct
+  Preference Optimization**) both need preference labels — a person deciding which of two responses is
   better, for every single comparison. What if the labeler were a written rule instead of a person?
 </Hook>
 
@@ -15,13 +16,19 @@ import { IntuitionDemo, PlayDemo, ConstitutionalCheckpoint } from "./Demos";
 
 <Formalize>
   **Constitutional AI** replaces a human preference label with a **principle** (a "constitution" rule) a
-  model applies to its own outputs. **RLAIF** (RL from AI Feedback) is last chapter's exact pipeline —
+  model applies to its own outputs. **RLAIF** (**Reinforcement Learning from AI Feedback**) is last chapter's exact pipeline —
   Bradley-Terry preference fitting, or DPO's direct update — with the labels supplied this way instead of
   by a person:
 
   $$
   \text{label}(y_1, y_2) = \begin{cases} y_2 \text{ wins} & \text{if } y_1 \text{ violates the principle}, y_2 \text{ doesn't} \\ y_1 \text{ wins} & \text{if } y_2 \text{ violates, } y_1 \text{ doesn't} \end{cases}
   $$
+
+  <Variables>
+    <Variable>**$y_1$** — the first response being compared.</Variable>
+    <Variable>**$y_2$** — the second response being compared.</Variable>
+    <Variable>**$\text{label}(y_1, y_2)$** — which of the two responses wins, decided by checking the constitutional principle instead of asking a person.</Variable>
+  </Variables>
 
   Nothing about the downstream training changes — a $(y_w, y_l)$ pair produced this way plugs directly
   into RLHF's reward-model fitting or DPO's gradient step exactly like a human-labeled one would. What
