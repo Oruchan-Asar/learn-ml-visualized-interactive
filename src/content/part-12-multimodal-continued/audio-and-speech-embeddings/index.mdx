@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AudioEmbeddingCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,11 @@ import { IntuitionDemo, PlayDemo, AudioEmbeddingCheckpoint } from "./Demos";
   $$
   \|\text{Encode}_{\text{audio}}(\text{"woof"}) - \text{Encode}_{\text{image}}(\text{dog photo})\| \text{ small}
   $$
+
+  <Variables>
+    <Variable>**$\text{Encode}_{\text{audio}}$** — the speech encoder, mapping a spoken clip into the shared embedding space.</Variable>
+    <Variable>**$\text{Encode}_{\text{image}}$** — the image encoder, mapping a photo into that same shared space.</Variable>
+  </Variables>
 
   Nothing about nearest-neighbor retrieval changes — it's the identical distance computation from the two-modality case. What changes is that *any* pair among the three modalities can now retrieve from each other: audio→image, audio→text, image→audio, text→audio.
 </Formalize>
