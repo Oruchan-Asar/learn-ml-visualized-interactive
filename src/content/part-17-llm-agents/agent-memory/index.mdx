@@ -1,0 +1,72 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MemoryCheckpoint } from "./Demos";
+
+<Hook>
+  Part XV opened with attention's context window growing quadratically expensive — but even a
+  perfectly affordable window has a fixed size. What happens to a fact stated at the very start of a
+  long conversation, by the time that conversation has gone on long enough?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag through the conversation. The fact stays highlighted while it's still inside the window — then,
+  once enough new messages arrive, it drops out entirely. Nothing "forgot" it in any deep sense; it's
+  simply outside the fixed-size slice the agent can see.
+</Intuition>
+
+<Formalize>
+  A **context window** holds only the most recent $k$ messages — a plain sliding window, identical in
+  spirit to Part XV's fixed-size state, except here the eviction rule is FIFO rather than a learned decay:
+
+  $$
+  \text{window}(t) = \{\, m_{t-k+1}, \ldots, m_t \,\}
+  $$
+
+  A fact at position $i$ is visible at time $t$ exactly when $i \geq t-k+1$ — once $t$ grows past
+  $i+k-1$, it's gone, permanently, unless something else keeps a copy. **Retrieval** is that something
+  else: every message gets stored in an external index the window's size limit never touches, and a
+  query searches that whole index directly instead of only the current window.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The context-only agent's window, right when the question is asked, contains nothing about a favorite
+  color — the fact is six messages behind it. The retrieval-augmented agent isn't limited to the window
+  at all; it searches every prior message and finds the one that actually answers the question.
+</Play>
+
+<WorkedExample>
+  A window of size 4, fact at message $0$, question at message $6$:
+
+  <Steps>
+    <Step label="The window at t=3">
+      $\{m_0, m_1, m_2, m_3\}$ — the fact is still the oldest message in the window, but it's in there.
+    </Step>
+    <Step label="The window at t=4">
+      $\{m_1, m_2, m_3, m_4\}$ — one more message arrived, and $m_0$ is the one that had to go to keep
+      the window at size 4.
+    </Step>
+    <Step label="By t=6, it's long gone">
+      $\{m_3, m_4, m_5, m_6\}$ — the question itself is in the window, but nothing that answers it is.
+      Retrieval searches all 6 prior messages directly and returns $m_0$ regardless.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MemoryCheckpoint />
+
+<Summary>
+  $$
+  \text{window}(t) = \{m_{t-k+1}, \ldots, m_t\}, \qquad \text{retrieval searches all of } m_0, \ldots, m_{t-1}
+  $$
+
+  This chapter's retrieval used the same keyword-overlap idea as a first pass at relevance — Part VI's
+  retrieval-augmented-generation chapter built the real version, embedding-space nearest-neighbor search,
+  which finds semantically related facts even when no words literally match. Real agents typically run
+  both mechanisms together: a context window for the immediate back-and-forth, and a retrieval store for
+  anything that needs to survive longer than the window does. The next chapter asks what happens when a
+  single agent's context and tools aren't enough for the task at all — when the job genuinely needs more
+  than one agent working together.
+</Summary>

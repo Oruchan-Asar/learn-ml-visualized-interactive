@@ -1150,7 +1150,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Agent memory: context vs. retrieval",
     blurb: "Watch a fact fall out of a shrinking context window, then watch retrieval pull it back in from outside.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "multi-agent-orchestration",

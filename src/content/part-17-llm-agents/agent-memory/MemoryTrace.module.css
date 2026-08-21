@@ -1,0 +1,31 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.inWindow,
+.evicted {
+  border-radius: var(--radius);
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid var(--line);
+}
+
+.inWindow {
+  background: var(--paper-raised);
+  border-color: var(--accent);
+  color: var(--ink);
+}
+
+.evicted {
+  background: var(--paper);
+  color: var(--ink-faint);
+}
+
+.readout {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0;
+}
