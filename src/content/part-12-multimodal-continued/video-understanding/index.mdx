@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, VideoCheckpoint } from "./Demos";
+
+<Hook>
+  A frame-differencing method or a small-kernel model can only ever compare a moment in a video to what happened right around it. But a repeating motion — up, down, up, down — has structure that spans the *whole* clip, not just adjacent frames. Vision Transformers solved exactly this problem for space; can the same trick solve it for time?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Six frames of an up-down motion. Pick a query frame and see which other frames it attends to — not just its neighbors in time, but any frame anywhere in the clip, scored by how similar its motion state is.
+</Intuition>
+
+<Formalize>
+  Treat each frame as a token — exactly the way ViT treats each image patch as a token — and add a **temporal position embedding** instead of a spatial one:
+
+  $$
+  \text{frame}_t \to \text{embedding}_t + \text{position}_t \;\longrightarrow\; \text{self-attention over every frame in the clip}
+  $$
+
+  A local method (frame differencing, a small 1D convolution, a short-memory recurrence) can only relate frames within some fixed temporal window. Self-attention has no such limit: any two frames, however far apart in time, can attend to each other directly, in a single layer.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Frame 0's attention concentrates almost entirely on frame 4 — four frames away, well outside anything a local window could ever reach — because it shares the same motion state. Distance in time doesn't matter; matching content does.
+</Play>
+
+<WorkedExample>
+  Six frames, alternating high/low motion state, query = frame 0:
+
+  <Steps>
+    <Step label="Temporal distance rules out a local method entirely">
+      Frame 0 and frame 4 are $4$ frames apart — outside a local window of size $1$, which only covers
+      immediately adjacent frames. A frame-differencing method comparing only neighbors would never connect them.
+    </Step>
+    <Step label="Self-attention connects them anyway">
+      Frame 0's embedding and frame 4's embedding score identically against the query (both are the "high"
+      motion state) — softmax assigns frame 4 $\approx0.315$ of frame 0's total attention, in one layer, with no
+      penalty for the temporal gap.
+    </Step>
+    <Step label="Motion state beats recency">
+      Frame 1, immediately adjacent to frame 0 but in the opposite ("low") motion state, receives only
+      $\approx0.019$ — sixteen times less than the temporally distant frame 4. Being close in time doesn't help if
+      the motion doesn't match.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<VideoCheckpoint />
+
+<Summary>
+  $$
+  \text{local method: reach grows with temporal window size} \qquad\text{vs}\qquad \text{attention: every frame, one hop, any distance}
+  $$
+
+  Video understanding didn't need a new mechanism any more than images did — the same self-attention that connects distant image patches connects distant moments in time, once frames are tokens and position embeddings mark when instead of where. The capstone that closes this part combines every modality built across it — audio, diffusion, video — into a single assistant that moves between them.
+</Summary>

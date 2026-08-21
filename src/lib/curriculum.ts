@@ -895,7 +895,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Video understanding",
     blurb: "Extend attention across frames instead of just across a sentence.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-multimodal-assistant",
