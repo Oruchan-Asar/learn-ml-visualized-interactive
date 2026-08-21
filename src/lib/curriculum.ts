@@ -1209,7 +1209,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Fairness metrics & bias auditing",
     blurb: "Compute three different, individually reasonable definitions of \"fair\" on the same data, and watch them disagree.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "mechanistic-interpretability-and-saes",

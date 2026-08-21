@@ -1,0 +1,74 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, FairnessCheckpoint } from "./Demos";
+
+<Hook>
+  Part IX built precision, recall, and F1 from one confusion matrix. Compute the same quantities
+  separately for two different groups, and a new question appears that a single confusion matrix never
+  had to answer: should those numbers be equal *across* groups — and equal by which definition?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch fairness definitions. The bars move differently depending on which one you're looking at — this
+  isn't one classifier being "somewhat unfair"; it's three genuinely different questions, each with its
+  own answer.
+</Intuition>
+
+<Formalize>
+  Three individually reasonable definitions of "fair," computed per group from the exact same confusion
+  matrix counts as Part IX:
+
+  $$
+  \text{demographic parity: } \frac{TP+FP}{N}, \qquad \text{equal opportunity: } \frac{TP}{TP+FN}, \qquad \text{predictive parity: } \frac{TP}{TP+FP}
+  $$
+
+  When the two groups have **different base rates** — different actual fractions of positives — a
+  classifier that's calibrated the same way for both groups (equal opportunity, equal precision) will
+  *not* select both groups at the same rate, and a classifier that selects both groups equally
+  (demographic parity) will *not* have matching precision or recall across them. This isn't a modeling
+  bug to fix; it's a mathematical fact about what happens when base rates genuinely differ, proven
+  formally by Kleinberg, Mullainathan & Raghavan and by Chouldechova in 2016.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Three gaps, three different sizes, none of them zero. A classifier "fixed" to close one of these gaps
+  exactly would, in general, open up the other two further — that's the impossibility result, not a
+  failure of this particular classifier.
+</Play>
+
+<WorkedExample>
+  Group A (base rate 0.5) and Group B (base rate 0.2), same classifier:
+
+  <Steps>
+    <Step label="Demographic parity">
+      Group A: $(4{+}1)/10 = 0.5$ selected. Group B: $(2{+}2)/10 = 0.4$ selected. Gap: $0.1$.
+    </Step>
+    <Step label="Equal opportunity (recall)">
+      Group A: $4/(4{+}1) = 0.8$. Group B: $2/(2{+}0) = 1.0$. Gap: $0.2$ — B's *actual* positives are
+      easier to catch, purely because there are so few of them.
+    </Step>
+    <Step label="Predictive parity (precision)">
+      Group A: $4/(4{+}1) = 0.8$. Group B: $2/(2{+}2) = 0.5$. Gap: $0.3$ — the largest of the three, and
+      the one a naive "check the accuracy" audit would most likely miss entirely.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<FairnessCheckpoint />
+
+<Summary>
+  $$
+  \text{parity}_1(A,B) \neq \text{parity}_2(A,B) \neq \text{parity}_3(A,B)
+  $$
+
+  There's no purely mathematical answer to which of these three definitions is "the" right one — that's
+  a policy question about what kind of error matters more in a given context (a missed loan approval
+  versus an unjustified denial, say), not something an auditor can resolve by computing harder. What an
+  audit *can* do is what this chapter did: compute all the reasonable definitions, on the real base
+  rates, and make the disagreement visible instead of picking one metric and calling the system fair. The
+  next chapter turns from *auditing* a model's outputs to looking *inside* it — decomposing what a single
+  neuron is actually doing.
+</Summary>
