@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, AssistantCheckpoint } from "./Demos";
+
+<Hook>
+  Audio in, an image out — with nothing hand-built in between except two mechanisms this part already built separately. Retrieval finds the right words; generation turns those words into a picture. Chain them, and you have a tiny multimodal assistant.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Pick an audio clip. It retrieves its nearest caption in the shared embedding space — exactly Chapter 1's mechanism — and that caption's identity selects which noise-conditioning sequence steers the reverse-diffusion process — exactly Chapter 2's mechanism.
+</Intuition>
+
+<Formalize>
+  Two stages, two chapters, one pipeline:
+
+  $$
+  \text{audio} \xrightarrow{\text{nearest-neighbor in shared space}} \text{caption} \xrightarrow{\text{selects}} \hat\epsilon(x_t, t, \mathbf{c}) \xrightarrow{\text{reverse diffusion}} \text{generated value}
+  $$
+
+  Nothing here is a new mechanism — it's the exact retrieval rule from audio embeddings, feeding the exact conditioning slot from text-conditioned diffusion. A working multimodal system is very often just two or three single-modality mechanisms, connected so one's output becomes the next one's input.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Three audio clips, the same shared starting noise, the same reverse-diffusion formula — and three completely different generated values, because retrieval routed each one to a different conditioning sequence before generation ever started.
+</Play>
+
+<WorkedExample>
+  Three audio inputs, run through the full pipeline:
+
+  <Steps>
+    <Step label="Dog barking routes to the dog caption and dog conditioning">
+      Retrieves "a dog running" (distance $\approx0.50$), then reverses the shared $x_T=2.0$ using dog-conditioned
+      noise to a final value $\approx2.789$.
+    </Step>
+    <Step label="Cat meowing routes to the cat caption and cat conditioning">
+      Retrieves "a cat sleeping" (distance $\approx0.45$), then reverses the same $x_T=2.0$ using cat-conditioned
+      noise to $\approx4.330$ — a different destination from the same starting point.
+    </Step>
+    <Step label="Bird chirping completes the set">
+      Retrieves "a bird flying" (distance $\approx0.54$), reversing to $\approx3.866$ — a third distinct value,
+      confirming all three retrieval-then-generation chains work independently and correctly.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<AssistantCheckpoint />
+
+<Summary>
+  $$
+  \text{audio} \to \text{retrieval} \to \text{caption} \to \text{conditioning} \to \text{generation}
+  $$
+
+  This is the actual shape of most real multimodal systems: not one enormous end-to-end model, but a handful of well-understood single-modality mechanisms — an embedding space here, a conditioned generator there — wired together so information flows from one to the next. Every piece in this pipeline was built, verified, and understood on its own first; the assembly is just plumbing. This closes Part XII — Multimodal, Continued. The next part turns to the modern LLM engineering toolkit: parameter-efficient fine-tuning, scaling laws, and the machinery behind deploying models at scale.
+</Summary>

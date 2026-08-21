@@ -903,7 +903,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Assemble a tiny multimodal assistant",
     blurb: "Audio in, retrieval in the middle, an image out — every modality from this course, in one pipeline.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 
