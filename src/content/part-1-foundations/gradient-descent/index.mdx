@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DescentCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, DescentCheckpoint } from "./Demos";
   $$
   x_{n+1} = x_n - \eta \, \nabla f(x_n)
   $$
+
+  <Variables>
+    <Variable>**$x_n$** — the current position, before this step.</Variable>
+    <Variable>**$x_{n+1}$** — the new position, after taking the step.</Variable>
+    <Variable>**$\eta$** — the learning rate: how big a step to take (read "eta").</Variable>
+    <Variable>**$\nabla f(x_n)$** — the gradient evaluated at the current position, pointing uphill.</Variable>
+  </Variables>
 
   $\eta$ (eta) is the **learning rate** — how big a step you take. The gradient tells you *which way* is uphill; $\eta$ decides *how far* you step away from it.
 </Formalize>
