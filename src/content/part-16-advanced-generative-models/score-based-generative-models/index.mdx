@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ScoreCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,6 +22,13 @@ import { IntuitionDemo, PlayDemo, ScoreCheckpoint } from "./Demos";
   $$
   s(x) = \frac{d}{dx}\log p(x) = -\frac{x-\mu}{\sigma^2}
   $$
+
+  <Variables>
+    <Variable>**$s(x)$** — the score function: the gradient of the log-density, a vector field pointing toward higher-probability regions.</Variable>
+    <Variable>**$p(x)$** — the probability density of the target distribution.</Variable>
+    <Variable>**$\mu$** — the mean of the Gaussian target distribution.</Variable>
+    <Variable>**$\sigma^2$** — the variance of the Gaussian target distribution.</Variable>
+  </Variables>
 
   Follow it uphill, repeatedly — $x \leftarrow x + \eta\, s(x)$ — and $x$ climbs toward $\mu$. Real
   score-based models add noise to this update (**Langevin dynamics**) so the process samples the *whole*
