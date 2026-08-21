@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, LinearAttentionCheckpoint } from "./Demos";
 
 <Hook>
@@ -24,13 +24,21 @@ import { IntuitionDemo, PlayDemo, LinearAttentionCheckpoint } from "./Demos";
   \sum_j (q_i \cdot k_j) \;=\; q_i \cdot \Big(\sum_j k_j\Big)
   $$
 
+  <Variables>
+    <Variable>**$q_i$** — the query vector for position $i$, the one being scored against every key.</Variable>
+    <Variable>**$k_j$** — the key vector for position $j$, one of the keys a query is compared against.</Variable>
+    <Variable>**$v_j$** — the value vector for position $j$, the payload retrieved when key $j$ matches.</Variable>
+    <Variable>**$i$** — the index of the query currently being scored.</Variable>
+    <Variable>**$j$** — the index ranging over every key (and its paired value) in the sequence.</Variable>
+  </Variables>
+
   The parenthesized sums on the right don't mention $i$ at all — they're the same for every query, so
   computing them once (a single pass over the keys, $O(n)$) and reusing them turns each query into one
   $O(1)$ dot product instead of an $O(n)$ rescan. Real linear-attention layers apply a positive feature
-  map $\phi$ (commonly $\text{elu}(x)+1$) to $q$ and $k$ before the dot product, so the "attention
-  weights" stay non-negative the way softmax's do — this chapter uses the identity map to keep every
-  number exact and checkable by hand, but the factoring trick itself doesn't depend on that choice at
-  all.
+  map $\phi$ (commonly $\text{elu}(x)+1$, where **ELU** is short for **Exponential Linear Unit**) to $q$
+  and $k$ before the dot product, so the "attention weights" stay non-negative the way softmax's do —
+  this chapter uses the identity map to keep every number exact and checkable by hand, but the factoring
+  trick itself doesn't depend on that choice at all.
 </Formalize>
 
 <Play>
