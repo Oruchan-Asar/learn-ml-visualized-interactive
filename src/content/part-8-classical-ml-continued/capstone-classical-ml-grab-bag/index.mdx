@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, GrabBagCheckpoint } from "./Demos";
 
 <Hook>
@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, GrabBagCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  Switch lenses. kNN and Naive Bayes both use the labels — they're trying to predict a class for a new point. DBSCAN never looks at a single label — it just asks which points are close enough together to call a cluster, and lets the noisy point land wherever the geometry actually puts it.
+  Switch lenses. **kNN** — short for **k-nearest neighbors** — and Naive Bayes both use the labels — they're trying to predict a class for a new point. **DBSCAN** — short for **Density-Based Spatial Clustering of Applications with Noise** — never looks at a single label — it just asks which points are close enough together to call a cluster, and lets the noisy point land wherever the geometry actually puts it.
 </Intuition>
 
 <Formalize>
@@ -17,9 +17,23 @@ import { IntuitionDemo, PlayDemo, GrabBagCheckpoint } from "./Demos";
   $$
   \text{kNN: } \hat y = \text{majority vote of } k \text{ closest labeled points}
   $$
+
+  <Variables>
+    <Variable>**$\hat y$** — the predicted class for the query point.</Variable>
+    <Variable>**$k$** — how many nearest neighbors get consulted for the vote.</Variable>
+  </Variables>
+
   $$
   \text{Naive Bayes: } \hat y = \arg\max_c P(c)\prod_i P(x_i \mid c)
   $$
+
+  <Variables>
+    <Variable>**$c$** — one candidate class being scored.</Variable>
+    <Variable>**$P(c)$** — the prior probability of class $c$.</Variable>
+    <Variable>**$x_i$** — the $i$-th feature (piece of evidence) of the query point.</Variable>
+    <Variable>**$P(x_i \mid c)$** — the likelihood of feature $x_i$ given class $c$.</Variable>
+  </Variables>
+
   $$
   \text{DBSCAN: cluster} = \text{whatever's density-reachable, no labels involved at all}
   $$
