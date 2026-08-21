@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, TradeoffCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, TradeoffCheckpoint } from "./Demos";
   $$
   \text{accuracy} = \frac{\text{correct}}{n}, \qquad \text{interpretability} = \frac{1}{\text{regions}}
   $$
+
+  <Variables>
+    <Variable>**accuracy** — the fraction of the dataset the model classifies correctly.</Variable>
+    <Variable>**correct** — the number of points the model classifies correctly.</Variable>
+    <Variable>**$n$** — the total number of points in the dataset.</Variable>
+    <Variable>**interpretability** — a simple, decreasing proxy for how easy the model is to state as a short list of rules.</Variable>
+    <Variable>**regions** — the number of decision regions the model carves the input space into.</Variable>
+  </Variables>
 
   This interpretability score is a stand-in for something real: a model built from a handful of regions is one a person can hold in their head and restate as a short list of rules. A model built from dozens of regions — one for nearly every data point — has traded that away for the ability to fit exceptions no simple rule ever could.
 </Formalize>
