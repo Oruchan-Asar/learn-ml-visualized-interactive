@@ -1,0 +1,74 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, BottleneckCheckpoint } from "./Demos";
+
+<Hook>
+  Part IV's self-attention let every token look at every other token, all at once — no fixed window, no
+  recency bias. That power has a price nobody mentioned yet: what happens to that cost as the sequence
+  gets long?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Attention's cost isn't just "bigger" than a linear layer's — it's a completely different *shape* of
+  bigger. Double the sequence length and the linear layer's cost doubles too. Attention's quadruples.
+
+</Intuition>
+
+<Formalize>
+  Self-attention builds an $n \times n$ score matrix — every one of $n$ queries compared against every one
+  of $n$ keys, each comparison a $d$-dimensional dot product:
+
+  $$
+  \text{attention ops} = n^2 d, \qquad \text{linear-layer ops} = nd, \qquad \frac{\text{attention ops}}{\text{linear-layer ops}} = n
+  $$
+
+  That last ratio is the whole chapter: attention costs exactly $n$ times more than a single per-token
+  operation, where $n$ is the sequence length *itself*. The embedding dimension $d$ changes the raw
+  numbers, but it cancels out of the ratio completely — it's the sequence length alone that decides how
+  much worse attention gets.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The dashed line is the linear layer's cost; the bold curve is attention's. They start close together at
+  small $n$ and pull apart fast — by $n=128$, attention has left the line so far behind that the line is
+  barely visible near the bottom of the chart. That gap is the entire reason the rest of this part exists.
+</Play>
+
+<WorkedExample>
+  Fixing $d=8$ and doubling the sequence length twice, starting from $n=8$:
+
+  <Steps>
+    <Step label="n = 8">
+      Attention: $8^2 \times 8 = 512$ ops. Linear layer: $8 \times 8 = 64$ ops. Attention costs $8\times$
+      as much.
+    </Step>
+    <Step label="n = 16 (doubled once)">
+      Attention: $16^2 \times 8 = 2{,}048$ ops — exactly $4\times$ the $n=8$ value. Linear layer:
+      $16 \times 8 = 128$ ops — exactly $2\times$. Attention now costs $16\times$ as much, not $8\times$.
+    </Step>
+    <Step label="n = 32 (doubled again)">
+      Attention: $32^2 \times 8 = 8{,}192$ ops — $4\times$ the previous step, again. Linear layer:
+      $256$ ops — $2\times$ again. The ratio has doubled to $32\times$. Every doubling of $n$ doubles the
+      ratio too, because the ratio *is* $n$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<BottleneckCheckpoint />
+
+<Summary>
+  $$
+  \frac{\text{attention ops}}{\text{linear-layer ops}} = n
+  $$
+
+  A Transformer processing a 512-token paragraph pays a manageable quadratic cost. The same architecture
+  on a 100,000-token codebase or a book-length context pays a cost that's grown by a factor of nearly 200
+  relative to the paragraph case, purely from the ratio $n$ itself growing. That single number — not a
+  bug, not a bad implementation, just what $n^2$ does — is the reason an entire research area exists
+  around finding attention alternatives that don't pay it. The next chapter looks at the first one: what
+  if the softmax inside attention were swapped for something that let the whole computation be
+  rearranged into a running sum instead of a full matrix?
+</Summary>

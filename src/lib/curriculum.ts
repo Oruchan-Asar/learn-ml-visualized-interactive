@@ -1032,7 +1032,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "The quadratic bottleneck",
     blurb: "Count attention's dot products as the sequence grows, and watch the cost curve leave the line for a parabola.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "linear-attention",
