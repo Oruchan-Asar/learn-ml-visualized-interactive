@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, GradientCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,12 @@ import { IntuitionDemo, PlayDemo, GradientCheckpoint } from "./Demos";
   $$
   \nabla f(x) = \frac{df}{dx}
   $$
+
+  <Variables>
+    <Variable>**$\nabla f(x)$** — the gradient of $f$ at the point $x$; for a function of one variable, it's exactly the derivative.</Variable>
+    <Variable>**$f(x)$** — the function whose steepness we're measuring.</Variable>
+    <Variable>**$x$** — the point along the curve where the gradient is evaluated.</Variable>
+  </Variables>
 
   For the curve above, $f(x) = x^2 - 4x + 5$. Differentiating term by term gives:
 
