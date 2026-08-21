@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, NaiveBayesCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, NaiveBayesCheckpoint } from "./Demos";
   $$
   P(\text{class} \mid x_1,\dots,x_n) \propto P(\text{class}) \prod_{i=1}^n P(x_i \mid \text{class})
   $$
+
+  <Variables>
+    <Variable>**class** — the category being predicted, such as spam or not-spam.</Variable>
+    <Variable>**$x_1,\dots,x_n$** — the $n$ individual pieces of evidence, such as which words are present.</Variable>
+    <Variable>**$P(\text{class})$** — the prior probability of the class, before looking at any evidence.</Variable>
+    <Variable>**$P(x_i \mid \text{class})$** — the likelihood of feature $i$: how often it shows up in training examples of that class.</Variable>
+    <Variable>**$n$** — the number of features being combined.</Variable>
+  </Variables>
 
   Each $P(x_i \mid \text{class})$ is just a frequency: how often word $i$ showed up in training messages of that class. Multiplying independent probabilities together is exactly what "assume independence" *means* — it's the one assumption that turns a hard joint-probability problem into a handful of easy word-counting ones.
 </Formalize>
