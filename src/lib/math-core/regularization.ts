@@ -34,7 +34,7 @@ function softThreshold(value: number, gamma: number): number {
   return 0;
 }
 
-/** Lasso (L1): minimizes squared error + λ‖β‖₁ for every coefficient except the intercept, via cyclic coordinate descent. */
+/** Lasso (L1): minimizes mean squared error + λ‖β‖₁ for every coefficient except the intercept, via cyclic coordinate descent. */
 export function lassoFit(xs: number[], ys: number[], degree: number, lambda: number, iterations = 500): number[] {
   const x = designMatrix(xs, degree);
   const n = xs.length;

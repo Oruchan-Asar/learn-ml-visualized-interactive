@@ -10,10 +10,11 @@ export interface ResidualResult {
 }
 
 /**
- * Same per-layer transformation F(h) = weight*sigmoid(weight*h) as the plain network in the
- * vanishing-gradients chapter — but each layer now adds F(h) to h instead of replacing h with it:
- * h_i = h_{i-1} + F(h_{i-1}). That single addition changes the backward multiplier from
- * F'(h_{i-1}) alone to 1 + F'(h_{i-1}), which can never shrink below 1.
+ * Same weight and sigmoid nonlinearity as the plain network in the vanishing-gradients chapter, but
+ * scaled on the output — F(h) = weight*sigmoid(weight*h), vs. the plain network's h -> sigmoid(weight*h)
+ * — and each layer adds F(h) to h instead of replacing h with it: h_i = h_{i-1} + F(h_{i-1}). That
+ * addition changes the backward multiplier from F'(h_{i-1}) alone to 1 + F'(h_{i-1}), which can never
+ * shrink below 1, regardless of the exact per-layer function.
  */
 export function residualForwardBackward(depth: number, weight: number = FIXED_WEIGHT): ResidualResult {
   const z: number[] = [];

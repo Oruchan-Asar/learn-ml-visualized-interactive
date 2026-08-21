@@ -28,7 +28,9 @@ import { IntuitionDemo, PlayDemo, ResNetCheckpoint } from "./Demos";
 </Play>
 
 <WorkedExample>
-  $F(h) = w\cdot\sigma(wh)$ with $w=3$, starting from $h_0=0.5$, at depths 5, 10, and 20:
+  Same weight $w=3$ and sigmoid $\sigma$ in both networks — the plain network's per-layer function is
+  $\sigma(wh)$, and the residual network's added term is $w\cdot\sigma(wh)$ — starting from $h_0=0.5$, at
+  depths 5, 10, and 20:
 
   <Steps>
     <Step label="The plain network vanishes on schedule">
@@ -42,9 +44,10 @@ import { IntuitionDemo, PlayDemo, ResNetCheckpoint } from "./Demos";
       factor extremely close to $1$ — layers 5 through 10 change the gradient by less than $0.001$, while the
       first two layers (before saturation) still shift it by tens.
     </Step>
-    <Step label="One added term changes everything">
-      Both networks use the exact same $F$. The only difference is whether $h_i$ *replaces* $h_{i-1}$ or *adds to*
-      it — and that single addition is the entire fix. No new gate, no new parameter, just $+h_{i-1}$.
+    <Step label="One structural change fixes it, not a different F">
+      The two networks share the same weight and nonlinearity — no new gate, no new parameter. What
+      changes is purely structural: whether $h_i$ *replaces* $h_{i-1}$ or *adds to* it. That single
+      addition, $+h_{i-1}$, is the entire fix — not some special property of the per-layer function itself.
     </Step>
   </Steps>
 </WorkedExample>

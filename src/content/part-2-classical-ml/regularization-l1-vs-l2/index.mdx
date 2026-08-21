@@ -15,10 +15,10 @@ import { IntuitionDemo, PlayDemo, RegularizationCheckpoint } from "./Demos";
   Regularization adds a penalty on the coefficients themselves to the loss being minimized:
 
   $$
-  \text{L2 (Ridge): } \; \text{loss} + \lambda \sum_j \beta_j^2 \qquad\qquad \text{L1 (Lasso): } \; \text{loss} + \lambda \sum_j |\beta_j|
+  \text{L2 (Ridge): } \; \text{SSE} + \lambda \sum_j \beta_j^2 \qquad\qquad \text{L1 (Lasso): } \; \text{MSE} + \lambda \sum_j |\beta_j|
   $$
 
-  Both shrink coefficients toward zero as $\lambda$ grows. The difference is in *how*: L2's penalty is smooth everywhere, so it shrinks every coefficient a little without ever fully canceling one out. L1's penalty has a sharp corner at zero, and that corner is exactly where coordinate-wise optimization tends to land — driving weak coefficients to *exactly* $0$, not just close to it.
+  Both shrink coefficients toward zero as $\lambda$ grows. The difference is in *how*: L2's penalty is smooth everywhere, so it shrinks every coefficient a little without ever fully canceling one out. L1's penalty has a sharp corner at zero, and that corner is exactly where coordinate-wise optimization tends to land — driving weak coefficients to *exactly* $0$, not just close to it. (Ridge here penalizes the raw sum of squared error, Lasso the mean — the standard convention, matching what most libraries do — so the same $\lambda$ lands at a different strength for each; it's the zeroing behavior that's the point of the comparison, not the raw magnitude of $\lambda$.)
 </Formalize>
 
 <Play>
@@ -47,7 +47,7 @@ import { IntuitionDemo, PlayDemo, RegularizationCheckpoint } from "./Demos";
 
 <Summary>
   $$
-  \text{L2 (Ridge): } \; \text{loss} + \lambda \sum_j \beta_j^2 \qquad\qquad \text{L1 (Lasso): } \; \text{loss} + \lambda \sum_j |\beta_j|
+  \text{L2 (Ridge): } \; \text{SSE} + \lambda \sum_j \beta_j^2 \qquad\qquad \text{L1 (Lasso): } \; \text{MSE} + \lambda \sum_j |\beta_j|
   $$
 
   Both tame variance by shrinking coefficients — the same fight Chapter 15 introduced, fought with a penalty instead of a manual degree choice. L2 shrinks everything smoothly; L1 does automatic feature selection, deciding on its own which terms survive. Neither is strictly better — L1's sparsity is a feature when you actually want to know which inputs matter.
