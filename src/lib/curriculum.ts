@@ -922,7 +922,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Mixture-of-experts",
     blurb: "Add a router that sends each token to only two of dozens of feedforward blocks.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "scaling-laws",

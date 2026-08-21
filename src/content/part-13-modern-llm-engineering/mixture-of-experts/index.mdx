@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MoECheckpoint } from "./Demos";
+
+<Hook>
+  A bigger feedforward layer usually means a slower one — every token has to pass through every parameter. What if a model could have dozens of feedforward blocks, each specialized, and every token only ever paid the cost of the two or so that actually matter for it?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Four small experts, one router. Pick a token and watch which two experts light up — the other two contribute nothing to the output and never even get evaluated.
+</Intuition>
+
+<Formalize>
+  A **mixture-of-experts** layer replaces one feedforward block with $N$ of them plus a router. The router scores every expert, keeps only the top $K$, renormalizes their scores to sum to 1, and combines just those:
+
+  $$
+  y = \sum_{i \in \text{top-}K(\text{router}(x))} \frac{p_i}{\sum_{j \in \text{top-}K} p_j} \cdot \text{Expert}_i(x)
+  $$
+
+  Every expert outside the top $K$ contributes exactly zero — not a small weight, but literally never computed. A model can have far more total parameters than a dense one while running only a fraction of them per token.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Token $x=2$ and token $x=-2$ activate completely disjoint pairs of experts — zero overlap. Each token gets routed to whichever specialists the router thinks fit it best, and the rest of the model, for that token, might as well not exist.
+</Play>
+
+<WorkedExample>
+  Four experts, router weights $[0.5, -0.5, 1.0, -1.0]$, top-2 routing:
+
+  <Steps>
+    <Step label="Token x=2 routes to experts 2 and 0">
+      Router logits: $[1, -1, 2, -2]$. Softmax gives expert 2 the highest probability, expert 0 second. Their
+      renormalized weights: $\approx0.731$ and $\approx0.269$. Experts 1 and 3 are never evaluated.
+    </Step>
+    <Step label="The combined output blends only the selected two">
+      Expert 2's output is $1$, expert 0's is $2$. Combined: $0.731(1) + 0.269(2) \approx 1.269$ — a weighted
+      blend of exactly two specialists, not all four.
+    </Step>
+    <Step label="A different token activates a disjoint pair entirely">
+      Token $x=-2$ flips every router logit's sign, routing instead to experts 3 and 1 — the exact two experts
+      that sat idle for $x=2$. Same router, same experts, completely different active subset.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MoECheckpoint />
+
+<Summary>
+  $$
+  y = \sum_{i \in \text{top-}K} \tilde p_i \cdot \text{Expert}_i(x) \qquad\text{— total capacity can grow, per-token compute doesn't have to}
+  $$
+
+  Mixture-of-experts decouples a model's total parameter count from its per-token compute cost: adding more experts adds capacity, but as long as $K$ stays fixed, every token still only touches $K$ of them. That's the entire mechanism behind how modern large language models scale to hundreds of billions of parameters while keeping inference cost close to a much smaller dense model's. The next chapter asks the question this raises directly: given a compute budget, how should it actually be spent — more parameters, or more data?
+</Summary>
