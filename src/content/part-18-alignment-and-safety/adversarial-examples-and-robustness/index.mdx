@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AdversarialCheckpoint } from "./Demos";
 
 <Hook>
@@ -23,6 +23,14 @@ import { IntuitionDemo, PlayDemo, AdversarialCheckpoint } from "./Demos";
   $$
   x'_i = x_i - \epsilon \cdot \text{sign}(w_i), \qquad \Delta(w \cdot x) = -\epsilon \sum_i |w_i|
   $$
+
+  <Variables>
+    <Variable>**$x_i$** — the original value of the $i$-th input dimension (one pixel).</Variable>
+    <Variable>**$x'_i$** — that same dimension's value after the perturbation is applied.</Variable>
+    <Variable>**$\epsilon$** — the fixed perturbation budget applied to every dimension.</Variable>
+    <Variable>**$w_i$** — the classifier's weight on dimension $i$.</Variable>
+    <Variable>**$\Delta(w \cdot x)$** — the resulting shift in the classifier's weighted sum (its score) once every dimension has been nudged.</Variable>
+  </Variables>
 
   Each individual $|x'_i - x_i|$ is bounded by $\epsilon$ — small, imperceptible on its own. But the total
   shift in the dot product the classifier actually uses scales with the *number of dimensions*, not with
