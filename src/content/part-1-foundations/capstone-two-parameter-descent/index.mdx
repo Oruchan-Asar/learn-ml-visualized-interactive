@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
   $$
   (x,y)_{n+1} = (x,y)_n - \eta\, \nabla f(x_n, y_n)
   $$
+
+  <Variables>
+    <Variable>**$(x,y)_n$** — the current position, both coordinates, before this step.</Variable>
+    <Variable>**$(x,y)_{n+1}$** — the new position after the step.</Variable>
+    <Variable>**$\eta$** — the learning rate, controlling step size.</Variable>
+    <Variable>**$\nabla f(x_n, y_n)$** — the gradient vector evaluated at the current position.</Variable>
+  </Variables>
 
   Exactly Chapter 2's $x_{n+1} = x_n - \eta f'(x_n)$, with the scalar derivative replaced by Chapter 6's gradient *vector*. Same idea, one number became two.
 </Formalize>
