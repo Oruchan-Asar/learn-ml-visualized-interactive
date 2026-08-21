@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, PipelineCheckpoint } from "./Demos";
 
 <Hook>
@@ -25,12 +25,25 @@ import { IntuitionDemo, PlayDemo, PipelineCheckpoint } from "./Demos";
   \text{feature}(t) = \sum_{e:\, t_e < t} \text{amount}(e)
   $$
 
+  <Variables>
+    <Variable>**$\text{feature}(t)$** — the correct, point-in-time feature value: what the feature legitimately looked like as of time $t$.</Variable>
+    <Variable>**$t$** — the time a label was produced; the moment a real prediction would have been made.</Variable>
+    <Variable>**$e$** — one raw event in the stream (here, a purchase).</Variable>
+    <Variable>**$t_e$** — the timestamp of event $e$.</Variable>
+    <Variable>**$\text{amount}(e)$** — the value contributed by event $e$.</Variable>
+  </Variables>
+
   A naive offline join instead grabs whatever the feature table currently holds — the latest snapshot — and
   attaches it to every historical label, regardless of $t$:
 
   $$
   \text{naive}(t) = \text{feature}(t_{\text{now}}) \quad \text{for every } t
   $$
+
+  <Variables>
+    <Variable>**$\text{naive}(t)$** — the (incorrect) feature value the naive join attaches to a label at time $t$.</Variable>
+    <Variable>**$t_{\text{now}}$** — the current time, when the offline join actually runs — not the label's own time.</Variable>
+  </Variables>
 
   Every event between $t$ and $t_{\text{now}}$ leaks into a feature that a real prediction, made at $t$, could
   never actually have seen.
