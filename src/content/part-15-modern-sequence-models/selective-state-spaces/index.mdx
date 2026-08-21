@@ -1,0 +1,79 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SelectiveCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter's state decayed by the same fixed factor $A$ every single step — whether the current token
+  carried real information or was pure filler. A model that could tell the difference wouldn't decay on
+  filler at all. What if $A$ and $B$ weren't fixed?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through the sequence. The faint curve is last chapter's fixed rule — it decays every step,
+  filler or not. The bold curve is selective: dead flat through every run of zeros, then snapping
+  instantly to a new value the moment a real signal arrives.
+</Intuition>
+
+<Formalize>
+  A **selective** state-space model (the mechanism behind Mamba) makes $A$ and $B$ functions of the
+  current input instead of fixed constants:
+
+  $$
+  h_t = A(x_t)\,h_{t-1} + B(x_t)\,x_t
+  $$
+
+  This chapter's selection rule is the simplest one that still makes the point — a token is either
+  *signal* ($x_t \neq 0$) or *filler* ($x_t = 0$):
+
+  $$
+  A(x_t) = \begin{cases} 1 & x_t = 0 \\ 0 & x_t \neq 0 \end{cases}, \qquad
+  B(x_t) = \begin{cases} 0 & x_t = 0 \\ 1 & x_t \neq 0 \end{cases}
+  $$
+
+  On filler, $A{=}1,B{=}0$ freezes the state exactly — nothing decays, because there's nothing worth
+  forgetting *from*. On signal, $A{=}0,B{=}1$ overwrites the state completely — the model chooses to
+  forget everything it was holding, on purpose, because something worth remembering just arrived.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Same 7-token sequence, same starting state, two different final answers. The selective rule's answer is
+  exactly the sequence's last real value; the fixed rule's is a decayed, blended approximation of it —
+  contaminated by a signal from four steps earlier that the fixed rule had no way to just drop.
+</Play>
+
+<WorkedExample>
+  Sequence $x = (5,\ 0,\ 0,\ 0,\ {-}3)$ — one signal, three filler tokens, a second signal:
+
+  <Steps>
+    <Step label="The first signal writes the state">
+      $x_1=5$ is signal, so $A{=}0, B{=}1$: $h_1 = 0(0) + 1(5) = 5$.
+    </Step>
+    <Step label="Three filler tokens change nothing">
+      $x_2{=}x_3{=}x_4{=}0$, each filler: $A{=}1,B{=}0$ gives $h_t = 1(h_{t-1}) + 0 = h_{t-1}$ every time.
+      $h_2=h_3=h_4=5$ — the exact same number, three steps running.
+    </Step>
+    <Step label="The second signal overwrites it completely">
+      $x_5={-}3$ is signal again: $h_5 = 0(5) + 1({-}3) = -3$. The $5$ isn't faded — it's gone, replaced
+      outright, in exactly the step where replacing it was the right call.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SelectiveCheckpoint />
+
+<Summary>
+  $$
+  h_t = A(x_t)\,h_{t-1} + B(x_t)\,x_t
+  $$
+
+  "Forget on purpose" cuts both ways: the selective rule forgets *nothing* on filler and forgets
+  *everything* on signal — both are choices, made per token, instead of one fixed rate applied uniformly.
+  Real Mamba layers learn $A$, $B$, and the discretization step size as smooth functions of the input
+  (not this chapter's hard on/off switch), so selection can be partial and learned rather than all-or-
+  nothing. This closes out the mechanism side of the part. The last chapter puts a Transformer and a
+  Mamba-style model side by side on one long sequence and watches the cost and memory gap this whole part
+  has been building actually show up.
+</Summary>

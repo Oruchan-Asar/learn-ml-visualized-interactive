@@ -1056,7 +1056,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Selective state spaces",
     blurb: "Let the update rule itself depend on the current token, and watch a model finally learn to forget on purpose.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-transformer-vs-mamba",
