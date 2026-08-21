@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ViTCheckpoint } from "./Demos";
 
 <Hook>
@@ -12,11 +12,17 @@ import { IntuitionDemo, PlayDemo, ViTCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  A **Vision Transformer** cuts an image into fixed-size patches, embeds each one, adds a position embedding, and feeds the resulting sequence into the exact same self-attention block from Part IV — no convolution anywhere:
+  A **Vision Transformer** (**ViT**) cuts an image into fixed-size patches, embeds each one, adds a position embedding, and feeds the resulting sequence into the exact same self-attention block from Part IV — no convolution anywhere:
 
   $$
   \text{patch}_i \to \text{embedding}_i + \text{position}_i \;\longrightarrow\; \text{self-attention over all patches at once}
   $$
+
+  <Variables>
+    <Variable>**$\text{patch}_i$** — the $i$-th fixed-size image patch, treated like a token in a sequence.</Variable>
+    <Variable>**$\text{embedding}_i$** — the learned vector representation of patch $i$.</Variable>
+    <Variable>**$\text{position}_i$** — a position embedding added to patch $i$, since self-attention has no inherent sense of spatial order.</Variable>
+  </Variables>
 
   A convolution kernel's receptive field grows by one step of Chebyshev distance per layer — reaching a patch $d$ steps away takes at least $d$ stacked layers. Self-attention has no such restriction: every patch can attend to every other patch in a single layer, regardless of how far apart they sit in the image.
 </Formalize>
