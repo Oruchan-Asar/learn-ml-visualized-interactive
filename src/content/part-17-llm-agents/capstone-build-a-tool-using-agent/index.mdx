@@ -1,0 +1,73 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, AgentCapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  "What's my total trip cost in USD?" — a plain-looking question that no single mechanism from this part
+  can answer alone. The hotel cost is outside the context window. The flight price is in the wrong
+  currency. Getting both, correctly, and combining them only once both are ready, needs all three.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through the loop. The greyed-out message is already gone from context by the time the question
+  arrives — retrieval pulls it back regardless. The flight price gets an exact tool call, not a guess.
+  The total only appears once both of those independent steps have actually finished.
+</Intuition>
+
+<Formalize>
+  This capstone's plan has exactly the shape Chapter 3 introduced — two independent tasks converging on a
+  third:
+
+  $$
+  \{\text{retrieve\_hotel\_cost},\ \text{convert\_flight\_price}\} \to \text{compute\_total}
+  $$
+
+  Neither of the first two tasks depends on the other — retrieval doesn't need the converted flight
+  price, and the currency conversion doesn't need the hotel cost — so a planner is free to run them in
+  either order, or in parallel. `compute_total` is the one task with a real dependency: it cannot run
+  until *both* of the others have finished, exactly Chapter 3's convergence point.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Same three-step loop, three different scenarios. Nothing about the *mechanism* changes between trips —
+  only the numbers going into retrieval and the tool call do, which is exactly what makes this a reusable
+  agent rather than a one-off script for a single question.
+</Play>
+
+<WorkedExample>
+  Trip A: a €200 flight at a 1.1 exchange rate, hotel cost $360:
+
+  <Steps>
+    <Step label="Retrieve (no dependency)">
+      The hotel cost, $360, isn't in the context window anymore — it's pulled from the full message
+      history instead, exactly like Chapter 4's retrieval.
+    </Step>
+    <Step label="Convert (no dependency)">
+      `convertToUSD(200, 1.1) = 220` — an exact tool call, not a rounded guess, exactly like Chapter 1.
+    </Step>
+    <Step label="Compute total (depends on both)">
+      $360 + \$220 = \$580$ — this step only runs once retrieval and conversion have both already
+      finished; there's no way to compute it from either one alone.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<AgentCapstoneCheckpoint />
+
+<Summary>
+  $$
+  \text{total} = \text{retrieve}(\text{hotel}) + \text{convert}(\text{flight}, \text{rate})
+  $$
+
+  Every mechanism this part covered shows up here doing real work: a plan that knows which steps can run
+  independently and which must wait, a tool call standing in for exact computation a model shouldn't
+  guess at, and retrieval recovering a fact the context window already dropped. Real agent frameworks add
+  error handling at every one of these steps (what if retrieval finds nothing? what if the tool call
+  fails?) and often route different subtasks to genuinely different specialized agents, as Chapter 5
+  covered — but the loop's basic shape, plan then act then combine, is exactly what's here. The next part
+  turns from building agents to a harder question: how do you make sure the agent you built is actually
+  safe to run.
+</Summary>

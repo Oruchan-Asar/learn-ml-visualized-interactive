@@ -1166,7 +1166,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Build a tool-using agent",
     blurb: "Wire planning, a tool call, and memory into one loop that solves a task no single call could.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 

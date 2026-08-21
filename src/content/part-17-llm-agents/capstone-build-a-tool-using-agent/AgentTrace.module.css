@@ -1,0 +1,40 @@
+.trace {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+.trace p {
+  margin: 0;
+}
+
+.inWindow {
+  color: var(--ink);
+}
+
+.evicted {
+  color: var(--ink-faint);
+}
+
+.step {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+.step strong {
+  color: var(--accent-ink);
+  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, sans-serif;
+}
+
+.total {
+  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 1px solid var(--line);
+  font-weight: 600;
+  color: var(--accent2-ink);
+}
