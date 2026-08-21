@@ -73,6 +73,16 @@ export function Step({ label, children }: { label: string; children: ReactNode }
   );
 }
 
+/** Wraps a list of <Variable> rows glossing the symbols in a Formalize beat's formula. */
+export function Variables({ children }: { children: ReactNode }) {
+  return <ul className={styles.variables}>{children}</ul>;
+}
+
+/** One row of the glossary: bold the symbol inline (e.g. **$x$**) followed by a short plain-English description. */
+export function Variable({ children }: { children: ReactNode }) {
+  return <li className={styles.variable}>{children}</li>;
+}
+
 /** The anchor for later spaced review: one formula, one sentence. */
 export function Summary({ children }: { children: ReactNode }) {
   return (

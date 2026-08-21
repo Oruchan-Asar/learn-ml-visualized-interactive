@@ -88,6 +88,41 @@
   margin: 0;
 }
 
+.variables {
+  list-style: none;
+  margin: 0;
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  max-width: 68ch;
+}
+
+.variable {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  padding-left: 16px;
+  position: relative;
+}
+.variable::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.variable strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+
 .summaryCard {
   background: var(--paper-raised);
   border: 1px solid var(--line);
