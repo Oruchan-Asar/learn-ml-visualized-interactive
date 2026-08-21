@@ -1,8 +1,8 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AttentionCheckpoint } from "./Demos";
 
 <Hook>
-  GCN's flat average treats every neighbor as equally important — a node with one quiet neighbor and one
+  The **Graph Convolutional Network (GCN)**'s flat average treats every neighbor as equally important — a node with one quiet neighbor and one
   wildly different one gets pulled toward their plain mean regardless. Real relationships aren't equal.
   What if the aggregation rule itself could decide who to listen to?
 </Hook>
@@ -24,6 +24,16 @@ import { IntuitionDemo, PlayDemo, AttentionCheckpoint } from "./Demos";
   \alpha_{ij} = \frac{\exp(e_{ij})}{\sum_{k \in \mathcal{N}(i)\cup\{i\}} \exp(e_{ik})}, \qquad
   h_i' = \sum_{j} \alpha_{ij} \, Wh_j
   $$
+
+  <Variables>
+    <Variable>**$e_{ij}$** — the raw, unnormalized attention score between node $i$ and neighbor $j$.</Variable>
+    <Variable>**$\alpha_{ij}$** — the normalized attention weight node $i$ assigns to neighbor $j$, after softmax.</Variable>
+    <Variable>**$W$** — a learned weight matrix applied to every node's features before scoring.</Variable>
+    <Variable>**$a$** — a learned attention vector that scores how compatible two transformed features are.</Variable>
+    <Variable>**$h_i$, $h_j$** — node $i$'s and neighbor $j$'s current feature vectors.</Variable>
+    <Variable>**$h_i'$** — node $i$'s updated feature: the attention-weighted sum over itself and its neighbors.</Variable>
+    <Variable>**$\mathcal{N}(i)$** — node $i$'s neighborhood, including itself.</Variable>
+  </Variables>
 
   $W$ is a learned weight matrix and $a$ a learned attention vector — together they score how compatible
   $i$ and $j$ are, exactly the way a query and key score compatibility in Part IV's attention chapter.
