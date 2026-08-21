@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, EvaluatePipelineCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  One scored classifier, ten examples. Slide the decision threshold across three candidates and watch accuracy, precision, recall, and F1 move independently — sometimes together, sometimes in opposite directions.
+  One scored classifier, ten examples. Slide the decision threshold across three candidates and watch accuracy, precision, recall, and **F1** — short for the **F1 score** — move independently — sometimes together, sometimes in opposite directions.
 </Intuition>
 
 <Formalize>
@@ -24,7 +24,7 @@ import { IntuitionDemo, PlayDemo, EvaluatePipelineCheckpoint } from "./Demos";
 <Play>
   <PlayDemo />
 
-  At the default threshold of $0.5$, accuracy is a respectable $0.7$ but F1 lags at $0.73$. The ranking AUC of $0.76$ says the model's raw *ordering* of examples is decent but not sharp. And the fold breakdown shows exactly why: two folds are trivially easy (accuracy $1.0$), while three folds straddling the decision boundary score only $0.5$ each — the same overall accuracy, but now you know precisely where the model is guessing.
+  At the default threshold of $0.5$, accuracy is a respectable $0.7$ but F1 lags at $0.73$. The ranking **AUC** — short for **Area Under the Curve** — of $0.76$ says the model's raw *ordering* of examples is decent but not sharp. And the fold breakdown shows exactly why: two folds are trivially easy (accuracy $1.0$), while three folds straddling the decision boundary score only $0.5$ each — the same overall accuracy, but now you know precisely where the model is guessing.
 </Play>
 
 <WorkedExample>
@@ -32,7 +32,7 @@ import { IntuitionDemo, PlayDemo, EvaluatePipelineCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="One threshold, two disagreeing scores">
-      At threshold $0.5$: TP$=4$, FP$=2$, FN$=1$, TN$=3$. Accuracy $=0.7$ looks fine. But precision is only
+      At threshold $0.5$: **TP** (true positives) $=4$, **FP** (false positives) $=2$, **FN** (false negatives) $=1$, **TN** (true negatives) $=3$. Accuracy $=0.7$ looks fine. But precision is only
       $2/3$ and F1 lands at $8/11 \approx 0.727$ — the two false alarms cost more in F1 than they cost in accuracy.
     </Step>
     <Step label="A threshold-free verdict">
