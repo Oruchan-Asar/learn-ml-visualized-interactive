@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, VariantsCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, VariantsCheckpoint } from "./Demos";
   $$
   \nabla L_{\text{batch}} = \frac{1}{n}\sum_{i=1}^n \nabla L_i
   $$
+
+  <Variables>
+    <Variable>**$\nabla L_{\text{batch}}$** — the batch gradient: the direction used for one step, averaged over the whole dataset.</Variable>
+    <Variable>**$n$** — the total number of training examples.</Variable>
+    <Variable>**$\nabla L_i$** — the gradient of the loss computed from a single example $i$.</Variable>
+    <Variable>**$i$** — the index of one training example.</Variable>
+  </Variables>
 
   **Stochastic** gradient descent uses just one example per step, $\nabla L_i$ for a single $i$ — cheap, but noisy. **Mini-batch** splits the difference, averaging over a small subset $B$: $\frac{1}{|B|}\sum_{i \in B} \nabla L_i$. All three are estimates of the same true gradient — they just trade accuracy per step for cost per step.
 </Formalize>
