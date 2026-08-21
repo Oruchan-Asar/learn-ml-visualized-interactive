@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 
 <Hook>
@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  Four tiny 6×6 images, two classes: a **vertical edge** (the boundary runs top-to-bottom) and a **horizontal edge** (the boundary runs left-to-right). Two 3×3 filters, initialized to small random numbers, feed a small dense layer through ReLU and max pooling — the exact shape from Chapter 3, but every weight starts unlearned. Click train and watch the loss fall as the filters reorganize themselves into something that actually tells the two classes apart.
+  Four tiny 6×6 images, two classes: a **vertical edge** (the boundary runs top-to-bottom) and a **horizontal edge** (the boundary runs left-to-right). Two 3×3 filters, initialized to small random numbers, feed a small dense layer through **ReLU** (short for **Rectified Linear Unit**) and max pooling — the exact shape from Chapter 3, but every weight starts unlearned. Click train and watch the loss fall as the filters reorganize themselves into something that actually tells the two classes apart.
 </Intuition>
 
 <Formalize>
@@ -17,6 +17,11 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
   $$
   \mathcal{L} = -\log p_{\text{true class}}
   $$
+
+  <Variables>
+    <Variable>**$\mathcal{L}$** — the loss being minimized during training.</Variable>
+    <Variable>**$p_{\text{true class}}$** — the softmax probability the network assigns to the correct class.</Variable>
+  </Variables>
 
   the cross-entropy loss from Part II, computed over the softmax of the two output logits. Backpropagation runs through every stage: the softmax gradient, back through the dense weights, back through max-pooling (which routes each gradient only to the position that actually won each window), back through ReLU (zero wherever the pre-activation wasn't positive), and finally back into the two 3×3 kernels themselves — the same chain rule as always, just longer.
 </Formalize>
