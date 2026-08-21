@@ -1,8 +1,9 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DPOCheckpoint } from "./Demos";
 
 <Hook>
-  Part VII's RLHF chapter fit a reward model from preference comparisons, then ran a separate
+  Part VII's **RLHF** — short for **Reinforcement Learning from Human Feedback** — chapter fit a reward
+  model from preference comparisons, then ran a separate
   policy-gradient loop against it — two stages, two different update rules. What if the algebra let both
   stages collapse into one?
 </Hook>
@@ -15,7 +16,7 @@ import { IntuitionDemo, PlayDemo, DPOCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  For an optimal policy under a KL-regularized reward objective, the reward and the policy are related in
+  For an optimal policy under a **KL** (**Kullback–Leibler**)-regularized reward objective, the reward and the policy are related in
   closed form: $r(y) = \beta \log\big(\pi(y)/\pi_{\text{ref}}(y)\big) + \text{const}$. Substitute that
   directly into the Bradley-Terry preference loss from Part VII, and the reward model cancels out
   algebraically, leaving a loss purely in terms of the policy:
@@ -23,6 +24,15 @@ import { IntuitionDemo, PlayDemo, DPOCheckpoint } from "./Demos";
   $$
   \mathcal{L} = -\log\sigma\Big(\beta\big[(\log\pi(y_w) - \log\pi_{\text{ref}}(y_w)) - (\log\pi(y_l) - \log\pi_{\text{ref}}(y_l))\big]\Big)
   $$
+
+  <Variables>
+    <Variable>**$\mathcal{L}$** — the DPO loss being minimized for a single preference pair.</Variable>
+    <Variable>**$\beta$** — the KL-penalty strength inherited from the RLHF objective; controls how far the policy is allowed to drift from the reference.</Variable>
+    <Variable>**$\pi$** — the policy currently being trained.</Variable>
+    <Variable>**$\pi_{\text{ref}}$** — the frozen reference policy (typically the pre-RLHF model) the trained policy is measured against.</Variable>
+    <Variable>**$y_w$** — the winning (preferred) response in the comparison.</Variable>
+    <Variable>**$y_l$** — the losing (dispreferred) response in the comparison.</Variable>
+  </Variables>
 
   Differentiating this with respect to the policy's own parameters, the softmax's $\pi(a)$ term cancels
   *exactly* between the winner and loser gradients — what's left is even simpler than RLHF's two-stage
@@ -35,7 +45,8 @@ import { IntuitionDemo, PlayDemo, DPOCheckpoint } from "./Demos";
 
   Two completely different training procedures — fit-a-reward-model-then-run-RL versus one direct
   gradient loop — landing on the same ranking from the same three comparisons. Neither path is "more
-  correct"; DPO is just a shortcut through algebra that happens to skip a stage RLHF needs.
+  correct"; **DPO** — short for **Direct Preference Optimization** — is just a shortcut through algebra
+  that happens to skip a stage RLHF needs.
 </Play>
 
 <WorkedExample>
