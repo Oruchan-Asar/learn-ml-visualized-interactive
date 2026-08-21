@@ -1083,7 +1083,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Score-based generative models",
     blurb: "Follow the gradient of the log-density uphill and watch pure noise crawl back toward the data.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "flow-matching",
