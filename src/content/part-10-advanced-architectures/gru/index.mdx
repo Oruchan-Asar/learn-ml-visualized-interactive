@@ -1,8 +1,8 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, GRUCheckpoint } from "./Demos";
 
 <Hook>
-  The LSTM fixed vanishing gradients with three gates and a separate cell state running alongside the hidden state. What if you could get the same fix with one gate fewer, and no second state to keep track of at all?
+  The **LSTM** — short for **Long Short-Term Memory** — fixed vanishing gradients with three gates and a separate cell state running alongside the hidden state. What if you could get the same fix with one gate fewer, and no second state to keep track of at all?
 </Hook>
 
 <Intuition>
@@ -12,14 +12,27 @@ import { IntuitionDemo, PlayDemo, GRUCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  A GRU cell has two gates instead of the LSTM's three, and only one state instead of two:
+  A **GRU** — short for **Gated Recurrent Unit** — cell has two gates instead of the LSTM's three, and only one state instead of two:
 
   $$
   z_t = \sigma(W_z x_t + U_z h_{t-1} + b_z), \qquad r_t = \sigma(W_r x_t + U_r h_{t-1} + b_r)
   $$
+
+  <Variables>
+    <Variable>**$z_t$** — the update gate: how much of the new candidate state to blend in versus keeping the old hidden state.</Variable>
+    <Variable>**$r_t$** — the reset gate: how much of the previous hidden state the candidate is allowed to see.</Variable>
+    <Variable>**$x_t$** — the input at time step $t$.</Variable>
+    <Variable>**$h_{t-1}$** — the hidden state carried over from the previous time step.</Variable>
+  </Variables>
+
   $$
   \tilde{h}_t = \tanh\big(W x_t + U(r_t \odot h_{t-1}) + b\big), \qquad h_t = (1-z_t)\,h_{t-1} + z_t\,\tilde{h}_t
   $$
+
+  <Variables>
+    <Variable>**$\tilde{h}_t$** — the candidate hidden state: a fresh proposal for the new state, computed from the current input and the (possibly reset) previous state.</Variable>
+    <Variable>**$h_t$** — the new hidden state: a blend of the old state and the candidate, weighted by the update gate.</Variable>
+  </Variables>
 
   The **update gate** $z_t$ plays the LSTM's forget gate and input gate at once: it's a single dial between "keep $h_{t-1}$ exactly" ($z_t{\approx}0$) and "replace it with the new candidate" ($z_t{\approx}1$). The **reset gate** $r_t$ controls how much of the old state the candidate itself is allowed to see before being blended in.
 </Formalize>
