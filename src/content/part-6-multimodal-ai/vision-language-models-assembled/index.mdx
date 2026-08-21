@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, VlmCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, VlmCheckpoint } from "./Demos";
   $$
   \text{context} = \sum_i \text{softmax}\!\left(\frac{q \cdot k_i}{\sqrt{d}}\right)_i k_i, \qquad \text{answer} = \underset{a}{\arg\min}\; \lVert \text{context} - a \rVert
   $$
+
+  <Variables>
+    <Variable>**$q$** — the query: the embedding of the question being asked about the image.</Variable>
+    <Variable>**$k_i$** — the key vector for image patch $i$, the same cross-attention mechanism from Chapter 3.</Variable>
+    <Variable>**$d$** — the dimensionality used to rescale the raw attention scores.</Variable>
+    <Variable>**$\text{context}$** — the blended vector cross-attention produces, summarizing where the query looked.</Variable>
+    <Variable>**$a$** — one candidate answer prototype from a small set of possible answers.</Variable>
+    <Variable>**$\text{answer}$** — the answer prototype nearest to the context vector, chosen by nearest-neighbor search.</Variable>
+  </Variables>
 
   Cross-attention decides *where to look*; nearest-neighbor decides *what to call it*. Neither step knows about the other's internals — the context vector is just a point in space, and the nearest-neighbor search doesn't care how that point was produced.
 </Formalize>
