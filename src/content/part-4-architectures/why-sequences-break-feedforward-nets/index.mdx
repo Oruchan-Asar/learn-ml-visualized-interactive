@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SequenceOrderCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, SequenceOrderCheckpoint } from "./Demos";
   $$
   \hat{y} = \sigma(w_1 p_1 + w_2 p_2), \qquad p = \text{pool}(\text{sequence})
   $$
+
+  <Variables>
+    <Variable>**$\hat{y}$** — the network's predicted output.</Variable>
+    <Variable>**$\sigma$** — the sigmoid function, squashing the result into a value between $0$ and $1$.</Variable>
+    <Variable>**$w_1, w_2$** — the two learned weights of the dense layer.</Variable>
+    <Variable>**$p_1, p_2$** — the two components of the pooled vector.</Variable>
+    <Variable>**$p = \text{pool}(\text{sequence})$** — the fixed-size vector produced by summing (pooling) the sequence's tokens together.</Variable>
+  </Variables>
 
   Since $p$ is identical for both sequences, $\hat{y}$ is identical for both — for *every* choice of $w_1, w_2$. No amount of training can make this network output two different things for two inputs it has already made indistinguishable.
 </Formalize>
