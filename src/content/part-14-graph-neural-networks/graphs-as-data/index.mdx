@@ -1,0 +1,66 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DegreeCheckpoint } from "./Demos";
+
+<Hook>
+  Part IV's convolution slides a fixed 3×3 window over an image, because every pixel has exactly 8
+  neighbors in the same fixed arrangement. A social network, a molecule, a road map — none of that holds.
+  What replaces "neighbor" when there's no grid at all?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click any node. Its neighbors light up — and notice they're not the same *number* of neighbors every
+  time. Some nodes connect to three others, some to just one. There's no fixed window size that could
+  ever slide over this.
+</Intuition>
+
+<Formalize>
+  A **graph** is just a set of **nodes** (things) and **edges** (connections between them). The only
+  structure a node has is *which other nodes it touches* — its **neighborhood**, $\mathcal{N}(v)$ — and
+  *how many*, its **degree**. The whole graph can be written as an **adjacency matrix** $A$, where
+  $A_{ij}=1$ if nodes $i$ and $j$ share an edge and $0$ otherwise. $A$ is symmetric (an edge goes both
+  ways) with a zero diagonal (no node is its own neighbor), and row $i$'s sum is exactly node $i$'s degree.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Click node 1 or node 3 — both hubs with degree 3 — then click a leaf like node 4 or 5, with degree 1.
+  Whatever comes next (message passing, attention, pooling) has to work correctly for *both* of these at
+  once, with no assumption about how many neighbors show up.
+</Play>
+
+<WorkedExample>
+  For this graph — a triangle $\{0,1,2\}$ fused to a two-node tail $\{4,5\}$ through hub node $3$:
+
+  <Steps>
+    <Step label="Read off the neighborhoods by hand">
+      $\mathcal{N}(0)=\{1,2\}$, $\mathcal{N}(1)=\{0,2,3\}$, $\mathcal{N}(2)=\{0,1\}$,
+      $\mathcal{N}(3)=\{1,4,5\}$, $\mathcal{N}(4)=\{3\}$, $\mathcal{N}(5)=\{3\}$ — degrees
+      $2,3,2,3,1,1$, none of them equal.
+    </Step>
+    <Step label="Build the adjacency matrix">
+      In node order $0,1,2,3,4,5$: row $0$ is $(0,1,1,0,0,0)$, row $3$ is $(0,1,0,0,1,1)$. Every row sums
+      to that node's degree — row $3$ sums to $3$, matching $|\mathcal{N}(3)|=3$ exactly.
+    </Step>
+    <Step label="Confirm what a grid convolution would get wrong">
+      A 3×3 kernel assumes 8 fixed neighbors, in a fixed spatial layout, for *every* pixel. Node $4$ has
+      one neighbor; node $1$ has three, in no particular spatial order at all — there's no way to write a
+      single fixed-size, fixed-shape kernel that covers both.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DegreeCheckpoint />
+
+<Summary>
+  $$
+  A_{ij} = \begin{cases}1 & \text{if } (i,j)\in\text{edges}\\0 & \text{otherwise}\end{cases}, \qquad \deg(v) = \sum_j A_{vj}
+  $$
+
+  Graphs generalize both the grid (an image is a graph where every node's neighborhood is the same fixed
+  shape) and the sequence (a chain is a graph where every node has at most two neighbors, in order). The
+  next chapters build architectures that work correctly no matter how many neighbors a node has, or how
+  they're arranged — starting with the simplest possible rule: average them.
+</Summary>

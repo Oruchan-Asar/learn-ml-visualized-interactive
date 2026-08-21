@@ -989,7 +989,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Graphs as data",
     blurb: "Turn a handful of dots and lines into an adjacency matrix, and see why a grid convolution has nowhere to slide.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "message-passing-and-gcn",
