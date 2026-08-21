@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AssistantCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,12 @@ import { IntuitionDemo, PlayDemo, AssistantCheckpoint } from "./Demos";
   $$
   \text{audio} \xrightarrow{\text{nearest-neighbor in shared space}} \text{caption} \xrightarrow{\text{selects}} \hat\epsilon(x_t, t, \mathbf{c}) \xrightarrow{\text{reverse diffusion}} \text{generated value}
   $$
+
+  <Variables>
+    <Variable>**$\mathbf{c}$** — the text embedding of whichever caption audio retrieval selected, threaded into the denoiser exactly as in the diffusion chapter.</Variable>
+    <Variable>**$\hat\epsilon(x_t, t, \mathbf{c})$** — the same conditioned noise predictor from the diffusion chapter, now driven by the retrieved caption's embedding.</Variable>
+    <Variable>**$x_t$, $t$** — the noisy diffusion state and current timestep, unchanged from that chapter's process.</Variable>
+  </Variables>
 
   Nothing here is a new mechanism — it's the exact retrieval rule from audio embeddings, feeding the exact conditioning slot from text-conditioned diffusion. A working multimodal system is very often just two or three single-modality mechanisms, connected so one's output becomes the next one's input.
 </Formalize>
