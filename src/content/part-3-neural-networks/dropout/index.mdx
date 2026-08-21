@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DropoutCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, DropoutCheckpoint } from "./Demos";
   $$
   \hat y = \frac{1}{1-p}\sum_{i \,\in\, \text{kept}} v_i h_i
   $$
+
+  <Variables>
+    <Variable>**$\hat y$** — this layer's output after dropout is applied.</Variable>
+    <Variable>**$p$** — the dropout rate: the probability any given neuron is zeroed out.</Variable>
+    <Variable>**$v_i$** — the weight connecting surviving neuron $i$ to the output.</Variable>
+    <Variable>**$h_i$** — surviving neuron $i$'s activation.</Variable>
+  </Variables>
 
   This rescaling isn't arbitrary — it's exactly what keeps the *expected* value of $\hat y$, averaged over every possible random mask, equal to the true undropped output $\sum_i v_i h_i$, for any dropout rate $p$ at all.
 </Formalize>
