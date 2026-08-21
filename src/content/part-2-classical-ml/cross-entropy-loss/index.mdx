@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CrossEntropyCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,12 @@ import { IntuitionDemo, PlayDemo, CrossEntropyCheckpoint } from "./Demos";
   $$
   L = -\big[y\log p + (1-y)\log(1-p)\big]
   $$
+
+  <Variables>
+    <Variable>**$L$** — the cross-entropy loss for one example.</Variable>
+    <Variable>**$y$** — the true label, exactly $0$ or $1$.</Variable>
+    <Variable>**$p$** — the model's predicted probability that the example is positive.</Variable>
+  </Variables>
 
   Since $y$ is exactly 0 or 1, only one of the two terms is ever active. A probability approaching 0 for the *correct* answer sends $\log p$ toward $-\infty$ — and the leading minus sign turns that into a loss with no ceiling at all.
 </Formalize>
