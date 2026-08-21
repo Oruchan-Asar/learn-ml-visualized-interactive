@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
   $$
   x_{t-1} = \frac{x_t - \sqrt{\beta_t}\,\hat\epsilon(x_t, t, \mathbf{c})}{\sqrt{\alpha_t}}
   $$
+
+  <Variables>
+    <Variable>**$x_t$** — the noisy value at diffusion step $t$.</Variable>
+    <Variable>**$x_{t-1}$** — the slightly-less-noisy value this reverse step produces.</Variable>
+    <Variable>**$t$** — the current diffusion timestep.</Variable>
+    <Variable>**$\alpha_t$, $\beta_t$** — the same noise-schedule coefficients from the earlier diffusion chapter, controlling how much signal versus noise remains at step $t$.</Variable>
+    <Variable>**$\hat\epsilon(x_t, t, \mathbf{c})$** — the denoiser's predicted noise, now taking the caption embedding $\mathbf{c}$ as an extra input.</Variable>
+    <Variable>**$\mathbf{c}$** — the text embedding of the caption being generated toward — the one new ingredient this chapter adds.</Variable>
+  </Variables>
 
   The only addition is $\mathbf{c}$ — a text embedding fed into the denoiser alongside $x_t$ and $t$. A denoiser trained on captioned images learns to predict *different* noise, at the *same* $(x_t, t)$, depending on $\mathbf{c}$ — which means the same starting noise unrolls into a different final image for every different caption.
 </Formalize>
