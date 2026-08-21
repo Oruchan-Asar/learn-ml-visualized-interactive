@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, MoECheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,16 @@ import { IntuitionDemo, PlayDemo, MoECheckpoint } from "./Demos";
   $$
   y = \sum_{i \in \text{top-}K(\text{router}(x))} \frac{p_i}{\sum_{j \in \text{top-}K} p_j} \cdot \text{Expert}_i(x)
   $$
+
+  <Variables>
+    <Variable>**$y$** — the mixture-of-experts layer's output for this input.</Variable>
+    <Variable>**$x$** — the input token or vector being routed.</Variable>
+    <Variable>**$K$** — the number of experts kept per token (top-$K$ routing).</Variable>
+    <Variable>**$\text{router}(x)$** — the router's raw score for each expert, given input $x$.</Variable>
+    <Variable>**$p_i$** — the router's (softmax) score for expert $i$, before renormalizing over just the selected top-$K$.</Variable>
+    <Variable>**$i, j$** — indices ranging over experts, restricted to the top-$K$ selected ones.</Variable>
+    <Variable>**$\text{Expert}_i(x)$** — the output of the $i$-th expert sub-network applied to $x$.</Variable>
+  </Variables>
 
   Every expert outside the top $K$ contributes exactly zero — not a small weight, but literally never computed. A model can have far more total parameters than a dense one while running only a fraction of them per token.
 </Formalize>
