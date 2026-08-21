@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, MdpCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, MdpCheckpoint } from "./Demos";
   $$
   V^\pi(s) = R(s, \pi(s)) + \gamma\, V^\pi\big(P(s,\pi(s))\big)
   $$
+
+  <Variables>
+    <Variable>**$V^\pi(s)$** — the value of state $s$ under policy $\pi$: its expected discounted future reward.</Variable>
+    <Variable>**$s$** — the current state, one of the situations the agent can be in.</Variable>
+    <Variable>**$\pi(s)$** — the policy: which action it prescribes from state $s$.</Variable>
+    <Variable>**$R(s, \pi(s))$** — the reward function: the immediate reward for taking that action in that state.</Variable>
+    <Variable>**$\gamma$** — the discount factor, shrinking the value of reward that takes longer to arrive.</Variable>
+    <Variable>**$P(s,\pi(s))$** — the transition rule: the state landed in after taking that action.</Variable>
+  </Variables>
 
   This is the exact same idea as Part I's chain rule — the value of *right now* depends on the value of *whatever comes next* — just unrolled over an action-dependent sequence of states instead of a fixed chain of functions.
 </Formalize>
