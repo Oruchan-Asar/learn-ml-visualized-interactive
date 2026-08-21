@@ -1,0 +1,58 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ICLCheckpoint } from "./Demos";
+
+<Hook>
+  Every chapter in this course has changed a model's behavior by changing its weights — gradient descent, fine-tuning, LoRA, all of it. What if you could change what a model does without touching a single weight, just by changing what you show it first?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A handful of demonstrated (input, output) pairs, and a new query. The query attends to the demonstrations by how close their inputs are to its own — exactly Part IV's attention mechanism — and blends their outputs accordingly. Swap the demonstrations, and the same frozen mechanism gives a different answer.
+</Intuition>
+
+<Formalize>
+  **In-context learning** treats the demonstrations in a prompt as an implicit, tiny training set, processed entirely within a single forward pass — no gradient step, no weight update:
+
+  $$
+  \hat{y}(x_q) = \sum_i \frac{K(x_q, x_i)}{\sum_j K(x_q, x_j)} \cdot y_i, \qquad K(x_q, x_i) = \exp\!\left(-\frac{(x_q - x_i)^2}{2\sigma^2}\right)
+  $$
+
+  This is a kernel-regression view of what attention over demonstrations computes: weight each example by similarity to the query, then blend their answers. The weights depend only on the *inputs* $x_i$ — completely independent of what pattern the outputs $y_i$ happen to encode.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Both prompts share identical demonstration inputs ($1, 2, 3$), so both produce the *exact same* attention weights for the same query. The only thing that differs is which outputs were demonstrated — and that alone flips the sign of the final answer.
+</Play>
+
+<WorkedExample>
+  Query $x_q = 2.5$, two different sets of demonstrations at the same three input values:
+
+  <Steps>
+    <Step label="The weights come from the inputs alone">
+      Both prompts use $x \in \{1, 2, 3\}$, so both produce weights $\approx[0.155, 0.422, 0.422]$ — identical,
+      because the kernel only ever looks at how far $x_q$ is from each $x_i$.
+    </Step>
+    <Step label="'Double' demonstrations blend toward roughly double">
+      With $y = \{2, 4, 6\}$ demonstrated, the weighted blend gives $\approx4.534$ — close to the true doubled
+      value of $5$, though not exact, since a weighted average can only interpolate, not perfectly extrapolate a
+      slope.
+    </Step>
+    <Step label="'Negate' demonstrations, same weights, opposite answer">
+      With $y = \{-1, -2, -3\}$ demonstrated instead, the identical weights now blend to $\approx-2.267$ — close
+      to the true negated value of $-2.5$, and of the opposite sign entirely from the "double" case.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ICLCheckpoint />
+
+<Summary>
+  $$
+  \hat y(x_q) = \sum_i w_i(x_q) \cdot y_i \qquad\text{— same } w_i\text{, different } y_i\text{, different answer}
+  $$
+
+  Nothing about the model changed between the two prompts — same weights, same attention mechanism, same query. The entire behavior change came from what was placed in the context window. That's the practical power of prompting: a frozen, already-trained model can be steered toward wildly different behaviors purely through what it's shown, which is why so much of modern LLM engineering happens at the prompt level rather than through retraining. The next chapter turns to what happens after a prompt is chosen: making that frozen model actually fast enough to serve.
+</Summary>

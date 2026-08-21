@@ -938,7 +938,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Prompting & in-context learning",
     blurb: "Change nothing but the input, and watch a frozen model's answer change anyway.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "inference-optimization-and-deployment",
