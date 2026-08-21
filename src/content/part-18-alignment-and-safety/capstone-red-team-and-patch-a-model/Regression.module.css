@@ -1,0 +1,24 @@
+.trace {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 14px;
+}
+.trace p {
+  margin: 0;
+}
+
+.pass {
+  color: var(--accent2-ink);
+  font-weight: 600;
+}
+
+.fail {
+  color: #b34437;
+  font-weight: 600;
+}

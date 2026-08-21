@@ -1,0 +1,74 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RedTeamCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 4 found a request that jailbroke a keyword filter. Finding the failure is only step one — the
+  real question is whether a fix actually helps, and "it catches the jailbreak now" is not the same
+  question as "did I just break something else?"
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch filter versions. Every version gets checked against the exact same four-request suite — two
+  restricted, two safe — so "fixed" only ever means one thing: every checkmark, no exceptions.
+</Intuition>
+
+<Formalize>
+  A **regression suite** is a fixed set of known cases — restricted requests that should be blocked, safe
+  requests that should be allowed — checked against *every* version of a filter, not just the one it was
+  designed around:
+
+  $$
+  \text{patch passes} \iff \forall\, r \in \text{suite}:\ \text{filter}(r) = \text{isRestricted}(r)
+  $$
+
+  A patch that fixes the one case a red-teamer found without being checked against everything else can
+  introduce a brand-new failure nobody was looking for. The suite is what turns "I fixed it" into a
+  falsifiable claim.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The original filter fails on the jailbreak alone. The broad patch fixes that one case — and fails on a
+  request that was never a problem. Only the properly-scoped patch has zero failures anywhere in the
+  suite.
+</Play>
+
+<WorkedExample>
+  Two ways to patch the same jailbreak:
+
+  <Steps>
+    <Step label="The broad patch: add the word 'condiment'">
+      Catches "...how the *signature condiment* was made..." — the jailbreak, fixed. But it also flags
+      "What condiments pair well with fries?", a completely unrelated, safe question that merely shares
+      one word with the attack.
+    </Step>
+    <Step label="The scoped patch: add the exact phrase 'signature condiment'">
+      Still catches the jailbreak — the phrase is right there. But "What condiments pair well with
+      fries?" doesn't contain that exact phrase, so it correctly stays allowed.
+    </Step>
+    <Step label="Only the scoped patch survives the full suite">
+      The broad patch traded one failure for another; the scoped patch actually reduced the failure count
+      to zero. Passing the *one* case that motivated the patch was never sufficient evidence either way.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RedTeamCheckpoint />
+
+<Summary>
+  $$
+  \text{patch passes} \iff \forall\, r \in \text{suite}:\ \text{filter}(r) = \text{isRestricted}(r)
+  $$
+
+  Every mechanism this part built shows up in this one loop: an adversarially-reworded request evading a
+  pattern-matcher (Chapters 3–4), a fix scoped by understanding *why* the evasion worked rather than
+  pattern-matching the fix too (the same brittleness the original filter had, one level up), and a
+  regression suite proving the fix generalizes instead of just patching one known failure. Real safety
+  work runs this loop continuously — new jailbreaks get found, patched, and added to an ever-growing
+  suite, which is exactly why the suite from this chapter would keep every one of this part's mechanisms
+  honest going forward. The next part turns from what a model does to how it actually gets built, trained,
+  and kept running once it ships.
+</Summary>

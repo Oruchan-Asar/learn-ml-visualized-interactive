@@ -1225,7 +1225,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 7,
     title: "Red-team and patch a model",
     blurb: "Find a toy model's failure mode on purpose, then fix it and confirm the fix without breaking anything else.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 
