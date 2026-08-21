@@ -1,0 +1,80 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.button {
+  font: inherit;
+  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 14px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.button:hover {
+  border-color: var(--accent);
+}
+.button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.buttonPrimary {
+  composes: button;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper-raised);
+}
+.buttonPrimary:hover {
+  border-color: var(--accent);
+  filter: brightness(1.05);
+}
+
+.presetRow {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.presetButton,
+.presetButtonActive {
+  font: inherit;
+  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 6px 14px;
+  cursor: pointer;
+}
+
+.presetButton {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  color: var(--ink);
+}
+.presetButton:hover {
+  border-color: var(--accent);
+}
+
+.presetButtonActive {
+  composes: presetButton;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  color: var(--paper-raised);
+}

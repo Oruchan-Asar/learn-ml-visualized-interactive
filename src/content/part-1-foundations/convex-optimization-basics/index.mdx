@@ -1,0 +1,74 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ConvexCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 2's gradient descent always found the bottom of its bowl, no matter where it started. Is that
+  luck, or a guarantee — and if it's a guarantee, what exactly does the bowl have to look like?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag along this curve instead. It isn't a single bowl — it's two dips separated by a bump in the
+  middle. Feel where "downhill" points in different directions depending on which side of that bump
+  you're standing on.
+</Intuition>
+
+<Formalize>
+  A function is **convex** if the straight line between any two points on it never dips below the curve:
+
+  $$
+  f(\theta x + (1-\theta)y) \leq \theta f(x) + (1-\theta)f(y), \qquad \theta \in [0,1]
+  $$
+
+  Equivalently, in one dimension: $f''(x) \geq 0$ everywhere. Convexity is the actual reason gradient
+  descent's guarantee holds — **for a convex function, every local minimum is automatically the global
+  minimum**, so there's nowhere else downhill could lead. A **non-convex** function has no such guarantee:
+  it can have several local minima, and which one gradient descent finds depends entirely on where it starts.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch to the convex bowl and take steps from anywhere — it always lands in the same place. Switch to
+  the double well, reset, and step from a starting point just left of the bump, then just right of it.
+  Same algorithm, same learning rate, two completely different answers.
+</Play>
+
+<WorkedExample>
+  Compare $f(x)=x^2$ (a bowl) against $g(x) = x^4 - 4x^2$ (a double well):
+
+  <Steps>
+    <Step label="Check convexity with Jensen's inequality">
+      For the bowl, between $x=-1$ and $x=1$ (so $\theta=0.5$): the midpoint's value is $f(0)=0$, and the
+      average of the endpoints is $0.5(1)+0.5(1)=1$. Since $0 \leq 1$, convexity holds here — and it holds
+      everywhere, since $f''(x)=2>0$ always.
+    </Step>
+    <Step label="The double well fails the same test">
+      Its two global minima sit at $x=\pm\sqrt2$, both equal to $-4$ (found by solving
+      $g'(x)=4x^3-8x=0 \Rightarrow x=0,\pm\sqrt2$, then $g''(x)=12x^2-8$ confirms $x=0$ is a local *max*
+      and $x=\pm\sqrt2$ are minima). Between those two minima ($\theta=0.5$): the midpoint's value is
+      $g(0)=0$, but the average of the endpoints is $0.5(-4)+0.5(-4)=-4$. Since $0 > -4$, Jensen's
+      inequality is violated — $g$ is not convex, confirmed by the same algebra that found its two minima.
+    </Step>
+    <Step label="Same algorithm, opposite outcomes">
+      Gradient descent from $x=-0.3$ (lr $=0.05$, 40 steps) converges to $x\approx-1.4142$; from
+      $x=+0.3$, it converges to $x\approx+1.4142$ — the *other* minimum, despite the two starting points
+      being only $0.6$ apart. Convexity is precisely what rules this out.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ConvexCheckpoint />
+
+<Summary>
+  $$
+  f(\theta x+(1-\theta)y) \leq \theta f(x)+(1-\theta)f(y) \quad\Longleftrightarrow\quad \text{every local min is the global min}
+  $$
+
+  Convexity is the single assumption that turns "gradient descent finds *a* minimum" into "gradient
+  descent finds *the* minimum." Most of classical ML's clean optimization guarantees — linear and
+  logistic regression's loss, SVM's margin problem, ridge regression's closed form — lean on exactly this
+  property. Neural network loss landscapes almost never have it, which is why Part III's loss-landscapes
+  chapter has to make a very different kind of peace with local minima and saddle points instead.
+</Summary>

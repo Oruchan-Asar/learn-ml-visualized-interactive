@@ -116,8 +116,8 @@ export const CURRICULUM: ChapterMeta[] = [
     part: "Part I — Foundations",
     chapterNumber: 12,
     title: "Convex optimization basics",
-    blurb: "Bend a bowl into a saddle and watch gradient descent's one guarantee — a single global minimum — quietly disappear.",
-    status: "planned",
+    blurb: "Split a bowl into a double well and watch gradient descent's one guarantee — a single global minimum — quietly disappear.",
+    status: "shipped",
   },
   {
     slug: "capstone-two-parameter-descent",
