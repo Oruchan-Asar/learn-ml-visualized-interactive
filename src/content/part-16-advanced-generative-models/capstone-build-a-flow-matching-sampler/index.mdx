@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SamplerCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,6 +22,13 @@ import { IntuitionDemo, PlayDemo, SamplerCheckpoint } from "./Demos";
   $$
   \bar v = \frac{1}{N}\sum_{i=1}^N (x_1^{(i)} - x_0^{(i)})
   $$
+
+  <Variables>
+    <Variable>**$\bar v$** — the single constant velocity value being fit, applied identically at every point and every time.</Variable>
+    <Variable>**$N$** — the number of training pairs.</Variable>
+    <Variable>**$x_0^{(i)}$** — the noise sample from the $i$-th training pair.</Variable>
+    <Variable>**$x_1^{(i)}$** — the data sample from the $i$-th training pair.</Variable>
+  </Variables>
 
   This is the smallest possible flow-matching model: no dependence on $x$ or $t$ at all, just one number.
   Real flow-matching networks condition on both, so different starting points and different times along
