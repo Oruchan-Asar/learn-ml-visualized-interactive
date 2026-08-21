@@ -1,8 +1,8 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AnchorsCheckpoint } from "./Demos";
 
 <Hook>
-  LIME fits a straight line near one point and hopes it's still roughly right a little further away. What if, instead of hoping, you could state a simple rule and *guarantee* it holds — as long as you're honest about how much of the input space it actually covers?
+  **LIME** — short for **Local Interpretable Model-agnostic Explanations** — fits a straight line near one point and hopes it's still roughly right a little further away. What if, instead of hoping, you could state a simple rule and *guarantee* it holds — as long as you're honest about how much of the input space it actually covers?
 </Hook>
 
 <Intuition>
@@ -18,9 +18,21 @@ import { IntuitionDemo, PlayDemo, AnchorsCheckpoint } from "./Demos";
   \text{precision}(A) = \frac{|\{x : A(x) \text{ holds and } f(x) = f(\text{instance})\}|}{|\{x : A(x) \text{ holds}\}|} \geq \tau
   $$
 
+  <Variables>
+    <Variable>**$A$** — the anchor: a rule (a conjunction of conditions on the input) being evaluated.</Variable>
+    <Variable>**$\text{precision}(A)$** — the fraction of points satisfying the rule that get the same prediction as the instance being explained.</Variable>
+    <Variable>**$x$** — a point in the input space being checked against the rule.</Variable>
+    <Variable>**instance** — the specific input whose prediction is being explained (i.e. $f(\text{instance})$).</Variable>
+    <Variable>**$\tau$** — the minimum precision the anchor must clear, commonly $0.95$.</Variable>
+  </Variables>
+
   $$
   \text{coverage}(A) = \frac{|\{x : A(x) \text{ holds}\}|}{|\text{all } x|}
   $$
+
+  <Variables>
+    <Variable>**$\text{coverage}(A)$** — the fraction of the entire input space that satisfies the rule, regardless of prediction.</Variable>
+  </Variables>
 
   Anchors search for the *smallest* rule clearing the precision bar — trading coverage for precision only as far as actually necessary, never further.
 </Formalize>
