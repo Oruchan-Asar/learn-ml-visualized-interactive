@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, MomentumCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,16 @@ import { IntuitionDemo, PlayDemo, MomentumCheckpoint } from "./Demos";
   $$
   v' = \beta v + \nabla f(\theta), \qquad \theta' = \theta - \eta v'
   $$
+
+  <Variables>
+    <Variable>**$v$** — the old velocity, carried over from the previous step.</Variable>
+    <Variable>**$v'$** — the new velocity: the old velocity blended with the current gradient.</Variable>
+    <Variable>**$\beta$** — the momentum coefficient: how much of the old velocity survives each step.</Variable>
+    <Variable>**$\nabla f(\theta)$** — the current gradient of the function being minimized.</Variable>
+    <Variable>**$\theta$** — the parameters before this step.</Variable>
+    <Variable>**$\theta'$** — the updated parameters after this step.</Variable>
+    <Variable>**$\eta$** — the learning rate.</Variable>
+  </Variables>
 
   $\beta \in [0,1)$ is how much of the old velocity survives each step. At $\beta = 0$, $v'$ is always just the current gradient — this is exactly plain gradient descent. Push $\beta$ up and the point starts remembering where it's been heading.
 </Formalize>
