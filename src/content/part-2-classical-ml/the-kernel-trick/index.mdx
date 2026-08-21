@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, KernelCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,11 @@ import { IntuitionDemo, PlayDemo, KernelCheckpoint } from "./Demos";
   $$
   z = x^2 + y^2
   $$
+
+  <Variables>
+    <Variable>**$z$** — the new lifted feature: a point's squared distance from the origin.</Variable>
+    <Variable>**$x$, $y$** — the point's original two coordinates.</Variable>
+  </Variables>
 
   Points near the center now share one small value of $z$; points on the outer ring share one large value, *no matter which direction they're in*. The two classes were tangled by angle but separated by radius all along — $z$ just throws away the angle and keeps the radius.
 </Formalize>
@@ -50,5 +55,5 @@ import { IntuitionDemo, PlayDemo, KernelCheckpoint } from "./Demos";
   z = x^2 + y^2
   $$
 
-  This is the kernel trick's whole idea: a problem that's hopeless in the original features can become trivial in a cleverly chosen new one. Real kernels (polynomial, RBF) do this implicitly, for far higher-dimensional lifts than one extra coordinate — but the shape of the win is exactly what you just saw: unseparable becomes separable, and the same one-threshold or widest-street machinery from the last two chapters still does the rest.
+  This is the kernel trick's whole idea: a problem that's hopeless in the original features can become trivial in a cleverly chosen new one. Real kernels (polynomial, **RBF** — short for **Radial Basis Function**) do this implicitly, for far higher-dimensional lifts than one extra coordinate — but the shape of the win is exactly what you just saw: unseparable becomes separable, and the same one-threshold or widest-street machinery from the last two chapters still does the rest.
 </Summary>
