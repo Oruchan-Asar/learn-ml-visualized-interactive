@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ReproCheckpoint } from "./Demos";
 
 <Hook>
@@ -21,6 +21,15 @@ import { IntuitionDemo, PlayDemo, ReproCheckpoint } from "./Demos";
   $$
   w_{\text{final}} = f(\;\underbrace{\text{lr}, \text{gradients}, w_0}_{\text{usually logged}},\ \underbrace{\text{seed}}_{\text{often not}}\;)
   $$
+
+  <Variables>
+    <Variable>**$w_{\text{final}}$** — the weight a training run actually ends up with.</Variable>
+    <Variable>**$f$** — the training process itself, treated as a function of everything that feeds into it.</Variable>
+    <Variable>**$\text{lr}$** — the learning rate.</Variable>
+    <Variable>**$\text{gradients}$** — the sequence of gradients computed during training.</Variable>
+    <Variable>**$w_0$** — the starting weight, before any training steps.</Variable>
+    <Variable>**$\text{seed}$** — the random seed governing every source of stochasticity in the run.</Variable>
+  </Variables>
 
   A **reproducibility** claim is only as strong as the set of inputs it actually pins down. Log the
   hyperparameters but not the seed, and "same config" silently means "one of many possible outcomes" instead
