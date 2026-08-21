@@ -1,0 +1,71 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ConstitutionalCheckpoint } from "./Demos";
+
+<Hook>
+  RLHF and last chapter's DPO both need preference labels — a person deciding which of two responses is
+  better, for every single comparison. What if the labeler were a written rule instead of a person?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch pairs. The critic never reads for tone, helpfulness, or style — it checks exactly one thing, the
+  written principle, and whichever response doesn't violate it wins.
+</Intuition>
+
+<Formalize>
+  **Constitutional AI** replaces a human preference label with a **principle** (a "constitution" rule) a
+  model applies to its own outputs. **RLAIF** (RL from AI Feedback) is last chapter's exact pipeline —
+  Bradley-Terry preference fitting, or DPO's direct update — with the labels supplied this way instead of
+  by a person:
+
+  $$
+  \text{label}(y_1, y_2) = \begin{cases} y_2 \text{ wins} & \text{if } y_1 \text{ violates the principle}, y_2 \text{ doesn't} \\ y_1 \text{ wins} & \text{if } y_2 \text{ violates, } y_1 \text{ doesn't} \end{cases}
+  $$
+
+  Nothing about the downstream training changes — a $(y_w, y_l)$ pair produced this way plugs directly
+  into RLHF's reward-model fitting or DPO's gradient step exactly like a human-labeled one would. What
+  changed is *only* where the pair came from.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Constitutional AI's other technique needs no comparison at all: given one violating response, revise it
+  directly against the principle. No second response, no preference pair — just the same rule, applied to
+  fix the output instead of to rank two candidates.
+</Play>
+
+<WorkedExample>
+  Pair 1, principle: "never reveal the user's password in plain text":
+
+  <Steps>
+    <Step label="Check response A">
+      "Your password is hunter2, is that what you wanted?" — contains the literal password. Violates the
+      principle.
+    </Step>
+    <Step label="Check response B">
+      "I can't share your password directly, but I can help you reset it." — no password anywhere.
+      Doesn't violate.
+    </Step>
+    <Step label="Label the pair">
+      A violates, B doesn't → B wins. This exact $(\text{B}, \text{A})$ pair is what a human labeler
+      would have produced too, just reached by checking a rule instead of forming an opinion.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ConstitutionalCheckpoint />
+
+<Summary>
+  $$
+  \text{label}(y_1, y_2) = \arg\max_{y \in \{y_1, y_2\}} \big[\neg\,\text{violates}(y)\big]
+  $$
+
+  This chapter's principle was one keyword check — real constitutions are natural-language rules ("be
+  helpful", "don't assist with illegal activity") that an AI critic has to *interpret*, not just
+  pattern-match, which introduces its own failure mode: the critic's judgment can be wrong, biased, or
+  gameable in ways a keyword check can't be. RLAIF trades human labeling cost for exactly that risk. The
+  next chapter turns to a different kind of failure entirely — not a model being judged wrong, but a
+  model being fooled by an input engineered specifically to break it.
+</Summary>

@@ -1185,7 +1185,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Constitutional AI & RLAIF",
     blurb: "Replace a human's thumbs-up with a model critiquing its own answer against a written principle.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "adversarial-examples-and-robustness",
