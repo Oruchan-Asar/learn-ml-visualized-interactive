@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, FairnessCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,6 +22,13 @@ import { IntuitionDemo, PlayDemo, FairnessCheckpoint } from "./Demos";
   $$
   \text{demographic parity: } \frac{TP+FP}{N}, \qquad \text{equal opportunity: } \frac{TP}{TP+FN}, \qquad \text{predictive parity: } \frac{TP}{TP+FP}
   $$
+
+  <Variables>
+    <Variable>**$TP$** — true positives: people the classifier correctly predicted positive, within that group.</Variable>
+    <Variable>**$FP$** — false positives: people the classifier incorrectly predicted positive, within that group.</Variable>
+    <Variable>**$FN$** — false negatives: actual positives the classifier missed, within that group.</Variable>
+    <Variable>**$N$** — the total number of people in that group.</Variable>
+  </Variables>
 
   When the two groups have **different base rates** — different actual fractions of positives — a
   classifier that's calibrated the same way for both groups (equal opportunity, equal precision) will
