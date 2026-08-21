@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, KLCheckpoint } from "./Demos";
 
 <Hook>
@@ -14,12 +14,19 @@ import { IntuitionDemo, PlayDemo, KLCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  The **KL divergence** measures the extra bits it costs to describe data from $P$ using a code built for
-  $Q$ instead of $P$'s own optimal code:
+  The **KL divergence** — short for **Kullback–Leibler divergence** — measures the extra bits it costs to
+  describe data from $P$ using a code built for $Q$ instead of $P$'s own optimal code:
 
   $$
   D_{KL}(P \Vert Q) = \sum_x P(x) \log_2 \frac{P(x)}{Q(x)}
   $$
+
+  <Variables>
+    <Variable>**$D_{KL}(P\Vert Q)$** — the divergence itself, in bits: how many extra bits $Q$'s code wastes on data actually drawn from $P$.</Variable>
+    <Variable>**$P(x)$** — the true probability of outcome $x$.</Variable>
+    <Variable>**$Q(x)$** — the model's (or approximate) probability of that same outcome $x$.</Variable>
+    <Variable>**$x$** — one outcome, ranging over everything either distribution assigns probability to.</Variable>
+  </Variables>
 
   It's always $\geq 0$, and exactly $0$ only when $P=Q$ everywhere. But it is **not symmetric** —
   $D_{KL}(P\Vert Q) \neq D_{KL}(Q\Vert P)$ in general, so it isn't a true distance. Related: **cross-entropy**
