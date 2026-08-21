@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, PoolingCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, PoolingCheckpoint } from "./Demos";
   $$
   \text{maxpool}(r,c) = \max_{i,j} \ \text{feature}(r{\cdot}s+i,\ c{\cdot}s+j)
   $$
+
+  <Variables>
+    <Variable>**$\text{maxpool}(r,c)$** — the pooled output value at row $r$, column $c$.</Variable>
+    <Variable>**$\text{feature}(\cdot)$** — the input feature map produced by the convolution layer.</Variable>
+    <Variable>**$s$** — the stride: how many positions the window shifts between neighboring windows.</Variable>
+    <Variable>**$r, c$** — the row and column of the output (pooled) position.</Variable>
+    <Variable>**$i, j$** — the row and column offsets ranging over the pooling window.</Variable>
+  </Variables>
 
   where $s$ is the stride. A $2\times2$ window with stride $2$ turns this $4\times4$ feature map into a $2\times2$ one — a quarter of the values, chosen so nothing important gets thrown away.
 </Formalize>
