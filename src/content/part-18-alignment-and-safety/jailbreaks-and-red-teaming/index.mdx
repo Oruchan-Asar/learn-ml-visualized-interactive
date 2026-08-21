@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, JailbreakCheckpoint } from "./Demos";
 
 <Hook>
@@ -20,6 +20,12 @@ import { IntuitionDemo, PlayDemo, JailbreakCheckpoint } from "./Demos";
   $$
   \text{jailbreak succeeds} \iff \text{isRestrictedIntent}(x) \ \land\ \neg\,\text{keywordFilter}(x)
   $$
+
+  <Variables>
+    <Variable>**$x$** — the request being evaluated.</Variable>
+    <Variable>**$\text{isRestrictedIntent}(x)$** — true when the request's underlying intent is something the filter is meant to catch, no matter how it's phrased.</Variable>
+    <Variable>**$\text{keywordFilter}(x)$** — true when the request contains one of the filter's fixed trigger phrases.</Variable>
+  </Variables>
 
   Nothing about the *intent* changed between a direct request and an indirect one asking for the same
   thing — only the surface form did. A filter built to pattern-match surface form has no way to
