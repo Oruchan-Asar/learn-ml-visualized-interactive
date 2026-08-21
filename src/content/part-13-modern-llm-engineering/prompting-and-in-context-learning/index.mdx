@@ -1,8 +1,8 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ICLCheckpoint } from "./Demos";
 
 <Hook>
-  Every chapter in this course has changed a model's behavior by changing its weights — gradient descent, fine-tuning, LoRA, all of it. What if you could change what a model does without touching a single weight, just by changing what you show it first?
+  Every chapter in this course has changed a model's behavior by changing its weights — gradient descent, fine-tuning, **LoRA** (short for **Low-Rank Adaptation**), all of it. What if you could change what a model does without touching a single weight, just by changing what you show it first?
 </Hook>
 
 <Intuition>
@@ -17,6 +17,16 @@ import { IntuitionDemo, PlayDemo, ICLCheckpoint } from "./Demos";
   $$
   \hat{y}(x_q) = \sum_i \frac{K(x_q, x_i)}{\sum_j K(x_q, x_j)} \cdot y_i, \qquad K(x_q, x_i) = \exp\!\left(-\frac{(x_q - x_i)^2}{2\sigma^2}\right)
   $$
+
+  <Variables>
+    <Variable>**$x_q$** — the query input: the thing actually being asked about.</Variable>
+    <Variable>**$x_i$** — the input of the $i$-th demonstration example shown in the prompt.</Variable>
+    <Variable>**$y_i$** — the output demonstrated alongside $x_i$.</Variable>
+    <Variable>**$\hat{y}(x_q)$** — the model's predicted output for the query, blended from the demonstrations.</Variable>
+    <Variable>**$K(x_q, x_i)$** — a similarity kernel: how close the query is to a given demonstration's input.</Variable>
+    <Variable>**$\sigma$** — the kernel's bandwidth, controlling how fast similarity falls off with distance.</Variable>
+    <Variable>**$i, j$** — indices ranging over the demonstration examples in the prompt.</Variable>
+  </Variables>
 
   This is a kernel-regression view of what attention over demonstrations computes: weight each example by similarity to the query, then blend their answers. The weights depend only on the *inputs* $x_i$ — completely independent of what pattern the outputs $y_i$ happen to encode.
 </Formalize>
