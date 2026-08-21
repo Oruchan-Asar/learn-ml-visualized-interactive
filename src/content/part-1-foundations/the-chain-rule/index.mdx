@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ChainRuleCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, ChainRuleCheckpoint } from "./Demos";
   $$
   \frac{dh}{dx} = \frac{dg}{du} \cdot \frac{du}{dx}
   $$
+
+  <Variables>
+    <Variable>**$h(x)$** — the whole composition, $h(x) = g(f(x))$.</Variable>
+    <Variable>**$u$** — the inner value, $u = f(x)$, that feeds into $g$.</Variable>
+    <Variable>**$\frac{dg}{du}$** — the outer function's slope, evaluated at the inner value $u$.</Variable>
+    <Variable>**$\frac{du}{dx}$** — the inner function's slope with respect to $x$.</Variable>
+  </Variables>
 
   In words: the combined rate of change is the outer function's slope (at the *inner* value $u$) multiplied by the inner function's slope. Two local slopes, multiplied, give the slope of the whole chain.
 </Formalize>
