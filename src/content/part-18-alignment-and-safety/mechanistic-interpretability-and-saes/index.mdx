@@ -1,0 +1,75 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SAECheckpoint } from "./Demos";
+
+<Hook>
+  Part V's explainability methods all asked what a *model's output* depended on. This chapter asks a
+  stranger question: what does a single number *inside* the model — one neuron's activation — actually
+  mean? Sometimes the honest answer is "two unrelated things at once."
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch examples. The raw activation never cleanly isolates "animal" or "finance" in either dimension —
+  both numbers are always nonzero, entangled together. The decoded bars below are what a sparse
+  autoencoder is trained to recover: which concept, and how much of it.
+</Intuition>
+
+<Formalize>
+  **Superposition**: a layer can represent more concepts than it has dimensions by overlapping them,
+  provided they don't all activate strongly at once. A **sparse autoencoder (SAE)** learns to reverse
+  that overlap — an encoder mapping the tangled raw activation to a higher-dimensional, sparse code where
+  (ideally) each dimension means one clean thing:
+
+  $$
+  \text{raw} = M \cdot \text{concepts}, \qquad \text{concepts} = M^{-1} \cdot \text{raw}
+  $$
+
+  This chapter's $M$ is known and exactly invertible, so "training" the SAE is just matrix inversion —
+  real SAEs face a much harder version of this problem: $M$ is unknown, the true concept count is
+  unknown, and the decomposition has to be learned from activations alone, with an explicit sparsity
+  penalty standing in for "most concepts are usually off."
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  "Cat" and "stock" each decode to a clean, single dominant feature. The deliberately ambiguous "catfish
+  stock tip" example decodes to a genuine 40/60 split — not a decoding failure, but an accurate readout
+  of an input that really does carry both concepts at once.
+</Play>
+
+<WorkedExample>
+  Recovering the ambiguous example's concepts from its raw activation $[1.5,\ 2.2]$:
+
+  <Steps>
+    <Step label="The known mixing matrix">
+      $M = \begin{bmatrix} 3 & 0.5 \\ 1 & 3 \end{bmatrix}$, $\det(M) = 3(3) - 0.5(1) = 8.5$.
+    </Step>
+    <Step label="Invert it">
+      $M^{-1} = \frac{1}{8.5}\begin{bmatrix} 3 & -0.5 \\ -1 & 3 \end{bmatrix}$.
+    </Step>
+    <Step label="Apply it to the raw activation">
+      $\text{animal} = \frac{3(1.5) - 0.5(2.2)}{8.5} = \frac{4.5-1.1}{8.5} = 0.4$.
+      $\text{finance} = \frac{-1(1.5) + 3(2.2)}{8.5} = \frac{-1.5+6.6}{8.5} = 0.6$ — exactly the clean
+      concept strengths that produced this raw activation in the first place.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SAECheckpoint />
+
+<Summary>
+  $$
+  \text{concepts} = M^{-1} \cdot \text{raw}
+  $$
+
+  This chapter's exact recovery only works because $M$ was known and invertible — real mechanistic
+  interpretability work (Anthropic's "Toy Models of Superposition" and later SAE research) has neither
+  luxury: the number of true underlying concepts usually exceeds the number of raw dimensions (an
+  overcomplete, not square, mixing), and the SAE has to learn an approximate decomposition from
+  activations alone, validated afterward by checking whether the recovered features actually correspond
+  to something a human can name. This closes the mechanism chapters of this part. The capstone puts
+  everything together: find a toy model's actual failure mode on purpose, then fix it and prove the fix
+  didn't break anything else.
+</Summary>

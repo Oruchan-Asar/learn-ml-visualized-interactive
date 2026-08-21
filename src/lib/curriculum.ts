@@ -1217,7 +1217,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Mechanistic interpretability & sparse autoencoders",
     blurb: "Decompose one tangled neuron's activation into a handful of clean, individually meaningful features.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-red-team-and-patch-a-model",
