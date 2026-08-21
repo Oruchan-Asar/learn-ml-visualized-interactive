@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, InferenceOptCheckpoint } from "./Demos";
 
 <Hook>
@@ -12,11 +12,16 @@ import { IntuitionDemo, PlayDemo, InferenceOptCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  Autoregressive generation attends over every previous token at every step. Without a **KV cache**, step $k$ recomputes all $k$ keys and values from scratch; with one, step $k$ computes just the one new pair and reuses the rest:
+  Autoregressive generation attends over every previous token at every step. Without a **KV cache** (short for **Key-Value cache**), step $k$ recomputes all $k$ keys and values from scratch; with one, step $k$ computes just the one new pair and reuses the rest:
 
   $$
   \text{no cache: } \sum_{k=1}^{n} k = \frac{n(n+1)}{2} \qquad\text{vs}\qquad \text{cache: } \sum_{k=1}^n 1 = n
   $$
+
+  <Variables>
+    <Variable>**$n$** — the total number of tokens generated so far in the sequence.</Variable>
+    <Variable>**$k$** — the generation step (equivalently, the token position being produced).</Variable>
+  </Variables>
 
   **Quantization** attacks a different cost: storing weights at lower numeric precision. A float32 weight (32 bits) rounded to int8 (8 bits) via a fixed scale factor uses a quarter of the memory, at the cost of a small, bounded rounding error per weight.
 </Formalize>
