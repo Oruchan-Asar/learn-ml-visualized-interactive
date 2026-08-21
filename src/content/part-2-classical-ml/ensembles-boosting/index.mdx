@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BoostingCheckpoint } from "./Demos";
 
 <Hook>
@@ -12,11 +12,19 @@ import { IntuitionDemo, PlayDemo, BoostingCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  This is **boosting** (specifically AdaBoost). Each round trains one weak learner — here, the exact single-split "stump" from Chapter 7, but scored by weighted error instead of information gain — then reweights the data before the next round:
+  This is **boosting** (specifically **AdaBoost** — short for **Adaptive Boosting**). Each round trains one weak learner — here, the exact single-split "stump" from Chapter 7, but scored by weighted error instead of information gain — then reweights the data before the next round:
 
   $$
   \alpha_t = \frac{1}{2}\ln\frac{1-\epsilon_t}{\epsilon_t}, \qquad w_i \leftarrow w_i \, e^{-\alpha_t \, y_i \, h_t(x_i)}
   $$
+
+  <Variables>
+    <Variable>**$\alpha_t$** — round $t$'s vote weight in the final combined prediction; a more accurate stump gets a bigger $\alpha_t$.</Variable>
+    <Variable>**$\epsilon_t$** — round $t$'s weighted error rate.</Variable>
+    <Variable>**$w_i$** — point $i$'s current weight, updated after every round.</Variable>
+    <Variable>**$y_i$** — point $i$'s true label.</Variable>
+    <Variable>**$h_t(x_i)$** — round $t$'s stump prediction on point $i$.</Variable>
+  </Variables>
 
   $\epsilon_t$ is round $t$'s weighted error; a more accurate stump gets a bigger $\alpha_t$ (more say in the final vote). The weight update shrinks correctly-classified points and grows misclassified ones — each new stump is trained on data that's been re-tilted toward exactly what's still wrong.
 </Formalize>
