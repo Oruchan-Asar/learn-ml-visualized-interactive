@@ -1,8 +1,8 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AttentionCheckpoint } from "./Demos";
 
 <Hook>
-  Even with gating, an RNN still processes a sequence strictly left to right, folding everything into one hidden state as it goes. Attention throws that constraint out: instead of compressing a sequence into one running summary, keep every token's vector around, and let a query look at all of them at once.
+  Even with gating, an **RNN** — short for **Recurrent Neural Network** — still processes a sequence strictly left to right, folding everything into one hidden state as it goes. Attention throws that constraint out: instead of compressing a sequence into one running summary, keep every token's vector around, and let a query look at all of them at once.
 </Hook>
 
 <Intuition>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, AttentionCheckpoint } from "./Demos";
   $$
   \text{score}_i = \frac{q \cdot k_i}{\sqrt{d}}, \qquad w_i = \text{softmax}(\text{score})_i, \qquad \text{context} = \sum_i w_i\, k_i
   $$
+
+  <Variables>
+    <Variable>**$q$** — the query vector: what's currently "looking," trying to find relevant tokens.</Variable>
+    <Variable>**$k_i$** — the key vector for token $i$, one of the fixed set of tokens being attended to.</Variable>
+    <Variable>**$d$** — the dimensionality of the query and key vectors, used to rescale the dot product.</Variable>
+    <Variable>**$\text{score}_i$** — the raw, scaled similarity between the query and token $i$'s key.</Variable>
+    <Variable>**$w_i$** — the attention weight on token $i$, the softmax-normalized score.</Variable>
+    <Variable>**context** — the weighted blend of all the key vectors: the actual output of attention.</Variable>
+  </Variables>
 
   The $\sqrt{d}$ divides out the fact that dot products grow with dimension $d$ — without it, scores in a high-dimensional model would blow up and softmax would saturate into an almost one-hot distribution regardless of which token actually matches best.
 </Formalize>
