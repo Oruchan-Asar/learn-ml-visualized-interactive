@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, WordEmbeddingCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, WordEmbeddingCheckpoint } from "./Demos";
   $$
   d(a, b) = \sqrt{(a_1-b_1)^2 + (a_2-b_2)^2 + \dots}
   $$
+
+  <Variables>
+    <Variable>**$d(a, b)$** — the Euclidean distance between two word vectors.</Variable>
+    <Variable>**$a, b$** — two word vectors being compared (e.g. the embedding coordinates of two different words).</Variable>
+    <Variable>**$a_1, a_2, \dots$** — the individual coordinate values of vector $a$ along each embedding dimension.</Variable>
+    <Variable>**$b_1, b_2, \dots$** — the individual coordinate values of vector $b$ along each embedding dimension.</Variable>
+  </Variables>
 
   A **nearest-neighbor** search is nothing more than computing this for every other word and keeping the smallest. What makes embeddings powerful isn't the distance formula — it's that a well-trained embedding space arranges words so this simple formula lines up with human judgments of similarity.
 </Formalize>
@@ -53,5 +60,5 @@ import { IntuitionDemo, PlayDemo, WordEmbeddingCheckpoint } from "./Demos";
   \text{king} - \text{man} + \text{woman} \approx \text{queen}
   $$
 
-  This chapter hand-placed the vectors to make the geometry obvious. Real word embeddings (word2vec, GloVe, and the embedding layer inside every modern language model) are *learned* — trained so that words appearing in similar contexts end up nearby, and this king/queen-style arithmetic emerges on its own, unplanned. Before any of that training can happen, though, a sentence first has to be cut into discrete pieces to assign vectors to. That's next: tokenization.
+  This chapter hand-placed the vectors to make the geometry obvious. Real word embeddings (word2vec, **GloVe** — short for **Global Vectors** — and the embedding layer inside every modern language model) are *learned* — trained so that words appearing in similar contexts end up nearby, and this king/queen-style arithmetic emerges on its own, unplanned. Before any of that training can happen, though, a sentence first has to be cut into discrete pieces to assign vectors to. That's next: tokenization.
 </Summary>
