@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BiasVarianceCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, BiasVarianceCheckpoint } from "./Demos";
   $$
   \text{bias}^2 = \big(\mathbb{E}[\hat f(x)] - f(x)\big)^2, \qquad \text{variance} = \mathbb{E}\big[(\hat f(x) - \mathbb{E}[\hat f(x)])^2\big]
   $$
+
+  <Variables>
+    <Variable>**$x$** — a fixed input point, evaluated across many resampled fits.</Variable>
+    <Variable>**$f(x)$** — the true underlying function's value at $x$.</Variable>
+    <Variable>**$\hat f(x)$** — one trained model's prediction at $x$.</Variable>
+    <Variable>**$\mathbb{E}[\hat f(x)]$** — the average prediction at $x$, across many resampled fits.</Variable>
+  </Variables>
 
   Bias is how wrong the *average* fit is — high when the model is too simple to represent the true shape. Variance is how much the fit *swings* from one sample to the next — high when the model is flexible enough to chase noise. Total expected error is bias² + variance (plus noise no model can remove).
 </Formalize>
