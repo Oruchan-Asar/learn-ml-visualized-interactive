@@ -1,0 +1,72 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SSMCheckpoint } from "./Demos";
+
+<Hook>
+  Even last chapter's factored attention still needed a running state built from *every key seen so far*
+  — the state's size didn't grow with $n$, but building it required a full pass over the sequence up
+  front. What if a model never needed to look back at all — just carry one number forward, one token at
+  a time?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click "process next token" a few times. There's no cache, no matrix, no list of past tokens anywhere —
+  just one number, overwritten every step. Whatever happened three tokens ago only survives insofar as
+  it's still baked into that one number.
+</Intuition>
+
+<Formalize>
+  A (linear) **state-space model** updates a hidden state with a plain recurrence and reads its output
+  straight from that state:
+
+  $$
+  h_t = A\,h_{t-1} + B\,x_t, \qquad y_t = C\,h_t
+  $$
+
+  $A$, $B$, $C$ are fixed numbers (in a real model, learned; here, chosen so every value is checkable by
+  hand). $A$ is a **decay** — with $|A|<1$, older inputs' contributions shrink geometrically every step,
+  the same exponential forgetting Part III's vanishing-gradients chapter treated as a bug. Here it's the
+  entire mechanism: the state is *supposed* to fade.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Attention's memory (dashed) grows in lockstep with the sequence — every past token adds one more
+  key-value pair to keep around. The state-space model's memory (bold) doesn't move: one number, whether
+  the sequence is five tokens or five thousand.
+</Play>
+
+<WorkedExample>
+  Running $h_t = 0.5h_{t-1} + x_t$ over the sequence $x = (1,\ {-}1,\ 2)$, starting from $h_0=0$:
+
+  <Steps>
+    <Step label="t = 1">
+      $h_1 = 0.5(0) + 1 = 1$. Output: $y_1 = 2(1) = 2$.
+    </Step>
+    <Step label="t = 2">
+      $h_2 = 0.5(1) + ({-}1) = -0.5$. The first input hasn't vanished — it's still in there, halved.
+    </Step>
+    <Step label="t = 3">
+      $h_3 = 0.5({-}0.5) + 2 = 1.75$. Token 1's contribution is now scaled by $0.5^2=0.25$; token 2's by
+      $0.5$; token 3's by $1$ — every step, everything already in the state ages by one more factor of
+      $A$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SSMCheckpoint />
+
+<Summary>
+  $$
+  h_t = A h_{t-1} + Bx_t, \qquad y_t = Ch_t
+  $$
+
+  One update, one fixed-size state, memory that's flat no matter how long the sequence runs. The tradeoff
+  this chapter doesn't show yet: $A$, $B$, $C$ here are the *same three numbers* at every timestep — the
+  model can't decide to remember one token harder than another, or forget faster when it sees something
+  irrelevant. Real state-space models like Mamba fix exactly that, and it's the next chapter's entire
+  subject: what happens when $A$, $B$, and $C$ are allowed to depend on the current token instead of
+  being fixed constants.
+</Summary>

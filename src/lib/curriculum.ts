@@ -1048,7 +1048,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "State-space models",
     blurb: "Replace attention with a single hidden state that updates once per token, and watch memory cost dislodge from context length.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "selective-state-spaces",
