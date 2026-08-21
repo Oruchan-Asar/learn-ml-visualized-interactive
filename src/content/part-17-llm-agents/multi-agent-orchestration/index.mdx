@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, OrchestrationCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,11 +17,18 @@ import { IntuitionDemo, PlayDemo, OrchestrationCheckpoint } from "./Demos";
 
 <Formalize>
   A **coordinator** routes a task to a **specialized agent**, then hands that agent's output to the next
-  one. The interface between them is usually just JSON — a shape, not a compile-time contract:
+  one. The interface between them is usually just **JSON (JavaScript Object Notation)** — a shape, not a
+  compile-time contract:
 
   $$
   \text{writer}(\text{subject}, \text{fact}) = \texttt{"}\text{subject}\text{ }\text{fact}\texttt{."}
   $$
+
+  <Variables>
+    <Variable>**$\text{writer}$** — the specialized agent that composes the final sentence.</Variable>
+    <Variable>**subject** — the topic string passed into the writer.</Variable>
+    <Variable>**fact** — the plain string of information that's supposed to be passed alone, not wrapped in an object.</Variable>
+  </Variables>
 
   If the coordinator passes an entire `{topic, fact}` object where `fact` was supposed to be a plain
   string, JavaScript (like most dynamically-typed interchange formats) doesn't throw — it silently calls
