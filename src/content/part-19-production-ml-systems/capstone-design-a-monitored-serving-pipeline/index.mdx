@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, PipelineCheckpoint } from "./Demos";
 
 <Hook>
@@ -20,6 +20,14 @@ import { IntuitionDemo, PlayDemo, PipelineCheckpoint } from "./Demos";
   $$
   \underbrace{\text{ingestion}(t)}_{\text{Ch. 1}} \quad \underbrace{\text{accuracy} = \sum_i P(\text{bin}_i)\,a_i}_{\text{Ch. 3}} \quad \underbrace{D_{KL}(P_{\text{train}} \,\|\, P_{\text{live}})}_{\text{Ch. 3}}
   $$
+
+  <Variables>
+    <Variable>**$\text{ingestion}(t)$** — the static test suite's check: does the feature join still return the correct, point-in-time value for a fixed historical label at time $t$?</Variable>
+    <Variable>**$\text{accuracy}$** — the weighted-average accuracy across bins of live traffic, from the model-monitoring chapter.</Variable>
+    <Variable>**$P(\text{bin}_i)$** — the fraction of live inputs falling into bin $i$.</Variable>
+    <Variable>**$a_i$** — the fixed accuracy within bin $i$.</Variable>
+    <Variable>**$D_{KL}(P_{\text{train}} \Vert P_{\text{live}})$** — the drift score: the **KL divergence**, short for **Kullback–Leibler divergence**, between the training and live input distributions.</Variable>
+  </Variables>
 
   A static test suite verifies that code hasn't regressed — the join still returns the right number for a
   fixed historical label, today, tomorrow, forever. It says nothing about what today's *live* traffic looks
