@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ConvexCheckpoint } from "./Demos";
 
 <Hook>
@@ -20,6 +20,12 @@ import { IntuitionDemo, PlayDemo, ConvexCheckpoint } from "./Demos";
   $$
   f(\theta x + (1-\theta)y) \leq \theta f(x) + (1-\theta)f(y), \qquad \theta \in [0,1]
   $$
+
+  <Variables>
+    <Variable>**$x, y$** — any two points in the function's domain.</Variable>
+    <Variable>**$\theta$** — a mixing weight between $0$ and $1$, controlling how far between $x$ and $y$ we are.</Variable>
+    <Variable>**$f(\theta x + (1-\theta)y)$** — the function's actual value at that in-between point.</Variable>
+  </Variables>
 
   Equivalently, in one dimension: $f''(x) \geq 0$ everywhere. Convexity is the actual reason gradient
   descent's guarantee holds — **for a convex function, every local minimum is automatically the global
@@ -68,7 +74,7 @@ import { IntuitionDemo, PlayDemo, ConvexCheckpoint } from "./Demos";
 
   Convexity is the single assumption that turns "gradient descent finds *a* minimum" into "gradient
   descent finds *the* minimum." Most of classical ML's clean optimization guarantees — linear and
-  logistic regression's loss, SVM's margin problem, ridge regression's closed form — lean on exactly this
+  logistic regression's loss, the **SVM (Support Vector Machine)**'s margin problem, ridge regression's closed form — lean on exactly this
   property. Neural network loss landscapes almost never have it, which is why Part III's loss-landscapes
   chapter has to make a very different kind of peace with local minima and saddle points instead.
 </Summary>
