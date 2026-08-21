@@ -1201,7 +1201,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Jailbreaks & red-teaming",
     blurb: "Watch a safety filter trained on direct requests get walked around by an indirect one.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "fairness-metrics-and-bias-auditing",
