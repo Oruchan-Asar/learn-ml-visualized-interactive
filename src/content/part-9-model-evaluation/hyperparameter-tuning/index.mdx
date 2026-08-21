@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, HyperparameterTuningCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, HyperparameterTuningCheckpoint } from "./Demos
   $$
   \text{best} = \arg\min_{\eta \,\in\, \{\eta_1, \dots, \eta_n\}} \text{loss}\big(\text{train}(\eta)\big)
   $$
+
+  <Variables>
+    <Variable>**$\eta$** — the hyperparameter being tuned; here, the learning rate.</Variable>
+    <Variable>**$\{\eta_1, \dots, \eta_n\}$** — the finite set of candidate values grid search tries.</Variable>
+    <Variable>**$\text{train}(\eta)$** — the model trained end-to-end using that candidate value.</Variable>
+    <Variable>**$\text{loss}(\cdot)$** — the held-out loss used to score each trained candidate.</Variable>
+    <Variable>**best** — the candidate value that scored the lowest loss.</Variable>
+  </Variables>
 
   It's exhaustive and it's dumb — nothing here is smarter than you dragging the slider — but it never gets tired, never misses a candidate you forgot to try, and never fools itself into stopping at a "good enough" value it found first.
 </Formalize>
