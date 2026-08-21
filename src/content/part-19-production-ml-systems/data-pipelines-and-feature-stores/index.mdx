@@ -1,0 +1,78 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PipelineCheckpoint } from "./Demos";
+
+<Hook>
+  A model's training set and its serving traffic are supposed to see the same features computed the same way.
+  They usually don't — not because anyone wrote a bug, but because "the same raw event" can honestly produce
+  two different feature values depending on *when* the pipeline looks at it.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Six purchases, one user, no ambiguity about what happened or when. Slide the query time and watch the sum
+  change — not because the events changed, but because "as of when?" changed.
+</Intuition>
+
+<Formalize>
+  A **feature store** serves the same feature two ways: online, at prediction time, where only the past is
+  visible by construction; and offline, when building a training set from history, where the *entire* future
+  is sitting right there in the same table unless the pipeline explicitly refuses to look at it.
+
+  The correct, **point-in-time** feature for a label produced at time $t$ only uses events strictly before it:
+
+  $$
+  \text{feature}(t) = \sum_{e:\, t_e < t} \text{amount}(e)
+  $$
+
+  A naive offline join instead grabs whatever the feature table currently holds — the latest snapshot — and
+  attaches it to every historical label, regardless of $t$:
+
+  $$
+  \text{naive}(t) = \text{feature}(t_{\text{now}}) \quad \text{for every } t
+  $$
+
+  Every event between $t$ and $t_{\text{now}}$ leaks into a feature that a real prediction, made at $t$, could
+  never actually have seen.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Three training labels, the same six raw events, two joins. The correct join gives each label a different
+  answer, because each label happened at a different moment. The naive join gives every label the *same*
+  answer — today's snapshot — because it never consulted the label's own timestamp at all.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="A label lands at t=6">
+      Point-in-time correct: only count purchases strictly before t=6 — the ones at t=1, 2, 4 — for a total
+      of $10 + $20 + $15 = $45.
+    </Step>
+    <Step label="The naive join ignores t=6 entirely">
+      It reaches for the feature table's current total, computed as of t=11 (after every event in the
+      stream): $10+$20+$15+$50+$5+$30 = $130.
+    </Step>
+    <Step label="The gap is the leak">
+      $130 − $45 = $85 of future spending — purchases at t=6, 8, and 9 — silently informing a feature that's
+      supposed to describe the world *before* t=6. A model trained on this row learns a correlation that will
+      never exist at serving time, because serving time never has next week's purchases to leak from.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PipelineCheckpoint />
+
+<Summary>
+  $$
+  \text{feature}(t) = \sum_{e:\, t_e < t} \text{amount}(e) \qquad \neq \qquad \text{naive}(t) = \text{feature}(t_{\text{now}})
+  $$
+
+  The bug never touches the raw events — they're recorded correctly either way. It lives entirely in the join:
+  whether the pipeline asks "what did this feature look like *at label time*?" or silently substitutes "what
+  does this feature look like *right now*?" A feature store's whole job is making the first question cheap to
+  ask correctly, every time, instead of leaving it to whichever engineer remembers to filter by timestamp.
+  The next chapter turns to the training runs those correctly-joined features feed into, and what it takes to
+  reproduce one exactly.
+</Summary>

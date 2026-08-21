@@ -1236,7 +1236,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Data pipelines & feature stores",
     blurb: "Watch the same raw event produce two different feature values depending on when the pipeline looks at it.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "experiment-tracking-and-reproducibility",
