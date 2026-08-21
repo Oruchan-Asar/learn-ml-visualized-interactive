@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CrossAttentionCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, CrossAttentionCheckpoint } from "./Demos";
   $$
   \text{score}_i = \frac{q \cdot k_i}{\sqrt{d}}, \qquad w_i = \text{softmax}(\text{score})_i, \qquad \text{context} = \sum_i w_i\, k_i
   $$
+
+  <Variables>
+    <Variable>**$q$** — the query vector, coming from a text token.</Variable>
+    <Variable>**$k_i$** — the key vector for image patch $i$.</Variable>
+    <Variable>**$\text{score}_i$** — the raw compatibility between the query and image patch $i$, before normalizing.</Variable>
+    <Variable>**$w_i$** — the attention weight on image patch $i$, after softmax turns the scores into a distribution.</Variable>
+    <Variable>**$\text{context}$** — the weighted blend of all image patches that the query actually attends to.</Variable>
+    <Variable>**$d$** — the dimensionality of the key vectors, used to rescale the raw scores.</Variable>
+  </Variables>
 
   What changed is only *where* $q$, $k_i$, and $v_i$ come from. Self-attention had all three from the same sequence; cross-attention lets $q$ come from one modality's encoder while $k_i, v_i$ come from a completely different one — the same mechanism, pointed across a modality boundary instead of within one sequence.
 </Formalize>
