@@ -1,0 +1,73 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DPOCheckpoint } from "./Demos";
+
+<Hook>
+  Part VII's RLHF chapter fit a reward model from preference comparisons, then ran a separate
+  policy-gradient loop against it — two stages, two different update rules. What if the algebra let both
+  stages collapse into one?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Apply each comparison. The policy shifts after every single one — no reward model sits in between the
+  preference data and the policy update at all.
+</Intuition>
+
+<Formalize>
+  For an optimal policy under a KL-regularized reward objective, the reward and the policy are related in
+  closed form: $r(y) = \beta \log\big(\pi(y)/\pi_{\text{ref}}(y)\big) + \text{const}$. Substitute that
+  directly into the Bradley-Terry preference loss from Part VII, and the reward model cancels out
+  algebraically, leaving a loss purely in terms of the policy:
+
+  $$
+  \mathcal{L} = -\log\sigma\Big(\beta\big[(\log\pi(y_w) - \log\pi_{\text{ref}}(y_w)) - (\log\pi(y_l) - \log\pi_{\text{ref}}(y_l))\big]\Big)
+  $$
+
+  Differentiating this with respect to the policy's own parameters, the softmax's $\pi(a)$ term cancels
+  *exactly* between the winner and loser gradients — what's left is even simpler than RLHF's two-stage
+  update: one gradient step per preference pair, straight on the policy, no reward model and no separate
+  RL update rule required.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Two completely different training procedures — fit-a-reward-model-then-run-RL versus one direct
+  gradient loop — landing on the same ranking from the same three comparisons. Neither path is "more
+  correct"; DPO is just a shortcut through algebra that happens to skip a stage RLHF needs.
+</Play>
+
+<WorkedExample>
+  The very first comparison, "B beats A", starting from a uniform policy:
+
+  <Steps>
+    <Step label="At initialization, the policy IS the reference">
+      $\pi = \pi_{\text{ref}}$ everywhere, so $\log\pi(y_w)-\log\pi_{\text{ref}}(y_w) = 0$ for every arm.
+      The bracketed term is $0 - 0 = 0$, so $h=\beta \cdot 0 = 0$ and $\sigma(0)=0.5$.
+    </Step>
+    <Step label="The gradient step">
+      With $\sigma(h)=0.5$, the update factor $(1-\sigma(h))=0.5$ pushes $\theta_B$ up and $\theta_A$ down
+      by the same amount: $\theta_B \to 0 + 0.5(0.5)(0.5)(1) = 0.125$, $\theta_A \to 0 - 0.125 = -0.125$.
+    </Step>
+    <Step label="Nothing else moved">
+      $\theta_C$ is untouched — this comparison never mentioned C, and DPO's update (like RLHF's) only
+      touches the two arms actually being compared.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DPOCheckpoint />
+
+<Summary>
+  $$
+  \nabla_\theta \mathcal{L} = -\big(1-\sigma(h)\big)\,\beta\,\big(\mathbb{1}[a{=}y_w] - \mathbb{1}[a{=}y_l]\big)
+  $$
+
+  DPO isn't a different objective from RLHF — it's the *same* Bradley-Terry preference objective, with
+  the reward model's role folded into the policy's own log-ratio against a reference. That's the entire
+  appeal: one training loop instead of two, no separate reward model to overfit or drift out of sync with
+  the policy being trained against it. The next chapter asks where the preference *data* itself comes
+  from in the first place — what happens when a model critiques its own answers instead of a human
+  supplying every comparison.
+</Summary>

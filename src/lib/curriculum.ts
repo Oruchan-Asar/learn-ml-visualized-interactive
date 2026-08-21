@@ -1177,7 +1177,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Direct Preference Optimization",
     blurb: "Fit the same preference data as RLHF's reward model, but skip the reward model and the RL loop entirely.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "constitutional-ai-and-rlaif",
