@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DbscanCheckpoint } from "./Demos";
 
 <Hook>
@@ -12,11 +12,18 @@ import { IntuitionDemo, PlayDemo, DbscanCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  DBSCAN never asks how many clusters to expect. Instead, a point is a **core point** if it has enough neighbors within a radius `eps`:
+  **DBSCAN** — short for **Density-Based Spatial Clustering of Applications with Noise** — never asks how many clusters to expect. Instead, a point is a **core point** if it has enough neighbors within a radius `eps`:
 
   $$
   \text{core}(i) = |\{j : \lVert x_i - x_j \rVert \leq \text{eps}\}| \geq \text{minPts}
   $$
+
+  <Variables>
+    <Variable>**$\text{core}(i)$** — whether point $i$ qualifies as a core point, based on how many neighbors it has.</Variable>
+    <Variable>**$x_i, x_j$** — two points in the dataset being compared.</Variable>
+    <Variable>**`eps`** — the neighborhood radius: how close two points must be to count as neighbors.</Variable>
+    <Variable>**`minPts`** — the minimum number of neighbors within `eps` needed for a point to be a core point.</Variable>
+  </Variables>
 
   A cluster is everything reachable by hopping from core point to core point, radius by radius — like a chain of falling dominoes, each one only needing to be close enough to knock over the next. Anything never reached this way, from any core point, is **noise** — not assigned to any cluster at all.
 </Formalize>
