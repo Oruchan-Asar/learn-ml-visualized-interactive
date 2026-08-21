@@ -1276,7 +1276,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Design a monitored serving pipeline",
     blurb: "Wire ingestion, serving, and a drift alarm into one pipeline and watch it catch a problem a static test would have missed.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 ];

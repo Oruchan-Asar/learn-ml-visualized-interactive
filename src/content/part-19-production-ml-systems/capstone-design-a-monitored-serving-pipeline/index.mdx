@@ -1,0 +1,71 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PipelineCheckpoint } from "./Demos";
+
+<Hook>
+  Every piece of this part has been built and tested on its own — the feature join, the accuracy dashboard,
+  the drift alarm. Wire all three into one pipeline and watch what a production incident actually looks like:
+  every static test green, the dashboard calm, and a real problem happening anyway.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through three days. The ingestion tests never change — they're checking code, not traffic. Watch for
+  the day where accuracy agrees with day one, but the drift monitor doesn't.
+</Intuition>
+
+<Formalize>
+  A monitored serving pipeline is three independent checks, each blind to what the others catch:
+
+  $$
+  \underbrace{\text{ingestion}(t)}_{\text{Ch. 1}} \quad \underbrace{\text{accuracy} = \sum_i P(\text{bin}_i)\,a_i}_{\text{Ch. 3}} \quad \underbrace{D_{KL}(P_{\text{train}} \,\|\, P_{\text{live}})}_{\text{Ch. 3}}
+  $$
+
+  A static test suite verifies that code hasn't regressed — the join still returns the right number for a
+  fixed historical label, today, tomorrow, forever. It says nothing about what today's *live* traffic looks
+  like. Only a distribution-level monitor watches that, and only because it's designed to watch something
+  accuracy structurally can't.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Three static tests pass on all three days — the ingestion code never changed. Accuracy holds at 0.800 on
+  day 1 and day 3 alike. The only signal that anything happened on day 3 is the drift score, because it's
+  the only one of the three checks actually looking at the shape of the traffic.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Day 1: the baseline">
+      Distribution matches training exactly. Accuracy 0.800, drift 0.000 bits. Every check is green because
+      nothing has happened yet.
+    </Step>
+    <Step label="Day 3: the incident">
+      Distribution shifts from 40% medium-bin traffic down to 20%, with high-bin traffic doubling to 40%.
+      Accuracy: $0.4(0.9) + 0.2(0.8) + 0.4(0.7) = 0.36 + 0.16 + 0.28 = 0.80$ — unchanged, because the bins'
+      fixed accuracies happened to average out identically.
+    </Step>
+    <Step label="What actually caught it">
+      Drift score: $\approx 0.151$ bits, well past the 0.05 threshold. Not the static ingestion tests — they
+      check a join function against fixed labels, not live traffic. Not the accuracy dashboard — it produced
+      the same number as a day with no problem at all. Only the piece built specifically to compare
+      distributions caught anything.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PipelineCheckpoint />
+
+<Summary>
+  $$
+  \text{ingestion}(t) \quad \text{accuracy} = \sum_i P(\text{bin}_i)\,a_i \quad D_{KL}(P_{\text{train}} \,\|\, P_{\text{live}})
+  $$
+
+  None of these three checks is redundant with the others, and none of them can substitute for the others —
+  that's the actual argument for building a monitored pipeline instead of trusting any single metric. A
+  static test suite catches code regressions. An accuracy dashboard catches obvious performance drops. A
+  drift alarm catches the distribution shifting under a model that still looks, by every other measure, fine.
+  Real production incidents live in the gaps between whichever subset of these a team happened to build.
+  This closes Part XIX and the curriculum's tour of what happens to a model after training ends.
+</Summary>
