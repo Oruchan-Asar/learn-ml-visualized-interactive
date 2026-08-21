@@ -1091,7 +1091,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Flow matching",
     blurb: "Draw a straight line from noise to data and train a model to match its velocity — no diffusion schedule required.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "consistency-models",

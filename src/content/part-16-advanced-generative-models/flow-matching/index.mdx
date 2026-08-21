@@ -1,0 +1,72 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, FlowMatchingCheckpoint } from "./Demos";
+
+<Hook>
+  A diffusion model's noise schedule — how much noise to add at each of dozens or hundreds of steps — is
+  its own small research problem, tuned separately from the model itself. What if the path from noise to
+  data were just... a straight line?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag $t$ along the path. The velocity readout never changes — a straight line has exactly one slope,
+  everywhere along it, which is the entire simplification this chapter is built on.
+</Intuition>
+
+<Formalize>
+  **Flow matching** defines the path between a noise sample $x_0$ and a data sample $x_1$ as a straight
+  line, and trains a model to predict that line's velocity:
+
+  $$
+  x_t = (1-t)x_0 + tx_1, \qquad \frac{dx_t}{dt} = x_1 - x_0
+  $$
+
+  The velocity doesn't depend on $t$ at all — it's the same number at $t=0.01$ as at $t=0.99$. A neural
+  network $v_\theta(x_t, t)$ is trained to regress directly onto $x_1 - x_0$ for many sampled pairs,
+  which is a plain regression target, not a multi-step noise-removal problem. No schedule to design; no
+  approximation of a reverse diffusion process — just "given where you are and what time it is, which way
+  is data?"
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  A single Euler step and fifty small ones land in the exact same place. That's not true for a curved
+  path (diffusion's reverse process genuinely curves, which is why it needs many small steps to trace
+  accurately) — it's only true because this path is perfectly straight, with zero curvature to
+  approximate away.
+</Play>
+
+<WorkedExample>
+  Three independent (noise, data) pairs, evaluated at $t=0.5$:
+
+  <Steps>
+    <Step label="Pair (-2, 5)">
+      $x_{0.5} = 0.5(-2) + 0.5(5) = 1.5$. Velocity $= 5-(-2)=7$.
+    </Step>
+    <Step label="Pair (3, -7)">
+      $x_{0.5} = 0.5(3) + 0.5(-7) = -2$. Velocity $= -7-3=-10$ — a different pair, a completely different
+      constant velocity.
+    </Step>
+    <Step label="Pair (0, 4)">
+      $x_{0.5} = 0.5(0) + 0.5(4) = 2$. Velocity $= 4-0=4$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<FlowMatchingCheckpoint />
+
+<Summary>
+  $$
+  x_t = (1-t)x_0 + tx_1, \qquad v_\theta(x_t, t) \approx x_1 - x_0
+  $$
+
+  Each individual pair's path is a straight line with one velocity — but a real flow-matching model sees
+  *many* noise-data pairs during training, and at a given $(x,t)$ different pairs' paths can pass nearby
+  with different velocities. What the model actually learns is the *average* velocity across every pair
+  consistent with being at $x$ at time $t$, which is no longer perfectly straight in general — the
+  simplification this chapter isolates is the per-pair target, not the learned field as a whole. The next
+  chapter asks what happens if, instead of one endpoint reached by integrating many small steps, a model
+  is trained to jump straight from *anywhere* on a path to its endpoint in one shot.
+</Summary>
