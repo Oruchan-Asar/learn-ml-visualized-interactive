@@ -1040,7 +1040,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "Linear attention",
     blurb: "Swap softmax for a kernel trick and watch the same attention answer come out of a running sum instead of a full matrix.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "state-space-models",

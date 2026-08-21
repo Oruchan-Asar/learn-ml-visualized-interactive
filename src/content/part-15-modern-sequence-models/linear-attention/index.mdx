@@ -1,0 +1,78 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LinearAttentionCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter's $n^2$ came from one specific design choice: softmax normalizes each query's row of
+  scores independently, so nothing in that row can be known until every score in it exists. What if
+  attention didn't need a full row before it could answer?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch queries. Both numbers move together, every time, because they're computing the *same* thing two
+  different ways — one rescans all four keys from scratch, the other looks up a state that was built
+  before any query even ran.
+</Intuition>
+
+<Formalize>
+  Drop softmax and score a query against a key with a plain dot product instead — no per-row
+  normalization needed. The double sum every query requires then factors, by ordinary associativity:
+
+  $$
+  \sum_j (q_i \cdot k_j)\, v_j \;=\; q_i \cdot \Big(\sum_j k_j v_j\Big), \qquad
+  \sum_j (q_i \cdot k_j) \;=\; q_i \cdot \Big(\sum_j k_j\Big)
+  $$
+
+  The parenthesized sums on the right don't mention $i$ at all — they're the same for every query, so
+  computing them once (a single pass over the keys, $O(n)$) and reusing them turns each query into one
+  $O(1)$ dot product instead of an $O(n)$ rescan. Real linear-attention layers apply a positive feature
+  map $\phi$ (commonly $\text{elu}(x)+1$) to $q$ and $k$ before the dot product, so the "attention
+  weights" stay non-negative the way softmax's do — this chapter uses the identity map to keep every
+  number exact and checkable by hand, but the factoring trick itself doesn't depend on that choice at
+  all.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The bold curve is the same quadratic from last chapter. The dashed one — $2n$, not $n^2$ — is what
+  scoring every query the factored way actually costs: one pass to build the running state, one more to
+  evaluate every query against it.
+</Play>
+
+<WorkedExample>
+  Four keys $k_j$ and values $v_j$, scored against query $q_0=(1,0)$:
+
+  <Steps>
+    <Step label="The naive way: rescan every key">
+      Scores $q_0\cdot k_j = (2,\ -1,\ 1,\ 0)$. Weighted sum $= 2(3){+}({-}1)({-}2){+}1(1){+}0(4) = 9$.
+      Normalizer $= 2{-}1{+}1{+}0 = 2$. Output $= 9/2 = 4.5$.
+    </Step>
+    <Step label="Build the state once, before any query">
+      $s = \sum_j k_jv_j = (2,1)(3){+}({-}1,2)({-}2){+}(1,{-}1)(1){+}(0,3)(4) = (9,\,10)$.
+      $z = \sum_j k_j = (2,1){+}({-}1,2){+}(1,{-}1){+}(0,3) = (2,\,5)$. Neither mentions $q_0$.
+    </Step>
+    <Step label="Every query is now one dot product">
+      $q_0 \cdot s = (1,0)\cdot(9,10) = 9$. $\ q_0 \cdot z = (1,0)\cdot(2,5) = 2$. Output $= 9/2 = 4.5$
+      — exactly the naive answer, with the four keys never rescanned.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<LinearAttentionCheckpoint />
+
+<Summary>
+  $$
+  \sum_j (q_i\cdot k_j)v_j = q_i \cdot \Big(\sum_j k_jv_j\Big)
+  $$
+
+  This isn't an approximation of attention — for a linear kernel, it's the *exact same number*, just
+  computed in a different order. The catch real linear-attention layers have to work around is that a
+  plain dot product isn't guaranteed non-negative the way softmax's weights are, which is why $\phi$
+  exists in the real formula. The catch this chapter doesn't fix at all: that single running state $s$
+  has to summarize the *entire* key-value history in a fixed-size vector — it can't grow with $n$ the way
+  softmax's full matrix implicitly can. The next chapter turns that constraint into the entire design of a
+  new architecture: a state-space model that carries exactly one hidden state forward, one token at a
+  time, on purpose.
+</Summary>
