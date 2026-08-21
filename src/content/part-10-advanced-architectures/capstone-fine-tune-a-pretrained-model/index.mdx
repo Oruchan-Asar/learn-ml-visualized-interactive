@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
   $$
   \text{feature} = \text{Backbone}(x_0) \qquad \hat y = w_{\text{head}}\cdot\text{feature} + b_{\text{head}}
   $$
+
+  <Variables>
+    <Variable>**$\text{feature}$** — the frozen backbone's output for a given input: the representation the head trains on.</Variable>
+    <Variable>**$\text{Backbone}$** — the frozen, pretrained residual network reused as a fixed feature extractor.</Variable>
+    <Variable>**$w_{\text{head}}$** — the task-specific head's weight, applied to the backbone's feature.</Variable>
+    <Variable>**$b_{\text{head}}$** — the task-specific head's bias — in this example, the only parameter still being learned.</Variable>
+  </Variables>
 
   Fine-tuning freezes the backbone and, in this example, even freezes $w_{\text{head}}$ at its correct pretrained value — leaving only $b_{\text{head}}$ to learn. Training from scratch instead has to find $w_{\text{head}}$ and $b_{\text{head}}$ together, using the same two backbone features and the same tiny dataset.
 </Formalize>
@@ -37,7 +44,7 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
     </Step>
     <Step label="Fine-tuning the head's bias: solved in one step">
       With $w_{\text{head}}=2$ frozen at its correct value, $\eta=0.5$ lands $b_{\text{head}}=5$ exactly.
-      MSE: $0$.
+      **MSE** (short for **Mean Squared Error**): $0$.
     </Step>
     <Step label="From scratch: the same ideal rate explodes; a safe one crawls">
       That same $\eta=0.5$, applied to both head parameters jointly from $(0,0)$, explodes to $w\approx1059$ within
