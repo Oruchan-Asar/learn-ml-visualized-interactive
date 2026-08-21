@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, GridworldCapstoneCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, GridworldCapstoneCheckpoint } from "./Demos";
   $$
   Q(s,a) \leftarrow Q(s,a) + \alpha\Big(r + \gamma \max_{a'} Q(s',a') - Q(s,a)\Big)
   $$
+
+  <Variables>
+    <Variable>**$Q(s,a)$** — the learned value of taking action $a$ from state $s$.</Variable>
+    <Variable>**$r$** — the reward received for that step.</Variable>
+    <Variable>**$s'$** — the state landed in after taking the action.</Variable>
+    <Variable>**$a'$** — a candidate next action to take from that new state.</Variable>
+    <Variable>**$\gamma$** — the discount factor applied to future value.</Variable>
+    <Variable>**$\alpha$** — the learning rate: how much of the gap gets corrected on any one update.</Variable>
+  </Variables>
 
   What's different is scale and autonomy — instead of a fixed 6-move script, the agent runs real episodes, resetting to the start each time it reaches the goal (or times out), acting greedily on its own table except for scheduled exploration steps that keep testing the alternative.
 </Formalize>
