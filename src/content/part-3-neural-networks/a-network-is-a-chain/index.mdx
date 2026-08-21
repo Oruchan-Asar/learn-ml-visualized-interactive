@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ChainCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, ChainCheckpoint } from "./Demos";
   $$
   \frac{dy}{dx} = \frac{dy}{dh} \cdot \frac{dh}{dx}
   $$
+
+  <Variables>
+    <Variable>**$x$** — the network's input.</Variable>
+    <Variable>**$h$** — the first neuron's output, which feeds into the second neuron as its input.</Variable>
+    <Variable>**$y$** — the second neuron's output, the whole composed function's final value.</Variable>
+    <Variable>**$\frac{dh}{dx}$** — the first neuron's local slope: its own sigmoid derivative times $w_1$.</Variable>
+    <Variable>**$\frac{dy}{dh}$** — the second neuron's local slope with respect to its input $h$: its own sigmoid derivative times $w_2$.</Variable>
+  </Variables>
 
   $\frac{dh}{dx}$ is the first neuron's local slope — its own sigmoid derivative times $w_1$. $\frac{dy}{dh}$ is the second neuron's local slope with respect to *its* input, which happens to be $h$ — its sigmoid derivative times $w_2$. Multiply the two and you have the slope of the whole chain, with respect to the very first input.
 </Formalize>
