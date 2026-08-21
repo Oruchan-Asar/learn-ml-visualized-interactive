@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BayesCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, BayesCheckpoint } from "./Demos";
   $$
   P(A\mid B) = \frac{P(B\mid A)\,P(A)}{P(B)}
   $$
+
+  <Variables>
+    <Variable>**$A$** — the event we want to know about (e.g., "has the condition").</Variable>
+    <Variable>**$B$** — the observed evidence (e.g., "tested positive").</Variable>
+    <Variable>**$P(A\mid B)$** — the updated probability of $A$ given that $B$ happened (the posterior).</Variable>
+    <Variable>**$P(B\mid A)$** — the probability of seeing evidence $B$ if $A$ is true (the likelihood, e.g. sensitivity).</Variable>
+    <Variable>**$P(A)$** — the probability of $A$ before seeing any evidence (the prior, or base rate).</Variable>
+    <Variable>**$P(B)$** — the overall probability of observing $B$, across all cases.</Variable>
+  </Variables>
 
   Here $A$ is "has the condition," $B$ is "tested positive." $P(B\mid A)$ is the test's sensitivity — how often it catches a real case. $P(A)$ is the base rate you just dragged.
 </Formalize>
