@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, EntropyCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,12 @@ import { IntuitionDemo, PlayDemo, EntropyCheckpoint } from "./Demos";
   $$
   H(X) = -\sum_i P(x_i) \log_2 P(x_i)
   $$
+
+  <Variables>
+    <Variable>**$H(X)$** — the entropy of the distribution, in bits.</Variable>
+    <Variable>**$P(x_i)$** — the probability of outcome $x_i$.</Variable>
+    <Variable>**$x_i$** — one specific outcome, indexed by $i$.</Variable>
+  </Variables>
 
   It's exactly zero when one outcome is certain, and it's largest exactly when every outcome is equally likely — uncertainty is maximized when you have the least information to favor any one outcome.
 </Formalize>
