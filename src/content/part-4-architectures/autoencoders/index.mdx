@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AutoencoderCheckpoint } from "./Demos";
 
 <Hook>
@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, AutoencoderCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  These are the same seven points from Part II's PCA chapter. The **encoder** compresses each 2D point down to a single number — its position along one direction. The **decoder** expands that one number back out to 2D, by placing it back on that same line. Drag the direction: every point snaps onto whatever line you've chosen, and the gap between a point and its snapped-back position is exactly what got lost by compressing.
+  These are the same seven points from Part II's **PCA** — short for **Principal Component Analysis** — chapter. The **encoder** compresses each 2D point down to a single number — its position along one direction. The **decoder** expands that one number back out to 2D, by placing it back on that same line. Drag the direction: every point snaps onto whatever line you've chosen, and the gap between a point and its snapped-back position is exactly what got lost by compressing.
 </Intuition>
 
 <Formalize>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, AutoencoderCheckpoint } from "./Demos";
   $$
   z = x \cdot w, \qquad \hat{x} = z\, w, \qquad \mathcal{L} = \frac{1}{n}\sum_i \lVert x_i - \hat{x}_i \rVert^2
   $$
+
+  <Variables>
+    <Variable>**$x$** — one input data point (2D here).</Variable>
+    <Variable>**$w$** — the unit direction defining the bottleneck: the line the encoder projects onto and the decoder places points back on.</Variable>
+    <Variable>**$z$** — the encoded value: $x$'s position along $w$, the single-number bottleneck.</Variable>
+    <Variable>**$\hat{x}$** — the reconstruction: $z$ placed back on the line, the autoencoder's best guess at $x$.</Variable>
+    <Variable>**$\mathcal{L}$** — the reconstruction loss: mean squared distance between each point and its reconstruction.</Variable>
+    <Variable>**$n$** — the number of data points being averaged over.</Variable>
+  </Variables>
 
   for a unit direction $w$. Because $\hat{x}$ is the closest point on the line to $x$, Pythagoras gives $\lVert x \rVert^2 = \lVert \hat{x} \rVert^2 + \lVert x - \hat{x} \rVert^2$ — so minimizing reconstruction error is exactly the same problem as maximizing $\lVert \hat{x} \rVert^2$, the projected variance from Part II. A linear autoencoder with one bottleneck dimension *is* PCA.
 </Formalize>
