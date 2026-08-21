@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, RnnCheckpoint } from "./Demos";
 
 <Hook>
@@ -15,6 +15,16 @@ import { IntuitionDemo, PlayDemo, RnnCheckpoint } from "./Demos";
   $$
   h_t = \tanh(W_x \cdot x_t + W_h \, h_{t-1} + b)
   $$
+
+  <Variables>
+    <Variable>**$h_t$** — the hidden state at timestep $t$: the running summary the network carries forward.</Variable>
+    <Variable>**$x_t$** — the input token at timestep $t$.</Variable>
+    <Variable>**$W_x$** — the weight matrix applied to the current input token.</Variable>
+    <Variable>**$W_h$** — the weight matrix applied to the previous hidden state (the recurrent weight).</Variable>
+    <Variable>**$h_{t-1}$** — the hidden state carried over from the previous timestep.</Variable>
+    <Variable>**$b$** — the bias term.</Variable>
+    <Variable>**$\tanh$** — the squashing activation that keeps the hidden state bounded between $-1$ and $1$.</Variable>
+  </Variables>
 
   The same weights $W_x$, $W_h$, $b$ are reused at every timestep — exactly the "share one small set of weights across many positions" idea from convolution, just applied across time instead of space. The recurrence is what makes $h_2$ depend on the *entire* sequence seen so far, not just the token that just arrived.
 </Formalize>
