@@ -1142,7 +1142,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Planning & task decomposition",
     blurb: "Break one big ambiguous goal into an ordered list of small unambiguous ones, then execute them one at a time.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "agent-memory",

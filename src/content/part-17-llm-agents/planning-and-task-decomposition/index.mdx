@@ -1,0 +1,72 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PlanningCheckpoint } from "./Demos";
+
+<Hook>
+  ReAct's loop decided what to do one step at a time, reacting to whatever the last observation was. Some
+  goals have a structure you can see in advance — "make breakfast" already implies water gets boiled
+  before tea steeps, no observation required to know that. Can a model plan that out up front?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Only tasks whose dependencies are already done are ever offered as "Execute" buttons — everything else
+  stays blocked, no matter how eager you are to serve breakfast before the tea's steeped.
+</Intuition>
+
+<Formalize>
+  **Task decomposition** breaks one goal into a set of smaller tasks with explicit **dependencies** —
+  each task lists which others must finish first. A valid **plan** is any ordering where every task
+  comes strictly after everything it depends on:
+
+  $$
+  \text{task}_i \text{ can execute at position } p \iff \text{every dependency of task}_i \text{ appears before position } p
+  $$
+
+  Finding one such ordering is a **topological sort** over the dependency graph — the same structure a
+  build system uses to decide compile order, or a project scheduler uses to sequence tasks. When two
+  tasks have no dependency relationship to each other (boiling water and toasting bread, here), either
+  order between them is equally valid — the planner has real freedom, constrained only where genuine
+  prerequisites exist.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  One valid complete order, computed once. Steeping tea could just as easily have happened *after*
+  buttering toast instead of before it — nothing depends on that particular choice — but boiling water
+  before steeping tea is never negotiable.
+</Play>
+
+<WorkedExample>
+  Two branches of the same plan, developing independently until they meet:
+
+  <Steps>
+    <Step label="Two things become possible at once">
+      Once ingredients are gathered, both "boil water" and "toast bread" are ready — neither depends on
+      the other, so a planner is free to interleave them however it likes.
+    </Step>
+    <Step label="Each branch has its own next step">
+      Boiling water unlocks steeping tea. Toasting bread unlocks buttering it. These two chains can
+      proceed independently, in either relative order.
+    </Step>
+    <Step label="The branches converge">
+      "Serve breakfast" depends on *both* steeped tea and buttered toast — it can't execute until the
+      slower of the two branches finishes, no matter how far ahead the other one got.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PlanningCheckpoint />
+
+<Summary>
+  $$
+  \text{task}_i \text{ before task}_j \iff \text{task}_i \in \text{dependencies}(\text{task}_j) \text{ (transitively)}
+  $$
+
+  This chapter's dependencies were fixed in advance and known exactly — a real planning agent typically
+  has to *infer* the dependency structure from the goal itself (does "email the report" depend on "write
+  the report"? usually, but not always), and replan when an action fails partway through. The next
+  chapter picks up a different limitation entirely: even a perfectly planned, perfectly executed task can
+  fail if the agent simply forgets a fact it needed three steps ago.
+</Summary>
