@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ResNetCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,12 @@ import { IntuitionDemo, PlayDemo, ResNetCheckpoint } from "./Demos";
   $$
   h_i = h_{i-1} + F(h_{i-1})
   $$
+
+  <Variables>
+    <Variable>**$h_i$** — the representation produced at layer $i$, after the residual connection is applied.</Variable>
+    <Variable>**$h_{i-1}$** — the representation entering layer $i$, produced by the previous layer.</Variable>
+    <Variable>**$F$** — the layer's own transformation (e.g., a weight multiply and nonlinearity) — the same function a plain layer would apply on its own.</Variable>
+  </Variables>
 
   Backpropagating through a plain layer multiplies the gradient by $F'(h_{i-1})$ — a term that's often well below 1, so a long chain of layers shrinks it toward zero. Backpropagating through a *residual* layer multiplies by $1 + F'(h_{i-1})$ instead. That leading $1$ is a direct, unobstructed path for the gradient — an "identity shortcut" that depth alone can't erode.
 </Formalize>
@@ -59,5 +65,5 @@ import { IntuitionDemo, PlayDemo, ResNetCheckpoint } from "./Demos";
   h_i = h_{i-1} + F(h_{i-1}) \quad\Rightarrow\quad \frac{\partial h_i}{\partial h_{i-1}} = 1 + F'(h_{i-1}) \geq 1 \text{ (near saturation)}
   $$
 
-  This is the same fix the GRU and LSTM chapters made across *time* — a $1+$ term guaranteeing the gradient has an unobstructed path — now applied across *depth* instead. Wherever a network needs to stack many transformations without each one eroding what came before, the same identity-shortcut idea reappears. The next chapter turns from stacking more layers to a completely different way of representing data: compressing it down to a small latent space and learning to generate new examples from it.
+  This is the same fix the **GRU** (short for **Gated Recurrent Unit**) and **LSTM** (short for **Long Short-Term Memory**) chapters made across *time* — a $1+$ term guaranteeing the gradient has an unobstructed path — now applied across *depth* instead. Wherever a network needs to stack many transformations without each one eroding what came before, the same identity-shortcut idea reappears. The next chapter turns from stacking more layers to a completely different way of representing data: compressing it down to a small latent space and learning to generate new examples from it.
 </Summary>
