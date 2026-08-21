@@ -1,0 +1,74 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, AdversarialCheckpoint } from "./Demos";
+
+<Hook>
+  A model can be perfectly accurate on every image you'd ever show it and still fail catastrophically on
+  one an attacker built on purpose. The failure doesn't need a strange-looking input — it needs a change
+  too small to see.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag epsilon. Every one of the 9 pixels shifts by the exact same tiny amount — nothing in the grid
+  looks obviously different — yet the confidence score falls steadily, and eventually crosses the
+  decision boundary entirely.
+</Intuition>
+
+<Formalize>
+  **FGSM** (Fast Gradient Sign Method) perturbs every input dimension by a fixed budget $\epsilon$, in
+  whichever direction most decreases the classifier's score — for a linear model, that direction is just
+  the negative sign of each weight:
+
+  $$
+  x'_i = x_i - \epsilon \cdot \text{sign}(w_i), \qquad \Delta(w \cdot x) = -\epsilon \sum_i |w_i|
+  $$
+
+  Each individual $|x'_i - x_i|$ is bounded by $\epsilon$ — small, imperceptible on its own. But the total
+  shift in the dot product the classifier actually uses scales with the *number of dimensions*, not with
+  $\epsilon$ alone. A perturbation invisible in any single pixel becomes a large, deliberate shift once
+  summed across all of them.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Confidence falls steadily as epsilon grows — not a single dramatic jump, a gradual decline that
+  eventually crosses 0.5. The classifier isn't confused about any individual pixel; it's just adding up
+  nine small, coordinated pushes in exactly the wrong direction.
+</Play>
+
+<WorkedExample>
+  9 pixels at 0.6, weights all 1, bias $-4.5$:
+
+  <Steps>
+    <Step label="Before any perturbation">
+      $w \cdot x + b = 9(0.6) - 4.5 = 0.9$. $\sigma(0.9) \approx 0.711$ — confidently positive.
+    </Step>
+    <Step label="At epsilon = 0.1">
+      Every pixel drops to $0.5$. $w \cdot x + b = 9(0.5) - 4.5 = 0$. $\sigma(0) = 0.5$ — sitting exactly
+      on the boundary.
+    </Step>
+    <Step label="At epsilon = 0.15">
+      Every pixel drops to $0.45$ — barely different from $0.5$. $w \cdot x + b = 9(0.45) - 4.5 = -0.45$.
+      $\sigma(-0.45) \approx 0.389$ — now confidently classified in the *other* class.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<AdversarialCheckpoint />
+
+<Summary>
+  $$
+  x' = x - \epsilon \cdot \text{sign}(w), \qquad \Delta(w\cdot x) = -\epsilon\sum_i |w_i|
+  $$
+
+  This chapter's classifier was linear and its weights were visible — real adversarial attacks on deep
+  networks use the same sign-of-gradient idea, computed via backpropagation through the whole network
+  instead of read directly off a weight vector, which is exactly why adversarial examples generalize
+  across architectures the attacker never even saw. Robustness training (adding perturbed examples like
+  these directly into the training set) is one real defense; it trades some clean accuracy for resistance
+  to exactly this kind of engineered nudge. The next chapter looks at a related but distinct failure: not
+  a classifier fooled by pixels, but a language model talked past its own safety training by phrasing
+  alone.
+</Summary>

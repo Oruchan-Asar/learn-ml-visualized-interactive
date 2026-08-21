@@ -1193,7 +1193,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 3,
     title: "Adversarial examples & robustness",
     blurb: "Nudge an input by an amount too small to see and watch a confident classifier flip its answer.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "jailbreaks-and-red-teaming",
