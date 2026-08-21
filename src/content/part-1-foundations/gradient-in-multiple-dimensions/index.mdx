@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, GradientCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, GradientCheckpoint } from "./Demos";
   $$
   \nabla f(x,y) = \left(\frac{\partial f}{\partial x},\ \frac{\partial f}{\partial y}\right)
   $$
+
+  <Variables>
+    <Variable>**$\nabla f(x,y)$** — the gradient vector at the point $(x,y)$.</Variable>
+    <Variable>**$(x,y)$** — the point in the plane where the gradient is evaluated.</Variable>
+    <Variable>**$\partial f/\partial x$** — the partial derivative of $f$ with respect to $x$, holding $y$ fixed.</Variable>
+    <Variable>**$\partial f/\partial y$** — the partial derivative of $f$ with respect to $y$, holding $x$ fixed.</Variable>
+  </Variables>
 
   Each partial derivative is computed exactly like Chapter 1's derivative — just holding the *other* variable fixed. For $f(x,y) = x^2 + y^2$: treating $y$ as a constant, $\partial f/\partial x = 2x$; treating $x$ as a constant, $\partial f/\partial y = 2y$.
 </Formalize>
