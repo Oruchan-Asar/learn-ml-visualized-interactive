@@ -1099,7 +1099,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Consistency models",
     blurb: "Collapse an entire denoising trajectory onto one endpoint, and generate a sample in a single jump.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "vq-vae-discrete-latents",

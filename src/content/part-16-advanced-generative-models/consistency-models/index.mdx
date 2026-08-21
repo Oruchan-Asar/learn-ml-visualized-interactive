@@ -1,0 +1,72 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ConsistencyCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter's straight path only needed one Euler step because its velocity was constant — a
+  convenient accident of using a perfectly straight line. Real diffusion trajectories curve. Can a model
+  still jump straight to the endpoint from *any* point along a curved path, in one shot?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag $t$ anywhere. The second point never moves — every value of $t$ on this trajectory maps to the
+  exact same endpoint, through one function call, no matter how far from $t{=}1$ you start.
+</Intuition>
+
+<Formalize>
+  A **consistency model** learns a function $f(x_t, t)$ trained so that any two points on the *same*
+  trajectory map to the *same* output — the endpoint. On this chapter's straight-line paths, that
+  function has a closed form:
+
+  $$
+  f(x_t, t) = x_t + (1-t)\big(x_1 - x_0\big) = x_1, \qquad \text{for every } t
+  $$
+
+  The self-consistency property is the middle expression holding for *any* $t$ — $f$ doesn't care how far
+  along the trajectory it's asked to evaluate, it always outputs the endpoint. Real consistency models are
+  trained on the genuinely *curved* trajectories that diffusion models produce, where no such closed form
+  exists — a **consistency-distillation loss** explicitly penalizes disagreement between $f$'s outputs at
+  two nearby points on the same trajectory, teaching the shortcut a curved path doesn't hand you for free.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Five wildly different starting points along the same trajectory — five identical bars. That flatness
+  *is* the trained property, not a coincidence of the numbers: a consistency model that got this wrong
+  would show five different heights instead.
+</Play>
+
+<WorkedExample>
+  Trajectory $(x_0, x_1) = (-2, 5)$, checked at two very different values of $t$:
+
+  <Steps>
+    <Step label="t = 0.3">
+      $x_{0.3} = 0.7({-}2) + 0.3(5) = 0.1$. $f(x_{0.3}, 0.3) = 0.1 + 0.7(7) = 5$.
+    </Step>
+    <Step label="t = 0.8">
+      $x_{0.8} = 0.2({-}2) + 0.8(5) = 3.6$. $f(x_{0.8}, 0.8) = 3.6 + 0.2(7) = 5$.
+    </Step>
+    <Step label="Same trajectory, same answer">
+      Two completely different inputs — $(0.1, 0.3)$ and $(3.6, 0.8)$ — produce the identical output.
+      That's not a special property of $t{=}0.3$ or $t{=}0.8$; it holds for every $t$ on this trajectory,
+      because both points sit on the same straight line to $x_1=5$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ConsistencyCheckpoint />
+
+<Summary>
+  $$
+  f(x_t, t) = f(x_{t'}, t') \quad \text{for any } t, t' \text{ on the same trajectory}
+  $$
+
+  Sampling from a real consistency model costs one network evaluation instead of the dozens or hundreds a
+  diffusion model's reverse process needs — the entire trajectory is collapsed into a single learned
+  jump. The price is a genuinely harder training problem: teaching a network self-consistency along
+  curved paths it doesn't get to see in closed form, unlike this chapter's straight lines. The next
+  chapter leaves continuous generation behind entirely and asks what happens when a model's latent space
+  isn't a smooth continuum at all, but a small, fixed vocabulary of learned codes.
+</Summary>
