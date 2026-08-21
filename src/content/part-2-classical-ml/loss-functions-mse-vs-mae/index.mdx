@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, LossCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, LossCheckpoint } from "./Demos";
   $$
   \text{MSE} = \frac{1}{n}\sum_i (y_i-\hat y_i)^2, \qquad \text{MAE} = \frac{1}{n}\sum_i |y_i - \hat y_i|
   $$
+
+  <Variables>
+    <Variable>**MSE** — Mean Squared Error: the average of the squared residuals.</Variable>
+    <Variable>**MAE** — Mean Absolute Error: the average of the absolute residuals.</Variable>
+    <Variable>**$n$** — the number of data points.</Variable>
+    <Variable>**$y_i$** — the actual (observed) value for data point $i$.</Variable>
+    <Variable>**$\hat y_i$** — the model's predicted value for data point $i$.</Variable>
+  </Variables>
 
   Squaring means a residual twice as large costs *four times* as much — so one big miss can dominate the entire sum. Absolute value grows only proportionally, so a single outlier can't hijack MAE the same way.
 </Formalize>
