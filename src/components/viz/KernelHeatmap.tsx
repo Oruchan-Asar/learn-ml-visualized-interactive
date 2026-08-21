@@ -17,6 +17,11 @@ export function KernelHeatmap({ kernel, label, width = 130, onCellClick, selecte
   const size = kernel.length;
   const cell = width / size;
   const maxAbs = Math.max(1e-6, ...kernel.flat().map(Math.abs));
+  // Font size was a fixed 11 regardless of grid size, so a 7x7+ grid (much smaller cells than the 3x3
+  // this was designed around) rendered text larger than its own cell, overlapping every neighbor.
+  // Scale with the cell instead, and drop the label entirely once a cell is too small to hold it.
+  const fontSize = Math.min(11, cell * 0.42);
+  const showText = cell >= 9;
 
   return (
     <div className={styles.wrap}>
@@ -46,9 +51,17 @@ export function KernelHeatmap({ kernel, label, width = 130, onCellClick, selecte
                     className={styles.cellSelected}
                   />
                 )}
-                <text x={c * cell + cell / 2} y={r * cell + cell / 2 + 4} textAnchor="middle" className={styles.cellText}>
-                  {v.toFixed(1)}
-                </text>
+                {showText && (
+                  <text
+                    x={c * cell + cell / 2}
+                    y={r * cell + cell / 2 + fontSize * 0.35}
+                    textAnchor="middle"
+                    className={styles.cellText}
+                    style={{ fontSize }}
+                  >
+                    {v.toFixed(1)}
+                  </text>
+                )}
               </g>
             );
           }),

@@ -15,6 +15,15 @@ const SHAPED_ITEMS = [
   ...QUERIES.map((q) => ({ label: q.label, x: q.x, y: q.y, shape: "circle" as const })),
 ];
 
+const QUERY_LABELS = new Set(QUERIES.map((q) => q.label));
+
+/** Only the Q: circles are selectable queries — the Doc: squares are informational, not clickable targets. */
+function selectQueryOnly(setQuery: (label: string) => void) {
+  return (label: string) => {
+    if (QUERY_LABELS.has(label)) setQuery(label);
+  };
+}
+
 /** Intuition beat: click a question, see the fact it retrieves and the answer that fact grounds. */
 export function IntuitionDemo() {
   const [query, setQuery] = useState("Q: capital of Japan");
@@ -25,7 +34,7 @@ export function IntuitionDemo() {
       words={SHAPED_ITEMS}
       queryLabel={query}
       nearestLabel={doc.label}
-      onSelectWord={setQuery}
+      onSelectWord={selectQueryOnly(setQuery)}
       domain={DOMAIN}
       readout={`retrieved "${doc.label}" → answer: "${doc.answer}"`}
     />
@@ -52,7 +61,7 @@ export function PlayDemo() {
         words={SHAPED_ITEMS}
         queryLabel={query}
         nearestLabel={useRetrieval ? doc.label : null}
-        onSelectWord={setQuery}
+        onSelectWord={selectQueryOnly(setQuery)}
         domain={DOMAIN}
         readout={`${useRetrieval ? "grounded" : "ungrounded"} answer: "${answer}"`}
       />

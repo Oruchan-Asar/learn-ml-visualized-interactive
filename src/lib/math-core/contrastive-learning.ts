@@ -19,6 +19,15 @@ function distance(a: Point, b: Point): number {
   return Math.hypot(a.x - b.x, a.y - b.y);
 }
 
+function lerpPoint(a: Point, b: Point, t: number): Point {
+  return { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t };
+}
+
+/** Linear interpolation between two full point sets — a continuous stand-in for "how far through training." */
+export function lerpPoints(before: Point[], after: Point[], t: number): Point[] {
+  return before.map((p, i) => lerpPoint(p, after[i], t));
+}
+
 /** Similarity is negative distance — closer points score higher, exactly like a dot-product similarity would. */
 function similarity(a: Point, b: Point): number {
   return -distance(a, b);

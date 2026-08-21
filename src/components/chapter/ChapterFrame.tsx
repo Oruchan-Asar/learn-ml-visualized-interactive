@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import Link from "next/link";
 import { CURRICULUM, getChapterMeta, getChapterNeighbors, getShippedChapters } from "@/lib/curriculum";
 import { useCheckpointPassed } from "@/lib/mastery/useCheckpointPassed";
@@ -27,6 +27,14 @@ export function ChapterFrame({ slug, children }: ChapterFrameProps) {
   const { index, prev, next } = getChapterNeighbors(slug);
   const shippedCount = getShippedChapters().length;
   const parts = [...new Set(CURRICULUM.map((c) => c.part))];
+
+  // The current chapter's part auto-expands, but for a chapter deep into the curriculum that part can
+  // still sit far below the fold in the (independently scrollable) contents list — scroll it into view
+  // on every navigation so the sidebar always opens already focused on where you actually are.
+  const currentLinkRef = useRef<HTMLAnchorElement>(null);
+  useEffect(() => {
+    currentLinkRef.current?.scrollIntoView({ block: "center" });
+  }, [slug]);
 
   return (
     <div className={styles.layout}>
@@ -69,6 +77,7 @@ export function ChapterFrame({ slug, children }: ChapterFrameProps) {
                         <li key={c.slug}>
                           <Link
                             href={`/chapter/${c.slug}`}
+                            ref={isCurrent ? currentLinkRef : undefined}
                             className={isCurrent ? styles.overviewLinkCurrent : styles.overviewLink}
                           >
                             <span>

@@ -12,6 +12,7 @@ import {
   similarityMatrix,
   rowSoftmax,
   contrastiveLoss,
+  lerpPoints,
 } from "@/lib/math-core/contrastive-learning";
 import { recordCheckpointAttempt } from "@/lib/mastery/store";
 import { useCheckpointPassed } from "@/lib/mastery/useCheckpointPassed";
@@ -62,14 +63,18 @@ export function PlayDemo() {
   );
 }
 
-/** Checkpoint: find the state where the loss drops below a target. */
+/**
+ * Checkpoint: drag a continuous "training progress" slider (0 = BEFORE, 1 = AFTER) until the loss drops
+ * below the target — the loss falls smoothly and only crosses 0.2 around 78% of the way through, so
+ * there's no shortcut label to read off; the learner has to actually watch the number.
+ */
 export function ContrastiveCheckpoint() {
-  const [trained, setTrained] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [hasInteracted, setHasInteracted] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
-  const images = trained ? IMAGES_AFTER : IMAGES_BEFORE;
-  const captions = trained ? CAPTIONS_AFTER : CAPTIONS_BEFORE;
+  const images = lerpPoints(IMAGES_BEFORE, IMAGES_AFTER, progress);
+  const captions = lerpPoints(CAPTIONS_BEFORE, CAPTIONS_AFTER, progress);
   const loss = contrastiveLoss(images, captions);
   const passed = loss < 0.2;
 
@@ -79,34 +84,31 @@ export function ContrastiveCheckpoint() {
 
   return (
     <CheckpointFrame
-      instructions={<>Find the state where the contrastive loss drops below <strong>0.2</strong>.</>}
+      instructions={<>Drag training progress until the contrastive loss drops below <strong>0.2</strong>.</>}
       passed={passed || everPassed}
       hasInteracted={hasInteracted}
-      idleLabel="Toggle the state to try it"
+      idleLabel="Drag the slider to try it"
     >
-      <div className={styles.buttons}>
-        <button
-          type="button"
-          className={!trained ? styles.buttonActive : styles.button}
-          onClick={() => {
+      <KernelHeatmap
+        kernel={rowSoftmax(similarityMatrix(images, captions))}
+        width={200}
+        label={`training progress ${(progress * 100).toFixed(0)}%  —  loss ${loss.toFixed(3)}`}
+      />
+      <label className={styles.sliderRow}>
+        training progress
+        <input
+          type="range"
+          min={0}
+          max={1}
+          step={0.01}
+          value={progress}
+          onChange={(e) => {
             setHasInteracted(true);
-            setTrained(false);
+            setProgress(Number(e.target.value));
           }}
-        >
-          Before training
-        </button>
-        <button
-          type="button"
-          className={trained ? styles.buttonActive : styles.button}
-          onClick={() => {
-            setHasInteracted(true);
-            setTrained(true);
-          }}
-        >
-          After training
-        </button>
-      </div>
-      <KernelHeatmap kernel={rowSoftmax(similarityMatrix(images, captions))} width={200} label={`loss ${loss.toFixed(3)}`} />
+        />
+        {(progress * 100).toFixed(0)}%
+      </label>
     </CheckpointFrame>
   );
 }

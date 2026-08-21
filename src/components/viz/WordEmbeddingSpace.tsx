@@ -81,6 +81,11 @@ export function WordEmbeddingSpace({
           const cy = scaleY(w.y);
           const r = isQuery || isNearest ? 9 : 6;
           const pointClass = isQuery ? styles.pointQuery : isNearest ? styles.pointNearest : styles.point;
+          // Squares (one modality) label above, circles/triangles (the other) label below — so a pair
+          // placed deliberately close together, the whole point of a cross-modal space, never collides.
+          // Unshaped points (plain word-embedding usage, no modality distinction) keep the original "above".
+          const labelBelow = w.shape === "circle" || w.shape === "triangle";
+          const labelY = labelBelow ? cy + r + 16 : cy - r - 6;
           return (
             <g
               key={w.label}
@@ -94,7 +99,7 @@ export function WordEmbeddingSpace({
               ) : (
                 <circle cx={cx} cy={cy} r={r} className={pointClass} />
               )}
-              <text x={cx} y={cy - 14} textAnchor="middle" className={styles.wordLabel}>
+              <text x={cx} y={labelY} textAnchor="middle" className={styles.wordLabel}>
                 {w.label}
               </text>
             </g>
