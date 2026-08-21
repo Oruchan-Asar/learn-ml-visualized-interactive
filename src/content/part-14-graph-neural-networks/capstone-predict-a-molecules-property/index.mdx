@@ -1,0 +1,79 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MoleculeCheckpoint } from "./Demos";
+
+<Hook>
+  Six atoms with the exact same six starting properties can still be six *different molecules* — a ring,
+  a chain, a star, wired up differently. A model that only looked at atom features and ignored the bonds
+  would predict the exact same thing for all three. Can message passing and attention, wired together,
+  actually tell them apart?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same six atoms, same six starting features, every time — only the bonds change. Watch the predicted
+  property move as you switch structures. Nothing about any single atom changed; only who it's connected
+  to did.
+</Intuition>
+
+<Formalize>
+  This capstone chains the last two chapters' rules into a single two-layer pipeline, then reduces the
+  result to one number:
+
+  $$
+  h^{(1)} = \text{GCN}(h^{(0)}), \qquad h^{(2)} = \text{GAT}(h^{(1)}), \qquad \hat{y} = \sum_v h^{(2)}_v
+  $$
+
+  Layer 1 is Chapter 2's plain neighborhood mean — every atom blends with its bonded neighbors, no
+  weighting. Layer 2 is last chapter's attention rule, applied *on top of* layer 1's output, not the raw
+  features — so by the time attention runs, every value already carries a first hop of neighbor
+  information. The final sum — a **readout** — is the simplest way to turn six per-atom numbers into one
+  whole-molecule prediction: real molecular property predictors do exactly this, summing (or averaging)
+  learned atom embeddings into a single graph-level output.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Three different numbers, from three different arrangements of the exact same six atoms. The ring's
+  prediction is the highest of the three — every atom in the ring's 3-cycle (nodes 0, 1, 2) has at least
+  two neighbors to draw on, where the chain's end atoms have only one.
+</Play>
+
+<WorkedExample>
+  Atom $0$ on the **ring** structure, through both layers:
+
+  <Steps>
+    <Step label="Layer 1 (GCN): mean over atom 0's neighborhood {0, 1, 2}">
+      $h^{(1)}_0 = \frac{1+2+0}{3} = 1.0$. The same round also gives $h^{(1)}_1 = 1.5$ and
+      $h^{(1)}_2 = 1.0$ — needed next, since layer 2 attends over *these* values, not the raw ones.
+    </Step>
+    <Step label="Layer 2 (GAT): attention over the same neighborhood, using layer 1's output">
+      Scores: $e_{0,0}=0$, $e_{0,1}=\text{LeakyReLU}(1.5-1.0)=0.5$, $e_{0,2}=\text{LeakyReLU}(1.0-1.0)=0$.
+      Softmax gives weights $\approx(0.274,\ 0.452,\ 0.274)$ — atom $1$ dominates, since it's the only
+      neighbor layer 1 pushed higher than atom $0$ itself.
+    </Step>
+    <Step label="Atom 0's final embedding">
+      $h^{(2)}_0 \approx 0.274(1.0) + 0.452(1.5) + 0.274(1.0) \approx 1.226$. Repeat this for all six
+      atoms and sum the results, and the ring's whole-molecule prediction comes out to about
+      $10.278$ — versus about $9.250$ for the exact same atoms wired into a chain instead.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MoleculeCheckpoint />
+
+<Summary>
+  $$
+  \hat{y} = \sum_v \text{GAT}\big(\text{GCN}(h^{(0)})\big)_v
+  $$
+
+  Two layers, two different rules, one readout — and the atoms never had to change for the prediction to
+  change. That's the entire reason this part exists: a molecule's properties depend on its *bonds*, not
+  just its atoms, and a plain feedforward network fed only atom features has no way to see that at all.
+  Real molecular GNNs stack more layers, learn every weight instead of fixing them by hand, and use richer
+  readouts — but the shape of the pipeline (message passing, then attention, then pooling to one number)
+  is exactly what's here. Part XV turns to a different structural limitation entirely: what happens when
+  the "neighbors" aren't a handful of bonded atoms, but every previous token in a sequence thousands of
+  positions long.
+</Summary>

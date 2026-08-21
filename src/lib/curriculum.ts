@@ -1021,7 +1021,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Predict a molecule's property from its bonds",
     blurb: "Wire message passing and attention together to guess a tiny molecule's property from its atoms and bonds alone.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 
