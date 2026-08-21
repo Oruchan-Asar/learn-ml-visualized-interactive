@@ -1,8 +1,8 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
 
 <Hook>
-  The GAN's adversarial game is famously hard to keep stable. Diffusion models sidestep the contest entirely with a strange trick: deliberately destroy the data with noise, step by step, until nothing recognizable is left — then train a model to undo exactly one small step of that destruction at a time.
+  The **GAN**'s — short for **Generative Adversarial Network** — adversarial game is famously hard to keep stable. Diffusion models sidestep the contest entirely with a strange trick: deliberately destroy the data with noise, step by step, until nothing recognizable is left — then train a model to undo exactly one small step of that destruction at a time.
 </Hook>
 
 <Intuition>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
   $$
   x_{t-1} = \frac{x_t - \sqrt{\beta_t}\,\hat\epsilon_t}{\sqrt{\alpha_t}}
   $$
+
+  <Variables>
+    <Variable>**$x_t$** — the (increasingly noisy) value at step $t$.</Variable>
+    <Variable>**$x_{t-1}$** — the value one step earlier: less noisy, one step closer to the original data.</Variable>
+    <Variable>**$\beta_t$** — how much noise step $t$ adds to the signal, fixed by a schedule.</Variable>
+    <Variable>**$\alpha_t$** — shorthand for $1-\beta_t$: how much of the previous signal survives this step.</Variable>
+    <Variable>**$\hat\epsilon_t$** — the trained model's predicted noise at step $t$, used to undo the forward step.</Variable>
+  </Variables>
 
   This is exactly the forward equation solved for $x_{t-1}$. If $\hat\epsilon_t$ equals the true $\epsilon_t$ at every step, this exactly inverts the forward process. The entire training problem reduces to one question: can a network predict, from a noisy $x_t$, what noise was added to get there?
 </Formalize>
