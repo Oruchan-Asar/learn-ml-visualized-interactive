@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, RegularizationCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, RegularizationCheckpoint } from "./Demos";
   $$
   \text{L2 (Ridge): } \; \text{SSE} + \lambda \sum_j \beta_j^2 \qquad\qquad \text{L1 (Lasso): } \; \text{MSE} + \lambda \sum_j |\beta_j|
   $$
+
+  <Variables>
+    <Variable>**L2 (Ridge)** — the **L2 norm** penalty, $\sum_j \beta_j^2$, which shrinks every coefficient smoothly toward zero.</Variable>
+    <Variable>**L1 (Lasso)** — the **L1 norm** penalty, $\sum_j |\beta_j|$, which can drive weak coefficients to exactly zero.</Variable>
+    <Variable>**SSE** — short for **Sum of Squared Errors**: the raw, unaveraged squared-error loss that Ridge penalizes.</Variable>
+    <Variable>**MSE** — short for **Mean Squared Error**: the averaged squared-error loss that Lasso penalizes.</Variable>
+    <Variable>**$\lambda$** — the penalty strength; larger $\lambda$ shrinks coefficients harder.</Variable>
+    <Variable>**$\beta_j$** — the model's $j$-th coefficient.</Variable>
+  </Variables>
 
   Both shrink coefficients toward zero as $\lambda$ grows. The difference is in *how*: L2's penalty is smooth everywhere, so it shrinks every coefficient a little without ever fully canceling one out. L1's penalty has a sharp corner at zero, and that corner is exactly where coordinate-wise optimization tends to land — driving weak coefficients to *exactly* $0$, not just close to it. (Ridge here penalizes the raw sum of squared error, Lasso the mean — the standard convention, matching what most libraries do — so the same $\lambda$ lands at a different strength for each; it's the zeroing behavior that's the point of the comparison, not the raw magnitude of $\lambda$.)
 </Formalize>
