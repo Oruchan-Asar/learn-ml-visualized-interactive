@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 
 <Hook>
@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  Same house from Chapter 6: size $25$, age $5$, distance $8$, renovated. Switch lenses. Saliency reports the raw weight magnitudes — the same four numbers no matter which house you ask about. SHAP reports each feature's actual pull on *this* house's price, relative to a typical one. Counterfactual reports something else again: how much each feature would have to move to flip an approve/deny decision.
+  Same house from Chapter 6: size $25$, age $5$, distance $8$, renovated. Switch lenses. Saliency reports the raw weight magnitudes — the same four numbers no matter which house you ask about. **SHAP** — short for **SHapley Additive exPlanations** — reports each feature's actual pull on *this* house's price, relative to a typical one. Counterfactual reports something else again: how much each feature would have to move to flip an approve/deny decision.
 </Intuition>
 
 <Formalize>
@@ -17,6 +17,17 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
   $$
   \text{saliency}_i = |w_i|, \qquad \text{SHAP}_i = w_i(x_i-\bar x_i), \qquad \Delta^{\text{cf}} = -\frac{f(x)}{\lVert w \rVert^2}\,w
   $$
+
+  <Variables>
+    <Variable>**$\text{saliency}_i$** — feature $i$'s raw sensitivity: the magnitude of its weight, the same for every input.</Variable>
+    <Variable>**$w_i$** — the linear model's weight for feature $i$.</Variable>
+    <Variable>**$\text{SHAP}_i$** — feature $i$'s actual contribution to this specific house's prediction.</Variable>
+    <Variable>**$x_i$** — this house's actual value for feature $i$.</Variable>
+    <Variable>**$\bar x_i$** — feature $i$'s baseline (typical) value.</Variable>
+    <Variable>**$\Delta^{\text{cf}}$** — the counterfactual edit: how much each feature would need to change to flip the decision.</Variable>
+    <Variable>**$f(x)$** — the model's prediction for input $x$.</Variable>
+    <Variable>**$w$** — the full weight vector.</Variable>
+  </Variables>
 
   Saliency answers "how sensitive is the output to this feature, in general." SHAP answers "how much did this feature's *actual value* move this prediction away from typical." Counterfactual answers "what's the cheapest edit that changes the *decision*." None of them is wrong — they're just not the same question, and mixing them up is a real, common mistake.
 </Formalize>
@@ -55,5 +66,5 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
   \text{saliency}_i = |w_i|, \qquad \text{SHAP}_i = w_i(x_i-\bar x_i), \qquad \Delta^{\text{cf}} = -\frac{f(x)}{\lVert w \rVert^2}\,w
   $$
 
-  Every explanation technique in this part traces back to the same handful of ideas from earlier in the course: a derivative (saliency, Grad-CAM), a weighted local fit (LIME), a fair game-theoretic split (Shapley, SHAP), and a gradient step toward a boundary (counterfactuals). None of them is "the" explanation — each answers a genuinely different question about the same model, and picking the right one means knowing which question you're actually asking. That's the real skill this part was building toward: not running an explainability library, but knowing what its output does and doesn't tell you. Explainability comes back for a second, deeper pass later in the course, once there are less transparent models — and a wider roster of architectures — actually worth auditing.
+  Every explanation technique in this part traces back to the same handful of ideas from earlier in the course: a derivative (saliency, **Grad-CAM** — short for **Gradient-weighted Class Activation Mapping**), a weighted local fit (**LIME** — short for **Local Interpretable Model-agnostic Explanations**), a fair game-theoretic split (Shapley, SHAP), and a gradient step toward a boundary (counterfactuals). None of them is "the" explanation — each answers a genuinely different question about the same model, and picking the right one means knowing which question you're actually asking. That's the real skill this part was building toward: not running an explainability library, but knowing what its output does and doesn't tell you. Explainability comes back for a second, deeper pass later in the course, once there are less transparent models — and a wider roster of architectures — actually worth auditing.
 </Summary>
