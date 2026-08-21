@@ -36,6 +36,7 @@ export function IntuitionDemo() {
       nearestLabel={doc.label}
       onSelectWord={selectQueryOnly(setQuery)}
       domain={DOMAIN}
+      size={440}
       readout={`retrieved "${doc.label}" → answer: "${doc.answer}"`}
     />
   );
@@ -63,6 +64,7 @@ export function PlayDemo() {
         nearestLabel={useRetrieval ? doc.label : null}
         onSelectWord={selectQueryOnly(setQuery)}
         domain={DOMAIN}
+        size={440}
         readout={`${useRetrieval ? "grounded" : "ungrounded"} answer: "${answer}"`}
       />
       <div className={styles.buttons}>

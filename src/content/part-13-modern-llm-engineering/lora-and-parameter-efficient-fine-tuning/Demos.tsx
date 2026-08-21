@@ -20,6 +20,10 @@ import styles from "../../part-2-classical-ml/gradient-descent-variants/DescentC
 
 const CONCEPT_ID = "lora-and-parameter-efficient-fine-tuning";
 const STEP_OPTIONS = [1, 20, 100];
+// Loss falls across ~30 orders of magnitude (1 step vs. 100 steps) as LoRA converges. A bar
+// self-normalized to its own value is always full-length regardless of the number — comparing
+// against the untrained starting loss instead makes the bar shrink as training actually progresses.
+const STARTING_LOSS = loraLoss(LORA_START);
 
 /** Intuition beat: step through LoRA's training and watch its low-rank approximation converge onto the target. */
 export function IntuitionDemo() {
@@ -37,7 +41,12 @@ export function IntuitionDemo() {
         ))}
       </div>
       <KernelHeatmap kernel={approx} label="LoRA's rank-1 approximation of the target update" />
-      <ContributionBars items={[{ label: "loss vs. target", value: loraLoss(final) }]} formatValue={(v) => v.toExponential(2)} readout={`${LORA_PARAM_COUNT} trainable parameters (2 length-4 vectors)`} />
+      <ContributionBars
+        items={[{ label: "loss vs. start", value: loraLoss(final) }]}
+        formatValue={(v) => v.toExponential(2)}
+        max={STARTING_LOSS}
+        readout={`${LORA_PARAM_COUNT} trainable parameters (2 length-4 vectors)`}
+      />
     </>
   );
 }
@@ -99,7 +108,7 @@ export function LoRACheckpoint() {
           </button>
         ))}
       </div>
-      {loss !== null && <ContributionBars items={[{ label: "loss", value: loss }]} formatValue={(v) => v.toExponential(2)} />}
+      {loss !== null && <ContributionBars items={[{ label: "loss", value: loss }]} formatValue={(v) => v.toExponential(2)} max={STARTING_LOSS} />}
     </CheckpointFrame>
   );
 }

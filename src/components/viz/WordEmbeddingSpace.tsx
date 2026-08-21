@@ -51,6 +51,7 @@ export function WordEmbeddingSpace({
         className={styles.svg}
         role="img"
         aria-label="A 2D embedding space — each point is an item, positioned so distance reflects meaning."
+        style={{ maxWidth: size }}
       >
         {extraPoint && (
           <g>

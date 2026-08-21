@@ -118,7 +118,7 @@ export function AnchorsCheckpoint() {
           </button>
         ))}
       </div>
-      {revealed && stats && <ContributionBars items={[{ label: "precision", value: stats.precision }]} formatValue={(v) => v.toFixed(3)} />}
+      {revealed && stats && <ContributionBars items={[{ label: "precision", value: stats.precision }]} formatValue={(v) => v.toFixed(3)} max={1} />}
     </CheckpointFrame>
   );
 }

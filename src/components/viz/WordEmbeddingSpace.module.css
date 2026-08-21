@@ -30,7 +30,7 @@
 
 .wordLabel {
   font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12px;
+  font-size: 10px;
   fill: var(--ink-soft);
 }
 
@@ -41,7 +41,7 @@
 
 .extraLabel {
   font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   fill: var(--accent-ink);
 }

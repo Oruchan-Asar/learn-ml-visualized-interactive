@@ -13,7 +13,7 @@ export interface KernelHeatmapProps {
 }
 
 /** A small NxN kernel as a diverging heatmap — warm for positive weights, cool for negative, opacity by magnitude. */
-export function KernelHeatmap({ kernel, label, width = 130, onCellClick, selected }: KernelHeatmapProps) {
+export function KernelHeatmap({ kernel, label, width = 160, onCellClick, selected }: KernelHeatmapProps) {
   const size = kernel.length;
   const cell = width / size;
   const maxAbs = Math.max(1e-6, ...kernel.flat().map(Math.abs));

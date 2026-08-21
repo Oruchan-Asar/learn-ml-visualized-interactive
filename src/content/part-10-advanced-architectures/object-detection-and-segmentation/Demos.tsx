@@ -49,7 +49,7 @@ export function IntuitionDemo() {
         ))}
       </div>
       <KernelHeatmap kernel={overlapGrid(offset)} label="Ground truth (light) vs predicted (dark) box overlap" />
-      <ContributionBars items={[{ label: "IoU", value: boxIoU }]} formatValue={(v) => v.toFixed(3)} readout={`match threshold: IoU ≥ ${IOU_MATCH_THRESHOLD}`} />
+      <ContributionBars items={[{ label: "IoU", value: boxIoU }]} formatValue={(v) => v.toFixed(3)} max={1} readout={`match threshold: IoU ≥ ${IOU_MATCH_THRESHOLD}`} />
     </>
   );
 }
@@ -111,7 +111,7 @@ export function ObjectDetectionCheckpoint() {
           </button>
         ))}
       </div>
-      {boxIoU !== null && <ContributionBars items={[{ label: "IoU", value: boxIoU }]} formatValue={(v) => v.toFixed(3)} />}
+      {boxIoU !== null && <ContributionBars items={[{ label: "IoU", value: boxIoU }]} formatValue={(v) => v.toFixed(3)} max={1} />}
     </CheckpointFrame>
   );
 }

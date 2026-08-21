@@ -11,7 +11,7 @@
 
 .row {
   display: grid;
-  grid-template-columns: 100px 1fr 56px;
+  grid-template-columns: 100px 1fr auto;
   align-items: center;
   gap: 8px;
 }
@@ -60,6 +60,8 @@
   font-size: 13px;
   color: var(--ink-soft);
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  text-align: right;
 }
 
 .readout {

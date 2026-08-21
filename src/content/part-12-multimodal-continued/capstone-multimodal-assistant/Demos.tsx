@@ -35,7 +35,14 @@ export function IntuitionDemo() {
           </button>
         ))}
       </div>
-      <WordEmbeddingSpace words={SHAPED_ITEMS} queryLabel={audioLabel} nearestLabel={result.retrievedCaption} domain={DOMAIN} readout={`retrieved: "${result.retrievedCaption}" (distance ${result.retrievalDistance.toFixed(2)})`} />
+      <WordEmbeddingSpace
+        words={SHAPED_ITEMS}
+        queryLabel={audioLabel}
+        nearestLabel={result.retrievedCaption}
+        domain={DOMAIN}
+        size={440}
+        readout={`retrieved: "${result.retrievedCaption}" (distance ${result.retrievalDistance.toFixed(2)})`}
+      />
       <MultiCurvePlayground
         curves={[toCurve(result.noiseUsed)]}
         domain={[0, 4]}
@@ -95,7 +102,14 @@ export function AssistantCheckpoint() {
           </button>
         ))}
       </div>
-      {chosen && <ContributionBars items={[{ label: "generated value", value: chosen.generatedValue }]} formatValue={(v) => v.toFixed(3)} readout={`retrieved: "${chosen.retrievedCaption}"`} />}
+      {chosen && (
+        <ContributionBars
+          items={[{ label: "generated value", value: chosen.generatedValue }]}
+          formatValue={(v) => v.toFixed(3)}
+          max={5}
+          readout={`retrieved: "${chosen.retrievedCaption}"`}
+        />
+      )}
     </CheckpointFrame>
   );
 }

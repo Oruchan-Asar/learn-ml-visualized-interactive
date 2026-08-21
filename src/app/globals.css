@@ -84,11 +84,17 @@ code {
   color: var(--ink);
 }
 
-/* A wide inline formula (e.g. two expressions joined by "vs" or an arrow) has no natural wrap point —
-   without this, it silently overflows its card's right edge instead of scrolling. */
+/* A wide inline formula (e.g. two expressions joined by "vs" or an arrow) has no natural wrap point.
+   MathAutoFit (mounted in layout.tsx) shrinks its font size to fit the available width instead —
+   scrolling a formula sideways is a worse reading experience than a smaller one, and it only falls
+   back to a scrollbar (added by MathAutoFit itself, as an inline style) on the rare formula still too
+   wide at its minimum legible size. Overflow must stay "visible" on BOTH axes here, not just
+   overflow-y: per the CSS overflow spec, "visible" on one axis is force-computed to "auto" whenever
+   the other axis isn't "visible" too — so overflow-x: auto with overflow-y: visible actually computes
+   to overflow-y: auto, which still clips a \xrightarrow{fixed}-style label drawn above the box's own
+   line (that clipping was a real, shipped bug). Leaving both "visible" here avoids that coercion. */
 .katex-display {
-  overflow-x: auto;
-  overflow-y: hidden;
+  overflow: visible;
   max-width: 100%;
-  padding-bottom: 2px;
+  padding: 4px 0 6px;
 }
