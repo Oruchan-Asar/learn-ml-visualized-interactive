@@ -4,9 +4,21 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
 import type { ChapterMeta } from "@/lib/curriculum";
+import { useCheckpointPassed } from "@/lib/mastery/useCheckpointPassed";
 
 export interface HomeSearchProps {
   curriculum: ChapterMeta[];
+}
+
+/** Its own component so the hook is called once per card, not inside a .map callback. */
+function MasteryCheck({ slug }: { slug: string }) {
+  const passed = useCheckpointPassed(slug);
+  if (!passed) return null;
+  return (
+    <span className={styles.masteryCheck} aria-label="Checkpoint passed">
+      ✓
+    </span>
+  );
 }
 
 /**
@@ -69,7 +81,10 @@ export function HomeSearch({ curriculum }: HomeSearchProps) {
               {visible.map((c) =>
                 c.status === "shipped" ? (
                   <Link key={c.slug} href={`/chapter/${c.slug}`} className={styles.card}>
-                    <span className={styles.cardNumber}>Chapter {c.chapterNumber}</span>
+                    <div className={styles.cardHeader}>
+                      <span className={styles.cardNumber}>Chapter {c.chapterNumber}</span>
+                      <MasteryCheck slug={c.slug} />
+                    </div>
                     <h2 className={styles.cardTitle}>{c.title}</h2>
                     <p className={styles.cardBlurb}>{c.blurb}</p>
                   </Link>

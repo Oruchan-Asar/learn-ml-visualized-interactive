@@ -162,6 +162,12 @@
   font-size: 13px;
 }
 
+.masteryCheck {
+  flex-shrink: 0;
+  color: var(--accent2-ink);
+  font-weight: 700;
+}
+
 .plannedTag {
   font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
   font-size: 10.5px;
