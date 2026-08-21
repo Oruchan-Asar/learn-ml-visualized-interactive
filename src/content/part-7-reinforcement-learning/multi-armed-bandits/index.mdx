@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BanditsCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, BanditsCheckpoint } from "./Demos";
   $$
   \hat{Q}(a) = \frac{1}{n_a}\sum_{i=1}^{n_a} r_i, \qquad \text{greedy choice} = \underset{a}{\arg\max}\; \hat{Q}(a)
   $$
+
+  <Variables>
+    <Variable>**$\hat{Q}(a)$** — the running-average estimate of arm $a$'s value, updated after every pull.</Variable>
+    <Variable>**$a$** — one of the arms (actions) available to pull.</Variable>
+    <Variable>**$n_a$** — the number of times arm $a$ has been pulled so far.</Variable>
+    <Variable>**$r_i$** — the reward received on the $i$-th pull of that arm.</Variable>
+  </Variables>
 
   A purely greedy policy — always pull whichever arm currently looks best — can get stuck: an early lucky (or unlucky) run of pulls can lock in a wrong estimate before enough evidence comes in to correct it. **Epsilon-greedy** fixes this with the simplest possible patch: most of the time pull the current best arm (*exploit*), but some fraction of the time pull a different one anyway, just to keep checking (*explore*).
 </Formalize>
