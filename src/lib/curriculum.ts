@@ -954,7 +954,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 6,
     title: "Ship a tiny fine-tuned assistant",
     blurb: "LoRA, a system prompt, and a KV-cache — the whole gap between a capstone and a product.",
-    status: "planned",
+    status: "shipped",
     capstone: true,
   },
 ];

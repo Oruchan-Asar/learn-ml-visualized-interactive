@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ShipAssistantCheckpoint } from "./Demos";
+
+<Hook>
+  A trained model isn't a product. A product needs a cheap way to specialize it, a cheap way to steer it per request, and a cheap way to actually serve it. This part built exactly those three things, separately. Wire them together, and that's a shipped assistant.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  One backbone, fine-tuned once via LoRA. Two different system prompts, applied at request time with no retraining at all. The same underlying model, two different jobs.
+</Intuition>
+
+<Formalize>
+  Three mechanisms, three chapters, one pipeline:
+
+  $$
+  \underbrace{W + BA}_{\text{LoRA backbone}} \;\xrightarrow{\text{fixed}}\; \underbrace{\hat y(x_q) = \textstyle\sum_i w_i(x_q) y_i}_{\text{prompted per request}} \;\xrightarrow{\text{served via}}\; \underbrace{\text{KV cache}}_{\text{linear, not quadratic, cost}}
+  $$
+
+  The backbone is fine-tuned exactly once, offline. Every request reuses that same frozen backbone, steered only by whatever system prompt accompanies it. Serving many such requests stays cheap because each individual generation reuses its own cached attention, not because the model got any smaller.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Half the trainable parameters to reach the backbone. Two completely different behaviors from one frozen backbone, chosen purely by prompt. Fifty times less total serving work across a batch of requests. None of these three numbers depends on the other two — that's what makes them composable into one pipeline instead of one monolithic system.
+</Play>
+
+<WorkedExample>
+  Fine-tune once, prompt per request, serve 50 requests of 100 tokens each:
+
+  <Steps>
+    <Step label="Fine-tune the backbone with LoRA, once">
+      The rank-1 update converges to loss $\approx6.16\times10^{-31}$ using $8$ trainable parameters instead of
+      $16$ — the exact result verified in this part's first chapter, unchanged here.
+    </Step>
+    <Step label="Steer behavior per request with a system prompt">
+      The same frozen backbone, prompted with "double" demonstrations, answers $\approx4.534$ for a query of
+      $2.5$. Prompted with "negate" demonstrations instead, the identical backbone answers $\approx-2.267$ — no
+      retraining, no change to a single weight.
+    </Step>
+    <Step label="Serve both, cheaply">
+      $50$ requests at $100$ tokens each cost $252{,}500$ units of attention work without a KV cache, and just
+      $5{,}000$ with one — a $50.5\times$ reduction, applied identically regardless of which prompt each request
+      used.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ShipAssistantCheckpoint />
+
+<Summary>
+  $$
+  \text{fine-tune once (LoRA)} + \text{steer per request (prompting)} + \text{serve cheaply (caching)} = \text{a shippable assistant}
+  $$
+
+  None of these three mechanisms is new in this chapter — every number here was already verified, separately, in the three chapters that came before it. What's new is only the composition: a specialization step that happens once, a steering step that happens per request with no retraining, and a serving step that makes many such requests affordable. That gap — between a model that works in one demo and a model that can actually serve real traffic — is most of what "modern LLM engineering" means in practice. This closes Part XIII — Modern LLM Engineering, and with it, the full expansion of this course: forty-three chapters across reinforcement learning, classical ML, model evaluation, advanced architectures, explainability, multimodal systems, and the engineering that ships all of it.
+</Summary>
