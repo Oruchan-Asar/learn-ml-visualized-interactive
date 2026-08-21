@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ContrastiveCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, ContrastiveCheckpoint } from "./Demos";
   $$
   \mathcal{L} = \frac{1}{2}\left(\underbrace{-\frac{1}{n}\sum_i \log P(\text{caption}_i \mid \text{image}_i)}_{\text{image} \to \text{caption}} + \underbrace{-\frac{1}{n}\sum_i \log P(\text{image}_i \mid \text{caption}_i)}_{\text{caption} \to \text{image}}\right)
   $$
+
+  <Variables>
+    <Variable>**$\mathcal{L}$** — the contrastive loss being minimized, averaged over both directions.</Variable>
+    <Variable>**$n$** — the number of image-caption pairs in the batch.</Variable>
+    <Variable>**$\text{image}_i$, $\text{caption}_i$** — the $i$-th image and its true, paired caption.</Variable>
+    <Variable>**$P(\text{caption}_i \mid \text{image}_i)$** — the probability the model assigns to the true caption given the image (and symmetrically for the other direction).</Variable>
+  </Variables>
 
   There are no hand-written labels anywhere in this formula — the "true pairing" is just whichever image and caption arrived together in the training data. Every *other* image in the same batch automatically becomes a negative example for every *other* caption, for free.
 </Formalize>
@@ -59,5 +66,5 @@ import { IntuitionDemo, PlayDemo, ContrastiveCheckpoint } from "./Demos";
   \mathcal{L} = \frac{1}{2}\left(-\frac{1}{n}\sum_i \log P(\text{caption}_i \mid \text{image}_i) -\frac{1}{n}\sum_i \log P(\text{image}_i \mid \text{caption}_i)\right)
   $$
 
-  This is the core idea behind CLIP and every model like it: pull matched pairs together, push every mismatched pair apart, using nothing but which examples arrived side by side. Chapter 1's space didn't come from nowhere — this loss, minimized over millions of image-caption pairs instead of three, is what places it. The next chapter asks what a model does with that shared space once it has one: not just measuring distance, but letting one modality directly *query* the other.
+  This is the core idea behind **CLIP** — short for **Contrastive Language–Image Pretraining** — and every model like it: pull matched pairs together, push every mismatched pair apart, using nothing but which examples arrived side by side. Chapter 1's space didn't come from nowhere — this loss, minimized over millions of image-caption pairs instead of three, is what places it. The next chapter asks what a model does with that shared space once it has one: not just measuring distance, but letting one modality directly *query* the other.
 </Summary>
