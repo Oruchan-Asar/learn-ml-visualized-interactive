@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, VideoCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,12 @@ import { IntuitionDemo, PlayDemo, VideoCheckpoint } from "./Demos";
   $$
   \text{frame}_t \to \text{embedding}_t + \text{position}_t \;\longrightarrow\; \text{self-attention over every frame in the clip}
   $$
+
+  <Variables>
+    <Variable>**$\text{frame}_t$** — the video frame at time step $t$, treated as one token, the way ViT treats one image patch.</Variable>
+    <Variable>**$\text{embedding}_t$** — that frame's learned token embedding.</Variable>
+    <Variable>**$\text{position}_t$** — the **temporal position embedding**, marking *when* in the clip the frame occurs, in place of ViT's spatial position embedding.</Variable>
+  </Variables>
 
   A local method (frame differencing, a small 1D convolution, a short-memory recurrence) can only relate frames within some fixed temporal window. Self-attention has no such limit: any two frames, however far apart in time, can attend to each other directly, in a single layer.
 </Formalize>
