@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ToolUseCheckpoint } from "./Demos";
 
 <Hook>
@@ -24,11 +24,18 @@ import { IntuitionDemo, PlayDemo, ToolUseCheckpoint } from "./Demos";
   \text{response} = \begin{cases} \texttt{tool\_call}(f, \text{args}) & \text{if a suitable tool exists} \\ \text{free-text guess} & \text{otherwise} \end{cases}
   $$
 
+  <Variables>
+    <Variable>**$\text{response}$** — what the model actually outputs for a given request.</Variable>
+    <Variable>**$f$** — the specific tool chosen from the menu, identified by name.</Variable>
+    <Variable>**$\text{args}$** — the object of arguments passed to that tool, filled in from the request.</Variable>
+    <Variable>**$\texttt{tool\_call}(f, \text{args})$** — the structured object — a function name plus its arguments — that gets executed outside the model.</Variable>
+  </Variables>
+
   Nothing about the model's underlying weights changes between the two cases — this is the exact same
   "frozen mechanism, environment provides the option" idea from Part XIII's prompting chapter, just
   applied to which *tools* are on the menu instead of which *examples* are in the prompt. The tool call
-  itself is just a structured object (a function name plus a JSON object of arguments) that gets executed
-  outside the model and its result fed back in.
+  itself is just a structured object (a function name plus a **JSON (JavaScript Object Notation)** object
+  of arguments) that gets executed outside the model and its result fed back in.
 </Formalize>
 
 <Play>
