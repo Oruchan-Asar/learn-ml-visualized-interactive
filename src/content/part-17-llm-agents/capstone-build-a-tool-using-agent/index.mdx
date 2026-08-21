@@ -1,8 +1,8 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AgentCapstoneCheckpoint } from "./Demos";
 
 <Hook>
-  "What's my total trip cost in USD?" — a plain-looking question that no single mechanism from this part
+  "What's my total trip cost in **USD (US Dollars)**?" — a plain-looking question that no single mechanism from this part
   can answer alone. The hotel cost is outside the context window. The flight price is in the wrong
   currency. Getting both, correctly, and combining them only once both are ready, needs all three.
 </Hook>
@@ -22,6 +22,12 @@ import { IntuitionDemo, PlayDemo, AgentCapstoneCheckpoint } from "./Demos";
   $$
   \{\text{retrieve\_hotel\_cost},\ \text{convert\_flight\_price}\} \to \text{compute\_total}
   $$
+
+  <Variables>
+    <Variable>**$\text{retrieve\_hotel\_cost}$** — the task that pulls the hotel price back from memory once it's fallen outside the context window.</Variable>
+    <Variable>**$\text{convert\_flight\_price}$** — the task that turns the flight's price into USD with an exact tool call.</Variable>
+    <Variable>**$\text{compute\_total}$** — the task that sums both costs; it depends on both of the others finishing first.</Variable>
+  </Variables>
 
   Neither of the first two tasks depends on the other — retrieval doesn't need the converted flight
   price, and the currency conversion doesn't need the hotel cost — so a planner is free to run them in
