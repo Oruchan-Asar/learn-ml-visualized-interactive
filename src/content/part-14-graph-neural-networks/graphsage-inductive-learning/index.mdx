@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SamplingGapCheckpoint } from "./Demos";
 
 <Hook>
@@ -15,13 +15,23 @@ import { IntuitionDemo, PlayDemo, SamplingGapCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  **GraphSAGE** ("SAmple and aggreGatE") changes two things about the previous chapter's GCN. First, it
-  aggregates a **fixed-size random sample** of neighbors instead of all of them — bounded work per node,
-  no matter how high the degree gets:
+  **GraphSAGE** ("SAmple and aggreGatE") changes two things about the previous chapter's **GCN** (short for
+  **Graph Convolutional Network**). First, it aggregates a **fixed-size random sample** of neighbors
+  instead of all of them — bounded work per node, no matter how high the degree gets:
 
   $$
   h_v^{(k+1)} = \text{AGGREGATE}\Big(h_v^{(k)}, \; \{h_u^{(k)} : u \in \text{SAMPLE}(\mathcal{N}(v), K)\}\Big)
   $$
+
+  <Variables>
+    <Variable>**$h_v^{(k)}$** — node $v$'s feature after $k$ rounds of message passing.</Variable>
+    <Variable>**$h_v^{(k+1)}$** — node $v$'s updated feature after one more round.</Variable>
+    <Variable>**$h_u^{(k)}$** — a sampled neighbor $u$'s current feature.</Variable>
+    <Variable>**$\mathcal{N}(v)$** — node $v$'s full neighborhood, before sampling.</Variable>
+    <Variable>**SAMPLE($\mathcal{N}(v), K$)** — a fixed-size random draw of $K$ neighbors from $v$'s full neighborhood.</Variable>
+    <Variable>**$K$** — the sample size: how many neighbors get aggregated, regardless of how many actually exist.</Variable>
+    <Variable>**AGGREGATE** — the learned combining function, applied to any neighborhood, seen or unseen.</Variable>
+  </Variables>
 
   Second — and this is the bigger idea — it learns an aggregation *function*, not a per-node lookup
   table. A method that memorizes one embedding vector per node (like node2vec) is **transductive**: it
