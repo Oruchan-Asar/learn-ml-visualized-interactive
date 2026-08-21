@@ -1,0 +1,59 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LoRACheckpoint } from "./Demos";
+
+<Hook>
+  Part X froze a whole network and fine-tuned one number. A real language model's weight matrices have millions of entries — freezing the matrix is easy, but fine-tuning even a *small fraction* of millions of numbers is still a lot of numbers. What if the update those numbers need turns out to have far fewer real degrees of freedom than it looks like?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A 4x4 target update, approximated by the product of two length-4 vectors — 8 numbers standing in for 16. Step through training and watch that low-rank approximation converge onto the real target.
+</Intuition>
+
+<Formalize>
+  **LoRA** freezes a pretrained weight matrix $W$ and represents the fine-tuning update as a low-rank product instead of a full matrix:
+
+  $$
+  W' = W + \Delta W, \qquad \Delta W = B A, \quad B \in \mathbb{R}^{n \times r},\ A \in \mathbb{R}^{r \times n}, \quad r \ll n
+  $$
+
+  A full update to an $n\times n$ matrix costs $n^2$ trainable parameters. A rank-$r$ update costs $2nr$. For a $4096\times4096$ attention matrix and $r=8$, that's roughly $65{,}000$ parameters instead of $16.7$ million — under half a percent. The catch: $\Delta W$ can only ever be rank $\leq r$, however training goes.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The target update, the full fine-tune's result after one step, and LoRA's result after 100 steps — visually indistinguishable. Full fine-tuning used 16 parameters and one step; LoRA used 8 parameters and a hundred steps to land in the same place.
+</Play>
+
+<WorkedExample>
+  A 4x4 target update that happens to be exactly rank-1 — $\Delta W^* = a^*b^{*\top}$ for some vectors $a^*, b^*$:
+
+  <Steps>
+    <Step label="Full fine-tuning: trivial, but 16 parameters">
+      Each of the 16 entries is its own independent quadratic loss, same shape as every "ideal learning rate"
+      example from earlier in this course. At $\eta=0.5$, a full update matches the target exactly in one step.
+    </Step>
+    <Step label="LoRA: 8 parameters, but a harder optimization">
+      $\Delta W \approx ab^\top$ makes the loss a *product* of two vectors, not a sum of independent terms — no
+      one-step closed form. After 100 gradient steps at $\eta=0.02$, the loss drops to $\approx6\times10^{-31}$:
+      effectively exact, at half the parameter count.
+    </Step>
+    <Step label="The learned vectors aren't unique — and that's fine">
+      The trained $a, b$ don't match $a^*, b^*$ directly — scaling $a$ up and $b$ down by the same factor leaves
+      $ab^\top$ unchanged, so infinitely many $(a,b)$ pairs solve this exactly. What matters is the *product*,
+      and that converges to the true update regardless of which particular pair training lands on.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<LoRACheckpoint />
+
+<Summary>
+  $$
+  \Delta W = BA, \qquad \text{cost: } 2nr \text{ instead of } n^2 \quad\text{— exact only if the true update fits inside rank } r
+  $$
+
+  LoRA doesn't make fine-tuning cheaper by approximating carelessly — it bets that the update a specific task actually needs has low intrinsic rank, a bet that holds remarkably often in practice for large pretrained models. When that bet is right, as in this worked example, a rank-1 or rank-8 update recovers essentially the same result as fine-tuning every parameter, at a tiny fraction of the cost. The next chapter looks at a different way large models save compute: routing each input through only a handful of specialized sub-networks instead of the whole model at once.
+</Summary>

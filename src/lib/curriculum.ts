@@ -914,7 +914,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "LoRA & parameter-efficient fine-tuning",
     blurb: "Freeze a huge weight matrix, and learn only a tiny low-rank update instead.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "mixture-of-experts",
