@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, WeightInitCheckpoint } from "./Demos";
 
 <Hook>
@@ -18,6 +18,11 @@ import { IntuitionDemo, PlayDemo, WeightInitCheckpoint } from "./Demos";
   \text{scale} \approx \frac{1}{\sqrt{\text{fan-in}}}
   $$
 
+  <Variables>
+    <Variable>**scale** — the multiplier applied to every randomly-drawn initial weight.</Variable>
+    <Variable>**fan-in** — the number of inputs feeding into a neuron or layer.</Variable>
+  </Variables>
+
   This is the idea behind Xavier/Glorot initialization: pick the initial weight scale from the layer's own size, not a fixed constant, so six layers or sixty behave the same way at the start.
 </Formalize>
 
@@ -32,7 +37,7 @@ import { IntuitionDemo, PlayDemo, WeightInitCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Too small — scale 0.05">
-      About seven times smaller than ideal: the RMS activation drops from about $1.5$ at the input to under
+      About seven times smaller than ideal: the **RMS** (short for **Root Mean Square**) activation drops from about $1.5$ at the input to under
       $0.0001$ by layer 6 — a network that's already numerically dead before a single gradient step.
     </Step>
     <Step label="Too large — scale 1.0">
