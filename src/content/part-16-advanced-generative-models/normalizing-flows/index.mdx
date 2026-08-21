@@ -1,0 +1,69 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, FlowCheckpoint } from "./Demos";
+
+<Hook>
+  Part IV's GAN and Part X's VAE both generate samples from a simple noise source, but neither one tells
+  you the exact probability of any particular output — a VAE only bounds it, a GAN doesn't define one at
+  all. What if the generator were built so that density stayed exactly computable, every step of the way?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag $z$. The point traces out the density curve for $x=z^2$ — not because it's been fit to data, but
+  because it's *derived*, exactly, from how much $f$ stretches space at that $z$.
+</Intuition>
+
+<Formalize>
+  A **normalizing flow** builds $p_X$ from a trivial base density $p_Z$ by pushing it through an
+  invertible, differentiable function $x = f(z)$. In one dimension, the change-of-variables formula says
+  exactly how the density transforms:
+
+  $$
+  p_X(x) = \frac{p_Z\big(f^{-1}(x)\big)}{\left|\, df/dz \,\right|}, \qquad \text{evaluated at } z = f^{-1}(x)
+  $$
+
+  Wherever $f$ *stretches* space ($|df/dz|>1$), the same probability mass spreads over a wider region, so
+  density there goes *down*. Wherever $f$ *compresses* space ($|df/dz|<1$), density goes *up*. Total
+  probability is conserved — it's only ever redistributed, never created or destroyed — which is exactly
+  what makes the density exactly computable instead of merely bounded.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  $Z\sim\text{Uniform}(0,1)$ starts perfectly flat. Squaring it compresses space near $z=0$ (small numbers
+  get squeezed together even harder by squaring) and stretches space near $z=1$ — so density piles up near
+  $x=0$ and thins out near $x=1$, with no information lost anywhere in between.
+</Play>
+
+<WorkedExample>
+  The flow $x = z^2$, evaluated at two points:
+
+  <Steps>
+    <Step label="x = 0.25">
+      $z = f^{-1}(0.25) = \sqrt{0.25} = 0.5$. $df/dz = 2(0.5) = 1$ — no stretching or compressing at all
+      here. $p_X(0.25) = 1/1 = 1$, identical to the base density.
+    </Step>
+    <Step label="x = 0.04">
+      $z = \sqrt{0.04} = 0.2$. $df/dz = 2(0.2) = 0.4$ — space is compressed to less than half its width
+      here. $p_X(0.04) = 1/0.4 = 2.5$, two and a half times denser than the flat base.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<FlowCheckpoint />
+
+<Summary>
+  $$
+  p_X(x) = \frac{p_Z(f^{-1}(x))}{|df/dz|}
+  $$
+
+  This chapter's flow was one fixed function on one variable, invertible by inspection. Real normalizing
+  flows chain many learned, carefully-designed invertible layers (each engineered so its Jacobian
+  determinant stays cheap to compute even in hundreds of dimensions) to turn a simple base distribution
+  into something that can match real image or audio data — trading the VAE's approximate likelihood and
+  the GAN's absent one for an exact number, at the cost of every layer having to stay invertible. The next
+  chapter drops the invertibility requirement entirely and asks a different question: instead of an exact
+  formula for the density, what if a model just learned which *direction* increases it?
+</Summary>

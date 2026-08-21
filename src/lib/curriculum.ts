@@ -1075,7 +1075,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Normalizing flows",
     blurb: "Push a simple distribution through an invertible function and track the exact density, warp for warp.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "score-based-generative-models",
