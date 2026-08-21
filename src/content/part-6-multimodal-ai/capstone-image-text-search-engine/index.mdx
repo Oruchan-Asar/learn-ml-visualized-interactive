@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
   $$
   \text{results}(q) = \text{sort}_{\,\text{image} \in \text{index}}\; \lVert q - \text{image} \rVert
   $$
+
+  <Variables>
+    <Variable>**$q$** — the user's typed query, embedded into the shared image-text space.</Variable>
+    <Variable>**$\text{image}$** — one image in the indexed collection being ranked against the query.</Variable>
+    <Variable>**$\text{index}$** — the full collection of indexed images being searched.</Variable>
+    <Variable>**$\text{results}(q)$** — every indexed image, sorted by distance to the query — nearest (best match) first.</Variable>
+  </Variables>
 
   There's no separate "search algorithm" beyond this. A real system indexes millions of images instead of three, and uses an approximate nearest-neighbor structure instead of scanning every one — but the underlying question, "which indexed vector sits closest to my query's vector," never changes.
 </Formalize>
