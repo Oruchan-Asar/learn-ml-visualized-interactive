@@ -1,0 +1,73 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ReActCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter's tool call happened once: ask, call, get an exact answer back. What happens when the
+  first thing a model believes is wrong — not about arithmetic, but about a fact needed to even know
+  which tool to call next?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch landmarks. Every trace starts with a wrong guess about the country — Thought 1 is never
+  corrected until Action 1 actually runs and Observation 1 comes back. Thought 2 only exists because
+  Observation 1 contradicted Thought 1.
+</Intuition>
+
+<Formalize>
+  **ReAct** interleaves reasoning and acting in an explicit loop instead of answering in one shot:
+
+  $$
+  \text{Thought}_t \to \text{Action}_t \to \text{Observation}_t \to \text{Thought}_{t+1} \to \cdots \to \text{Final Answer}
+  $$
+
+  Each thought is conditioned on every observation that came before it — that's the entire mechanism. A
+  wrong initial belief isn't fatal, because the loop doesn't commit to an answer until an action has
+  actually been taken and its result folded back in. Compare this to Part XIII's plain prompting: no
+  action step exists there at all, so a wrong initial belief has no way to get corrected before the
+  answer is given.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Three landmarks, three plausible-sounding wrong guesses, three genuine corrections. None of the naive
+  guesses were random — each one is the kind of association a model would plausibly make from training
+  data (the Statue of Liberty *was* a gift from France) — which is exactly why the action-observation step
+  matters: a plausible wrong belief is exactly the kind a model won't second-guess on its own.
+</Play>
+
+<WorkedExample>
+  The full loop for "Eiffel Tower's capital":
+
+  <Steps>
+    <Step label="Thought 1 (wrong)">
+      "I think Eiffel Tower is in Germany, so I need Germany's capital." A plausible-sounding guess,
+      not a random one — and wrong.
+    </Step>
+    <Step label="Action 1 → Observation 1">
+      `look_up_location("Eiffel Tower")` returns "France" — directly contradicting Thought 1.
+    </Step>
+    <Step label="Thought 2 → Action 2 → Final Answer">
+      "Eiffel Tower is actually in France, not Germany. I need France's capital instead."
+      `look_up_capital("France")` returns "Paris" — the final answer, reached only because the loop
+      didn't stop after the first (wrong) thought.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ReActCheckpoint />
+
+<Summary>
+  $$
+  \text{Thought}_t \to \text{Action}_t \to \text{Observation}_t \to \text{Thought}_{t+1}
+  $$
+
+  This chapter's loop always ran exactly two hops and always corrected exactly one wrong belief — real
+  ReAct agents run until a stopping condition is met (the model itself decides it has enough information,
+  or a max-step budget is hit), and a single loop can correct several wrong beliefs in sequence, or none
+  at all if the first thought was already right. The next chapter asks a different question: before ever
+  taking a single action, can a model break one large, ambiguous goal into an ordered list of small,
+  unambiguous steps?
+</Summary>

@@ -1134,7 +1134,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 2,
     title: "ReAct: reasoning and acting",
     blurb: "Interleave a thought, an action, and an observation in a loop, and watch a wrong first guess correct itself.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "planning-and-task-decomposition",
