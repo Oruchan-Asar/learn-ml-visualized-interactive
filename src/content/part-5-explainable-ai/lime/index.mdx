@@ -1,14 +1,14 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, LimeCheckpoint } from "./Demos";
 
 <Hook>
-  Saliency maps and Grad-CAM both needed to reach inside a convolutional network's own structure. What explains a prediction from a model with no gradients to inspect at all — a random forest, a rules engine, anything you can only query, never open up?
+  Saliency maps and **Grad-CAM** — short for **Gradient-weighted Class Activation Mapping** — both needed to reach inside a convolutional network's own structure. What explains a prediction from a model with no gradients to inspect at all — a random forest, a rules engine, anything you can only query, never open up?
 </Hook>
 
 <Intuition>
   <IntuitionDemo />
 
-  The curve is a "black box" — LIME never sees its formula, only its outputs. Drag the query point $x_0$: LIME samples a few points near it, weights the close ones more than the far ones, and fits the simplest possible model — a straight line — through just that weighted neighborhood.
+  The curve is a "black box" — **LIME** — short for **Local Interpretable Model-agnostic Explanations** — never sees its formula, only its outputs. Drag the query point $x_0$: LIME samples a few points near it, weights the close ones more than the far ones, and fits the simplest possible model — a straight line — through just that weighted neighborhood.
 </Intuition>
 
 <Formalize>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, LimeCheckpoint } from "./Demos";
   $$
   w_i = \exp\!\left(-\frac{(x_i-x_0)^2}{2\sigma^2}\right), \qquad \hat y = \text{slope}\cdot x + \text{intercept}
   $$
+
+  <Variables>
+    <Variable>**$x_0$** — the query point: the specific input whose prediction is being explained.</Variable>
+    <Variable>**$x_i$** — one of the sample points drawn near $x_0$.</Variable>
+    <Variable>**$w_i$** — the weight given to sample $x_i$, which shrinks the farther $x_i$ is from $x_0$.</Variable>
+    <Variable>**$\sigma$** — the kernel width, controlling how quickly the weight falls off with distance.</Variable>
+    <Variable>**$\hat y$** — the local linear model's predicted output.</Variable>
+    <Variable>**$\text{slope}, \text{intercept}$** — the two parameters of the local straight-line fit.</Variable>
+  </Variables>
 
   where the slope and intercept minimize $\sum_i w_i(y_i - \hat y_i)^2$ — an ordinary least-squares fit, just with each point's error scaled by how close it is to $x_0$. Nothing here needs the black box's internals: LIME only ever calls it as a function, exactly like a saliency map does, but a linear fit instead of a per-input gradient.
 </Formalize>
