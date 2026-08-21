@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, OptimizersCheckpoint } from "./Demos";
 
 <Hook>
@@ -12,13 +12,22 @@ import { IntuitionDemo, PlayDemo, OptimizersCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  **RMSProp** keeps a running average of each parameter's *squared* gradient, then divides the step by its square root — a direction with a big, steep gradient gets its step shrunk automatically:
+  **RMSProp** — short for **Root Mean Square Propagation** — keeps a running average of each parameter's *squared* gradient, then divides the step by its square root — a direction with a big, steep gradient gets its step shrunk automatically:
 
   $$
   v \leftarrow \beta v + (1-\beta)g^2, \qquad \theta \leftarrow \theta - \frac{\eta}{\sqrt{v}+\epsilon}\,g
   $$
 
-  **Adam** combines this with momentum: it keeps a running average of the gradient itself ($m$, momentum's idea) *and* of its square ($v$, RMSProp's idea), correcting both for their startup bias before combining them the same way RMSProp does.
+  <Variables>
+    <Variable>**$v$** — the running average of the squared gradient.</Variable>
+    <Variable>**$\beta$** — the decay rate controlling how much history that running average keeps.</Variable>
+    <Variable>**$g$** — the current gradient.</Variable>
+    <Variable>**$\theta$** — the parameter being updated.</Variable>
+    <Variable>**$\eta$** — the learning rate.</Variable>
+    <Variable>**$\epsilon$** — a tiny constant that keeps the division from blowing up when $v$ is near zero.</Variable>
+  </Variables>
+
+  **Adam** — short for **Adaptive Moment Estimation** — combines this with momentum: it keeps a running average of the gradient itself ($m$, momentum's idea) *and* of its square ($v$, RMSProp's idea), correcting both for their startup bias before combining them the same way RMSProp does.
 </Formalize>
 
 <Play>
