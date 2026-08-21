@@ -1,14 +1,14 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, GradCamCheckpoint } from "./Demos";
 
 <Hook>
-  A saliency map scores every pixel independently — 36 separate numbers for a 6×6 image. Grad-CAM asks a coarser, more targeted question instead: which *regions* did the convolution layer's own feature map actually rely on, for *this specific class*?
+  A saliency map scores every pixel independently — 36 separate numbers for a 6×6 image. **Grad-CAM** — short for **Gradient-weighted Class Activation Mapping** — asks a coarser, more targeted question instead: which *regions* did the convolution layer's own feature map actually rely on, for *this specific class*?
 </Hook>
 
 <Intuition>
   <IntuitionDemo />
 
-  This is the same minimal CNN's 4×4 feature map after ReLU — the exact tensor that gets pooled and fed to the dense layer. Grad-CAM reweights this map by how much each of its cells actually mattered to the predicted class, then clips anything left negative to zero.
+  This is the same minimal **CNN** (short for **Convolutional Neural Network**)'s 4×4 feature map after **ReLU** (short for **Rectified Linear Unit**) — the exact tensor that gets pooled and fed to the dense layer. Grad-CAM reweights this map by how much each of its cells actually mattered to the predicted class, then clips anything left negative to zero.
 </Intuition>
 
 <Formalize>
@@ -18,11 +18,24 @@ import { IntuitionDemo, PlayDemo, GradCamCheckpoint } from "./Demos";
   \alpha_k^c = \frac{1}{HW}\sum_{i,j} \frac{\partial y^c}{\partial A^k_{ij}}
   $$
 
+  <Variables>
+    <Variable>**$\alpha_k^c$** — the weight for channel $k$: how much that channel matters to class $c$'s logit.</Variable>
+    <Variable>**$H, W$** — the feature map's height and width, i.e. its number of spatial locations.</Variable>
+    <Variable>**$y^c$** — class $c$'s logit, the model's raw output score for that class.</Variable>
+    <Variable>**$A^k_{ij}$** — the feature map's activation for channel $k$ at spatial location $(i,j)$.</Variable>
+    <Variable>**$k$** — the index over feature-map channels.</Variable>
+    <Variable>**$c$** — the class being explained.</Variable>
+  </Variables>
+
   Then combine the channels using those weights, and clip to only the *positive* evidence:
 
   $$
   \text{Grad-CAM}^c = \text{ReLU}\!\left(\sum_k \alpha_k^c A^k\right)
   $$
+
+  <Variables>
+    <Variable>**$\text{Grad-CAM}^c$** — the final heatmap for class $c$: a weighted, positive-only combination of the feature-map channels.</Variable>
+  </Variables>
 
   With only one convolution filter, there's just one channel $k$, so $\alpha^c$ collapses to a single number — but that number still depends on *which class* $c$ you ask about, which is exactly what makes Grad-CAM class-discriminative instead of a fixed, class-blind map.
 </Formalize>
