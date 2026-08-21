@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, BackpropCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,15 @@ import { IntuitionDemo, PlayDemo, BackpropCheckpoint } from "./Demos";
   $$
   \frac{\partial L}{\partial w_{11}} = \frac{\partial L}{\partial y}\cdot\frac{\partial y}{\partial z_{\text{out}}}\cdot\frac{\partial z_{\text{out}}}{\partial h_1}\cdot\frac{\partial h_1}{\partial z_1}\cdot\frac{\partial z_1}{\partial w_{11}}
   $$
+
+  <Variables>
+    <Variable>**$L$** — the loss, measuring how wrong the network's prediction is.</Variable>
+    <Variable>**$w_{11}$** — the weight connecting input 1 to hidden neuron 1, the one being differentiated.</Variable>
+    <Variable>**$y$** — the network's final output.</Variable>
+    <Variable>**$z_{\text{out}}$** — the output neuron's raw weighted sum, before its activation.</Variable>
+    <Variable>**$h_1$** — hidden neuron 1's activation, feeding into the output.</Variable>
+    <Variable>**$z_1$** — hidden neuron 1's raw weighted sum, before its activation.</Variable>
+  </Variables>
 
   Five factors, but only two *new* ideas beyond Chapter 4: the loss contributes its own local derivative at the very start, and $\partial z_{\text{out}}/\partial h_1$ is just $v_1$ — the weight connecting $h_1$ to the output. Every other weight in the network gets its gradient the same way, reusing the exact same $\partial L/\partial z_{\text{out}}$ and $\partial L/\partial z_1$ terms computed once and shared.
 </Formalize>
@@ -60,5 +69,5 @@ import { IntuitionDemo, PlayDemo, BackpropCheckpoint } from "./Demos";
   \frac{\partial L}{\partial w_{11}} = \frac{\partial L}{\partial y}\cdot\frac{\partial y}{\partial z_{\text{out}}}\cdot\frac{\partial z_{\text{out}}}{\partial h_1}\cdot\frac{\partial h_1}{\partial z_1}\cdot\frac{\partial z_1}{\partial w_{11}}
   $$
 
-  Every gradient in this chapter was checked against a plain numerical derivative — nudge a weight by a tiny amount, remeasure the loss, compare. That's autograd's whole promise: whatever backprop computes analytically, a numerical check should reproduce. The next chapters ask what starts to go wrong with this chain once a network gets deep enough that it's dozens of layers long, not two.
+  Every gradient in this chapter was checked against a plain numerical derivative — nudge a weight by a tiny amount, remeasure the loss, compare. That's the whole promise of **autograd** (short for **automatic differentiation**): whatever backprop computes analytically, a numerical check should reproduce. The next chapters ask what starts to go wrong with this chain once a network gets deep enough that it's dozens of layers long, not two.
 </Summary>
