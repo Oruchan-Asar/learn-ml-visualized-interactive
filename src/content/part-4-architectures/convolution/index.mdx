@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ConvolutionCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, ConvolutionCheckpoint } from "./Demos";
   $$
   \text{feature}(r,c) = \sum_{i,j} \text{kernel}(i,j) \cdot \text{image}(r+i,\, c+j)
   $$
+
+  <Variables>
+    <Variable>**$\text{feature}(r,c)$** — the output feature-map value at row $r$, column $c$.</Variable>
+    <Variable>**$\text{kernel}(i,j)$** — the learned filter weight at offset $(i,j)$ within the small window.</Variable>
+    <Variable>**$\text{image}(r+i,\, c+j)$** — the input image's pixel value at the position the kernel currently overlaps.</Variable>
+    <Variable>**$r, c$** — the row and column of the output position being computed.</Variable>
+    <Variable>**$i, j$** — the row and column offsets that range over the kernel's own window.</Variable>
+  </Variables>
 
   The same 9 kernel numbers are reused at all 16 positions here. That's the whole idea: a pattern worth detecting in one corner of an image is worth detecting anywhere else in it too, so the filter doesn't need its own separate weights for every location.
 </Formalize>
