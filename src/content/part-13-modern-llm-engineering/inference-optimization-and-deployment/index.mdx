@@ -1,0 +1,58 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, InferenceOptCheckpoint } from "./Demos";
+
+<Hook>
+  A trained model doesn't get any smaller or simpler just because you've finished training it. Serving it to real users, one token at a time, forces two questions training never had to answer: what work can be skipped, and what precision can be given up?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Generating a sequence one token at a time, each new token attends back over every earlier one. Compare the total work spent across the whole generation with and without remembering what was already computed.
+</Intuition>
+
+<Formalize>
+  Autoregressive generation attends over every previous token at every step. Without a **KV cache**, step $k$ recomputes all $k$ keys and values from scratch; with one, step $k$ computes just the one new pair and reuses the rest:
+
+  $$
+  \text{no cache: } \sum_{k=1}^{n} k = \frac{n(n+1)}{2} \qquad\text{vs}\qquad \text{cache: } \sum_{k=1}^n 1 = n
+  $$
+
+  **Quantization** attacks a different cost: storing weights at lower numeric precision. A float32 weight (32 bits) rounded to int8 (8 bits) via a fixed scale factor uses a quarter of the memory, at the cost of a small, bounded rounding error per weight.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The KV-cache speedup isn't a fixed multiplier — it keeps growing as the sequence gets longer, because the uncached cost is quadratic and the cached cost is linear. Quantization's cost is the opposite kind of story: a fixed, small error per weight, in exchange for a flat 4x memory reduction regardless of sequence length.
+</Play>
+
+<WorkedExample>
+  Generating $n=10$ and $n=100$ tokens; quantizing four example weights to int8:
+
+  <Steps>
+    <Step label="Quadratic work, without a cache">
+      At $n=10$: $10\cdot11/2=55$ units of work. At $n=100$: $100\cdot101/2=5{,}050$ units — a 10x longer sequence
+      costs roughly 100x more work, the signature of a quadratic cost.
+    </Step>
+    <Step label="Linear work, with one">
+      The same two sequences cost exactly $10$ and $100$ units with a cache — the speedup grows from $5.5\times$
+      at $n=10$ to $50.5\times$ at $n=100$, purely from the gap between quadratic and linear widening.
+    </Step>
+    <Step label="Quantization: a small, bounded error for a fixed win">
+      Weights $\{0.73, -1.42, 2.05, -0.08\}$ quantized to int8 with scale $2.05/127\approx0.01614$: the
+      largest-magnitude weight ($2.05$) rounds with *zero* error, and every other weight's error stays under
+      $0.004$ — a 4x memory reduction at negligible cost to accuracy.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<InferenceOptCheckpoint />
+
+<Summary>
+  $$
+  \text{cache: turn } O(n^2) \text{ into } O(n) \qquad\text{quantize: trade a small, bounded error for } 4\times \text{ less memory}
+  $$
+
+  Neither optimization changes what the model computes in principle — a cache just avoids redundant work, and quantization just accepts a small, controlled loss of precision. Both are the kind of engineering that makes the difference between a model that works in a research notebook and one that can actually serve real traffic. The capstone that closes this course puts every one of these pieces — fine-tuning, prompting, and now deployment — into one small assistant, shipped end to end.
+</Summary>

@@ -946,7 +946,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Inference optimization & deployment",
     blurb: "Cache what's already been computed, shrink every weight's precision, and watch the same answer arrive faster.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-ship-a-tiny-assistant",
