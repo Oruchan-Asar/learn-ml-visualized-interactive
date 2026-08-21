@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ShipAssistantCheckpoint } from "./Demos";
 
 <Hook>
@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, ShipAssistantCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  One backbone, fine-tuned once via LoRA. Two different system prompts, applied at request time with no retraining at all. The same underlying model, two different jobs.
+  One backbone, fine-tuned once via **LoRA** (short for **Low-Rank Adaptation**). Two different system prompts, applied at request time with no retraining at all. The same underlying model, two different jobs.
 </Intuition>
 
 <Formalize>
@@ -18,7 +18,16 @@ import { IntuitionDemo, PlayDemo, ShipAssistantCheckpoint } from "./Demos";
   \underbrace{W + BA}_{\text{LoRA backbone}} \;\xrightarrow{\text{fixed}}\; \underbrace{\hat y(x_q) = \textstyle\sum_i w_i(x_q) y_i}_{\text{prompted per request}} \;\xrightarrow{\text{served via}}\; \underbrace{\text{KV cache}}_{\text{linear, not quadratic, cost}}
   $$
 
-  The backbone is fine-tuned exactly once, offline. Every request reuses that same frozen backbone, steered only by whatever system prompt accompanies it. Serving many such requests stays cheap because each individual generation reuses its own cached attention, not because the model got any smaller.
+  <Variables>
+    <Variable>**$W$** — the frozen pretrained backbone weight matrix.</Variable>
+    <Variable>**$B$, $A$** — the LoRA low-rank factors whose product forms the fine-tuning update to $W$.</Variable>
+    <Variable>**$\hat y(x_q)$** — the model's predicted output for a request's query $x_q$.</Variable>
+    <Variable>**$x_q$** — the query for a given request.</Variable>
+    <Variable>**$w_i(x_q)$** — the weight assigned to demonstration $i$ for this query, from the prompting mechanism.</Variable>
+    <Variable>**$y_i$** — the output demonstrated for example $i$ in the request's prompt.</Variable>
+  </Variables>
+
+  The backbone is fine-tuned exactly once, offline. Every request reuses that same frozen backbone, steered only by whatever system prompt accompanies it. Serving many such requests stays cheap because each individual generation reuses its own cached attention via a **KV cache** (short for **Key-Value cache**), not because the model got any smaller.
 </Formalize>
 
 <Play>
