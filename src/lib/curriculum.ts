@@ -1013,7 +1013,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 4,
     title: "Graph attention networks",
     blurb: "Give every neighbor its own attention weight instead of a flat average, and watch the important ones dominate.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-predict-a-molecules-property",
