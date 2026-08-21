@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
 
 <Hook>
@@ -21,6 +21,12 @@ import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
   Av = \lambda v
   $$
 
+  <Variables>
+    <Variable>**$A$** — the matrix being analyzed.</Variable>
+    <Variable>**$v$** — the eigenvector: a direction $A$ only scales, never rotates.</Variable>
+    <Variable>**$\lambda$** — the eigenvalue: how much that direction gets stretched (or flipped, if negative).</Variable>
+  </Variables>
+
   $\lambda$ is the corresponding **eigenvalue**: how much that direction gets stretched (or, if $\lambda<0$,
   stretched *and flipped*). For a symmetric matrix, the eigenvectors are always perpendicular to each
   other, and $A$ can be rebuilt exactly from them:
@@ -28,6 +34,11 @@ import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
   $$
   A = Q\Lambda Q^\top
   $$
+
+  <Variables>
+    <Variable>**$Q$** — the matrix whose columns are the (unit) eigenvectors of $A$.</Variable>
+    <Variable>**$\Lambda$** — the diagonal matrix holding the eigenvalues, in the same order as $Q$'s columns.</Variable>
+  </Variables>
 
   where $Q$'s columns are the (unit) eigenvectors and $\Lambda$ is diagonal with the eigenvalues on it.
   This is the **eigendecomposition**. The **singular value decomposition (SVD)**, $A = U\Sigma V^\top$,
@@ -74,7 +85,7 @@ import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
   $$
 
   Every matrix has a set of directions it only stretches, never rotates — the eigendecomposition finds
-  them exactly, by solving one polynomial. This isn't just an algebra exercise: later, Part II's PCA
+  them exactly, by solving one polynomial. This isn't just an algebra exercise: later, Part II's **PCA (Principal Component Analysis)**
   chapter finds "the direction of maximum variance" by eyeballing a scatter plot. That direction is the
   top eigenvector of the data's covariance matrix — this chapter's machinery is what actually computes
   it, instead of eyeballing it.
