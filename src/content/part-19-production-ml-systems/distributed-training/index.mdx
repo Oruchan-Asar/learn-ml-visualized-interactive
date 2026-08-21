@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, DistributedCheckpoint } from "./Demos";
 
 <Hook>
@@ -21,12 +21,24 @@ import { IntuitionDemo, PlayDemo, DistributedCheckpoint } from "./Demos";
   \bar{g} = \frac{1}{n}\sum_{i=1}^{n} g_i
   $$
 
+  <Variables>
+    <Variable>**$\bar{g}$** — the batch-average gradient, the value a single machine would compute over the whole batch.</Variable>
+    <Variable>**$n$** — the total number of examples in the batch.</Variable>
+    <Variable>**$g_i$** — the gradient computed for example $i$.</Variable>
+  </Variables>
+
   Split into $K$ shards of sizes $n_1, \dots, n_K$, each worker computes its own shard average $\bar{g}_k$.
   Recombining them **correctly** means weighting by how many examples each worker actually saw:
 
   $$
   \bar{g} = \frac{\sum_k n_k \bar{g}_k}{\sum_k n_k}
   $$
+
+  <Variables>
+    <Variable>**$K$** — the number of shards (workers) the batch is split across.</Variable>
+    <Variable>**$n_k$** — the number of examples shard $k$ actually received.</Variable>
+    <Variable>**$\bar{g}_k$** — worker $k$'s own average gradient, computed only over its shard.</Variable>
+  </Variables>
 
   When every shard is the same size, the weights are all equal and this collapses to a plain average of the
   workers' averages — which is exactly why the naive version looks correct until the shards stop matching in
