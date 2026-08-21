@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, SelectiveCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,6 +22,14 @@ import { IntuitionDemo, PlayDemo, SelectiveCheckpoint } from "./Demos";
   $$
   h_t = A(x_t)\,h_{t-1} + B(x_t)\,x_t
   $$
+
+  <Variables>
+    <Variable>**$h_t$** — the hidden state at time step $t$.</Variable>
+    <Variable>**$h_{t-1}$** — the hidden state from the previous time step.</Variable>
+    <Variable>**$x_t$** — the current input.</Variable>
+    <Variable>**$A(x_t)$** — the decay factor, now itself a function of the current input instead of a fixed constant.</Variable>
+    <Variable>**$B(x_t)$** — the input gate, also a function of the current input instead of a fixed constant.</Variable>
+  </Variables>
 
   This chapter's selection rule is the simplest one that still makes the point — a token is either
   *signal* ($x_t \neq 0$) or *filler* ($x_t = 0$):
