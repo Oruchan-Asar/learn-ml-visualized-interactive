@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, AnomalyCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,12 @@ import { IntuitionDemo, PlayDemo, AnomalyCheckpoint } from "./Demos";
   $$
   \text{anomaly}(x) \propto \frac{1}{\text{depth}(x)}
   $$
+
+  <Variables>
+    <Variable>**$\text{anomaly}(x)$** — the anomaly score assigned to point $x$.</Variable>
+    <Variable>**$x$** — a single data point being scored.</Variable>
+    <Variable>**$\text{depth}(x)$** — how many splits an isolation tree needs before $x$ ends up alone.</Variable>
+  </Variables>
 
   A point sitting off on its own tends to land alone after just one or two splits — there's nothing else nearby to keep splitting away from it. A point buried in a dense cluster needs several splits before every one of its close neighbors has been separated out too.
 </Formalize>
