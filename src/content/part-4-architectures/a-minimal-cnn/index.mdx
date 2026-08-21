@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, MinimalCnnCheckpoint } from "./Demos";
 
 <Hook>
@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, MinimalCnnCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  This image has a light-dark-light stripe. The kernel from Chapter 1 convolves it, ReLU keeps only the positive (dark-to-light) evidence, pooling shrinks the result to 4 numbers, and a small dense layer turns those 4 numbers into a decision: *edge detected*. Five stages, one pipeline, no step done by hand — every one of them just a repeated small computation.
+  This image has a light-dark-light stripe. The kernel from Chapter 1 convolves it, **ReLU** — short for **Rectified Linear Unit** — keeps only the positive (dark-to-light) evidence, pooling shrinks the result to 4 numbers, and a small dense layer turns those 4 numbers into a decision: *edge detected*. Five stages, one pipeline, no step done by hand — every one of them just a repeated small computation.
 </Intuition>
 
 <Formalize>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, MinimalCnnCheckpoint } from "./Demos";
   $$
   \text{image} \xrightarrow{\text{conv}} \text{feature map} \xrightarrow{\text{ReLU}} \text{feature map} \xrightarrow{\text{pool}} \text{small map} \xrightarrow{\text{flatten}} \text{vector} \xrightarrow{\text{dense}} \text{logits}
   $$
+
+  <Variables>
+    <Variable>**conv** — the convolution step from Chapter 1: sliding the learned kernel across the image.</Variable>
+    <Variable>**ReLU** — the rectified-linear activation, $\text{relu}(x) = \max(0,x)$, applied elementwise right after the convolution.</Variable>
+    <Variable>**pool** — the max-pooling step from Chapter 2: shrinking the feature map by keeping only the strongest response in each window.</Variable>
+    <Variable>**flatten** — reshaping the small 2D map into a single 1D vector.</Variable>
+    <Variable>**dense** — the fully-connected layer from Part III that turns the vector into logits.</Variable>
+  </Variables>
 
   ReLU is the one piece not yet introduced: $\text{relu}(x) = \max(0, x)$, applied to every value independently, right after the convolution. It's what turns "how strongly does this patch match the filter, in either direction" into "how strongly does this patch match, and only when the match actually supports the feature."
 </Formalize>
