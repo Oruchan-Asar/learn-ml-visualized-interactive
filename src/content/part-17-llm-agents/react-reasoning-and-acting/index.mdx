@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ReActCheckpoint } from "./Demos";
 
 <Hook>
@@ -16,11 +16,20 @@ import { IntuitionDemo, PlayDemo, ReActCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  **ReAct** interleaves reasoning and acting in an explicit loop instead of answering in one shot:
+  **ReAct** — short for **Reasoning and Acting** — interleaves reasoning and acting in an explicit loop
+  instead of answering in one shot:
 
   $$
   \text{Thought}_t \to \text{Action}_t \to \text{Observation}_t \to \text{Thought}_{t+1} \to \cdots \to \text{Final Answer}
   $$
+
+  <Variables>
+    <Variable>**$\text{Thought}_t$** — the model's reasoning at step $t$, conditioned on every observation before it.</Variable>
+    <Variable>**$\text{Action}_t$** — the tool call or action the model takes at step $t$.</Variable>
+    <Variable>**$\text{Observation}_t$** — the result that comes back from taking $\text{Action}_t$.</Variable>
+    <Variable>**$t$** — the index of the current step in the loop.</Variable>
+    <Variable>**Final Answer** — the answer given once the loop stops.</Variable>
+  </Variables>
 
   Each thought is conditioned on every observation that came before it — that's the entire mechanism. A
   wrong initial belief isn't fatal, because the loop doesn't commit to an answer until an action has
