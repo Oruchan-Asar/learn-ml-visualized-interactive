@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CrossValidationCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,13 @@ import { IntuitionDemo, PlayDemo, CrossValidationCheckpoint } from "./Demos";
   $$
   \text{CV error} = \frac{1}{k}\sum_{i=1}^{k} \text{MSE}(\text{model trained without fold } i,\ \text{tested on fold } i)
   $$
+
+  <Variables>
+    <Variable>**CV error** — the k-fold cross-validation estimate of error: the average held-out error across every fold.</Variable>
+    <Variable>**$k$** — the number of folds the data is split into.</Variable>
+    <Variable>**$i$** — the index of the current fold, ranging from $1$ to $k$.</Variable>
+    <Variable>**MSE** — mean squared error: the metric used to score each fold's held-out predictions.</Variable>
+  </Variables>
 
   A single train/test split gives you one sample from this process — one particular way the anomaly could land. Cross-validation runs the experiment $k$ times and reports both the mean *and* how much the folds disagreed, which a single split can never reveal about itself.
 </Formalize>
