@@ -18,7 +18,7 @@ import { IntuitionDemo, PlayDemo, PolicyGradientCheckpoint } from "./Demos";
   \theta_i \leftarrow \theta_i + \alpha\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)\,G
   $$
 
-  Look closely at $\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)$ — it's *exactly* the softmax cross-entropy gradient from Part III, indicator minus predicted probability. The only difference is what it's scaled by: cross-entropy always scales by $1$ (the true label is certain), while REINFORCE scales by $G$, whatever return that action happened to earn. A big positive return pushes hard toward that action; a return of exactly zero pushes not at all.
+  Look closely at $\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)$ — it's *exactly* the softmax cross-entropy gradient from Part II, indicator minus predicted probability. The only difference is what it's scaled by: cross-entropy always scales by $1$ (the true label is certain), while REINFORCE scales by $G$, whatever return that action happened to earn. A big positive return pushes hard toward that action; a return of exactly zero pushes not at all.
 </Formalize>
 
 <Play>

@@ -12,7 +12,7 @@ import { IntuitionDemo, PlayDemo, ContrastiveCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  Score every image against every caption with a similarity function, turn each image's row of scores into a probability distribution over captions with softmax, and push that distribution toward the *true* pairing — exactly Part III's cross-entropy loss, just computed in both directions at once:
+  Score every image against every caption with a similarity function, turn each image's row of scores into a probability distribution over captions with softmax, and push that distribution toward the *true* pairing — exactly Part II's cross-entropy loss, just computed in both directions at once:
 
   $$
   \mathcal{L} = \frac{1}{2}\left(\underbrace{-\frac{1}{n}\sum_i \log P(\text{caption}_i \mid \text{image}_i)}_{\text{image} \to \text{caption}} + \underbrace{-\frac{1}{n}\sum_i \log P(\text{image}_i \mid \text{caption}_i)}_{\text{caption} \to \text{image}}\right)
@@ -24,7 +24,7 @@ import { IntuitionDemo, PlayDemo, ContrastiveCheckpoint } from "./Demos";
 <Play>
   <PlayDemo />
 
-  Compare raw similarity scores to what softmax turns them into. The raw numbers are just negative distances — useful, but not yet a probability. Softmax is what turns "closer" into "more likely," and it's exactly the same softmax from Part III's cross-entropy chapter and Part IV's attention chapter, doing the same job a third time.
+  Compare raw similarity scores to what softmax turns them into. The raw numbers are just negative distances — useful, but not yet a probability. Softmax is what turns "closer" into "more likely," and it's exactly the same softmax from Part II's cross-entropy chapter and Part IV's attention chapter, doing the same job a third time.
 </Play>
 
 <WorkedExample>

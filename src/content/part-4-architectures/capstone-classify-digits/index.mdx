@@ -18,7 +18,7 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
   \mathcal{L} = -\log p_{\text{true class}}
   $$
 
-  the cross-entropy loss from Part III, computed over the softmax of the two output logits. Backpropagation runs through every stage: the softmax gradient, back through the dense weights, back through max-pooling (which routes each gradient only to the position that actually won each window), back through ReLU (zero wherever the pre-activation wasn't positive), and finally back into the two 3×3 kernels themselves — the same chain rule as always, just longer.
+  the cross-entropy loss from Part II, computed over the softmax of the two output logits. Backpropagation runs through every stage: the softmax gradient, back through the dense weights, back through max-pooling (which routes each gradient only to the position that actually won each window), back through ReLU (zero wherever the pre-activation wasn't positive), and finally back into the two 3×3 kernels themselves — the same chain rule as always, just longer.
 </Formalize>
 
 <Play>

@@ -18,7 +18,7 @@ import { IntuitionDemo, PlayDemo, GanCheckpoint } from "./Demos";
   \max_D\; \log D(\text{real}) + \log(1 - D(\text{fake})), \qquad \min_G\; -\log D(G(z))
   $$
 
-  The discriminator is an ordinary binary classifier — the exact cross-entropy loss from Part III. The generator's loss is *the discriminator's success turned upside down*: every time $D$ gets better at rejecting the fake, that same $D$ is what the generator's gradient pushes against, using $D$'s own current decision boundary as the signal for which direction "more convincing" points.
+  The discriminator is an ordinary binary classifier — the exact cross-entropy loss from Part II. The generator's loss is *the discriminator's success turned upside down*: every time $D$ gets better at rejecting the fake, that same $D$ is what the generator's gradient pushes against, using $D$'s own current decision boundary as the signal for which direction "more convincing" points.
 </Formalize>
 
 <Play>
