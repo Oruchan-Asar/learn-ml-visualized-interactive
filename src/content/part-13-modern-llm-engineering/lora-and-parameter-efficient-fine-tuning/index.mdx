@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, LoRACheckpoint } from "./Demos";
 
 <Hook>
@@ -12,11 +12,21 @@ import { IntuitionDemo, PlayDemo, LoRACheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  **LoRA** freezes a pretrained weight matrix $W$ and represents the fine-tuning update as a low-rank product instead of a full matrix:
+  **LoRA** — short for **Low-Rank Adaptation** — freezes a pretrained weight matrix $W$ and represents the fine-tuning update as a low-rank product instead of a full matrix:
 
   $$
   W' = W + \Delta W, \qquad \Delta W = B A, \quad B \in \mathbb{R}^{n \times r},\ A \in \mathbb{R}^{r \times n}, \quad r \ll n
   $$
+
+  <Variables>
+    <Variable>**$W$** — the original pretrained weight matrix, kept frozen throughout fine-tuning.</Variable>
+    <Variable>**$W'$** — the effective weight matrix used after applying the fine-tuning update.</Variable>
+    <Variable>**$\Delta W$** — the fine-tuning update itself, decomposed into a low-rank product rather than stored as a full matrix.</Variable>
+    <Variable>**$B$** — one trainable low-rank factor, of shape $n \times r$.</Variable>
+    <Variable>**$A$** — the other trainable low-rank factor, of shape $r \times n$.</Variable>
+    <Variable>**$n$** — the size of the original (square) weight matrix.</Variable>
+    <Variable>**$r$** — the rank of the update, chosen much smaller than $n$.</Variable>
+  </Variables>
 
   A full update to an $n\times n$ matrix costs $n^2$ trainable parameters. A rank-$r$ update costs $2nr$. For a $4096\times4096$ attention matrix and $r=8$, that's roughly $65{,}000$ parameters instead of $16.7$ million — under half a percent. The catch: $\Delta W$ can only ever be rank $\leq r$, however training goes.
 </Formalize>
