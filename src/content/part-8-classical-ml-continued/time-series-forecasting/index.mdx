@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, TimeSeriesCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, TimeSeriesCheckpoint } from "./Demos";
   $$
   y_t = \text{trend}(t) + \text{season}(t \bmod p)
   $$
+
+  <Variables>
+    <Variable>**$y_t$** — the observed value at time step $t$.</Variable>
+    <Variable>**$t$** — the time index.</Variable>
+    <Variable>**$\text{trend}(t)$** — the slow-moving trend component, fit with ordinary least squares.</Variable>
+    <Variable>**$\text{season}(t \bmod p)$** — the repeating seasonal component, indexed by position within the cycle.</Variable>
+    <Variable>**$p$** — the period: how many steps before the seasonal pattern repeats.</Variable>
+  </Variables>
 
   Fit the trend first — ordinary least squares, same as always. Then look at what's left over: the **residuals**, $y_t - \text{trend}(t)$. Average those residuals by their position in the cycle (every 4th one, if the period is 4), and that average *is* the seasonal component — the part of the pattern that keeps repeating.
 </Formalize>
@@ -54,5 +62,5 @@ import { IntuitionDemo, PlayDemo, TimeSeriesCheckpoint } from "./Demos";
   y_t = \text{trend}(t) + \text{season}(t \bmod p)
   $$
 
-  This chapter's trend and season happened to separate perfectly — in real data they rarely do, and a trend fit on raw, seasonal data is usually at least a little biased by the very pattern it's supposed to ignore. Real forecasting methods (like ARIMA, or repeating this fit-and-subtract process iteratively) exist mostly to handle that imperfection. But the core idea — split a signal into parts, fit each part with tools already in this course, add them back together — is exactly what's happening here, at the smallest possible scale.
+  This chapter's trend and season happened to separate perfectly — in real data they rarely do, and a trend fit on raw, seasonal data is usually at least a little biased by the very pattern it's supposed to ignore. Real forecasting methods (like **ARIMA** — short for **AutoRegressive Integrated Moving Average** — or repeating this fit-and-subtract process iteratively) exist mostly to handle that imperfection. But the core idea — split a signal into parts, fit each part with tools already in this course, add them back together — is exactly what's happening here, at the smallest possible scale.
 </Summary>
