@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, VanishingCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, VanishingCheckpoint } from "./Demos";
   $$
   \frac{\partial L}{\partial h_{i-1}} = \frac{\partial L}{\partial h_i}\cdot \sigma'(z_i)\cdot w
   $$
+
+  <Variables>
+    <Variable>**$L$** — the loss.</Variable>
+    <Variable>**$h_i$** and **$h_{i-1}$** — the hidden layer outputs at layer $i$ and the layer just before it.</Variable>
+    <Variable>**$z_i$** — layer $i$'s raw weighted sum, before its activation.</Variable>
+    <Variable>**$\sigma'(z_i)$** — sigmoid's derivative at that point, capped at $0.25$.</Variable>
+    <Variable>**$w$** — the weight, repeated at every layer in this example.</Variable>
+  </Variables>
 
   Multiply a number smaller than $1$ by itself ten times and it's gone. Unlike Chapter 8's forward pass, there's no weight scale that fixes this for sigmoid — a bigger $w$ pushes $z$ further from $0$, which makes $\sigma'(z)$ *even smaller*, not larger. Sigmoid's derivative is capped at $0.25$, so this particular chain can only ever shrink going backward. The mirror-image failure — *exploding* gradients — shows up instead in linear or ReLU layers with large weights, where nothing caps that per-layer factor above $1$; it's the exact same backward multiplication as Chapter 8's forward one, just run in reverse.
 </Formalize>
@@ -52,5 +60,5 @@ import { IntuitionDemo, PlayDemo, VanishingCheckpoint } from "./Demos";
   \frac{\partial L}{\partial h_{i-1}} = \frac{\partial L}{\partial h_i}\cdot \sigma'(z_i)\cdot w
   $$
 
-  A gradient that vanishes on the way back means the earliest layers of a deep network barely update at all — they're effectively frozen at their initial (random) values while only the last few layers learn anything. ReLU's derivative doesn't have this ceiling (it's exactly $1$ wherever the neuron is active), which is a large part of why it replaced sigmoid as the default choice once networks got deep.
+  A gradient that vanishes on the way back means the earliest layers of a deep network barely update at all — they're effectively frozen at their initial (random) values while only the last few layers learn anything. **ReLU** (short for **Rectified Linear Unit**)'s derivative doesn't have this ceiling (it's exactly $1$ wherever the neuron is active), which is a large part of why it replaced sigmoid as the default choice once networks got deep.
 </Summary>
