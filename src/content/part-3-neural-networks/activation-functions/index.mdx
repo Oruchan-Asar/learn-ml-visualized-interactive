@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ActivationCheckpoint } from "./Demos";
 
 <Hook>
@@ -8,7 +8,7 @@ import { IntuitionDemo, PlayDemo, ActivationCheckpoint } from "./Demos";
 <Intuition>
   <IntuitionDemo />
 
-  Drag the input across all four at once. Step jumps instantly between 0 and 1 — no in-between. Sigmoid and tanh curve smoothly through the middle. ReLU does something different again: it's flat at exactly 0 for every negative input, then rises like a plain diagonal line.
+  Drag the input across all four at once. Step jumps instantly between 0 and 1 — no in-between. Sigmoid and tanh curve smoothly through the middle. **ReLU** — short for **Rectified Linear Unit** — does something different again: it's flat at exactly 0 for every negative input, then rises like a plain diagonal line.
 </Intuition>
 
 <Formalize>
@@ -20,6 +20,14 @@ import { IntuitionDemo, PlayDemo, ActivationCheckpoint } from "./Demos";
   \tanh(x), \quad
   \text{ReLU}(x) = \max(0,x)
   $$
+
+  <Variables>
+    <Variable>**$x$** — the neuron's raw weighted sum, before activation.</Variable>
+    <Variable>**$\text{step}(x)$** — the perceptron's hard yes/no rule: 0 below zero, 1 at or above it.</Variable>
+    <Variable>**$\sigma(x)$** — the sigmoid, a smooth curve ranging over $(0,1)$.</Variable>
+    <Variable>**$\tanh(x)$** — a smooth curve ranging over $(-1,1)$.</Variable>
+    <Variable>**$\text{ReLU}(x)$** — zero for negative inputs, and equal to $x$ itself for positive ones.</Variable>
+  </Variables>
 
   Step is what the perceptron used — but it's flat everywhere except one point, so its slope is useless for learning by gradient. Sigmoid and tanh are smooth substitutes with a real slope everywhere. ReLU throws out smoothness for something else: dead simple to compute, and its slope never shrinks to nothing on the positive side.
 </Formalize>
