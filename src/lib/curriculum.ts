@@ -1158,7 +1158,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 5,
     title: "Multi-agent orchestration",
     blurb: "Split one task across two specialized agents and a coordinator, and watch the handoff where it can go wrong.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "capstone-build-a-tool-using-agent",

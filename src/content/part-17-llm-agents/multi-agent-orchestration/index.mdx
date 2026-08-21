@@ -1,0 +1,73 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, OrchestrationCheckpoint } from "./Demos";
+
+<Hook>
+  Every mechanism so far lived inside one agent's loop. Split a task across two specialized agents and a
+  coordinator that hands results between them, and a new failure mode appears that has nothing to do with
+  either agent being wrong — the handoff itself.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch topics. The research agent's output is a structured object — a topic and a fact, two separate
+  fields. The correct handoff passes the fact field alone to the writer. The broken one passes the whole
+  object instead, and nothing crashes — it just stringifies into garbage.
+</Intuition>
+
+<Formalize>
+  A **coordinator** routes a task to a **specialized agent**, then hands that agent's output to the next
+  one. The interface between them is usually just JSON — a shape, not a compile-time contract:
+
+  $$
+  \text{writer}(\text{subject}, \text{fact}) = \texttt{"}\text{subject}\text{ }\text{fact}\texttt{."}
+  $$
+
+  If the coordinator passes an entire `{topic, fact}` object where `fact` was supposed to be a plain
+  string, JavaScript (like most dynamically-typed interchange formats) doesn't throw — it silently calls
+  the object's default string conversion, producing `"[object Object]"`. The bug isn't in either agent;
+  it's in what the coordinator handed off between them, and it fails silently instead of loudly.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Three completely different topics, three completely identical failures. The garbage text doesn't depend
+  on which fact was lost — `[object Object]` is what *any* object looks like once stringified, so this
+  exact bug looks identical no matter which specific handoff produced it, which is part of why it's
+  genuinely hard to debug from the output alone.
+</Play>
+
+<WorkedExample>
+  The handoff for "Mount Everest", done two ways:
+
+  <Steps>
+    <Step label="What the research agent actually returns">
+      `{ topic: "Mount Everest", fact: "is the tallest mountain above sea level" }` — one object,
+      two fields.
+    </Step>
+    <Step label="Correct handoff: pass the fact field alone">
+      `writer("Mount Everest", result.fact)` → "Mount Everest is the tallest mountain above sea level."
+    </Step>
+    <Step label="Broken handoff: pass the whole object">
+      `writer("Mount Everest", result)` → "Mount Everest [object Object]." — the sentence has the right
+      shape and the right subject; only the one field that mattered is gone.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<OrchestrationCheckpoint />
+
+<Summary>
+  $$
+  \text{writer}(\text{subject}, \text{fact}) \neq \text{writer}(\text{subject}, \text{researchResult})
+  $$
+
+  This chapter's bug was a single misplaced argument — real multi-agent systems fail this way constantly,
+  because every handoff between agents is another place a schema mismatch, a missing field, or a
+  misunderstood contract can slip through untyped. Multi-agent frameworks address this with explicit
+  schemas at every handoff (the same structured-output idea from Part XVII's function-calling chapter,
+  applied between agents instead of between a model and a tool). The capstone wires everything this part
+  covered — planning, a tool call, and memory — into one working loop that solves a task no single call
+  could handle alone.
+</Summary>
