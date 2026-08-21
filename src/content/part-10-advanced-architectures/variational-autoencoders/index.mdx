@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, VAECheckpoint } from "./Demos";
 
 <Hook>
@@ -18,11 +18,22 @@ import { IntuitionDemo, PlayDemo, VAECheckpoint } from "./Demos";
   z = \mu + \sigma \cdot \varepsilon, \qquad \varepsilon \sim \mathcal{N}(0, 1)
   $$
 
-  Writing sampling as a deterministic function of $\mu$, $\sigma$, and an external noise term $\varepsilon$ keeps the whole pipeline differentiable — gradients flow through $\mu$ and $\sigma$ even though $z$ itself is random. A second loss term, the **KL divergence** to the standard normal, keeps every input's distribution from collapsing to a single point or drifting off to some far corner of latent space:
+  <Variables>
+    <Variable>**$z$** — the sampled latent vector, passed to the decoder.</Variable>
+    <Variable>**$\mu$** — the mean of the encoded distribution, output by the encoder.</Variable>
+    <Variable>**$\sigma$** — the standard deviation of the encoded distribution (derived from $\log\sigma^2$).</Variable>
+    <Variable>**$\varepsilon$** — an external noise term, drawn from a standard normal and independent of the network's parameters.</Variable>
+  </Variables>
+
+  Writing sampling as a deterministic function of $\mu$, $\sigma$, and an external noise term $\varepsilon$ keeps the whole pipeline differentiable — gradients flow through $\mu$ and $\sigma$ even though $z$ itself is random. A second loss term, the **KL divergence** — short for **Kullback–Leibler divergence** — to the standard normal, keeps every input's distribution from collapsing to a single point or drifting off to some far corner of latent space:
 
   $$
   D_{KL}\big(\mathcal{N}(\mu,\sigma^2) \,\|\, \mathcal{N}(0,1)\big) = \tfrac{1}{2}\left(\sigma^2 + \mu^2 - 1 - \log\sigma^2\right)
   $$
+
+  <Variables>
+    <Variable>**$D_{KL}\big(\mathcal{N}(\mu,\sigma^2)\,\|\,\mathcal{N}(0,1)\big)$** — the KL divergence between the encoded distribution and the standard normal target; the regularization term added to the reconstruction loss.</Variable>
+  </Variables>
 </Formalize>
 
 <Play>
