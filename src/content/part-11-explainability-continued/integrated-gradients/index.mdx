@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, IntegratedGradientsCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, IntegratedGradientsCheckpoint } from "./Demos"
   $$
   \text{IG}(x) = (x - x_{\text{baseline}}) \int_0^1 \frac{\partial f}{\partial x}\Big(x_{\text{baseline}} + \alpha(x - x_{\text{baseline}})\Big)\, d\alpha
   $$
+
+  <Variables>
+    <Variable>**$\text{IG}(x)$** — the integrated gradients attribution for input $x$: how much of the output change gets credited to this feature.</Variable>
+    <Variable>**$x$** — the actual input value being explained.</Variable>
+    <Variable>**$x_{\text{baseline}}$** — the reference input (often all zeros) that the path starts from, representing "no information" for that feature.</Variable>
+    <Variable>**$\alpha$** — the interpolation fraction along the straight-line path from baseline to input, ranging from $0$ to $1$.</Variable>
+    <Variable>**$f$** — the model, as a function of its input.</Variable>
+  </Variables>
 
   In practice this integral is approximated by a Riemann sum over $m$ steps along that path. The key guarantee — the **completeness axiom** — is that as $m$ grows, the attribution converges to *exactly* $f(x) - f(x_{\text{baseline}})$, the true change in output. Plain saliency is the special, degenerate case $m=1$: just the gradient at the input, with no path at all.
 </Formalize>
