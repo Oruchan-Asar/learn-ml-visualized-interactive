@@ -1,0 +1,57 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, AudioEmbeddingCheckpoint } from "./Demos";
+
+<Hook>
+  The joint embedding space from Part VI already puts images and captions in the same coordinate system. Nothing about that idea is limited to two modalities — add a speech encoder, and a spoken word lands in the exact same space, right next to its image and its transcript.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Squares are images, circles are captions, triangles are audio clips. Pick an audio clip and ask for its nearest image or nearest caption — the same distance-based retrieval from Part VI, just with a third kind of point added to the map.
+</Intuition>
+
+<Formalize>
+  A **speech encoder** maps a spoken clip into the same embedding space as an image encoder and a text encoder, trained so that a recording of "dog barking," the word "dog," and a photo of a dog all land near each other:
+
+  $$
+  \|\text{Encode}_{\text{audio}}(\text{"woof"}) - \text{Encode}_{\text{image}}(\text{dog photo})\| \text{ small}
+  $$
+
+  Nothing about nearest-neighbor retrieval changes — it's the identical distance computation from the two-modality case. What changes is that *any* pair among the three modalities can now retrieve from each other: audio→image, audio→text, image→audio, text→audio.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Click any item — image, caption, or audio clip — and every other modality's nearest match comes back correct. Three modalities, one shared space, the same simple distance rule doing all the work in every direction.
+</Play>
+
+<WorkedExample>
+  Three audio clips, each placed near its matching image and caption cluster:
+
+  <Steps>
+    <Step label="Audio retrieves its image by a wide margin">
+      "Audio: a dog barking" sits distance $\approx0.22$ from "Image: dog" — the next-nearest image is over 10x
+      farther away, at $\approx2.91$. No ambiguity.
+    </Step>
+    <Step label="The same clip also retrieves its caption">
+      That same audio clip sits distance $\approx0.5$ from "Caption: a dog running" — closer to its own caption
+      than to either other caption by a comparable margin.
+    </Step>
+    <Step label="Every one of the three clips behaves the same way">
+      "Audio: a cat meowing" and "Audio: a bird chirping" both retrieve their own image and their own caption
+      correctly, with the same kind of clear separation — the geometry generalizes cleanly to a third modality.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<AudioEmbeddingCheckpoint />
+
+<Summary>
+  $$
+  d(\text{audio}, \text{image}), \quad d(\text{audio}, \text{text}), \quad d(\text{image}, \text{text}) \;\text{— all the same distance, all in one shared space}
+  $$
+
+  A joint embedding space doesn't care how many modalities share it — the training objective (pull matching pairs together, push mismatched pairs apart) and the retrieval rule (nearest neighbor) are identical whether there are two modalities or ten. The next chapter turns the direction around: instead of retrieving an existing item from a shared space, generating a brand new image conditioned on a piece of text that was never paired with any real photo.
+</Summary>

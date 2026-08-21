@@ -8,8 +8,8 @@ export interface EmbeddingPoint {
   label: string;
   x: number;
   y: number;
-  /** Distinguishes points from different sources/modalities visually — e.g. images vs. captions. Defaults to a circle. */
-  shape?: "circle" | "square";
+  /** Distinguishes points from different sources/modalities visually — e.g. images vs. captions vs. audio. Defaults to a circle. */
+  shape?: "circle" | "square" | "triangle";
 }
 
 export interface WordEmbeddingSpaceProps {
@@ -89,6 +89,8 @@ export function WordEmbeddingSpace({
             >
               {w.shape === "square" ? (
                 <rect x={cx - r} y={cy - r} width={r * 2} height={r * 2} className={pointClass} />
+              ) : w.shape === "triangle" ? (
+                <polygon points={`${cx},${cy - r} ${cx - r},${cy + r} ${cx + r},${cy + r}`} className={pointClass} />
               ) : (
                 <circle cx={cx} cy={cy} r={r} className={pointClass} />
               )}

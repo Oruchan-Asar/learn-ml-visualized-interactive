@@ -879,7 +879,7 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 1,
     title: "Audio & speech embeddings",
     blurb: "Add a third modality to the shared space, and watch a spoken word land right next to its transcript.",
-    status: "planned",
+    status: "shipped",
   },
   {
     slug: "text-conditioned-diffusion",
