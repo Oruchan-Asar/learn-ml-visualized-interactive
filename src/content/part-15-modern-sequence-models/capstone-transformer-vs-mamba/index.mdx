@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, ComparisonCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,6 +22,10 @@ import { IntuitionDemo, PlayDemo, ComparisonCheckpoint } from "./Demos";
   $$
   \text{Transformer: } O(n^2) \text{ compute}, \ O(n) \text{ memory} \qquad\qquad \text{Mamba: } O(n) \text{ compute}, \ O(1) \text{ memory}
   $$
+
+  <Variables>
+    <Variable>**$n$** — the sequence length, the one quantity every cost figure here is measured against.</Variable>
+  </Variables>
 
   Every number here is a fact this part already proved, one chapter at a time: the $n^2$ from Chapter 1's
   attention matrix, the $O(n)$ key-value cache from Chapter 3, and Chapter 4's selective state collapsing
@@ -73,6 +77,7 @@ import { IntuitionDemo, PlayDemo, ComparisonCheckpoint } from "./Demos";
   architecture built around a different choice can match a Transformer's correctness on tasks like this
   one while asking for a very different amount of compute and memory to get there. The next part turns
   from *how* a model processes a sequence to *what kind of thing* it can generate from one, picking up
-  the generative architectures — GANs, diffusion, VAEs — from Part IV and pushing every one of them
+  the generative architectures — **GANs** (short for **Generative Adversarial Networks**), diffusion,
+  **VAEs** (short for **Variational Autoencoders**) — from Part IV and pushing every one of them
   further.
 </Summary>
