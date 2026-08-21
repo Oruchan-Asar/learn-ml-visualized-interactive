@@ -51,5 +51,5 @@ import { IntuitionDemo, PlayDemo, CounterfactualCheckpoint } from "./Demos";
   x^{\text{cf}} = x - \frac{f(x)}{\lVert w \rVert^2}\,w, \qquad \text{distance} = \frac{|f(x)|}{\lVert w \rVert}
   $$
 
-  For a linear model this is exact and cheap — the same closed form Chapter 6 used for SHAP. For a real, nonlinear classifier, there's no single formula: finding the nearest point that flips the decision becomes its own small optimization problem, usually solved by taking gradient steps toward the boundary rather than jumping there in one shot. But the question stays exactly the same, and it's often the most useful answer of all: not why the model decided what it did, but what would have to change.
+  For a linear model this is exact and cheap — the same closed form the SHAP chapter used. For a real, nonlinear classifier, there's no single formula: finding the nearest point that flips the decision becomes its own small optimization problem, usually solved by taking gradient steps toward the boundary rather than jumping there in one shot. But the question stays exactly the same, and it's often the most useful answer of all: not why the model decided what it did, but what would have to change.
 </Summary>
