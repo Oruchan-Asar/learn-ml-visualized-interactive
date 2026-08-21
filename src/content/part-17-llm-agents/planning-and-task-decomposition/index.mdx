@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, PlanningCheckpoint } from "./Demos";
 
 <Hook>
@@ -22,6 +22,12 @@ import { IntuitionDemo, PlayDemo, PlanningCheckpoint } from "./Demos";
   $$
   \text{task}_i \text{ can execute at position } p \iff \text{every dependency of task}_i \text{ appears before position } p
   $$
+
+  <Variables>
+    <Variable>**$\text{task}_i$** — one task in the plan, indexed by $i$.</Variable>
+    <Variable>**$p$** — a position in the ordering that makes up the plan.</Variable>
+    <Variable>**dependency of $\text{task}_i$** — another task that must finish before $\text{task}_i$ is allowed to run.</Variable>
+  </Variables>
 
   Finding one such ordering is a **topological sort** over the dependency graph — the same structure a
   build system uses to decide compile order, or a project scheduler uses to sequence tasks. When two
