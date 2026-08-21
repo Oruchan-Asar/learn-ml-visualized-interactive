@@ -1,8 +1,8 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, CounterfactualCheckpoint } from "./Demos";
 
 <Hook>
-  SHAP answers "how much did each feature contribute?" A rejected applicant usually wants a more actionable answer: "what's the smallest change to my application that would have gotten me approved?"
+  **SHAP** — short for **SHapley Additive exPlanations** — answers "how much did each feature contribute?" A rejected applicant usually wants a more actionable answer: "what's the smallest change to my application that would have gotten me approved?"
 </Hook>
 
 <Intuition>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, CounterfactualCheckpoint } from "./Demos";
   $$
   x^{\text{cf}} = x - \frac{f(x)}{\lVert w \rVert^2}\,w, \qquad \text{distance} = \frac{|f(x)|}{\lVert w \rVert}
   $$
+
+  <Variables>
+    <Variable>**$x$** — the current point, e.g. an applicant's feature values.</Variable>
+    <Variable>**$f(x)$** — the linear decision function's score at $x$; approved when $f(x) \geq 0$.</Variable>
+    <Variable>**$w$** — the decision function's weight vector.</Variable>
+    <Variable>**$x^{\text{cf}}$** — the counterfactual point: the nearest point on the decision boundary.</Variable>
+    <Variable>**$\text{distance}$** — how far $x$ sits from the boundary.</Variable>
+  </Variables>
 
   This is exactly Chapter 6's gradient direction, scaled to land precisely on $f=0$ instead of just pointing that way — the same idea Part I used to walk *downhill*, now used to walk to the *nearest* point where a linear classifier's answer changes.
 </Formalize>
