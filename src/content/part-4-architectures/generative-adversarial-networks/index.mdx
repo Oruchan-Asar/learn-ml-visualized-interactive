@@ -1,4 +1,4 @@
-import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
 import { IntuitionDemo, PlayDemo, GanCheckpoint } from "./Demos";
 
 <Hook>
@@ -17,6 +17,14 @@ import { IntuitionDemo, PlayDemo, GanCheckpoint } from "./Demos";
   $$
   \max_D\; \log D(\text{real}) + \log(1 - D(\text{fake})), \qquad \min_G\; -\log D(G(z))
   $$
+
+  <Variables>
+    <Variable>**$D$** — the discriminator: a classifier trying to output high probability for real data and low for fake.</Variable>
+    <Variable>**$G$** — the generator: the network producing fake samples, trying to fool $D$.</Variable>
+    <Variable>**$z$** — the generator's input: random noise it turns into a fake sample, $G(z)$.</Variable>
+    <Variable>**real** — an actual data point drawn from the true dataset.</Variable>
+    <Variable>**fake** — a sample produced by the generator, $G(z)$.</Variable>
+  </Variables>
 
   The discriminator is an ordinary binary classifier — the exact cross-entropy loss from Part II. The generator's loss is *the discriminator's success turned upside down*: every time $D$ gets better at rejecting the fake, that same $D$ is what the generator's gradient pushes against, using $D$'s own current decision boundary as the signal for which direction "more convincing" points.
 </Formalize>
