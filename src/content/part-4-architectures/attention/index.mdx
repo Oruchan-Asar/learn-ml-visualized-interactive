@@ -27,7 +27,13 @@ import { IntuitionDemo, PlayDemo, AttentionCheckpoint } from "./Demos";
     <Variable>**context** — the weighted blend of all the key vectors: the actual output of attention.</Variable>
   </Variables>
 
-  The $\sqrt{d}$ divides out the fact that dot products grow with dimension $d$ — without it, scores in a high-dimensional model would blow up and softmax would saturate into an almost one-hot distribution regardless of which token actually matches best.
+  <Steps>
+    <Step label="Why scale by the square root of d">
+      The $\sqrt{d}$ divides out the fact that dot products grow with dimension $d$ — without it, scores in
+      a high-dimensional model would blow up and softmax would saturate into an almost one-hot distribution
+      regardless of which token actually matches best.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
