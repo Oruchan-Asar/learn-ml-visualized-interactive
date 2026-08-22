@@ -24,7 +24,16 @@ import { IntuitionDemo, PlayDemo, ResNetCheckpoint } from "./Demos";
     <Variable>**$F$** — the layer's own transformation (e.g., a weight multiply and nonlinearity) — the same function a plain layer would apply on its own.</Variable>
   </Variables>
 
-  Backpropagating through a plain layer multiplies the gradient by $F'(h_{i-1})$ — a term that's often well below 1, so a long chain of layers shrinks it toward zero. Backpropagating through a *residual* layer multiplies by $1 + F'(h_{i-1})$ instead. That leading $1$ is a direct, unobstructed path for the gradient — an "identity shortcut" that depth alone can't erode.
+  <Steps>
+    <Step label="A plain layer's gradient compounds toward zero">
+      Backpropagating through a plain layer multiplies the gradient by $F'(h_{i-1})$ — a term that's often well
+      below 1, so a long chain of layers shrinks it toward zero.
+    </Step>
+    <Step label="A residual layer keeps a direct path open">
+      Backpropagating through a *residual* layer multiplies by $1 + F'(h_{i-1})$ instead. That leading $1$ is a
+      direct, unobstructed path for the gradient — an "identity shortcut" that depth alone can't erode.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
