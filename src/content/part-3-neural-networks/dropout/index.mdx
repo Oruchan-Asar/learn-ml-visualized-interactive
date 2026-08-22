@@ -25,7 +25,12 @@ import { IntuitionDemo, PlayDemo, DropoutCheckpoint } from "./Demos";
     <Variable>**$h_i$** — surviving neuron $i$'s activation.</Variable>
   </Variables>
 
-  This rescaling isn't arbitrary — it's exactly what keeps the *expected* value of $\hat y$, averaged over every possible random mask, equal to the true undropped output $\sum_i v_i h_i$, for any dropout rate $p$ at all.
+  <Steps>
+    <Step label="The rescaling keeps the output unbiased">
+      This isn't arbitrary — it's exactly what keeps the *expected* value of $\hat y$, averaged over every
+      possible random mask, equal to the true undropped output $\sum_i v_i h_i$, for any dropout rate $p$ at all.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
