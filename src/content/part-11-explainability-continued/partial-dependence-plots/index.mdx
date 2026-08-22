@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, PDPCheckpoint } from "./Demos";
     <Variable>**$f$** — the trained model's prediction function.</Variable>
   </Variables>
 
-  An **ICE (individual conditional expectation) curve** is the same sweep, but for one row at a time, with no averaging. PDP is the mean of all the ICE curves — which means whatever the ICE curves disagree about, the PDP quietly erases.
+  <Steps>
+    <Step label="ICE curves: the same sweep, per row">
+      An **ICE (individual conditional expectation) curve** is the same sweep, but for one row at a time, with
+      no averaging.
+    </Step>
+    <Step label="PDP is the mean of the ICE curves">
+      PDP is the average of all the ICE curves — which means whatever the ICE curves disagree about, the PDP
+      quietly erases.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
