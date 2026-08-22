@@ -1,0 +1,72 @@
+.back {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  display: inline-block;
+  margin-bottom: 20px;
+}
+.back:hover {
+  color: var(--accent2-ink);
+}
+
+.count {
+  color: var(--ink-faint);
+  font-size: 13px;
+  margin: -8px 0 20px;
+}
+
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.entry {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+}
+
+.entryHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.abbr {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 700;
+  color: var(--accent-ink);
+  font-size: 15px;
+  white-space: nowrap;
+}
+
+.longForm {
+  color: var(--ink);
+  font-size: 15px;
+}
+
+.chapterLinks {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+
+.chapterLink {
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  text-decoration: underline;
+  text-decoration-color: var(--line);
+  text-underline-offset: 3px;
+}
+.chapterLink:hover {
+  color: var(--accent2-ink);
+  text-decoration-color: var(--accent2-ink);
+}

@@ -41,6 +41,9 @@ export function ChapterFrame({ slug, children }: ChapterFrameProps) {
         <Link href="/" className={styles.back}>
           ← All chapters
         </Link>
+        <Link href="/glossary" className={styles.glossary}>
+          Glossary
+        </Link>
         <p className={styles.position}>
           Chapter {index + 1} of {CURRICULUM.length}
         </p>
