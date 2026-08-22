@@ -26,7 +26,14 @@ import { IntuitionDemo, PlayDemo, MinimalCnnCheckpoint } from "./Demos";
     <Variable>**dense** — the fully-connected layer from Part III that turns the vector into logits.</Variable>
   </Variables>
 
-  ReLU is the one piece not yet introduced: $\text{relu}(x) = \max(0, x)$, applied to every value independently, right after the convolution. It's what turns "how strongly does this patch match the filter, in either direction" into "how strongly does this patch match, and only when the match actually supports the feature."
+  <Steps>
+    <Step label="What ReLU computes">
+      ReLU is the one piece not yet introduced: $\text{relu}(x) = \max(0, x)$, applied to every value independently, right after the convolution.
+    </Step>
+    <Step label="Why it's there">
+      It's what turns "how strongly does this patch match the filter, in either direction" into "how strongly does this patch match, and only when the match actually supports the feature."
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
