@@ -32,12 +32,22 @@ import { IntuitionDemo, PlayDemo, MoleculeCheckpoint } from "./Demos";
     <Variable>**$v$** — index ranging over every atom in the molecule, summed by the readout.</Variable>
   </Variables>
 
-  Layer 1 is Chapter 2's plain neighborhood mean — every atom blends with its bonded neighbors, no
-  weighting. Layer 2 is last chapter's attention rule, applied *on top of* layer 1's output, not the raw
-  features — so by the time attention runs, every value already carries a first hop of neighbor
-  information. The final sum — a **readout** — is the simplest way to turn six per-atom numbers into one
-  whole-molecule prediction: real molecular property predictors do exactly this, summing (or averaging)
-  learned atom embeddings into a single graph-level output.
+  <Steps>
+    <Step label="Layer 1: GCN's plain neighborhood mean">
+      Layer 1 is Chapter 2's plain neighborhood mean — every atom blends with its bonded neighbors, no
+      weighting.
+    </Step>
+    <Step label="Layer 2: GAT's attention, on top of layer 1">
+      Layer 2 is last chapter's attention rule, applied *on top of* layer 1's output, not the raw
+      features — so by the time attention runs, every value already carries a first hop of neighbor
+      information.
+    </Step>
+    <Step label="Readout: sum atom embeddings into one number">
+      The final sum — a **readout** — is the simplest way to turn six per-atom numbers into one
+      whole-molecule prediction: real molecular property predictors do exactly this, summing (or
+      averaging) learned atom embeddings into a single graph-level output.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
