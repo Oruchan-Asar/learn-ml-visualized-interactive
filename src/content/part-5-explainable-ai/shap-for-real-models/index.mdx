@@ -25,7 +25,16 @@ import { IntuitionDemo, PlayDemo, ShapLinearCheckpoint } from "./Demos";
     <Variable>**$\bar x_i$** — feature $i$'s baseline value, typically its average across some reference population.</Variable>
   </Variables>
 
-  where $\bar x_i$ is feature $i$'s baseline (typically its average value across some reference population). A feature's credit is just its weight times how far *this* instance sits from "typical" — exactly what you'd guess a fair split should look like, and provably the same answer the full permutation average would have given, for a linear model specifically.
+  <Steps>
+    <Step label="Credit is weight times distance from typical">
+      A feature's credit is just its weight times how far *this* instance sits from "typical" — exactly what
+      you'd guess a fair split should look like.
+    </Step>
+    <Step label="Provably matches the full permutation average">
+      For a linear model specifically, this closed form is provably the same answer the full permutation
+      average from the pizza chapter would have given.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
