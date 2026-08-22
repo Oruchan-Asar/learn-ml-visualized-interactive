@@ -26,7 +26,19 @@ import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
     <Variable>**$\hat\epsilon_t$** — the trained model's predicted noise at step $t$, used to undo the forward step.</Variable>
   </Variables>
 
-  This is exactly the forward equation solved for $x_{t-1}$. If $\hat\epsilon_t$ equals the true $\epsilon_t$ at every step, this exactly inverts the forward process. The entire training problem reduces to one question: can a network predict, from a noisy $x_t$, what noise was added to get there?
+  <Steps>
+    <Step label="Reverse is the forward equation, solved backward">
+      This is exactly the forward equation solved for $x_{t-1}$.
+    </Step>
+    <Step label="A perfect predictor exactly inverts it">
+      If $\hat\epsilon_t$ equals the true $\epsilon_t$ at every step, this exactly inverts the forward
+      process.
+    </Step>
+    <Step label="Training reduces to one question">
+      The entire training problem reduces to one question: can a network predict, from a noisy $x_t$, what
+      noise was added to get there?
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
