@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, RecommenderCheckpoint } from "./Demos";
     <Variable>**$\mathcal{L}$** — the total squared-error loss, summed only over ratings that are actually observed.</Variable>
   </Variables>
 
-  Gradient descent updates every $u_i$ and $v_j$ to reduce that squared error — but only summing over ratings that actually exist. The missing entry never appears in the loss at all; once training finishes, predicting it is just plugging its user and item vectors into the same dot product.
+  <Steps>
+    <Step label="Train only on ratings that exist">
+      Gradient descent updates every $u_i$ and $v_j$ to reduce that squared error — but only summing over
+      ratings that actually exist. The missing entry never appears in the loss at all.
+    </Step>
+    <Step label="Predicting a missing entry is just the same dot product">
+      Once training finishes, predicting a rating that was never observed is nothing special — just
+      plugging its user and item vectors into the same $u_i \cdot v_j$ used everywhere else.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
