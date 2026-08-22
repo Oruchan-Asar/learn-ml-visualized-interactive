@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, FitCheckpoint } from "./Demos";
     <Variable>**$b$** — the line's intercept.</Variable>
   </Variables>
 
-  Squaring does two things: it makes every term positive, so misses in opposite directions can't cancel out, and it makes one large miss cost far more than several small ones — a line has to stay close to *every* point, not just close on average.
+  <Steps>
+    <Step label="Every term becomes positive">
+      Squaring means misses in opposite directions can't cancel out — a point the line overshoots and a point it
+      undershoots both add to the total instead of offsetting each other.
+    </Step>
+    <Step label="One large miss costs far more than several small ones">
+      Squaring also makes a big residual disproportionately expensive, so a line has to stay close to *every*
+      point, not just close on average.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
