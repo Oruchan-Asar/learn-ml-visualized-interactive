@@ -26,7 +26,13 @@ import { IntuitionDemo, PlayDemo, PerceptronCheckpoint } from "./Demos";
     <Variable>**$x$** — the input point's coordinates.</Variable>
   </Variables>
 
-  where $y$ is the true label ($+1$ or $-1$). No calculus, no loss function to minimize — just "if wrong, shift toward being right."
+  <Steps>
+    <Step label="No calculus needed">
+      Whenever the prediction is wrong (with $y$ the true label, $+1$ or $-1$), the rule above nudges $w$ and $b$
+      directly toward correctness — no calculus, no loss function to minimize, just "if wrong, shift toward being
+      right."
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
