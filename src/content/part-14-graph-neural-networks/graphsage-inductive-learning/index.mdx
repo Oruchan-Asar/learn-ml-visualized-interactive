@@ -33,10 +33,20 @@ import { IntuitionDemo, PlayDemo, SamplingGapCheckpoint } from "./Demos";
     <Variable>**AGGREGATE** — the learned combining function, applied to any neighborhood, seen or unseen.</Variable>
   </Variables>
 
-  Second — and this is the bigger idea — it learns an aggregation *function*, not a per-node lookup
-  table. A method that memorizes one embedding vector per node (like node2vec) is **transductive**: it
-  has nothing to say about a node it never saw. GraphSAGE's function takes *any* neighborhood as input, so
-  it's **inductive**: hand it a brand-new node's neighborhood and it produces an answer immediately.
+  <Steps>
+    <Step label="Learns a function, not a lookup table">
+      Second — and this is the bigger idea — it learns an aggregation *function*, not a per-node lookup
+      table.
+    </Step>
+    <Step label="Transductive methods can't handle unseen nodes">
+      A method that memorizes one embedding vector per node (like node2vec) is **transductive**: it has
+      nothing to say about a node it never saw.
+    </Step>
+    <Step label="Inductive: any neighborhood works immediately">
+      GraphSAGE's function takes *any* neighborhood as input, so it's **inductive**: hand it a brand-new
+      node's neighborhood and it produces an answer immediately.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
