@@ -18,7 +18,16 @@ import { IntuitionDemo, PlayDemo, EvaluatePipelineCheckpoint } from "./Demos";
   \text{accuracy, F1 (one threshold)} \quad\big|\quad \text{AUC (every threshold at once)} \quad\big|\quad \text{per-fold accuracy (where it fails)} \quad\big|\quad \text{best-F1 threshold (grid search)}
   $$
 
-  Each of these was built in isolation over the last five chapters. None of them is "the" right answer — each answers a different question, and a model that looks good on one can look mediocre on another.
+  <Steps>
+    <Step label="Each metric was built in isolation">
+      Every one of these — accuracy, F1, AUC, per-fold accuracy, best-threshold F1 — was built in its own
+      chapter, looking at the classifier through only one lens at a time.
+    </Step>
+    <Step label="None of them is the right answer">
+      Each answers a different question, and a model that looks good on one can look mediocre on another — the
+      point of a real evaluation is to run all of them and compare, not to pick a favorite.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
