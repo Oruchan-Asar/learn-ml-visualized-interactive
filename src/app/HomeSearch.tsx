@@ -35,11 +35,15 @@ export function HomeSearch({ curriculum }: HomeSearchProps) {
   const isSearching = q.length > 0;
   const matches = (c: ChapterMeta) => `${c.title} ${c.blurb} ${c.part}`.toLowerCase().includes(q);
 
-  function togglePart(part: string) {
+  // `<details>` fires `toggle` for a React-driven `open` change (e.g. isSearching flipping) just as much
+  // as for a real click — treating every toggle as "flip the stored state" fights the controlled `open`
+  // prop and oscillates forever. Setting from the DOM's actual `open` value instead makes it idempotent.
+  function syncPartOpen(part: string, isOpen: boolean) {
     setOpenParts((prev) => {
+      if (prev.has(part) === isOpen) return prev;
       const next = new Set(prev);
-      if (next.has(part)) next.delete(part);
-      else next.add(part);
+      if (isOpen) next.add(part);
+      else next.delete(part);
       return next;
     });
   }
@@ -64,7 +68,12 @@ export function HomeSearch({ curriculum }: HomeSearchProps) {
         const open = isSearching || openParts.has(part);
 
         return (
-          <details key={part} className={styles.partSection} open={open} onToggle={() => !isSearching && togglePart(part)}>
+          <details
+            key={part}
+            className={styles.partSection}
+            open={open}
+            onToggle={(e) => !isSearching && syncPartOpen(part, e.currentTarget.open)}
+          >
             <summary className={styles.partSummary}>
               <span className={styles.partTitle}>{part}</span>
               <span className={styles.partCount}>
