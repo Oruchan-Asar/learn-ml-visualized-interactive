@@ -34,7 +34,16 @@ import { IntuitionDemo, PlayDemo, AnchorsCheckpoint } from "./Demos";
     <Variable>**$\text{coverage}(A)$** — the fraction of the entire input space that satisfies the rule, regardless of prediction.</Variable>
   </Variables>
 
-  Anchors search for the *smallest* rule clearing the precision bar — trading coverage for precision only as far as actually necessary, never further.
+  <Steps>
+    <Step label="Search for the smallest sufficient rule">
+      Anchors search for the *smallest* rule that clears the precision bar — not the most precise rule
+      possible, just the smallest one that's precise enough.
+    </Step>
+    <Step label="Coverage is spent, not sacrificed">
+      Coverage is traded away for precision only as far as actually necessary, never further — every extra
+      condition that isn't needed to clear $\tau$ is left out.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
