@@ -25,7 +25,18 @@ import { IntuitionDemo, PlayDemo, BiasVarianceCheckpoint } from "./Demos";
     <Variable>**$\mathbb{E}[\hat f(x)]$** — the average prediction at $x$, across many resampled fits.</Variable>
   </Variables>
 
-  Bias is how wrong the *average* fit is — high when the model is too simple to represent the true shape. Variance is how much the fit *swings* from one sample to the next — high when the model is flexible enough to chase noise. Total expected error is bias² + variance (plus noise no model can remove).
+  <Steps>
+    <Step label="Bias: how wrong the average fit is">
+      Bias is how wrong the *average* fit is — high when the model is too simple to represent the true shape.
+    </Step>
+    <Step label="Variance: how much the fit swings">
+      Variance is how much the fit *swings* from one sample to the next — high when the model is flexible enough
+      to chase noise.
+    </Step>
+    <Step label="Total error decomposes into both">
+      Total expected error is bias² + variance (plus noise no model can remove).
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
