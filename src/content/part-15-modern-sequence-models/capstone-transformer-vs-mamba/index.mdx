@@ -27,10 +27,17 @@ import { IntuitionDemo, PlayDemo, ComparisonCheckpoint } from "./Demos";
     <Variable>**$n$** — the sequence length, the one quantity every cost figure here is measured against.</Variable>
   </Variables>
 
-  Every number here is a fact this part already proved, one chapter at a time: the $n^2$ from Chapter 1's
-  attention matrix, the $O(n)$ key-value cache from Chapter 3, and Chapter 4's selective state collapsing
-  an entire sequence's history into one fixed-size number. This capstone doesn't add a new mechanism — it
-  puts the two totals next to each other on the one task where both happen to get the same right answer.
+  <Steps>
+    <Step label="Every number traces back to an earlier chapter">
+      The $n^2$ comes from Chapter 1's attention matrix, the $O(n)$ memory from Chapter 3's key-value
+      cache, and the $O(1)$ from Chapter 4's selective state collapsing an entire sequence's history into
+      one fixed-size number.
+    </Step>
+    <Step label="This capstone adds no new mechanism">
+      It just puts the two totals next to each other on the one task where both architectures happen to
+      get the same right answer.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
