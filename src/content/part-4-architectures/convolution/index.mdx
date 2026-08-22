@@ -26,7 +26,14 @@ import { IntuitionDemo, PlayDemo, ConvolutionCheckpoint } from "./Demos";
     <Variable>**$i, j$** — the row and column offsets that range over the kernel's own window.</Variable>
   </Variables>
 
-  The same 9 kernel numbers are reused at all 16 positions here. That's the whole idea: a pattern worth detecting in one corner of an image is worth detecting anywhere else in it too, so the filter doesn't need its own separate weights for every location.
+  <Steps>
+    <Step label="One kernel, reused everywhere">
+      The same 9 kernel numbers are reused at all 16 positions here — the identical filter weights get multiplied against every patch of the image as the window slides across it.
+    </Step>
+    <Step label="Why sharing makes sense">
+      That's the whole idea: a pattern worth detecting in one corner of an image is worth detecting anywhere else in it too, so the filter doesn't need its own separate weights for every location.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
