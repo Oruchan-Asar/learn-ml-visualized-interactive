@@ -31,9 +31,16 @@ import { IntuitionDemo, PlayDemo, ReproCheckpoint } from "./Demos";
     <Variable>**$\text{seed}$** — the random seed governing every source of stochasticity in the run.</Variable>
   </Variables>
 
-  A **reproducibility** claim is only as strong as the set of inputs it actually pins down. Log the
-  hyperparameters but not the seed, and "same config" silently means "one of many possible outcomes" instead
-  of "this exact outcome."
+  <Steps>
+    <Step label="A reproducibility claim is only as strong as its inputs">
+      "Reproducible" means every argument to $f$ is pinned down, not just the ones that happen to live in a
+      config file.
+    </Step>
+    <Step label="Logging hyperparameters without the seed isn't reproducibility">
+      Log $\text{lr}$, $\text{gradients}$, and $w_0$ but not $\text{seed}$, and "same config" silently means
+      "one of many possible outcomes" instead of "this exact outcome."
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
