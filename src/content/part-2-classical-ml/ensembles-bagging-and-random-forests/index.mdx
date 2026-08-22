@@ -25,7 +25,20 @@ import { IntuitionDemo, PlayDemo, BaggingCheckpoint } from "./Demos";
     <Variable>**majority** — the vote rule: whichever label the most trees predicted wins.</Variable>
   </Variables>
 
-  Each $T_i$ still overfits its own bootstrap sample. But the noise it overfits to is specific to *which* points that resample happened to include — different resamples chase different noise, so it rarely lines up. A **random forest** adds one more trick on top: at every split, each tree only gets to consider a random subset of the available features. With just one feature here, that trick has nothing to act on — bagging alone is already the whole story.
+  <Steps>
+    <Step label="Each tree still overfits, but differently">
+      Each $T_i$ still overfits its own bootstrap sample. But the noise it overfits to is specific to *which*
+      points that resample happened to include — different resamples chase different noise, so it rarely lines
+      up.
+    </Step>
+    <Step label="Random forests also subsample features">
+      A **random forest** adds one more trick on top: at every split, each tree only gets to consider a random
+      subset of the available features.
+    </Step>
+    <Step label="Not in play with a single feature">
+      With just one feature here, that trick has nothing to act on — bagging alone is already the whole story.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
