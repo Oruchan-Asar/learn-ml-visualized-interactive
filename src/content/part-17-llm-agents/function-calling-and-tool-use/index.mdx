@@ -31,11 +31,17 @@ import { IntuitionDemo, PlayDemo, ToolUseCheckpoint } from "./Demos";
     <Variable>**$\texttt{tool\_call}(f, \text{args})$** — the structured object — a function name plus its arguments — that gets executed outside the model.</Variable>
   </Variables>
 
-  Nothing about the model's underlying weights changes between the two cases — this is the exact same
-  "frozen mechanism, environment provides the option" idea from Part XIII's prompting chapter, just
-  applied to which *tools* are on the menu instead of which *examples* are in the prompt. The tool call
-  itself is just a structured object (a function name plus a **JSON (JavaScript Object Notation)** object
-  of arguments) that gets executed outside the model and its result fed back in.
+  <Steps>
+    <Step label="Same frozen-mechanism idea as prompting">
+      Nothing about the model's underlying weights changes between the two cases — this is the exact same
+      "frozen mechanism, environment provides the option" idea from Part XIII's prompting chapter, just
+      applied to which *tools* are on the menu instead of which *examples* are in the prompt.
+    </Step>
+    <Step label="A tool call is a structured object">
+      The tool call itself is just a structured object (a function name plus a **JSON (JavaScript Object
+      Notation)** object of arguments) that gets executed outside the model and its result fed back in.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
