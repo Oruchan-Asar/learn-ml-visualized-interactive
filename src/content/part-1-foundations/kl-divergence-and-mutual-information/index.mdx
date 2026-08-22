@@ -28,10 +28,21 @@ import { IntuitionDemo, PlayDemo, KLCheckpoint } from "./Demos";
     <Variable>**$x$** — one outcome, ranging over everything either distribution assigns probability to.</Variable>
   </Variables>
 
-  It's always $\geq 0$, and exactly $0$ only when $P=Q$ everywhere. But it is **not symmetric** —
-  $D_{KL}(P\Vert Q) \neq D_{KL}(Q\Vert P)$ in general, so it isn't a true distance. Related: **cross-entropy**
-  $H(P,Q) = -\sum_x P(x)\log_2 Q(x)$ always decomposes as $H(P,Q) = H(P) + D_{KL}(P\Vert Q)$ — Part II's
-  cross-entropy loss chapter is exactly this $H(P,Q)$, with $P$ the true one-hot label.
+  <Steps>
+    <Step label="Never negative, zero only at a perfect match">
+      $D_{KL}(P\Vert Q) \geq 0$ always, and it hits exactly $0$ only when $P=Q$ everywhere — the only way to
+      waste zero bits on $Q$'s code is for $Q$ to already be the right code.
+    </Step>
+    <Step label="Not symmetric — direction matters">
+      $D_{KL}(P\Vert Q) \neq D_{KL}(Q\Vert P)$ in general. Despite measuring how "far apart" two
+      distributions are, swapping which one is the reference changes the answer, so it isn't a true distance.
+    </Step>
+    <Step label="Related to cross-entropy">
+      **Cross-entropy** $H(P,Q) = -\sum_x P(x)\log_2 Q(x)$ always decomposes as
+      $H(P,Q) = H(P) + D_{KL}(P\Vert Q)$ — Part II's cross-entropy loss chapter is exactly this $H(P,Q)$,
+      with $P$ the true one-hot label.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
