@@ -16,11 +16,21 @@ import { IntuitionDemo, PlayDemo, DegreeCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  A **graph** is just a set of **nodes** (things) and **edges** (connections between them). The only
-  structure a node has is *which other nodes it touches* — its **neighborhood**, $\mathcal{N}(v)$ — and
-  *how many*, its **degree**. The whole graph can be written as an **adjacency matrix** $A$, where
-  $A_{ij}=1$ if nodes $i$ and $j$ share an edge and $0$ otherwise. $A$ is symmetric (an edge goes both
-  ways) with a zero diagonal (no node is its own neighbor), and row $i$'s sum is exactly node $i$'s degree.
+  <Steps>
+    <Step label="Nodes, edges, and neighborhoods">
+      A **graph** is just a set of **nodes** (things) and **edges** (connections between them). The only
+      structure a node has is *which other nodes it touches* — its **neighborhood**, $\mathcal{N}(v)$ —
+      and *how many*, its **degree**.
+    </Step>
+    <Step label="The adjacency matrix encodes it all">
+      The whole graph can be written as an **adjacency matrix** $A$, where $A_{ij}=1$ if nodes $i$ and $j$
+      share an edge and $0$ otherwise.
+    </Step>
+    <Step label="Symmetric, zero diagonal, rows sum to degree">
+      $A$ is symmetric (an edge goes both ways) with a zero diagonal (no node is its own neighbor), and
+      row $i$'s sum is exactly node $i$'s degree.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
