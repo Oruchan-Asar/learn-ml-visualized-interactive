@@ -25,7 +25,18 @@ import { IntuitionDemo, PlayDemo, VAECheckpoint } from "./Demos";
     <Variable>**$\varepsilon$** — an external noise term, drawn from a standard normal and independent of the network's parameters.</Variable>
   </Variables>
 
-  Writing sampling as a deterministic function of $\mu$, $\sigma$, and an external noise term $\varepsilon$ keeps the whole pipeline differentiable — gradients flow through $\mu$ and $\sigma$ even though $z$ itself is random. A second loss term, the **KL divergence** — short for **Kullback–Leibler divergence** — to the standard normal, keeps every input's distribution from collapsing to a single point or drifting off to some far corner of latent space:
+  <Steps>
+    <Step label="Sampling becomes a deterministic function of noise">
+      Writing sampling as a function of $\mu$, $\sigma$, and an external noise term $\varepsilon$ keeps the whole
+      pipeline differentiable, instead of asking gradients to pass through a random draw directly.
+    </Step>
+    <Step label="Gradients still reach the encoder">
+      Gradients flow through $\mu$ and $\sigma$ even though $z$ itself is random — the randomness is isolated
+      entirely in $\varepsilon$, which needs no gradient at all.
+    </Step>
+  </Steps>
+
+  A second loss term, the **KL divergence** — short for **Kullback–Leibler divergence** — to the standard normal, keeps every input's distribution from collapsing to a single point or drifting off to some far corner of latent space:
 
   $$
   D_{KL}\big(\mathcal{N}(\mu,\sigma^2) \,\|\, \mathcal{N}(0,1)\big) = \tfrac{1}{2}\left(\sigma^2 + \mu^2 - 1 - \log\sigma^2\right)
