@@ -23,7 +23,16 @@ import { IntuitionDemo, PlayDemo, AudioEmbeddingCheckpoint } from "./Demos";
     <Variable>**$\text{Encode}_{\text{image}}$** — the image encoder, mapping a photo into that same shared space.</Variable>
   </Variables>
 
-  Nothing about nearest-neighbor retrieval changes — it's the identical distance computation from the two-modality case. What changes is that *any* pair among the three modalities can now retrieve from each other: audio→image, audio→text, image→audio, text→audio.
+  <Steps>
+    <Step label="Retrieval itself is unchanged">
+      Nothing about nearest-neighbor retrieval changes — it's the identical distance computation from the
+      two-modality case, just applied to a third kind of point on the same map.
+    </Step>
+    <Step label="Any pair of modalities can now retrieve from each other">
+      What's new is that *any* pair among the three modalities can retrieve from each other: audio→image,
+      audio→text, image→audio, text→audio — the shared space makes every direction equally available.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
