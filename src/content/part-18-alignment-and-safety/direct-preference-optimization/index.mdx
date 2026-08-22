@@ -34,10 +34,16 @@ import { IntuitionDemo, PlayDemo, DPOCheckpoint } from "./Demos";
     <Variable>**$y_l$** — the losing (dispreferred) response in the comparison.</Variable>
   </Variables>
 
-  Differentiating this with respect to the policy's own parameters, the softmax's $\pi(a)$ term cancels
-  *exactly* between the winner and loser gradients — what's left is even simpler than RLHF's two-stage
-  update: one gradient step per preference pair, straight on the policy, no reward model and no separate
-  RL update rule required.
+  <Steps>
+    <Step label="The reward model's term cancels in the gradient">
+      Differentiating this with respect to the policy's own parameters, the softmax's $\pi(a)$ term
+      cancels *exactly* between the winner and loser gradients.
+    </Step>
+    <Step label="What's left is a single-stage update">
+      One gradient step per preference pair, straight on the policy — no reward model and no separate RL
+      update rule required, simpler than RLHF's two-stage procedure.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
