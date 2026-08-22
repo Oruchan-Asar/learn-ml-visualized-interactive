@@ -25,7 +25,16 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
     <Variable>**$\text{results}(q)$** — every indexed image, sorted by distance to the query — nearest (best match) first.</Variable>
   </Variables>
 
-  There's no separate "search algorithm" beyond this. A real system indexes millions of images instead of three, and uses an approximate nearest-neighbor structure instead of scanning every one — but the underlying question, "which indexed vector sits closest to my query's vector," never changes.
+  <Steps>
+    <Step label="There's no separate search algorithm beyond this">
+      Embed the query, rank by distance — that's the entire mechanism, with nothing hidden behind it.
+    </Step>
+    <Step label="Real systems scale it up, not change it">
+      A real system indexes millions of images instead of three, and uses an approximate nearest-neighbor
+      structure instead of scanning every one — but the underlying question, "which indexed vector sits
+      closest to my query's vector," never changes.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
