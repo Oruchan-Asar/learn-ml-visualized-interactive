@@ -27,7 +27,17 @@ import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
     <Variable>**$\mathbf{c}$** — the text embedding of the caption being generated toward — the one new ingredient this chapter adds.</Variable>
   </Variables>
 
-  The only addition is $\mathbf{c}$ — a text embedding fed into the denoiser alongside $x_t$ and $t$. A denoiser trained on captioned images learns to predict *different* noise, at the *same* $(x_t, t)$, depending on $\mathbf{c}$ — which means the same starting noise unrolls into a different final image for every different caption.
+  <Steps>
+    <Step label="One new input: the caption embedding">
+      The only addition is $\mathbf{c}$ — a text embedding fed into the denoiser alongside $x_t$ and $t$. Nothing
+      else about the reverse step's math changes.
+    </Step>
+    <Step label="Same state, different prediction, different image">
+      A denoiser trained on captioned images learns to predict *different* noise, at the *same* $(x_t, t)$,
+      depending on $\mathbf{c}$ — which means the same starting noise unrolls into a different final image for
+      every different caption.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
