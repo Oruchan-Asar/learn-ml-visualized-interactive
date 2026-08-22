@@ -23,7 +23,12 @@ import { IntuitionDemo, PlayDemo, WeightInitCheckpoint } from "./Demos";
     <Variable>**fan-in** — the number of inputs feeding into a neuron or layer.</Variable>
   </Variables>
 
-  This is the idea behind Xavier/Glorot initialization: pick the initial weight scale from the layer's own size, not a fixed constant, so six layers or sixty behave the same way at the start.
+  <Steps>
+    <Step label="Xavier/Glorot: scale by the layer's own size">
+      Pick the initial weight scale from the layer's own size, not a fixed constant, so six layers or sixty
+      behave the same way at the start.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
