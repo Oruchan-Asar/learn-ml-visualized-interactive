@@ -26,7 +26,19 @@ import { IntuitionDemo, PlayDemo, TimeSeriesCheckpoint } from "./Demos";
     <Variable>**$p$** — the period: how many steps before the seasonal pattern repeats.</Variable>
   </Variables>
 
-  Fit the trend first — ordinary least squares, same as always. Then look at what's left over: the **residuals**, $y_t - \text{trend}(t)$. Average those residuals by their position in the cycle (every 4th one, if the period is 4), and that average *is* the seasonal component — the part of the pattern that keeps repeating.
+  <Steps>
+    <Step label="Fit the trend first">
+      Ordinary least squares, same as always — fit $\text{trend}(t)$ to the raw series before touching
+      anything seasonal.
+    </Step>
+    <Step label="Compute the residuals">
+      Look at what's left over: the **residuals**, $y_t - \text{trend}(t)$.
+    </Step>
+    <Step label="Average residuals by cycle position">
+      Average those residuals by their position in the cycle (every 4th one, if the period is 4), and that
+      average *is* the seasonal component — the part of the pattern that keeps repeating.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
