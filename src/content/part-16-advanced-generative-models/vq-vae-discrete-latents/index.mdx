@@ -32,11 +32,17 @@ import { IntuitionDemo, PlayDemo, VQVAECheckpoint } from "./Demos";
     <Variable>**$k$** — the index of the nearest codebook entry.</Variable>
   </Variables>
 
-  That's the entire mechanism: nearest-neighbor lookup, nothing learned about the *lookup* itself. What's
-  learned is the codebook's $K$ locations and the encoder/decoder around them, so that whichever code a
-  given input snaps to still decodes back into something close to the original — training has to shape
-  the encoder's outputs to cluster near useful codes, not just quantize whatever it would have produced
-  anyway.
+  <Steps>
+    <Step label="The lookup itself isn't learned">
+      That's the entire mechanism: nearest-neighbor lookup, nothing learned about the *lookup* itself.
+    </Step>
+    <Step label="What is learned: the codebook and its encoder/decoder">
+      The codebook's $K$ locations and the encoder/decoder around them are what's learned, so that
+      whichever code a given input snaps to still decodes back into something close to the original —
+      training has to shape the encoder's outputs to cluster near useful codes, not just quantize whatever
+      it would have produced anyway.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
