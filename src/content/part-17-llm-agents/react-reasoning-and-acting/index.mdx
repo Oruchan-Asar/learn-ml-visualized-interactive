@@ -31,11 +31,20 @@ import { IntuitionDemo, PlayDemo, ReActCheckpoint } from "./Demos";
     <Variable>**Final Answer** — the answer given once the loop stops.</Variable>
   </Variables>
 
-  Each thought is conditioned on every observation that came before it — that's the entire mechanism. A
-  wrong initial belief isn't fatal, because the loop doesn't commit to an answer until an action has
-  actually been taken and its result folded back in. Compare this to Part XIII's plain prompting: no
-  action step exists there at all, so a wrong initial belief has no way to get corrected before the
-  answer is given.
+  <Steps>
+    <Step label="Each thought conditions on every prior observation">
+      That's the entire mechanism: $\text{Thought}_{t+1}$ sees everything the loop has observed so far,
+      not just the request it started from.
+    </Step>
+    <Step label="A wrong initial belief isn't fatal">
+      The loop doesn't commit to an answer until an action has actually been taken and its result folded
+      back in, so an early wrong thought still has a chance to be corrected before the final answer.
+    </Step>
+    <Step label="Plain prompting has no way to self-correct">
+      Compare this to Part XIII's plain prompting: no action step exists there at all, so a wrong initial
+      belief has no way to get corrected before the answer is given.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
