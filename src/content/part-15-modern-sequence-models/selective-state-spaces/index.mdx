@@ -39,9 +39,16 @@ import { IntuitionDemo, PlayDemo, SelectiveCheckpoint } from "./Demos";
   B(x_t) = \begin{cases} 0 & x_t = 0 \\ 1 & x_t \neq 0 \end{cases}
   $$
 
-  On filler, $A{=}1,B{=}0$ freezes the state exactly — nothing decays, because there's nothing worth
-  forgetting *from*. On signal, $A{=}0,B{=}1$ overwrites the state completely — the model chooses to
-  forget everything it was holding, on purpose, because something worth remembering just arrived.
+  <Steps>
+    <Step label="On filler: freeze the state">
+      $A{=}1,B{=}0$ freezes the state exactly — nothing decays, because there's nothing worth forgetting
+      *from*.
+    </Step>
+    <Step label="On signal: overwrite it completely">
+      $A{=}0,B{=}1$ overwrites the state completely — the model chooses to forget everything it was
+      holding, on purpose, because something worth remembering just arrived.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
