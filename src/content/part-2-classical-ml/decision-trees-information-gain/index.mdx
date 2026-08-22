@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, SplitCheckpoint } from "./Demos";
     <Variable>**$n$** — the total number of points at the parent node.</Variable>
   </Variables>
 
-  The second term is the children's entropy, weighted by how many points landed on each side. A split is good exactly when that weighted average is much lower than where you started.
+  <Steps>
+    <Step label="The second term is the children's weighted entropy">
+      It's the entropy of each child node, weighted by how many points landed on that side — so a child with more
+      points counts for more of the average.
+    </Step>
+    <Step label="A good split lowers that weighted average a lot">
+      A split is good exactly when the children's weighted average entropy is much lower than the parent's
+      entropy you started with.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
