@@ -29,7 +29,21 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
     <Variable>**$w$** — the full weight vector.</Variable>
   </Variables>
 
-  Saliency answers "how sensitive is the output to this feature, in general." SHAP answers "how much did this feature's *actual value* move this prediction away from typical." Counterfactual answers "what's the cheapest edit that changes the *decision*." None of them is wrong — they're just not the same question, and mixing them up is a real, common mistake.
+  <Steps>
+    <Step label="Saliency: sensitivity in general">
+      Saliency answers "how sensitive is the output to this feature, in general."
+    </Step>
+    <Step label="SHAP: this instance's actual pull">
+      SHAP answers "how much did this feature's *actual value* move this prediction away from typical."
+    </Step>
+    <Step label="Counterfactual: the cheapest edit">
+      Counterfactual answers "what's the cheapest edit that changes the *decision*."
+    </Step>
+    <Step label="Different questions, not competing answers">
+      None of them is wrong — they're just not the same question, and mixing them up is a real, common
+      mistake.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
