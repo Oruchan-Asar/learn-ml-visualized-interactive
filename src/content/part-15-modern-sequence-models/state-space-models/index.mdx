@@ -34,10 +34,16 @@ import { IntuitionDemo, PlayDemo, SSMCheckpoint } from "./Demos";
     <Variable>**$C$** — the constant mapping the hidden state to the output.</Variable>
   </Variables>
 
-  $A$, $B$, $C$ are fixed numbers (in a real model, learned; here, chosen so every value is checkable by
-  hand). $A$ is a **decay** — with $|A|<1$, older inputs' contributions shrink geometrically every step,
-  the same exponential forgetting Part III's vanishing-gradients chapter treated as a bug. Here it's the
-  entire mechanism: the state is *supposed* to fade.
+  <Steps>
+    <Step label="A, B, C are fixed constants">
+      In a real model these are learned; here they're chosen so every value is checkable by hand.
+    </Step>
+    <Step label="A is a decay, and that's the whole point">
+      With $|A|<1$, older inputs' contributions shrink geometrically every step — the same exponential
+      forgetting Part III's vanishing-gradients chapter treated as a bug. Here it's the entire mechanism:
+      the state is *supposed* to fade.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
