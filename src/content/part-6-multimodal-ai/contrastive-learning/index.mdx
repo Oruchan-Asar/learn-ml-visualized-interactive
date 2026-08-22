@@ -25,7 +25,16 @@ import { IntuitionDemo, PlayDemo, ContrastiveCheckpoint } from "./Demos";
     <Variable>**$P(\text{caption}_i \mid \text{image}_i)$** — the probability the model assigns to the true caption given the image (and symmetrically for the other direction).</Variable>
   </Variables>
 
-  There are no hand-written labels anywhere in this formula — the "true pairing" is just whichever image and caption arrived together in the training data. Every *other* image in the same batch automatically becomes a negative example for every *other* caption, for free.
+  <Steps>
+    <Step label="No hand-written labels anywhere">
+      The "true pairing" is just whichever image and caption arrived together in the training data — nobody
+      annotated what's in either one.
+    </Step>
+    <Step label="Negatives come for free">
+      Every *other* image in the same batch automatically becomes a negative example for every *other*
+      caption, with no extra labeling effort.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
