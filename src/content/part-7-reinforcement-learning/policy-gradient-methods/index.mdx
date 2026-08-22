@@ -27,7 +27,19 @@ import { IntuitionDemo, PlayDemo, PolicyGradientCheckpoint } from "./Demos";
     <Variable>**$\alpha$** — the learning rate controlling the update size.</Variable>
   </Variables>
 
-  Look closely at $\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)$ — it's *exactly* the softmax cross-entropy gradient from Part II, indicator minus predicted probability. The only difference is what it's scaled by: cross-entropy always scales by $1$ (the true label is certain), while REINFORCE scales by $G$, whatever return that action happened to earn. A big positive return pushes hard toward that action; a return of exactly zero pushes not at all.
+  <Steps>
+    <Step label="Same shape as the softmax cross-entropy gradient">
+      $\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)$ is *exactly* the softmax cross-entropy gradient from Part
+      II, indicator minus predicted probability.
+    </Step>
+    <Step label="But scaled by the return, not by 1">
+      Cross-entropy always scales by $1$ (the true label is certain), while REINFORCE scales by $G$, whatever
+      return that action happened to earn.
+    </Step>
+    <Step label="What that scaling does">
+      A big positive return pushes hard toward that action; a return of exactly zero pushes not at all.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
