@@ -28,7 +28,16 @@ import { IntuitionDemo, PlayDemo, ICLCheckpoint } from "./Demos";
     <Variable>**$i, j$** — indices ranging over the demonstration examples in the prompt.</Variable>
   </Variables>
 
-  This is a kernel-regression view of what attention over demonstrations computes: weight each example by similarity to the query, then blend their answers. The weights depend only on the *inputs* $x_i$ — completely independent of what pattern the outputs $y_i$ happen to encode.
+  <Steps>
+    <Step label="Attention as kernel regression">
+      This is a kernel-regression view of what attention over demonstrations computes: weight each example by
+      similarity to the query, then blend their answers.
+    </Step>
+    <Step label="Weights depend only on inputs, never on outputs">
+      The weights depend only on the *inputs* $x_i$ — completely independent of what pattern the outputs $y_i$
+      happen to encode.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
