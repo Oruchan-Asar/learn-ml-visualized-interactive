@@ -24,7 +24,16 @@ import { IntuitionDemo, PlayDemo, AnomalyCheckpoint } from "./Demos";
     <Variable>**$\text{depth}(x)$** — how many splits an isolation tree needs before $x$ ends up alone.</Variable>
   </Variables>
 
-  A point sitting off on its own tends to land alone after just one or two splits — there's nothing else nearby to keep splitting away from it. A point buried in a dense cluster needs several splits before every one of its close neighbors has been separated out too.
+  <Steps>
+    <Step label="Outliers isolate almost immediately">
+      A point sitting off on its own tends to land alone after just one or two splits — there's nothing else
+      nearby to keep splitting away from it.
+    </Step>
+    <Step label="Clustered points need many more splits">
+      A point buried in a dense cluster needs several splits before every one of its close neighbors has
+      been separated out too.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
