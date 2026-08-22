@@ -12,7 +12,20 @@ import { IntuitionDemo, PlayDemo, LandscapeCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  A flat point ($\nabla f = 0$) is a true **local minimum** only if the function curves upward in *every* direction through it. If even one direction curves downward instead, it's a **saddle point** — and gradient descent can simply walk out along that direction. Whether a given direction curves up or down is governed by the sign of an eigenvalue of the Hessian (the matrix of second derivatives); a minimum needs all of them positive.
+  <Steps>
+    <Step label="A true minimum curves up in every direction">
+      A flat point ($\nabla f = 0$) is a true **local minimum** only if the function curves upward in *every*
+      direction through it.
+    </Step>
+    <Step label="One downward direction makes it a saddle">
+      If even one direction curves downward instead, it's a **saddle point** — and gradient descent can simply
+      walk out along that direction.
+    </Step>
+    <Step label="The Hessian's eigenvalues decide which">
+      Whether a given direction curves up or down is governed by the sign of an eigenvalue of the Hessian (the
+      matrix of second derivatives); a minimum needs all of them positive.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
