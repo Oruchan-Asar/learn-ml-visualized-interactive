@@ -37,7 +37,14 @@ import { IntuitionDemo, PlayDemo, VanishingRnnCheckpoint } from "./Demos";
     <Variable>**$f_t$** — the forget gate at timestep $t$: how much of the previous cell state to keep, between $0$ and $1$.</Variable>
   </Variables>
 
-  No $\tanh'$ factor. If the forget gate $f_t$ stays close to $1$, this product barely shrinks at all — the "constant error carousel" that gives LSTMs their long memory.
+  <Steps>
+    <Step label="No squashing-derivative factor">
+      Unlike the plain RNN's gradient, there's no $\tanh'$ factor in this product — nothing here is forced below $1$ by a squashing derivative at every step.
+    </Step>
+    <Step label="A forget gate near 1 preserves the gradient">
+      If the forget gate $f_t$ stays close to $1$, this product barely shrinks at all — the "constant error carousel" that gives LSTMs their long memory.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
