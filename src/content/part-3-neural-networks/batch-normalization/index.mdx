@@ -26,7 +26,13 @@ import { IntuitionDemo, PlayDemo, BatchNormCheckpoint } from "./Demos";
     <Variable>**$\epsilon$** — a tiny constant that keeps the division from blowing up when the variance is near zero.</Variable>
   </Variables>
 
-  $\mu_j$ and $\sigma_j^2$ are the mean and variance of neuron $j$'s output, measured across the current batch. After this, every neuron has mean $0$ and variance $1$ — by construction, not by hoping the weight scale happened to be right.
+  <Steps>
+    <Step label="Mean 0, variance 1 — by construction">
+      $\mu_j$ and $\sigma_j^2$ are simply the mean and variance of neuron $j$'s output, measured across the
+      current batch. Plug them in and every neuron comes out with mean $0$ and variance $1$ — by construction,
+      not by hoping the weight scale happened to be right.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
