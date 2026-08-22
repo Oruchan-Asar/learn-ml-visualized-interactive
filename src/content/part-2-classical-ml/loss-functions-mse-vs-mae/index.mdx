@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, LossCheckpoint } from "./Demos";
     <Variable>**$\hat y_i$** — the model's predicted value for data point $i$.</Variable>
   </Variables>
 
-  Squaring means a residual twice as large costs *four times* as much — so one big miss can dominate the entire sum. Absolute value grows only proportionally, so a single outlier can't hijack MAE the same way.
+  <Steps>
+    <Step label="MSE lets one big miss dominate">
+      Squaring means a residual twice as large costs *four times* as much, so a single large miss can dominate
+      the entire sum.
+    </Step>
+    <Step label="MAE grows only proportionally">
+      Absolute value scales linearly with the size of the miss, so a single outlier can't hijack the total the
+      way it can under squared error.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
