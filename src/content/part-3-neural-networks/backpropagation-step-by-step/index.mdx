@@ -27,7 +27,20 @@ import { IntuitionDemo, PlayDemo, BackpropCheckpoint } from "./Demos";
     <Variable>**$z_1$** — hidden neuron 1's raw weighted sum, before its activation.</Variable>
   </Variables>
 
-  Five factors, but only two *new* ideas beyond Chapter 4: the loss contributes its own local derivative at the very start, and $\partial z_{\text{out}}/\partial h_1$ is just $v_1$ — the weight connecting $h_1$ to the output. Every other weight in the network gets its gradient the same way, reusing the exact same $\partial L/\partial z_{\text{out}}$ and $\partial L/\partial z_1$ terms computed once and shared.
+  <Steps>
+    <Step label="The loss adds a new starting term">
+      Five factors total, but only two are genuinely *new* beyond Chapter 4: the loss contributes its own local
+      derivative, $\partial L/\partial y$, at the very start of the chain.
+    </Step>
+    <Step label="One factor is just a connecting weight">
+      $\partial z_{\text{out}}/\partial h_1$ is nothing more than $v_1$ — the weight connecting $h_1$ to the
+      output. Everything else in the five-factor product is the same local-slope idea from Chapter 4.
+    </Step>
+    <Step label="Every weight reuses the same shared terms">
+      Every other weight in the network gets its gradient the same way, reusing the exact same
+      $\partial L/\partial z_{\text{out}}$ and $\partial L/\partial z_1$ terms computed once and shared.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
