@@ -38,7 +38,20 @@ import { IntuitionDemo, PlayDemo, GrabBagCheckpoint } from "./Demos";
   \text{DBSCAN: cluster} = \text{whatever's density-reachable, no labels involved at all}
   $$
 
-  kNN answers with whichever *individual* points are nearest. Naive Bayes answers with an *aggregate* statistic across the whole class. DBSCAN doesn't answer the labeled question at all — it answers a completely different one.
+  <Steps>
+    <Step label="kNN answers with individual points">
+      kNN answers with whichever *individual* points are nearest — a purely local vote among a handful of
+      neighbors.
+    </Step>
+    <Step label="Naive Bayes answers with an aggregate statistic">
+      Naive Bayes answers with an *aggregate* statistic across the whole class, pooling evidence from every
+      training point that shares a label.
+    </Step>
+    <Step label="DBSCAN answers a different question entirely">
+      DBSCAN doesn't answer the labeled question at all — it answers a completely different one, grouping
+      points by density alone, with no labels involved at any point.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
