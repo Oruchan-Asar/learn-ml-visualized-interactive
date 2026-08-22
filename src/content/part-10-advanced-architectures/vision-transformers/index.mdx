@@ -24,7 +24,16 @@ import { IntuitionDemo, PlayDemo, ViTCheckpoint } from "./Demos";
     <Variable>**$\text{position}_i$** — a position embedding added to patch $i$, since self-attention has no inherent sense of spatial order.</Variable>
   </Variables>
 
-  A convolution kernel's receptive field grows by one step of Chebyshev distance per layer — reaching a patch $d$ steps away takes at least $d$ stacked layers. Self-attention has no such restriction: every patch can attend to every other patch in a single layer, regardless of how far apart they sit in the image.
+  <Steps>
+    <Step label="A conv kernel's reach grows one hop at a time">
+      A convolution kernel's receptive field grows by one step of Chebyshev distance per layer — reaching a
+      patch $d$ steps away takes at least $d$ stacked layers.
+    </Step>
+    <Step label="Self-attention reaches everywhere in one layer">
+      Self-attention has no such restriction: every patch can attend to every other patch in a single layer,
+      regardless of how far apart they sit in the image.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
