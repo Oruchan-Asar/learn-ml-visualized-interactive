@@ -26,7 +26,19 @@ import { IntuitionDemo, PlayDemo, IntegratedGradientsCheckpoint } from "./Demos"
     <Variable>**$f$** — the model, as a function of its input.</Variable>
   </Variables>
 
-  In practice this integral is approximated by a Riemann sum over $m$ steps along that path. The key guarantee — the **completeness axiom** — is that as $m$ grows, the attribution converges to *exactly* $f(x) - f(x_{\text{baseline}})$, the true change in output. Plain saliency is the special, degenerate case $m=1$: just the gradient at the input, with no path at all.
+  <Steps>
+    <Step label="Approximated by a Riemann sum">
+      In practice this integral is approximated by a Riemann sum over $m$ steps along that path.
+    </Step>
+    <Step label="Completeness axiom">
+      As $m$ grows, the attribution converges to *exactly* $f(x) - f(x_{\text{baseline}})$, the true change in
+      output — the key guarantee behind this method.
+    </Step>
+    <Step label="Saliency is the degenerate case, m=1">
+      Plain saliency is just this method with a single step: the gradient at the input alone, with no path at
+      all.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
