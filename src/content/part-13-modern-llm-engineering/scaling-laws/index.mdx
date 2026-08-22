@@ -25,7 +25,16 @@ import { IntuitionDemo, PlayDemo, ScalingLawsCheckpoint } from "./Demos";
     <Variable>**$\alpha$** — the scaling exponent: how fast loss falls as $N$ grows.</Variable>
   </Variables>
 
-  Fitting ordinary least squares to $(\log N, \log L)$ recovers $\alpha$ and $A$ directly — the exact same OLS machinery from Part IX, just applied after a log transform. Fitting a line to the *raw* $(N, L)$ pairs instead assumes a linear relationship that was never true, and extrapolates accordingly.
+  <Steps>
+    <Step label="Log-log OLS recovers the law directly">
+      Fitting ordinary least squares to $(\log N, \log L)$ recovers $\alpha$ and $A$ directly — the exact same
+      OLS machinery from Part IX, just applied after a log transform.
+    </Step>
+    <Step label="Fitting the raw numbers assumes the wrong shape">
+      Fitting a line to the *raw* $(N, L)$ pairs instead assumes a linear relationship that was never true,
+      and extrapolates accordingly.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
