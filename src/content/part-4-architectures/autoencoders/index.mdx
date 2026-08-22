@@ -27,7 +27,17 @@ import { IntuitionDemo, PlayDemo, AutoencoderCheckpoint } from "./Demos";
     <Variable>**$n$** — the number of data points being averaged over.</Variable>
   </Variables>
 
-  for a unit direction $w$. Because $\hat{x}$ is the closest point on the line to $x$, Pythagoras gives $\lVert x \rVert^2 = \lVert \hat{x} \rVert^2 + \lVert x - \hat{x} \rVert^2$ — so minimizing reconstruction error is exactly the same problem as maximizing $\lVert \hat{x} \rVert^2$, the projected variance from Part II. A linear autoencoder with one bottleneck dimension *is* PCA.
+  <Steps>
+    <Step label="Reconstruction error is maximizing variance in disguise">
+      For a unit direction $w$, because $\hat{x}$ is the closest point on the line to $x$, Pythagoras gives
+      $\lVert x \rVert^2 = \lVert \hat{x} \rVert^2 + \lVert x - \hat{x} \rVert^2$ — so minimizing
+      reconstruction error is exactly the same problem as maximizing $\lVert \hat{x} \rVert^2$, the
+      projected variance from Part II.
+    </Step>
+    <Step label="A linear autoencoder is PCA">
+      A linear autoencoder with one bottleneck dimension *is* PCA.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
