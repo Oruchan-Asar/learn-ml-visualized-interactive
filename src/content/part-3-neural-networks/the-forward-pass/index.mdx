@@ -26,7 +26,18 @@ import { IntuitionDemo, PlayDemo, ForwardPassCheckpoint } from "./Demos";
     <Variable>**$a_i$** — neuron $i$'s activation, the layer's output for that neuron.</Variable>
   </Variables>
 
-  Nothing here is new — $z_i$ is exactly the perceptron's weighted sum, computed once per neuron. A layer of 3 neurons on 2 inputs is 3 independent weighted sums, each fed through the same activation. Stack enough of these, feeding one layer's outputs into the next layer's inputs, and that's a neural network.
+  <Steps>
+    <Step label="Nothing new inside each neuron">
+      $z_i$ is exactly the perceptron's weighted sum, computed once per neuron.
+    </Step>
+    <Step label="A layer is several of these in parallel">
+      A layer of 3 neurons on 2 inputs is 3 independent weighted sums, each fed through the same activation.
+    </Step>
+    <Step label="Stacking layers builds a network">
+      Feed one layer's outputs into the next layer's inputs, and stack enough of these, and that's a neural
+      network.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
