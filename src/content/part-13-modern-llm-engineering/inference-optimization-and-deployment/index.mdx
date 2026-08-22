@@ -23,7 +23,16 @@ import { IntuitionDemo, PlayDemo, InferenceOptCheckpoint } from "./Demos";
     <Variable>**$k$** — the generation step (equivalently, the token position being produced).</Variable>
   </Variables>
 
-  **Quantization** attacks a different cost: storing weights at lower numeric precision. A float32 weight (32 bits) rounded to int8 (8 bits) via a fixed scale factor uses a quarter of the memory, at the cost of a small, bounded rounding error per weight.
+  <Steps>
+    <Step label="Quantization attacks a different cost: memory">
+      **Quantization** stores weights at lower numeric precision instead of skipping recomputation. A float32
+      weight (32 bits) rounded to int8 (8 bits) via a fixed scale factor uses a quarter of the memory.
+    </Step>
+    <Step label="A small, bounded error buys a big, fixed win">
+      That memory reduction comes at the cost of a small, bounded rounding error per weight — not a growing
+      one, and not one that depends on sequence length the way the cache's savings do.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
