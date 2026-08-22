@@ -25,7 +25,16 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
     <Variable>**$b_{\text{head}}$** — the task-specific head's bias — in this example, the only parameter still being learned.</Variable>
   </Variables>
 
-  Fine-tuning freezes the backbone and, in this example, even freezes $w_{\text{head}}$ at its correct pretrained value — leaving only $b_{\text{head}}$ to learn. Training from scratch instead has to find $w_{\text{head}}$ and $b_{\text{head}}$ together, using the same two backbone features and the same tiny dataset.
+  <Steps>
+    <Step label="Fine-tuning leaves almost nothing to learn">
+      Fine-tuning freezes the backbone and, in this example, even freezes $w_{\text{head}}$ at its correct
+      pretrained value — leaving only $b_{\text{head}}$ to learn.
+    </Step>
+    <Step label="From scratch means finding both head parameters together">
+      Training from scratch instead has to find $w_{\text{head}}$ and $b_{\text{head}}$ together, using the same
+      two backbone features and the same tiny dataset.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
