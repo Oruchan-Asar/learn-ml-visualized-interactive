@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, BoostingCheckpoint } from "./Demos";
     <Variable>**$h_t(x_i)$** — round $t$'s stump prediction on point $i$.</Variable>
   </Variables>
 
-  $\epsilon_t$ is round $t$'s weighted error; a more accurate stump gets a bigger $\alpha_t$ (more say in the final vote). The weight update shrinks correctly-classified points and grows misclassified ones — each new stump is trained on data that's been re-tilted toward exactly what's still wrong.
+  <Steps>
+    <Step label="Vote weight scales with accuracy">
+      $\epsilon_t$ is round $t$'s weighted error; a more accurate stump gets a bigger $\alpha_t$ (more say in the
+      final vote).
+    </Step>
+    <Step label="Reweighting re-tilts the data">
+      The weight update shrinks correctly-classified points and grows misclassified ones — each new stump is
+      trained on data that's been re-tilted toward exactly what's still wrong.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
