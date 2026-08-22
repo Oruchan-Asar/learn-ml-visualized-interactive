@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, TreeImportanceCheckpoint } from "./Demos";
     <Variable>**$\text{gain}_{\text{node}}$** — the reduction in impurity that node's split achieved.</Variable>
   </Variables>
 
-  No perturbation, no gradients, no separate explanation step — the number was already computed the moment the tree finished training.
+  <Steps>
+    <Step label="No separate explanation step needed">
+      No perturbation, no gradients, no extra pass over the data — nothing this method needs isn't already
+      produced by ordinary training.
+    </Step>
+    <Step label="The number exists the moment training ends">
+      The importance score was already computed the moment the tree finished training; reading it back out is
+      free.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
