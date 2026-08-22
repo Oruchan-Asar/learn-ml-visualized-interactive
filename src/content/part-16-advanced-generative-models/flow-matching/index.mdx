@@ -30,11 +30,19 @@ import { IntuitionDemo, PlayDemo, FlowMatchingCheckpoint } from "./Demos";
     <Variable>**$dx_t/dt$** — the velocity along the path: the quantity a neural network is trained to predict.</Variable>
   </Variables>
 
-  The velocity doesn't depend on $t$ at all — it's the same number at $t=0.01$ as at $t=0.99$. A neural
-  network $v_\theta(x_t, t)$ is trained to regress directly onto $x_1 - x_0$ for many sampled pairs,
-  which is a plain regression target, not a multi-step noise-removal problem. No schedule to design; no
-  approximation of a reverse diffusion process — just "given where you are and what time it is, which way
-  is data?"
+  <Steps>
+    <Step label="Velocity is constant along the path">
+      It doesn't depend on $t$ at all — it's the same number at $t=0.01$ as at $t=0.99$.
+    </Step>
+    <Step label="Trained as a plain regression target">
+      A neural network $v_\theta(x_t, t)$ is trained to regress directly onto $x_1 - x_0$ for many sampled
+      pairs — a plain regression target, not a multi-step noise-removal problem.
+    </Step>
+    <Step label="No schedule, no reverse-process approximation">
+      There's no schedule to design and no approximation of a reverse diffusion process — just "given
+      where you are and what time it is, which way is data?"
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
