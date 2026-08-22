@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, ChainCheckpoint } from "./Demos";
     <Variable>**$\frac{dy}{dh}$** — the second neuron's local slope with respect to its input $h$: its own sigmoid derivative times $w_2$.</Variable>
   </Variables>
 
-  $\frac{dh}{dx}$ is the first neuron's local slope — its own sigmoid derivative times $w_1$. $\frac{dy}{dh}$ is the second neuron's local slope with respect to *its* input, which happens to be $h$ — its sigmoid derivative times $w_2$. Multiply the two and you have the slope of the whole chain, with respect to the very first input.
+  <Steps>
+    <Step label="Each neuron contributes its own local slope">
+      $\frac{dh}{dx}$ is the first neuron's local slope — its own sigmoid derivative times $w_1$.
+      $\frac{dy}{dh}$ is the second neuron's local slope with respect to *its* input, which happens to be $h$ —
+      its sigmoid derivative times $w_2$.
+    </Step>
+    <Step label="Multiply straight through the chain">
+      Multiply the two and you have the slope of the whole chain, with respect to the very first input.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
