@@ -29,8 +29,7 @@ import { IntuitionDemo, PlayDemo, DriftCheckpoint } from "./Demos";
     <Variable>**$a_i$** — the fixed accuracy the model gets on inputs in bin $i$.</Variable>
   </Variables>
 
-  Two very different bin distributions can land on the exact same weighted sum — a coincidence of arithmetic,
-  not evidence that nothing changed. A **drift score** measures the distributions directly, independent of
+  A **drift score** measures the distributions directly, independent of
   what accuracy happens to do:
 
   $$
@@ -44,8 +43,16 @@ import { IntuitionDemo, PlayDemo, DriftCheckpoint } from "./Demos";
     <Variable>**$P_{\text{live}}$** — the distribution of inputs the model is actually seeing in production right now.</Variable>
   </Variables>
 
-  Above a chosen threshold, the input distribution has moved enough to alert on — regardless of whether
-  accuracy noticed.
+  <Steps>
+    <Step label="Accuracy can hide real change">
+      Two very different bin distributions can land on the exact same weighted sum in the accuracy formula
+      above — a coincidence of arithmetic, not evidence that nothing changed.
+    </Step>
+    <Step label="Drift alerts independent of accuracy">
+      Above a chosen threshold, the input distribution has moved enough to alert on — regardless of whether
+      accuracy noticed.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
