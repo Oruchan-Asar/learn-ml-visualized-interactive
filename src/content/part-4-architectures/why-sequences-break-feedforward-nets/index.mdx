@@ -26,7 +26,14 @@ import { IntuitionDemo, PlayDemo, SequenceOrderCheckpoint } from "./Demos";
     <Variable>**$p = \text{pool}(\text{sequence})$** — the fixed-size vector produced by summing (pooling) the sequence's tokens together.</Variable>
   </Variables>
 
-  Since $p$ is identical for both sequences, $\hat{y}$ is identical for both — for *every* choice of $w_1, w_2$. No amount of training can make this network output two different things for two inputs it has already made indistinguishable.
+  <Steps>
+    <Step label="Pooling erases the order">
+      Since $p$ is identical for both sequences, $\hat{y}$ is identical for both — for *every* choice of $w_1, w_2$.
+    </Step>
+    <Step label="No amount of training can fix it">
+      No amount of training can make this network output two different things for two inputs it has already made indistinguishable.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
