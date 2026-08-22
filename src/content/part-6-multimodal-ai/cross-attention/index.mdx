@@ -27,7 +27,16 @@ import { IntuitionDemo, PlayDemo, CrossAttentionCheckpoint } from "./Demos";
     <Variable>**$d$** — the dimensionality of the key vectors, used to rescale the raw scores.</Variable>
   </Variables>
 
-  What changed is only *where* $q$, $k_i$, and $v_i$ come from. Self-attention had all three from the same sequence; cross-attention lets $q$ come from one modality's encoder while $k_i, v_i$ come from a completely different one — the same mechanism, pointed across a modality boundary instead of within one sequence.
+  <Steps>
+    <Step label="Self-attention: everything from one sequence">
+      In Part IV, $q$, $k_i$, and $v_i$ all came from the same sequence attending to itself.
+    </Step>
+    <Step label="Cross-attention: q and k/v from different modalities">
+      Here $q$ comes from one modality's encoder (text) while $k_i, v_i$ come from a completely different one
+      (image patches) — the same mechanism, just pointed across a modality boundary instead of within one
+      sequence.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
