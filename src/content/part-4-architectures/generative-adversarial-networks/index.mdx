@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, GanCheckpoint } from "./Demos";
     <Variable>**fake** — a sample produced by the generator, $G(z)$.</Variable>
   </Variables>
 
-  The discriminator is an ordinary binary classifier — the exact cross-entropy loss from Part II. The generator's loss is *the discriminator's success turned upside down*: every time $D$ gets better at rejecting the fake, that same $D$ is what the generator's gradient pushes against, using $D$'s own current decision boundary as the signal for which direction "more convincing" points.
+  <Steps>
+    <Step label="Discriminator's loss is ordinary cross-entropy">
+      The discriminator is an ordinary binary classifier — the exact cross-entropy loss from Part II.
+    </Step>
+    <Step label="Generator's loss inverts that success">
+      The generator's loss is *the discriminator's success turned upside down*: every time $D$ gets better
+      at rejecting the fake, that same $D$ is what the generator's gradient pushes against, using $D$'s own
+      current decision boundary as the signal for which direction "more convincing" points.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
