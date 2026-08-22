@@ -37,7 +37,16 @@ import { IntuitionDemo, PlayDemo, GradCamCheckpoint } from "./Demos";
     <Variable>**$\text{Grad-CAM}^c$** — the final heatmap for class $c$: a weighted, positive-only combination of the feature-map channels.</Variable>
   </Variables>
 
-  With only one convolution filter, there's just one channel $k$, so $\alpha^c$ collapses to a single number — but that number still depends on *which class* $c$ you ask about, which is exactly what makes Grad-CAM class-discriminative instead of a fixed, class-blind map.
+  <Steps>
+    <Step label="With one filter, one channel weight">
+      With only one convolution filter, there's just one channel $k$, so $\alpha^c$ collapses to a single
+      number.
+    </Step>
+    <Step label="But that number still depends on the class">
+      That single number still depends on *which class* $c$ you ask about, which is exactly what makes
+      Grad-CAM class-discriminative instead of a fixed, class-blind map.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
