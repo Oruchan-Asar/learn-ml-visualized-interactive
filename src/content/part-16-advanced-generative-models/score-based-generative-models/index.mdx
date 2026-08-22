@@ -30,11 +30,19 @@ import { IntuitionDemo, PlayDemo, ScoreCheckpoint } from "./Demos";
     <Variable>**$\sigma^2$** — the variance of the Gaussian target distribution.</Variable>
   </Variables>
 
-  Follow it uphill, repeatedly — $x \leftarrow x + \eta\, s(x)$ — and $x$ climbs toward $\mu$. Real
-  score-based models add noise to this update (**Langevin dynamics**) so the process samples the *whole*
-  distribution instead of always collapsing onto the single peak; a neural network is trained to estimate
-  $s(x)$ directly from data, without ever needing an invertible architecture or a tractable normalizing
-  constant.
+  <Steps>
+    <Step label="Climbing the score reaches the mode">
+      Follow it uphill, repeatedly — $x \leftarrow x + \eta\, s(x)$ — and $x$ climbs toward $\mu$.
+    </Step>
+    <Step label="Langevin dynamics samples the whole distribution">
+      Real score-based models add noise to this update (**Langevin dynamics**) so the process samples the
+      *whole* distribution instead of always collapsing onto the single peak.
+    </Step>
+    <Step label="Learned directly, no invertibility required">
+      A neural network is trained to estimate $s(x)$ directly from data, without ever needing an
+      invertible architecture or a tractable normalizing constant.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
