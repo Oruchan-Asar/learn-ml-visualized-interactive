@@ -30,12 +30,21 @@ import { IntuitionDemo, PlayDemo, FairnessCheckpoint } from "./Demos";
     <Variable>**$N$** — the total number of people in that group.</Variable>
   </Variables>
 
-  When the two groups have **different base rates** — different actual fractions of positives — a
-  classifier that's calibrated the same way for both groups (equal opportunity, equal precision) will
-  *not* select both groups at the same rate, and a classifier that selects both groups equally
-  (demographic parity) will *not* have matching precision or recall across them. This isn't a modeling
-  bug to fix; it's a mathematical fact about what happens when base rates genuinely differ, proven
-  formally by Kleinberg, Mullainathan & Raghavan and by Chouldechova in 2016.
+  <Steps>
+    <Step label="Equal treatment breaks equal selection">
+      When the two groups have **different base rates** — different actual fractions of positives — a
+      classifier that's calibrated the same way for both groups (equal opportunity, equal precision) will
+      *not* select both groups at the same rate.
+    </Step>
+    <Step label="Equal selection breaks equal treatment">
+      Symmetrically, a classifier that selects both groups equally (demographic parity) will *not* have
+      matching precision or recall across them.
+    </Step>
+    <Step label="This is a proven impossibility, not a bug">
+      This isn't a modeling bug to fix; it's a mathematical fact about what happens when base rates
+      genuinely differ, proven formally by Kleinberg, Mullainathan & Raghavan and by Chouldechova in 2016.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
