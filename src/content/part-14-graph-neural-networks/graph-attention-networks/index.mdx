@@ -35,13 +35,22 @@ import { IntuitionDemo, PlayDemo, AttentionCheckpoint } from "./Demos";
     <Variable>**$\mathcal{N}(i)$** — node $i$'s neighborhood, including itself.</Variable>
   </Variables>
 
-  $W$ is a learned weight matrix and $a$ a learned attention vector — together they score how compatible
-  $i$ and $j$ are, exactly the way a query and key score compatibility in Part IV's attention chapter.
-  With one scalar feature per node and $W$ fixed to the identity, that score collapses to a straight
-  comparison of the two raw features. This chapter fixes it at $e_{ij} = \text{LeakyReLU}(h_j - h_i)$: a
-  neighbor with a much *larger* feature scores far higher, one with a much *smaller* feature is only
-  mildly suppressed — LeakyReLU's whole point is to leak a little of that signal through instead of
-  zeroing it, the same nonlinearity from Part III.
+  <Steps>
+    <Step label="W and a score compatibility, like query-key attention">
+      $W$ is a learned weight matrix and $a$ a learned attention vector — together they score how
+      compatible $i$ and $j$ are, exactly the way a query and key score compatibility in Part IV's
+      attention chapter.
+    </Step>
+    <Step label="This chapter's simplification">
+      With one scalar feature per node and $W$ fixed to the identity, that score collapses to a straight
+      comparison of the two raw features. This chapter fixes it at $e_{ij} = \text{LeakyReLU}(h_j - h_i)$.
+    </Step>
+    <Step label="LeakyReLU lets asymmetric signal through">
+      A neighbor with a much *larger* feature scores far higher, one with a much *smaller* feature is only
+      mildly suppressed — LeakyReLU's whole point is to leak a little of that signal through instead of
+      zeroing it, the same nonlinearity from Part III.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
