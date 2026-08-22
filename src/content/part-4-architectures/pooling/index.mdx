@@ -26,7 +26,14 @@ import { IntuitionDemo, PlayDemo, PoolingCheckpoint } from "./Demos";
     <Variable>**$i, j$** — the row and column offsets ranging over the pooling window.</Variable>
   </Variables>
 
-  where $s$ is the stride. A $2\times2$ window with stride $2$ turns this $4\times4$ feature map into a $2\times2$ one — a quarter of the values, chosen so nothing important gets thrown away.
+  <Steps>
+    <Step label="Shrinks the map by the stride">
+      A $2\times2$ window with stride $2$ turns this $4\times4$ feature map into a $2\times2$ one — a quarter of the values.
+    </Step>
+    <Step label="But keeps what matters">
+      Those values are chosen so nothing important gets thrown away: taking the max of each window keeps the strongest response, not an arbitrary one.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
