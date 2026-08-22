@@ -26,7 +26,13 @@ import { IntuitionDemo, PlayDemo, SaliencyCheckpoint } from "./Demos";
     <Variable>**$e_{ij}$** — a perturbation that nudges only pixel $(i,j)$, leaving every other pixel fixed.</Variable>
   </Variables>
 
-  where $f$ is the predicted class's logit and $e_{ij}$ nudges only pixel $(i,j)$. A pixel earns a high score exactly when perturbing it moves the logit a lot — which, through a convolution, **ReLU** (short for **Rectified Linear Unit**), and max-pool, only happens for pixels that reach a surviving, active path all the way to the output.
+  <Steps>
+    <Step label="A high score means an active path survived">
+      A pixel earns a high score exactly when perturbing it moves the logit a lot — which, through a
+      convolution, **ReLU** (short for **Rectified Linear Unit**), and max-pool, only happens for pixels
+      that reach a surviving, active path all the way to the output.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
