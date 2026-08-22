@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, TradeoffCheckpoint } from "./Demos";
     <Variable>**regions** — the number of decision regions the model carves the input space into.</Variable>
   </Variables>
 
-  This interpretability score is a stand-in for something real: a model built from a handful of regions is one a person can hold in their head and restate as a short list of rules. A model built from dozens of regions — one for nearly every data point — has traded that away for the ability to fit exceptions no simple rule ever could.
+  <Steps>
+    <Step label="What the proxy stands in for">
+      This interpretability score is a stand-in for something real: a model built from a handful of regions
+      is one a person can hold in their head and restate as a short list of rules.
+    </Step>
+    <Step label="The tradeoff it makes visible">
+      A model built from dozens of regions — one for nearly every data point — has traded that away for the
+      ability to fit exceptions no simple rule ever could.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
