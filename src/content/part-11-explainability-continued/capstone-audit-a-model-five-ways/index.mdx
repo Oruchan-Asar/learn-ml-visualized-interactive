@@ -21,7 +21,17 @@ import { IntuitionDemo, PlayDemo, AuditCheckpoint } from "./Demos";
   \text{IG: integral of gradient along the path from baseline?} \quad\big|\quad \text{PDP: average behavior as } x_1 \text{ sweeps?}
   $$
 
-  None of these is wrong. Each is answering a genuinely different question, using different information — a training dataset's split structure, a coalition game over feature presence, a smooth surrogate's gradient field, or the raw grid itself.
+  <Steps>
+    <Step label="None of these is wrong">
+      Each method is answering a genuinely different question about the same instance — disagreement between
+      them isn't a bug in any one of them.
+    </Step>
+    <Step label="Each draws on different information">
+      Tree importance reads a training dataset's split structure; Shapley plays a coalition game over feature
+      presence; integrated gradients integrates a smooth surrogate's gradient field; PDP and anchors work
+      directly off the raw grid itself.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
