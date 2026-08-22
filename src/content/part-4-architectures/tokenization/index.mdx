@@ -12,7 +12,18 @@ import { IntuitionDemo, PlayDemo, TokenizationCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  This algorithm is **byte-pair encoding (BPE)**: starting from individual characters, repeatedly find the most frequent adjacent pair of symbols across the whole corpus and merge it into one new symbol, forming a growing vocabulary of subword pieces. Trained on a corpus of just four words — low, lower, newest, widest — it discovers pieces like <code>est&lt;/w&gt;</code> (a common suffix) and <code>low</code> (a common stem), simply because those pairs of symbols kept showing up together.
+  <Steps>
+    <Step label="Byte-pair encoding, defined">
+      This algorithm is **byte-pair encoding (BPE)**: starting from individual characters, repeatedly find
+      the most frequent adjacent pair of symbols across the whole corpus and merge it into one new symbol,
+      forming a growing vocabulary of subword pieces.
+    </Step>
+    <Step label="Trained on just four words">
+      Trained on a corpus of just four words — low, lower, newest, widest — it discovers pieces like
+      <code>est&lt;/w&gt;</code> (a common suffix) and <code>low</code> (a common stem), simply because those
+      pairs of symbols kept showing up together.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
