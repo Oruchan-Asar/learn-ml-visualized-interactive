@@ -12,11 +12,28 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  Every piece is one you've already built in this part: a forward pass through a hidden layer (Chapter 3), backprop computing every weight's gradient (Chapter 5), gradient descent applying the update (Part I). The network here is tiny — 2 inputs, 4 hidden neurons, 1 output, all sigmoid — but the training loop is exactly the same loop that trains networks a billion times its size:
+  The network here is tiny — 2 inputs, 4 hidden neurons, 1 output, all sigmoid — but the training loop is exactly
+  the same loop that trains networks a billion times its size:
 
   $$
   \text{forward} \to \text{loss} \to \text{backward} \to \text{update} \to \text{repeat}
   $$
+
+  <Steps>
+    <Step label="Forward pass through the hidden layer">
+      Chapter 3's forward pass, computing every neuron's activation from the input.
+    </Step>
+    <Step label="Backprop computes every gradient">
+      Chapter 5's backpropagation, computing every weight's gradient at once.
+    </Step>
+    <Step label="Gradient descent applies the update">
+      Part I's gradient descent, applying the update backprop just computed.
+    </Step>
+    <Step label="Repeat">
+      Every piece here is one you've already built in this part — the loop just keeps running, and it's the exact
+      same loop that trains networks a billion times this size.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
