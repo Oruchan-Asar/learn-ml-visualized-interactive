@@ -33,10 +33,20 @@ import { IntuitionDemo, PlayDemo, FlowCheckpoint } from "./Demos";
     <Variable>**$x$, $z$** — a point in data space and its corresponding point in the simple base (latent) space.</Variable>
   </Variables>
 
-  Wherever $f$ *stretches* space ($|df/dz|>1$), the same probability mass spreads over a wider region, so
-  density there goes *down*. Wherever $f$ *compresses* space ($|df/dz|<1$), density goes *up*. Total
-  probability is conserved — it's only ever redistributed, never created or destroyed — which is exactly
-  what makes the density exactly computable instead of merely bounded.
+  <Steps>
+    <Step label="Stretching lowers density">
+      Wherever $f$ *stretches* space ($|df/dz|>1$), the same probability mass spreads over a wider region,
+      so density there goes *down*.
+    </Step>
+    <Step label="Compressing raises density">
+      Wherever $f$ *compresses* space ($|df/dz|<1$), density goes *up* — the same mass is packed into a
+      narrower region.
+    </Step>
+    <Step label="Total probability is conserved">
+      Mass is only ever redistributed, never created or destroyed — which is exactly what makes the
+      density exactly computable instead of merely bounded.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
