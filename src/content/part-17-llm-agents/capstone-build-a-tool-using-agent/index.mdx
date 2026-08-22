@@ -29,10 +29,16 @@ import { IntuitionDemo, PlayDemo, AgentCapstoneCheckpoint } from "./Demos";
     <Variable>**$\text{compute\_total}$** — the task that sums both costs; it depends on both of the others finishing first.</Variable>
   </Variables>
 
-  Neither of the first two tasks depends on the other — retrieval doesn't need the converted flight
-  price, and the currency conversion doesn't need the hotel cost — so a planner is free to run them in
-  either order, or in parallel. `compute_total` is the one task with a real dependency: it cannot run
-  until *both* of the others have finished, exactly Chapter 3's convergence point.
+  <Steps>
+    <Step label="The first two tasks are independent">
+      Retrieval doesn't need the converted flight price, and the currency conversion doesn't need the
+      hotel cost — so a planner is free to run them in either order, or in parallel.
+    </Step>
+    <Step label="compute_total is the convergence point">
+      It's the one task with a real dependency: it cannot run until *both* of the others have finished,
+      exactly Chapter 3's convergence point.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
