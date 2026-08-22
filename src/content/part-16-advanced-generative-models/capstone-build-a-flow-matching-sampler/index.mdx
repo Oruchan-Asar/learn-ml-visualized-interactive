@@ -30,11 +30,17 @@ import { IntuitionDemo, PlayDemo, SamplerCheckpoint } from "./Demos";
     <Variable>**$x_1^{(i)}$** — the data sample from the $i$-th training pair.</Variable>
   </Variables>
 
-  This is the smallest possible flow-matching model: no dependence on $x$ or $t$ at all, just one number.
-  Real flow-matching networks condition on both, so different starting points and different times along
-  the path get genuinely different corrections — but the training objective being minimized is the exact
-  same squared error between a predicted velocity and $x_1-x_0$, just with a far more expressive model
-  fitting it.
+  <Steps>
+    <Step label="The smallest possible flow-matching model">
+      This has no dependence on $x$ or $t$ at all — just one number.
+    </Step>
+    <Step label="Real networks condition on x and t, same objective">
+      Real flow-matching networks condition on both, so different starting points and different times
+      along the path get genuinely different corrections — but the training objective being minimized is
+      the exact same squared error between a predicted velocity and $x_1-x_0$, just with a far more
+      expressive model fitting it.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
