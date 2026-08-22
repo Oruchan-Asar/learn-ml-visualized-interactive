@@ -27,7 +27,18 @@ import { IntuitionDemo, PlayDemo, VlmCheckpoint } from "./Demos";
     <Variable>**$\text{answer}$** — the answer prototype nearest to the context vector, chosen by nearest-neighbor search.</Variable>
   </Variables>
 
-  Cross-attention decides *where to look*; nearest-neighbor decides *what to call it*. Neither step knows about the other's internals — the context vector is just a point in space, and the nearest-neighbor search doesn't care how that point was produced.
+  <Steps>
+    <Step label="Cross-attention decides where to look">
+      It blends the image patches into a single context vector, weighted by relevance to the query.
+    </Step>
+    <Step label="Nearest-neighbor decides what to call it">
+      It matches that context vector against a small set of answer prototypes and picks the closest one.
+    </Step>
+    <Step label="Neither step knows about the other's internals">
+      The context vector is just a point in space — the nearest-neighbor search doesn't care how that point
+      was produced, only where it landed.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
