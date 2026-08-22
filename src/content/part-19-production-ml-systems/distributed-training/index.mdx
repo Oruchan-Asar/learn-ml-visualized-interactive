@@ -40,9 +40,16 @@ import { IntuitionDemo, PlayDemo, DistributedCheckpoint } from "./Demos";
     <Variable>**$\bar{g}_k$** — worker $k$'s own average gradient, computed only over its shard.</Variable>
   </Variables>
 
-  When every shard is the same size, the weights are all equal and this collapses to a plain average of the
-  workers' averages — which is exactly why the naive version looks correct until the shards stop matching in
-  size.
+  <Steps>
+    <Step label="Equal shards make the weights disappear">
+      When every shard is the same size, the weights $n_k$ are all equal and the formula collapses to a plain
+      average of the workers' averages.
+    </Step>
+    <Step label="That's exactly why the naive version looks correct — until it doesn't">
+      Naive averaging and correctly-weighted averaging agree as long as the shards stay the same size, and
+      silently diverge the moment they stop matching.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
