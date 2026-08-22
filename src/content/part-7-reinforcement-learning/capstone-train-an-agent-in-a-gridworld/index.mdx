@@ -27,7 +27,16 @@ import { IntuitionDemo, PlayDemo, GridworldCapstoneCheckpoint } from "./Demos";
     <Variable>**$\alpha$** — the learning rate: how much of the gap gets corrected on any one update.</Variable>
   </Variables>
 
-  What's different is scale and autonomy — instead of a fixed 6-move script, the agent runs real episodes, resetting to the start each time it reaches the goal (or times out), acting greedily on its own table except for scheduled exploration steps that keep testing the alternative.
+  <Steps>
+    <Step label="Real episodes instead of a fixed script">
+      Instead of a fixed 6-move script, the agent runs real episodes, resetting to the start each time it
+      reaches the goal (or times out).
+    </Step>
+    <Step label="Greedy, except for scheduled exploration">
+      It acts greedily on its own table except for scheduled exploration steps that keep testing the
+      alternative — the same exploit/explore split as the bandit chapter, now driving a full agent.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
