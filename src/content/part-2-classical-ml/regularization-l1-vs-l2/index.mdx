@@ -27,7 +27,24 @@ import { IntuitionDemo, PlayDemo, RegularizationCheckpoint } from "./Demos";
     <Variable>**$\beta_j$** — the model's $j$-th coefficient.</Variable>
   </Variables>
 
-  Both shrink coefficients toward zero as $\lambda$ grows. The difference is in *how*: L2's penalty is smooth everywhere, so it shrinks every coefficient a little without ever fully canceling one out. L1's penalty has a sharp corner at zero, and that corner is exactly where coordinate-wise optimization tends to land — driving weak coefficients to *exactly* $0$, not just close to it. (Ridge here penalizes the raw sum of squared error, Lasso the mean — the standard convention, matching what most libraries do — so the same $\lambda$ lands at a different strength for each; it's the zeroing behavior that's the point of the comparison, not the raw magnitude of $\lambda$.)
+  <Steps>
+    <Step label="Both shrink coefficients as λ grows">
+      Both shrink coefficients toward zero as $\lambda$ grows. The difference is in *how*.
+    </Step>
+    <Step label="L2's smooth penalty never zeroes out">
+      L2's penalty is smooth everywhere, so it shrinks every coefficient a little without ever fully canceling
+      one out.
+    </Step>
+    <Step label="L1's corner drives coefficients to exact zero">
+      L1's penalty has a sharp corner at zero, and that corner is exactly where coordinate-wise optimization
+      tends to land — driving weak coefficients to *exactly* $0$, not just close to it.
+    </Step>
+    <Step label="A convention note on SSE vs. MSE">
+      Ridge here penalizes the raw sum of squared error, Lasso the mean — the standard convention, matching what
+      most libraries do — so the same $\lambda$ lands at a different strength for each; it's the zeroing behavior
+      that's the point of the comparison, not the raw magnitude of $\lambda$.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
