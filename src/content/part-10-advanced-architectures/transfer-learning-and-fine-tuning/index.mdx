@@ -23,7 +23,15 @@ import { IntuitionDemo, PlayDemo, TransferLearningCheckpoint } from "./Demos";
     <Variable>**$b_{\text{fine-tuned}}$** — the one remaining parameter, updated to fit the target task.</Variable>
   </Variables>
 
-  Training from scratch instead optimizes every parameter jointly, starting from nothing. Freezing turns a coupled, multi-parameter optimization problem into a much simpler one — often, as here, a single parameter with an easy, well-behaved loss curve.
+  <Steps>
+    <Step label="From scratch means every parameter, coupled together">
+      Training from scratch instead optimizes every parameter jointly, starting from nothing.
+    </Step>
+    <Step label="Freezing simplifies the optimization problem itself">
+      Freezing turns a coupled, multi-parameter optimization problem into a much simpler one — often, as here,
+      a single parameter with an easy, well-behaved loss curve.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
