@@ -23,7 +23,15 @@ import { IntuitionDemo, PlayDemo, SigmoidCheckpoint } from "./Demos";
     <Variable>**$z$** — the raw input score being squashed, before it's turned into a probability.</Variable>
   </Variables>
 
-  applied to the same linear score from Chapter 1 of this part: $z = wx + b$. Together, $\sigma(wx+b)$ turns any real number into a valid probability. The point where it crosses exactly $0.5$ — where $wx+b=0$ — is the **decision boundary**.
+  <Steps>
+    <Step label="Applied to the same linear score">
+      Feed in the same linear score from Chapter 1 of this part, $z = wx + b$. Together, $\sigma(wx+b)$ turns any
+      real number into a valid probability.
+    </Step>
+    <Step label="Where it crosses 0.5 is the decision boundary">
+      The point where $\sigma(wx+b)$ crosses exactly $0.5$ — where $wx+b=0$ — is the **decision boundary**.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
