@@ -24,7 +24,16 @@ import { IntuitionDemo, PlayDemo, CrossEntropyCheckpoint } from "./Demos";
     <Variable>**$p$** — the model's predicted probability that the example is positive.</Variable>
   </Variables>
 
-  Since $y$ is exactly 0 or 1, only one of the two terms is ever active. A probability approaching 0 for the *correct* answer sends $\log p$ toward $-\infty$ — and the leading minus sign turns that into a loss with no ceiling at all.
+  <Steps>
+    <Step label="Only one term is ever active">
+      Since $y$ is exactly 0 or 1, exactly one of the two terms in the brackets is ever nonzero — the loss only
+      ever looks at the probability assigned to the *true* label.
+    </Step>
+    <Step label="Confidently wrong predictions blow up">
+      A probability approaching 0 for the *correct* answer sends $\log p$ toward $-\infty$ — and the leading minus
+      sign turns that into a loss with no ceiling at all.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
