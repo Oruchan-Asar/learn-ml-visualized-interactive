@@ -42,9 +42,16 @@ import { IntuitionDemo, PlayDemo, AnnCheckpoint } from "./Demos";
     <Variable>**$\text{cluster}(\cdot)$** — the set of indexed vectors assigned to a given centroid; only this set gets searched.</Variable>
   </Variables>
 
-  This is cheap — a handful of comparisons instead of the whole index — precisely because it never looks at
-  most of the data. When the true nearest neighbor happens to live in a *different* cluster than the one the
-  query got assigned to, the approximate search never sees it at all.
+  <Steps>
+    <Step label="Cheap because it skips most of the data">
+      Searching one cluster is a handful of comparisons instead of the whole index — the speedup and the risk
+      come from the exact same decision: never looking at most of the data.
+    </Step>
+    <Step label="Wrong when the true neighbor lives in another cluster">
+      When the true nearest neighbor happens to live in a *different* cluster than the one the query got
+      assigned to, the approximate search never sees it at all — it has no way to know what it skipped.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
