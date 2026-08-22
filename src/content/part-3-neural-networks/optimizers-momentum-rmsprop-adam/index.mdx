@@ -27,7 +27,15 @@ import { IntuitionDemo, PlayDemo, OptimizersCheckpoint } from "./Demos";
     <Variable>**$\epsilon$** — a tiny constant that keeps the division from blowing up when $v$ is near zero.</Variable>
   </Variables>
 
-  **Adam** — short for **Adaptive Moment Estimation** — combines this with momentum: it keeps a running average of the gradient itself ($m$, momentum's idea) *and* of its square ($v$, RMSProp's idea), correcting both for their startup bias before combining them the same way RMSProp does.
+  <Steps>
+    <Step label="Adam combines RMSProp with momentum">
+      **Adam** — short for **Adaptive Moment Estimation** — keeps a running average of the gradient itself
+      ($m$, momentum's idea) *and* of its square ($v$, RMSProp's idea).
+    </Step>
+    <Step label="Both averages get corrected for startup bias">
+      Adam corrects both $m$ and $v$ for their startup bias before combining them the same way RMSProp does.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
