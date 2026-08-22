@@ -25,7 +25,15 @@ import { IntuitionDemo, PlayDemo, PcaCheckpoint } from "./Demos";
     <Variable>**$n$** — the number of points.</Variable>
   </Variables>
 
-  The **first principal component** is whichever unit direction $\hat u$ makes this as large as possible. It only depends on the direction's *angle* — stretching the arrow longer or flipping it to point the opposite way changes nothing, since $\hat u$ is normalized before projecting.
+  <Steps>
+    <Step label="Definition: the direction of maximum variance">
+      The **first principal component** is whichever unit direction $\hat u$ makes this as large as possible.
+    </Step>
+    <Step label="Only the angle matters">
+      It only depends on the direction's *angle* — stretching the arrow longer or flipping it to point the
+      opposite way changes nothing, since $\hat u$ is normalized before projecting.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
