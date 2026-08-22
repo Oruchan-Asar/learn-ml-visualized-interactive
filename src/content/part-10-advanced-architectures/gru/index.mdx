@@ -34,7 +34,15 @@ import { IntuitionDemo, PlayDemo, GRUCheckpoint } from "./Demos";
     <Variable>**$h_t$** — the new hidden state: a blend of the old state and the candidate, weighted by the update gate.</Variable>
   </Variables>
 
-  The **update gate** $z_t$ plays the LSTM's forget gate and input gate at once: it's a single dial between "keep $h_{t-1}$ exactly" ($z_t{\approx}0$) and "replace it with the new candidate" ($z_t{\approx}1$). The **reset gate** $r_t$ controls how much of the old state the candidate itself is allowed to see before being blended in.
+  <Steps>
+    <Step label="The update gate merges two LSTM jobs into one">
+      $z_t$ plays the LSTM's forget gate and input gate at once: it's a single dial between "keep $h_{t-1}$
+      exactly" ($z_t{\approx}0$) and "replace it with the new candidate" ($z_t{\approx}1$).
+    </Step>
+    <Step label="The reset gate controls what the candidate sees">
+      $r_t$ controls how much of the old state the candidate itself is allowed to see before being blended in.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
