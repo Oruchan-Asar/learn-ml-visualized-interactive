@@ -27,7 +27,18 @@ import { IntuitionDemo, PlayDemo, ConfusionMatrixCheckpoint } from "./Demos";
     <Variable>**$F_1$** — the harmonic mean of precision and recall, only high when both are high.</Variable>
   </Variables>
 
-  Precision asks "of everything I flagged positive, how much was actually positive?" Recall asks "of everything actually positive, how much did I catch?" The **$F_1$**, short for the **F1 score**, is their harmonic mean — a single number that only looks good when *both* precision and recall are reasonably high, unlike an average that a lopsided pair could still inflate.
+  <Steps>
+    <Step label="Precision and recall ask different questions">
+      Precision asks "of everything I flagged positive, how much was actually positive?" Recall asks "of
+      everything actually positive, how much did I catch?" A model can score high on one while scoring low on
+      the other.
+    </Step>
+    <Step label="F1 needs both to be high at once">
+      The **$F_1$**, short for the **F1 score**, is the harmonic mean of precision and recall — a single number
+      that only looks good when *both* are reasonably high, unlike an average that a lopsided pair could still
+      inflate.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
