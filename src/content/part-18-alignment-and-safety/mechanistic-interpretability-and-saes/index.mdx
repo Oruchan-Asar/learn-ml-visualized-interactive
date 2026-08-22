@@ -32,10 +32,16 @@ import { IntuitionDemo, PlayDemo, SAECheckpoint } from "./Demos";
     <Variable>**$M^{-1}$** — the inverse mixing matrix, used to reverse the overlap back to clean concepts (only well-defined here because $M$ is known and invertible).</Variable>
   </Variables>
 
-  This chapter's $M$ is known and exactly invertible, so "training" the SAE is just matrix inversion —
-  real SAEs face a much harder version of this problem: $M$ is unknown, the true concept count is
-  unknown, and the decomposition has to be learned from activations alone, with an explicit sparsity
-  penalty standing in for "most concepts are usually off."
+  <Steps>
+    <Step label="Here, recovery is exact matrix inversion">
+      This chapter's $M$ is known and exactly invertible, so "training" the SAE is just matrix inversion.
+    </Step>
+    <Step label="Real SAEs face a much harder version">
+      $M$ is unknown, the true concept count is unknown, and the decomposition has to be learned from
+      activations alone, with an explicit sparsity penalty standing in for "most concepts are usually
+      off."
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
