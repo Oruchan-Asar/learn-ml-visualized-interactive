@@ -26,7 +26,17 @@ import { IntuitionDemo, PlayDemo, NaiveBayesCheckpoint } from "./Demos";
     <Variable>**$n$** — the number of features being combined.</Variable>
   </Variables>
 
-  Each $P(x_i \mid \text{class})$ is just a frequency: how often word $i$ showed up in training messages of that class. Multiplying independent probabilities together is exactly what "assume independence" *means* — it's the one assumption that turns a hard joint-probability problem into a handful of easy word-counting ones.
+  <Steps>
+    <Step label="Each likelihood is just a frequency">
+      $P(x_i \mid \text{class})$ is how often word $i$ showed up in training messages of that class — a
+      simple count, nothing more elaborate.
+    </Step>
+    <Step label="Independence turns a hard problem into easy ones">
+      Multiplying independent probabilities together is exactly what "assume independence" *means* — it's
+      the one assumption that turns a hard joint-probability problem into a handful of easy
+      word-counting ones.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
