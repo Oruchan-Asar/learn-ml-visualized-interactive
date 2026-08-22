@@ -23,7 +23,16 @@ import { IntuitionDemo, PlayDemo, KernelCheckpoint } from "./Demos";
     <Variable>**$x$, $y$** — the point's original two coordinates.</Variable>
   </Variables>
 
-  Points near the center now share one small value of $z$; points on the outer ring share one large value, *no matter which direction they're in*. The two classes were tangled by angle but separated by radius all along — $z$ just throws away the angle and keeps the radius.
+  <Steps>
+    <Step label="Radius collapses points regardless of angle">
+      Points near the center now share one small value of $z$; points on the outer ring share one large value,
+      *no matter which direction they're in*.
+    </Step>
+    <Step label="Angle was the confusion, radius was the signal">
+      The two classes were tangled by angle but separated by radius all along — $z$ just throws away the angle
+      and keeps the radius.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
