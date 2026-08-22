@@ -27,7 +27,16 @@ import { IntuitionDemo, PlayDemo, KnnCheckpoint } from "./Demos";
     <Variable>**$c$** — one candidate class, ranging over whatever labels appear among the neighbors.</Variable>
   </Variables>
 
-  Find the $k$ closest points to the query $q$ by ordinary distance, then predict whichever class shows up most among them. All the "learning" happens at prediction time, not training time — the opposite of every other model built so far in this course.
+  <Steps>
+    <Step label="Vote among the k closest points">
+      Find the $k$ closest points to the query $q$ by ordinary distance, then predict whichever class shows
+      up most among them.
+    </Step>
+    <Step label="Learning happens at prediction time">
+      All the "learning" happens when a query comes in, not during training — the opposite of every other
+      model built so far in this course.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
