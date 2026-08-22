@@ -29,7 +29,19 @@ import { IntuitionDemo, PlayDemo, ActivationCheckpoint } from "./Demos";
     <Variable>**$\text{ReLU}(x)$** — zero for negative inputs, and equal to $x$ itself for positive ones.</Variable>
   </Variables>
 
-  Step is what the perceptron used — but it's flat everywhere except one point, so its slope is useless for learning by gradient. Sigmoid and tanh are smooth substitutes with a real slope everywhere. ReLU throws out smoothness for something else: dead simple to compute, and its slope never shrinks to nothing on the positive side.
+  <Steps>
+    <Step label="Step has no usable slope">
+      Step is what the perceptron used — but it's flat everywhere except one point, so its slope is useless for
+      learning by gradient.
+    </Step>
+    <Step label="Sigmoid and tanh are smooth substitutes">
+      Both curve smoothly through the middle, giving a real, usable slope everywhere.
+    </Step>
+    <Step label="ReLU trades smoothness for simplicity">
+      It throws out smoothness for something else: dead simple to compute, and its slope never shrinks to nothing
+      on the positive side.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
