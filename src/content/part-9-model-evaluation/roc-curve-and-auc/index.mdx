@@ -25,7 +25,17 @@ import { IntuitionDemo, PlayDemo, RocCheckpoint } from "./Demos";
     <Variable>**$FP$**, **$TN$** — false positives and true negatives at this threshold, the counts FPR is built from.</Variable>
   </Variables>
 
-  A model that separates classes perfectly traces a curve that shoots straight up to $(0,1)$ before moving right at all. A model no better than a coin flip traces the diagonal exactly. The **area under this curve (AUC)** condenses the whole sweep into one number: the probability a random positive example gets a higher score than a random negative one.
+  <Steps>
+    <Step label="Two extremes bound every curve">
+      A model that separates classes perfectly traces a curve that shoots straight up to $(0,1)$ before moving
+      right at all. A model no better than a coin flip traces the diagonal exactly. Every real model's curve
+      falls somewhere between the two.
+    </Step>
+    <Step label="AUC condenses the whole sweep into one number">
+      The **area under this curve (AUC)** is the probability a random positive example gets a higher score than
+      a random negative one — one number that summarizes the entire threshold sweep at once.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
