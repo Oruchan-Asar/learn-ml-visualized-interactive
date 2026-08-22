@@ -25,7 +25,16 @@ import { IntuitionDemo, PlayDemo, CrossValidationCheckpoint } from "./Demos";
     <Variable>**MSE** — mean squared error: the metric used to score each fold's held-out predictions.</Variable>
   </Variables>
 
-  A single train/test split gives you one sample from this process — one particular way the anomaly could land. Cross-validation runs the experiment $k$ times and reports both the mean *and* how much the folds disagreed, which a single split can never reveal about itself.
+  <Steps>
+    <Step label="A single split is one sample from the process">
+      A single train/test split gives you one sample from this process — one particular way the anomaly (or any
+      unusual point) could land, for better or worse.
+    </Step>
+    <Step label="Repeating it reveals disagreement, not just a mean">
+      Cross-validation runs the experiment $k$ times and reports both the mean *and* how much the folds
+      disagreed — a spread that a single split can never reveal about itself.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
