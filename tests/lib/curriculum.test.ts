@@ -3,26 +3,29 @@ import { CURRICULUM, getChapterMeta, getChapterNeighbors } from "@/lib/curriculu
 import { ABBREVIATIONS } from "@/lib/abbreviations";
 
 describe("Curriculum Master Structure", () => {
-  it("contains exactly 200 chapters", () => {
-    expect(CURRICULUM.length).toBe(200);
+  it("contains exactly 229 chapters", () => {
+    expect(CURRICULUM.length).toBe(229);
   });
 
-  it("spans exactly 20 unique parts", () => {
+  it("spans exactly 23 unique parts", () => {
     const parts = new Set(CURRICULUM.map((c) => c.part));
-    expect(parts.size).toBe(20);
+    expect(parts.size).toBe(23);
   });
 
   it("has strictly unique slugs for every chapter", () => {
     const slugs = new Set(CURRICULUM.map((c) => c.slug));
-    expect(slugs.size).toBe(200);
+    expect(slugs.size).toBe(229);
   });
 
-  it("contains exactly 20 capstone chapters (one per part)", () => {
+  it("contains exactly 23 capstone chapters, covering 22 of the 23 parts", () => {
+    // Part XXI (Explainable AI) has two capstones — one per original pre-reorg XAI part it merged —
+    // and Part XXIII (Modern Architectures, Generative Models & LLM Engineering) has none, so this
+    // isn't a strict one-per-part invariant like it used to be.
     const capstones = CURRICULUM.filter((c) => c.capstone);
-    expect(capstones.length).toBe(20);
+    expect(capstones.length).toBe(23);
 
     const partsWithCapstone = new Set(capstones.map((c) => c.part));
-    expect(partsWithCapstone.size).toBe(20);
+    expect(partsWithCapstone.size).toBe(22);
   });
 
   it("getChapterMeta returns correct chapter metadata", () => {
@@ -42,10 +45,10 @@ describe("Curriculum Master Structure", () => {
     expect(first.prev).toBeNull();
     expect(first.next?.slug).toBe("the-gradient-in-multiple-dimensions");
 
-    const last = getChapterNeighbors("capstone-design-a-monitored-serving-pipeline");
-    expect(last.index).toBe(199);
+    const last = getChapterNeighbors("experiment-tracking-and-reproducibility");
+    expect(last.index).toBe(228);
     expect(last.next).toBeNull();
-    expect(last.prev?.slug).toBe("model-monitoring-and-drift");
+    expect(last.prev?.slug).toBe("scaling-laws");
   });
 });
 

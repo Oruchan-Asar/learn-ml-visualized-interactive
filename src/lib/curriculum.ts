@@ -8,7 +8,7 @@ export interface ChapterMeta {
 }
 
 /**
- * The full 20-Part, 190-Chapter Zero-to-Hero AI & Machine Learning Curriculum.
+ * The full 23-Part, 229-Chapter Zero-to-Hero AI & Machine Learning Curriculum.
  * Single source of truth for the home page, search, chapter headers, and navigation.
  */
 export const CURRICULUM: ChapterMeta[] = [
@@ -304,9 +304,16 @@ export const CURRICULUM: ChapterMeta[] = [
     blurb: "Maximize between-class separation while minimizing within-class variance.",
   },
   {
-    slug: "capstone-financial-risk-scorer",
+    slug: "naive-bayes-classifier",
     part: "Part IV — Supervised Learning: Regression & Linear Classifiers",
     chapterNumber: 10,
+    title: "The naive Bayes classifier",
+    blurb: "Turn Part I's Bayes' rule into a full classifier, one independent feature at a time.",
+  },
+  {
+    slug: "capstone-financial-risk-scorer",
+    part: "Part IV — Supervised Learning: Regression & Linear Classifiers",
+    chapterNumber: 11,
     title: "Build a calibrated financial risk scoring engine",
     blurb: "Construct and regularize a multi-class probabilistic linear classifier.",
     capstone: true,
@@ -1494,6 +1501,215 @@ export const CURRICULUM: ChapterMeta[] = [
     title: "Build and deploy a monitored, high-throughput AI serving cluster",
     blurb: "Deploy a vLLM serving pipeline with INT4 AWQ quantization, Prometheus metrics, and drift alarms.",
     capstone: true,
+  },
+
+  // =========================================================================
+  // PHASE 7: SPECIALIZED & CLASSICAL TOPICS
+  // =========================================================================
+
+  // ---------- Part XXI — Explainable AI & Model Interpretability ----------
+  {
+    slug: "interpretability-accuracy-tradeoff",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 1,
+    title: "The interpretability–accuracy tradeoff",
+    blurb: "Why the most accurate model on the leaderboard is often the least explainable.",
+  },
+  {
+    slug: "saliency-maps",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 2,
+    title: "Saliency maps",
+    blurb: "Highlight exactly which pixels actually moved a prediction.",
+  },
+  {
+    slug: "grad-cam",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 3,
+    title: "Grad-CAM",
+    blurb: "See what a CNN was visually \"looking at\" the moment it decided.",
+  },
+  {
+    slug: "integrated-gradients",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 4,
+    title: "Integrated gradients",
+    blurb: "Walk a straight line from a blank baseline to the real input, and integrate the gradient the whole way there.",
+  },
+  {
+    slug: "lime",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 5,
+    title: "LIME",
+    blurb: "Explain any black-box model by locally approximating it with something simple.",
+  },
+  {
+    slug: "shapley-values",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 6,
+    title: "Shapley values",
+    blurb: "A game-theoretic, provably fair way to split credit among features.",
+  },
+  {
+    slug: "shap-for-real-models",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 7,
+    title: "SHAP for real models",
+    blurb: "Shapley values made practical and applied to an actual trained classifier.",
+  },
+  {
+    slug: "counterfactual-explanations",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 8,
+    title: "Counterfactual explanations",
+    blurb: "\"What's the smallest change that would have flipped this decision?\"",
+  },
+  {
+    slug: "capstone-explain-one-prediction-three-ways",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 9,
+    title: "Explain one prediction three ways",
+    blurb: "Saliency, SHAP, and a counterfactual on the same case, compared side by side.",
+    capstone: true,
+  },
+  {
+    slug: "partial-dependence-plots",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 10,
+    title: "Partial dependence & ICE plots",
+    blurb: "Sweep one feature across its whole range and watch the model's average answer trace a curve.",
+  },
+  {
+    slug: "tree-feature-importance",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 11,
+    title: "Tree-based feature importance",
+    blurb: "Read off which feature did the most work — for free, from a forest you already trained.",
+  },
+  {
+    slug: "anchors-rule-based-explanations",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 12,
+    title: "Anchors: rule-based explanations",
+    blurb: "Replace a linear local approximation with a simple if-then rule that's true almost everywhere nearby.",
+  },
+  {
+    slug: "capstone-audit-a-model-five-ways",
+    part: "Part XXI — Explainable AI & Model Interpretability",
+    chapterNumber: 13,
+    title: "Audit one model, five different ways",
+    blurb: "Saliency, SHAP, PDP, tree importance, and an Anchor rule, on the exact same prediction.",
+    capstone: true,
+  },
+
+  // ---------- Part XXII — Graph Neural Networks & Structured Data ----------
+  {
+    slug: "graphs-as-data",
+    part: "Part XXII — Graph Neural Networks & Structured Data",
+    chapterNumber: 1,
+    title: "Graphs as data",
+    blurb: "Turn a handful of dots and lines into an adjacency matrix, and see why a grid convolution has nowhere to slide.",
+  },
+  {
+    slug: "message-passing-and-gcn",
+    part: "Part XXII — Graph Neural Networks & Structured Data",
+    chapterNumber: 2,
+    title: "Message passing & the GCN",
+    blurb: "Watch a node's feature update by averaging its neighbors', layer after layer, until far-apart nodes start to look alike.",
+  },
+  {
+    slug: "graphsage-inductive-learning",
+    part: "Part XXII — Graph Neural Networks & Structured Data",
+    chapterNumber: 3,
+    title: "GraphSAGE: inductive learning on graphs",
+    blurb: "Sample a handful of neighbors instead of all of them, then apply the same rule to a node the network has never seen.",
+  },
+  {
+    slug: "graph-attention-networks",
+    part: "Part XXII — Graph Neural Networks & Structured Data",
+    chapterNumber: 4,
+    title: "Graph attention networks",
+    blurb: "Give every neighbor its own attention weight instead of a flat average, and watch the important ones dominate.",
+  },
+  {
+    slug: "capstone-predict-a-molecules-property",
+    part: "Part XXII — Graph Neural Networks & Structured Data",
+    chapterNumber: 5,
+    title: "Predict a molecule's property from its bonds",
+    blurb: "Wire message passing and attention together to guess a tiny molecule's property from its atoms and bonds alone.",
+    capstone: true,
+  },
+
+  // ---------- Part XXIII — Modern Architectures, Generative Models & LLM Engineering ----------
+  {
+    slug: "vision-transformers",
+    part: "Part XXIII — Modern Architectures, Generative Models & LLM Engineering",
+    chapterNumber: 1,
+    title: "Vision Transformers",
+    blurb: "Cut an image into patches, and feed them to the exact same block that already reads sentences.",
+  },
+  {
+    slug: "bert-and-masked-language-modeling",
+    part: "Part XXIII — Modern Architectures, Generative Models & LLM Engineering",
+    chapterNumber: 2,
+    title: "BERT & masked language modeling",
+    blurb: "Hide a word in the middle of a sentence and watch a model reconstruct it from both directions at once.",
+  },
+  {
+    slug: "generative-adversarial-networks",
+    part: "Part XXIII — Modern Architectures, Generative Models & LLM Engineering",
+    chapterNumber: 3,
+    title: "Generative adversarial networks",
+    blurb: "Two networks compete — one forges, one detects — and both get better together.",
+  },
+  {
+    slug: "consistency-models",
+    part: "Part XXIII — Modern Architectures, Generative Models & LLM Engineering",
+    chapterNumber: 4,
+    title: "Consistency models",
+    blurb: "Collapse an entire denoising trajectory onto one endpoint, and generate a sample in a single jump.",
+  },
+  {
+    slug: "text-conditioned-diffusion",
+    part: "Part XXIII — Modern Architectures, Generative Models & LLM Engineering",
+    chapterNumber: 5,
+    title: "Text-conditioned diffusion",
+    blurb: "Steer the reverse-noise process with a caption, and watch the same denoiser draw a different picture.",
+  },
+  {
+    slug: "mixture-of-experts",
+    part: "Part XXIII — Modern Architectures, Generative Models & LLM Engineering",
+    chapterNumber: 6,
+    title: "Mixture-of-experts",
+    blurb: "Add a router that sends each token to only two of dozens of feedforward blocks.",
+  },
+  {
+    slug: "lora-and-parameter-efficient-fine-tuning",
+    part: "Part XXIII — Modern Architectures, Generative Models & LLM Engineering",
+    chapterNumber: 7,
+    title: "LoRA & parameter-efficient fine-tuning",
+    blurb: "Freeze a huge weight matrix, and learn only a tiny low-rank update instead.",
+  },
+  {
+    slug: "prompting-and-in-context-learning",
+    part: "Part XXIII — Modern Architectures, Generative Models & LLM Engineering",
+    chapterNumber: 8,
+    title: "Prompting & in-context learning",
+    blurb: "Change nothing but the input, and watch a frozen model's answer change anyway.",
+  },
+  {
+    slug: "scaling-laws",
+    part: "Part XXIII — Modern Architectures, Generative Models & LLM Engineering",
+    chapterNumber: 9,
+    title: "Scaling laws",
+    blurb: "Fit a straight line through a log-log plot, and predict a loss you haven't trained for yet.",
+  },
+  {
+    slug: "experiment-tracking-and-reproducibility",
+    part: "Part XXIII — Modern Architectures, Generative Models & LLM Engineering",
+    chapterNumber: 10,
+    title: "Experiment tracking & reproducibility",
+    blurb: "Change one hyperparameter, keep everything else fixed, and see why \"everything else\" is the hard part to guarantee.",
   },
 ];
 
