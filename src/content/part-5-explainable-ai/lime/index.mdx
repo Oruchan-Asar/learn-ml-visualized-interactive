@@ -27,7 +27,16 @@ import { IntuitionDemo, PlayDemo, LimeCheckpoint } from "./Demos";
     <Variable>**$\text{slope}, \text{intercept}$** — the two parameters of the local straight-line fit.</Variable>
   </Variables>
 
-  where the slope and intercept minimize $\sum_i w_i(y_i - \hat y_i)^2$ — an ordinary least-squares fit, just with each point's error scaled by how close it is to $x_0$. Nothing here needs the black box's internals: LIME only ever calls it as a function, exactly like a saliency map does, but a linear fit instead of a per-input gradient.
+  <Steps>
+    <Step label="A weighted least-squares fit">
+      The slope and intercept minimize $\sum_i w_i(y_i - \hat y_i)^2$ — an ordinary least-squares fit, just
+      with each point's error scaled by how close it is to $x_0$.
+    </Step>
+    <Step label="Model-agnostic by construction">
+      Nothing here needs the black box's internals: LIME only ever calls it as a function, exactly like a
+      saliency map does, but a linear fit instead of a per-input gradient.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
