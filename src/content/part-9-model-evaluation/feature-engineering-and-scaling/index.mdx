@@ -26,7 +26,17 @@ import { IntuitionDemo, PlayDemo, FeatureScalingCheckpoint } from "./Demos";
     <Variable>**$i$** — index running over training examples.</Variable>
   </Variables>
 
-  A feature on a 100x larger scale produces roughly $100^2 = 10{,}000\times$ more curvature along its own weight axis. Since a single learning rate must stay below $2/\text{curvature}$ everywhere to avoid diverging, the large-scale feature forces the *whole* learning rate down — including for every feature that didn't need it to be that small.
+  <Steps>
+    <Step label="Curvature scales with the square of a feature's range">
+      A feature on a 100x larger scale produces roughly $100^2 = 10{,}000\times$ more curvature along its own
+      weight axis — small differences in scale become huge differences in curvature.
+    </Step>
+    <Step label="One shared rate must satisfy the worst axis">
+      A single learning rate must stay below $2/\text{curvature}$ everywhere to avoid diverging, so the
+      large-scale feature forces the *whole* learning rate down — including for every feature that didn't need
+      it to be that small.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
