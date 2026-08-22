@@ -30,9 +30,16 @@ import { IntuitionDemo, PlayDemo, SmoothingCheckpoint } from "./Demos";
     <Variable>**AGGREGATE** — the combining function; this chapter fixes it to a plain mean of the node and its neighbors.</Variable>
   </Variables>
 
-  The simplest possible choice of AGGREGATE — the one this chapter uses — is a plain **mean**: average
-  the node's own value together with every neighbor's. Stack $k$ of these layers, and information from
-  nodes up to $k$ hops away has had a chance to reach any given node.
+  <Steps>
+    <Step label="AGGREGATE fixed to a plain mean">
+      The simplest possible choice of AGGREGATE — the one this chapter uses — is a plain **mean**:
+      average the node's own value together with every neighbor's.
+    </Step>
+    <Step label="Stacking layers reaches further hops">
+      Stack $k$ of these layers, and information from nodes up to $k$ hops away has had a chance to reach
+      any given node.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
