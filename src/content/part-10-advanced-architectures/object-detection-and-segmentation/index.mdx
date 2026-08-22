@@ -18,7 +18,17 @@ import { IntuitionDemo, PlayDemo, ObjectDetectionCheckpoint } from "./Demos";
   \text{IoU} = \frac{\text{area of overlap}}{\text{area of union}}
   $$
 
-  A detection typically only "counts" if IoU clears a threshold — commonly $0.5$. **Segmentation** asks the same overlap question at the level of individual pixels instead of a single box, scored with the same **TP** (**True Positive**)/**FP** (**False Positive**)/**FN** (**False Negative**) machinery as any confusion matrix: every pixel is either correctly inside the mask, correctly outside it, or wrong one way or the other.
+  <Steps>
+    <Step label="A detection only counts past a threshold">
+      A detection typically only "counts" if IoU clears a threshold — commonly $0.5$.
+    </Step>
+    <Step label="Segmentation asks the same question per pixel">
+      **Segmentation** asks the same overlap question at the level of individual pixels instead of a single box,
+      scored with the same **TP** (**True Positive**)/**FP** (**False Positive**)/**FN** (**False Negative**)
+      machinery as any confusion matrix: every pixel is either correctly inside the mask, correctly outside it,
+      or wrong one way or the other.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
