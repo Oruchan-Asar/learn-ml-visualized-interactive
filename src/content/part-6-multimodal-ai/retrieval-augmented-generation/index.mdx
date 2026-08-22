@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, RagCheckpoint } from "./Demos";
     <Variable>**$\text{answer}$** — the final answer: grounded in the retrieved document when retrieval is used, or a fixed generic prior when it isn't.</Variable>
   </Variables>
 
-  "Generation" here is deliberately simplified to a lookup, so the actual point stays visible: retrieval doesn't change how a model generates, it changes *what it has in front of it* when it does. A real system still generates fluent text — it just conditions that generation on retrieved passages instead of (or alongside) its frozen training-time knowledge.
+  <Steps>
+    <Step label="Generation is simplified to a lookup, on purpose">
+      Retrieval doesn't change *how* a model generates — it changes *what it has in front of it* when it does,
+      and that's the point this simplification is meant to make visible.
+    </Step>
+    <Step label="A real system still generates fluent text">
+      It just conditions that generation on retrieved passages instead of — or alongside — its frozen
+      training-time knowledge.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
