@@ -25,7 +25,16 @@ import { IntuitionDemo, PlayDemo, GradientCheckpoint } from "./Demos";
     <Variable>**$\partial f/\partial y$** — the partial derivative of $f$ with respect to $y$, holding $x$ fixed.</Variable>
   </Variables>
 
-  Each partial derivative is computed exactly like Chapter 1's derivative — just holding the *other* variable fixed. For $f(x,y) = x^2 + y^2$: treating $y$ as a constant, $\partial f/\partial x = 2x$; treating $x$ as a constant, $\partial f/\partial y = 2y$.
+  <Steps>
+    <Step label="Hold the other variable fixed">
+      Each partial derivative is computed exactly like Chapter 1's derivative — just holding the *other*
+      variable fixed.
+    </Step>
+    <Step label="Work it out for f(x,y) = x² + y²">
+      Treating $y$ as a constant, $\partial f/\partial x = 2x$; treating $x$ as a constant,
+      $\partial f/\partial y = 2y$.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
