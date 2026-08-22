@@ -27,7 +27,18 @@ import { IntuitionDemo, PlayDemo, ShipAssistantCheckpoint } from "./Demos";
     <Variable>**$y_i$** — the output demonstrated for example $i$ in the request's prompt.</Variable>
   </Variables>
 
-  The backbone is fine-tuned exactly once, offline. Every request reuses that same frozen backbone, steered only by whatever system prompt accompanies it. Serving many such requests stays cheap because each individual generation reuses its own cached attention via a **KV cache** (short for **Key-Value cache**), not because the model got any smaller.
+  <Steps>
+    <Step label="Fine-tune once, offline">
+      The backbone is fine-tuned exactly once, offline, via LoRA.
+    </Step>
+    <Step label="Steer per request, with no retraining">
+      Every request reuses that same frozen backbone, steered only by whatever system prompt accompanies it.
+    </Step>
+    <Step label="Serve cheaply, without shrinking the model">
+      Serving many such requests stays cheap because each individual generation reuses its own cached attention
+      via a **KV cache** (short for **Key-Value cache**), not because the model got any smaller.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
