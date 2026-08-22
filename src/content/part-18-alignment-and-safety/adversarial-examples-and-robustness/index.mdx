@@ -32,10 +32,16 @@ import { IntuitionDemo, PlayDemo, AdversarialCheckpoint } from "./Demos";
     <Variable>**$\Delta(w \cdot x)$** — the resulting shift in the classifier's weighted sum (its score) once every dimension has been nudged.</Variable>
   </Variables>
 
-  Each individual $|x'_i - x_i|$ is bounded by $\epsilon$ — small, imperceptible on its own. But the total
-  shift in the dot product the classifier actually uses scales with the *number of dimensions*, not with
-  $\epsilon$ alone. A perturbation invisible in any single pixel becomes a large, deliberate shift once
-  summed across all of them.
+  <Steps>
+    <Step label="Each dimension's change is imperceptibly small">
+      Every individual $|x'_i - x_i|$ is bounded by $\epsilon$ — small, imperceptible on its own.
+    </Step>
+    <Step label="The total shift scales with dimension count, not epsilon alone">
+      The shift in the dot product the classifier actually uses scales with the *number of dimensions*. A
+      perturbation invisible in any single pixel becomes a large, deliberate shift once summed across all
+      of them.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
