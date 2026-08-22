@@ -27,7 +27,17 @@ import { IntuitionDemo, PlayDemo, QLearningCheckpoint } from "./Demos";
     <Variable>**$\alpha$** — the learning rate: how much of the gap gets corrected on any one update.</Variable>
   </Variables>
 
-  The term in parentheses is a **temporal-difference error** — the gap between what $Q(s,a)$ currently predicts and a slightly better estimate built from one real step of experience plus the table's own best guess about what happens after. $\alpha$ controls how much of that gap gets corrected on any one update — exactly a learning rate, doing exactly what a learning rate does in every other optimizer in this course.
+  <Steps>
+    <Step label="The parenthesized term is a TD error">
+      It's a **temporal-difference error** — the gap between what $Q(s,a)$ currently predicts and a slightly
+      better estimate built from one real step of experience plus the table's own best guess about what
+      happens after.
+    </Step>
+    <Step label="Alpha is an ordinary learning rate">
+      $\alpha$ controls how much of that gap gets corrected on any one update — exactly a learning rate,
+      doing exactly what a learning rate does in every other optimizer in this course.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
