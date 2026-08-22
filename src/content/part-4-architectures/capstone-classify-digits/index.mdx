@@ -23,7 +23,14 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
     <Variable>**$p_{\text{true class}}$** — the softmax probability the network assigns to the correct class.</Variable>
   </Variables>
 
-  the cross-entropy loss from Part II, computed over the softmax of the two output logits. Backpropagation runs through every stage: the softmax gradient, back through the dense weights, back through max-pooling (which routes each gradient only to the position that actually won each window), back through ReLU (zero wherever the pre-activation wasn't positive), and finally back into the two 3×3 kernels themselves — the same chain rule as always, just longer.
+  <Steps>
+    <Step label="This is cross-entropy loss">
+      It's the cross-entropy loss from Part II, computed over the softmax of the two output logits.
+    </Step>
+    <Step label="Backprop threads through every stage">
+      Backpropagation runs through every stage: the softmax gradient, back through the dense weights, back through max-pooling (which routes each gradient only to the position that actually won each window), back through ReLU (zero wherever the pre-activation wasn't positive), and finally back into the two 3×3 kernels themselves — the same chain rule as always, just longer.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
