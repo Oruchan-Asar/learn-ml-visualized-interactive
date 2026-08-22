@@ -30,10 +30,17 @@ import { IntuitionDemo, PlayDemo, OrchestrationCheckpoint } from "./Demos";
     <Variable>**fact** — the plain string of information that's supposed to be passed alone, not wrapped in an object.</Variable>
   </Variables>
 
-  If the coordinator passes an entire `{topic, fact}` object where `fact` was supposed to be a plain
-  string, JavaScript (like most dynamically-typed interchange formats) doesn't throw — it silently calls
-  the object's default string conversion, producing `"[object Object]"`. The bug isn't in either agent;
-  it's in what the coordinator handed off between them, and it fails silently instead of loudly.
+  <Steps>
+    <Step label="A mismatched handoff fails silently">
+      If the coordinator passes an entire `{topic, fact}` object where `fact` was supposed to be a plain
+      string, JavaScript (like most dynamically-typed interchange formats) doesn't throw — it silently
+      calls the object's default string conversion, producing `"[object Object]"`.
+    </Step>
+    <Step label="The bug lives in the handoff, not either agent">
+      Neither agent did anything wrong on its own; it's what the coordinator handed off between them that
+      broke, and it fails silently instead of loudly.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
