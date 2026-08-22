@@ -31,11 +31,20 @@ import { IntuitionDemo, PlayDemo, ConsistencyCheckpoint } from "./Demos";
     <Variable>**$t$** — the time parameter identifying where along the trajectory the input point sits.</Variable>
   </Variables>
 
-  The self-consistency property is the middle expression holding for *any* $t$ — $f$ doesn't care how far
-  along the trajectory it's asked to evaluate, it always outputs the endpoint. Real consistency models are
-  trained on the genuinely *curved* trajectories that diffusion models produce, where no such closed form
-  exists — a **consistency-distillation loss** explicitly penalizes disagreement between $f$'s outputs at
-  two nearby points on the same trajectory, teaching the shortcut a curved path doesn't hand you for free.
+  <Steps>
+    <Step label="Self-consistency holds for any t">
+      The middle expression above holds for *any* $t$ — $f$ doesn't care how far along the trajectory
+      it's asked to evaluate, it always outputs the endpoint.
+    </Step>
+    <Step label="Curved trajectories have no closed form">
+      Real consistency models are trained on the genuinely *curved* trajectories that diffusion models
+      produce, where no such closed form exists.
+    </Step>
+    <Step label="A distillation loss teaches the shortcut">
+      A **consistency-distillation loss** explicitly penalizes disagreement between $f$'s outputs at two
+      nearby points on the same trajectory, teaching the shortcut a curved path doesn't hand you for free.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
