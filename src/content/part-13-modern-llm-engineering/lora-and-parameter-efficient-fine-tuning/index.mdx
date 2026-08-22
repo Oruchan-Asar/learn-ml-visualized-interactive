@@ -28,7 +28,17 @@ import { IntuitionDemo, PlayDemo, LoRACheckpoint } from "./Demos";
     <Variable>**$r$** — the rank of the update, chosen much smaller than $n$.</Variable>
   </Variables>
 
-  A full update to an $n\times n$ matrix costs $n^2$ trainable parameters. A rank-$r$ update costs $2nr$. For a $4096\times4096$ attention matrix and $r=8$, that's roughly $65{,}000$ parameters instead of $16.7$ million — under half a percent. The catch: $\Delta W$ can only ever be rank $\leq r$, however training goes.
+  <Steps>
+    <Step label="Parameter cost drops from quadratic to linear">
+      A full update to an $n\times n$ matrix costs $n^2$ trainable parameters. A rank-$r$ update costs only
+      $2nr$. For a $4096\times4096$ attention matrix and $r=8$, that's roughly $65{,}000$ parameters instead
+      of $16.7$ million — under half a percent.
+    </Step>
+    <Step label="The catch: rank is capped at r">
+      $\Delta W$ can only ever be rank $\leq r$, however training goes. If the update a task actually needs
+      has higher intrinsic rank than $r$, LoRA simply cannot represent it exactly.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
