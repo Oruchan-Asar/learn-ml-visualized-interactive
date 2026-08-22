@@ -28,10 +28,16 @@ import { IntuitionDemo, PlayDemo, BottleneckCheckpoint } from "./Demos";
     <Variable>**$d$** — the embedding dimension: the size of each token's vector representation.</Variable>
   </Variables>
 
-  That last ratio is the whole chapter: attention costs exactly $n$ times more than a single per-token
-  operation, where $n$ is the sequence length *itself*. The embedding dimension $d$ changes the raw
-  numbers, but it cancels out of the ratio completely — it's the sequence length alone that decides how
-  much worse attention gets.
+  <Steps>
+    <Step label="The ratio is the whole chapter">
+      Attention costs exactly $n$ times more than a single per-token operation, where $n$ is the sequence
+      length *itself*.
+    </Step>
+    <Step label="d cancels out — only n matters">
+      The embedding dimension $d$ changes the raw op counts, but it cancels out of the ratio completely —
+      it's the sequence length alone that decides how much worse attention gets.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
