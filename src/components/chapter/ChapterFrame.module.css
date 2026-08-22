@@ -150,7 +150,6 @@
   list-style: none;
   display: flex;
   align-items: baseline;
-  justify-content: space-between;
   gap: 8px;
   padding: 8px 2px;
   font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
@@ -177,6 +176,7 @@
 
 .overviewPartCount {
   flex-shrink: 0;
+  margin-left: auto;
 }
 
 .overviewPartList {
