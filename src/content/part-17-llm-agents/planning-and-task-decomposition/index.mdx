@@ -29,11 +29,17 @@ import { IntuitionDemo, PlayDemo, PlanningCheckpoint } from "./Demos";
     <Variable>**dependency of $\text{task}_i$** — another task that must finish before $\text{task}_i$ is allowed to run.</Variable>
   </Variables>
 
-  Finding one such ordering is a **topological sort** over the dependency graph — the same structure a
-  build system uses to decide compile order, or a project scheduler uses to sequence tasks. When two
-  tasks have no dependency relationship to each other (boiling water and toasting bread, here), either
-  order between them is equally valid — the planner has real freedom, constrained only where genuine
-  prerequisites exist.
+  <Steps>
+    <Step label="Finding an ordering is a topological sort">
+      Finding one such ordering is a **topological sort** over the dependency graph — the same structure a
+      build system uses to decide compile order, or a project scheduler uses to sequence tasks.
+    </Step>
+    <Step label="Independent tasks leave real freedom">
+      When two tasks have no dependency relationship to each other (boiling water and toasting bread,
+      here), either order between them is equally valid — the planner has real freedom, constrained only
+      where genuine prerequisites exist.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
