@@ -25,7 +25,18 @@ import { IntuitionDemo, PlayDemo, BanditsCheckpoint } from "./Demos";
     <Variable>**$r_i$** — the reward received on the $i$-th pull of that arm.</Variable>
   </Variables>
 
-  A purely greedy policy — always pull whichever arm currently looks best — can get stuck: an early lucky (or unlucky) run of pulls can lock in a wrong estimate before enough evidence comes in to correct it. **Epsilon-greedy** fixes this with the simplest possible patch: most of the time pull the current best arm (*exploit*), but some fraction of the time pull a different one anyway, just to keep checking (*explore*).
+  <Steps>
+    <Step label="Pure greedy can get stuck">
+      Always pulling whichever arm currently looks best can lock in a wrong estimate: an early lucky (or
+      unlucky) run of pulls can convince the policy an inferior arm is best, before enough evidence comes in
+      to correct it.
+    </Step>
+    <Step label="Epsilon-greedy: mostly exploit, sometimes explore">
+      **Epsilon-greedy** fixes this with the simplest possible patch: most of the time pull the current best
+      arm (*exploit*), but some fraction of the time pull a different one anyway, just to keep checking
+      (*explore*).
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
