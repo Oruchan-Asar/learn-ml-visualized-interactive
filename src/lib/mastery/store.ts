@@ -1,3 +1,5 @@
+import { markActiveToday } from "./streak";
+
 export interface CheckpointResult {
   passed: boolean;
   attempts: number;
@@ -32,6 +34,12 @@ export function recordCheckpointAttempt(conceptId: string, passed: boolean): Che
   if (typeof window !== "undefined") {
     window.localStorage.setItem(key(conceptId), JSON.stringify(result));
   }
+  if (result.passed) markActiveToday();
   listeners.forEach((listener) => listener());
   return result;
+}
+
+/** How many of the given concepts have ever been passed. */
+export function getMasteredCount(conceptIds: string[]): number {
+  return conceptIds.reduce((count, id) => count + (getCheckpointResult(id)?.passed ? 1 : 0), 0);
 }

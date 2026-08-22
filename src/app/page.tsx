@@ -2,6 +2,7 @@ import Link from "next/link";
 import styles from "./page.module.css";
 import { CURRICULUM } from "@/lib/curriculum";
 import { HomeSearch } from "./HomeSearch";
+import { StreakBar } from "./StreakBar";
 
 export default function Home() {
   return (
@@ -17,6 +18,8 @@ export default function Home() {
           Glossary of abbreviations →
         </Link>
       </header>
+
+      <StreakBar />
 
       <HomeSearch curriculum={CURRICULUM} />
     </div>
