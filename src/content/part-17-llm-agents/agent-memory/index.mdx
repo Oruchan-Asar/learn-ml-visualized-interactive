@@ -31,10 +31,16 @@ import { IntuitionDemo, PlayDemo, MemoryCheckpoint } from "./Demos";
     <Variable>**$m_i$** — the message (or fact) at position $i$ in the conversation.</Variable>
   </Variables>
 
-  A fact at position $i$ is visible at time $t$ exactly when $i \geq t-k+1$ — once $t$ grows past
-  $i+k-1$, it's gone, permanently, unless something else keeps a copy. **Retrieval** is that something
-  else: every message gets stored in an external index the window's size limit never touches, and a
-  query searches that whole index directly instead of only the current window.
+  <Steps>
+    <Step label="A fact disappears once t outgrows it">
+      A fact at position $i$ is visible at time $t$ exactly when $i \geq t-k+1$ — once $t$ grows past
+      $i+k-1$, it's gone, permanently, unless something else keeps a copy.
+    </Step>
+    <Step label="Retrieval is that something else">
+      Every message gets stored in an external index the window's size limit never touches, and a query
+      searches that whole index directly instead of only the current window.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
