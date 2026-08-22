@@ -28,7 +28,16 @@ import { IntuitionDemo, PlayDemo, MoECheckpoint } from "./Demos";
     <Variable>**$\text{Expert}_i(x)$** — the output of the $i$-th expert sub-network applied to $x$.</Variable>
   </Variables>
 
-  Every expert outside the top $K$ contributes exactly zero — not a small weight, but literally never computed. A model can have far more total parameters than a dense one while running only a fraction of them per token.
+  <Steps>
+    <Step label="Unselected experts aren't down-weighted — they're never run">
+      Every expert outside the top $K$ contributes exactly zero — not a small weight, but literally never
+      computed.
+    </Step>
+    <Step label="Total capacity and per-token compute decouple">
+      A model can have far more total parameters than a dense one while running only a fraction of them per
+      token.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
