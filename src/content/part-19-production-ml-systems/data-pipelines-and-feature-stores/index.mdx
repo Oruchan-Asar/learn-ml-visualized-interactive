@@ -45,8 +45,12 @@ import { IntuitionDemo, PlayDemo, PipelineCheckpoint } from "./Demos";
     <Variable>**$t_{\text{now}}$** — the current time, when the offline join actually runs — not the label's own time.</Variable>
   </Variables>
 
-  Every event between $t$ and $t_{\text{now}}$ leaks into a feature that a real prediction, made at $t$, could
-  never actually have seen.
+  <Steps>
+    <Step label="The leak window is every event between t and t_now">
+      Every event that happened after the label's own time but before the offline join actually ran gets
+      folded into $\text{naive}(t)$ regardless — a real prediction made at $t$ could never have seen any of it.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
