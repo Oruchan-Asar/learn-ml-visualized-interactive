@@ -28,7 +28,19 @@ import { IntuitionDemo, PlayDemo, MomentumCheckpoint } from "./Demos";
     <Variable>**$\eta$** — the learning rate.</Variable>
   </Variables>
 
-  $\beta \in [0,1)$ is how much of the old velocity survives each step. At $\beta = 0$, $v'$ is always just the current gradient — this is exactly plain gradient descent. Push $\beta$ up and the point starts remembering where it's been heading.
+  <Steps>
+    <Step label="β controls how much velocity survives">
+      $\beta \in [0,1)$ is the fraction of the old velocity that carries over into each new step.
+    </Step>
+    <Step label="β = 0 is plain gradient descent">
+      At $\beta = 0$, $v'$ is always just the current gradient — no memory at all, which is exactly plain gradient
+      descent.
+    </Step>
+    <Step label="Higher β means more memory">
+      Push $\beta$ up and the point starts remembering where it's been heading, rather than reacting only to the
+      gradient right now.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
