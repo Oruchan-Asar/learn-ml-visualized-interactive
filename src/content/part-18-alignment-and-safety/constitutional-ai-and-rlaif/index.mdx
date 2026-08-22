@@ -30,9 +30,13 @@ import { IntuitionDemo, PlayDemo, ConstitutionalCheckpoint } from "./Demos";
     <Variable>**$\text{label}(y_1, y_2)$** — which of the two responses wins, decided by checking the constitutional principle instead of asking a person.</Variable>
   </Variables>
 
-  Nothing about the downstream training changes — a $(y_w, y_l)$ pair produced this way plugs directly
-  into RLHF's reward-model fitting or DPO's gradient step exactly like a human-labeled one would. What
-  changed is *only* where the pair came from.
+  <Steps>
+    <Step label="Downstream training is unchanged">
+      A $(y_w, y_l)$ pair produced this way plugs directly into RLHF's reward-model fitting or DPO's
+      gradient step exactly like a human-labeled one would. What changed is *only* where the pair came
+      from.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
