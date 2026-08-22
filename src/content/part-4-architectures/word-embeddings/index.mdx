@@ -25,7 +25,14 @@ import { IntuitionDemo, PlayDemo, WordEmbeddingCheckpoint } from "./Demos";
     <Variable>**$b_1, b_2, \dots$** — the individual coordinate values of vector $b$ along each embedding dimension.</Variable>
   </Variables>
 
-  A **nearest-neighbor** search is nothing more than computing this for every other word and keeping the smallest. What makes embeddings powerful isn't the distance formula — it's that a well-trained embedding space arranges words so this simple formula lines up with human judgments of similarity.
+  <Steps>
+    <Step label="Nearest-neighbor search">
+      A **nearest-neighbor** search is nothing more than computing this for every other word and keeping the smallest.
+    </Step>
+    <Step label="The formula isn't the magic">
+      What makes embeddings powerful isn't the distance formula — it's that a well-trained embedding space arranges words so this simple formula lines up with human judgments of similarity.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
