@@ -12,7 +12,19 @@ import { IntuitionDemo, PlayDemo, SvmCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  A support vector machine picks the one separating line that makes this street as **wide** as possible. Whichever points end up touching the edges of that street — often just one or two per class — are the **support vectors**: the only points that determine the line at all. Move any other point further from the boundary and nothing changes; move a support vector and the whole line shifts.
+  <Steps>
+    <Step label="Maximize the margin">
+      A support vector machine picks the one separating line that makes this street as **wide** as possible.
+    </Step>
+    <Step label="Support vectors touch the edges">
+      Whichever points end up touching the edges of that street — often just one or two per class — are the
+      **support vectors**: the only points that determine the line at all.
+    </Step>
+    <Step label="Only support vectors matter">
+      Move any other point further from the boundary and nothing changes; move a support vector and the whole
+      line shifts.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
