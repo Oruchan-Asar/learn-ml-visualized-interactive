@@ -27,10 +27,19 @@ import { IntuitionDemo, PlayDemo, ConvexCheckpoint } from "./Demos";
     <Variable>**$f(\theta x + (1-\theta)y)$** — the function's actual value at that in-between point.</Variable>
   </Variables>
 
-  Equivalently, in one dimension: $f''(x) \geq 0$ everywhere. Convexity is the actual reason gradient
-  descent's guarantee holds — **for a convex function, every local minimum is automatically the global
-  minimum**, so there's nowhere else downhill could lead. A **non-convex** function has no such guarantee:
-  it can have several local minima, and which one gradient descent finds depends entirely on where it starts.
+  <Steps>
+    <Step label="An equivalent one-dimensional test">
+      Equivalently, in one dimension: $f''(x) \geq 0$ everywhere.
+    </Step>
+    <Step label="Why gradient descent's guarantee holds">
+      Convexity is the actual reason gradient descent's guarantee holds — **for a convex function, every
+      local minimum is automatically the global minimum**, so there's nowhere else downhill could lead.
+    </Step>
+    <Step label="Non-convex functions have no such guarantee">
+      A **non-convex** function can have several local minima, and which one gradient descent finds depends
+      entirely on where it starts.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
