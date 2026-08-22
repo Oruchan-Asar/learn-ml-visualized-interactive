@@ -24,7 +24,16 @@ import { IntuitionDemo, PlayDemo, VideoCheckpoint } from "./Demos";
     <Variable>**$\text{position}_t$** — the **temporal position embedding**, marking *when* in the clip the frame occurs, in place of ViT's spatial position embedding.</Variable>
   </Variables>
 
-  A local method (frame differencing, a small 1D convolution, a short-memory recurrence) can only relate frames within some fixed temporal window. Self-attention has no such limit: any two frames, however far apart in time, can attend to each other directly, in a single layer.
+  <Steps>
+    <Step label="Local methods are capped by a fixed window">
+      A local method — frame differencing, a small 1D convolution, a short-memory recurrence — can only relate
+      frames within some fixed temporal window. Anything outside that window is invisible to it.
+    </Step>
+    <Step label="Self-attention has no such limit">
+      Any two frames, however far apart in time, can attend to each other directly, in a single layer — reach
+      doesn't depend on window size at all.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
