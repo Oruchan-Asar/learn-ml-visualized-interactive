@@ -24,7 +24,17 @@ import { IntuitionDemo, PlayDemo, RlhfCheckpoint } from "./Demos";
     <Variable>**$r_i$, $r_j$** — the fitted reward scores for responses $i$ and $j$.</Variable>
   </Variables>
 
-  Fitting $r$ from observed comparisons is exactly Part II's logistic regression, with each comparison contributing one cross-entropy term. Once a reward model is fit this way, it can score a response the same way any other trained reward function would — and that score is what stands in for the reward Chapter 4's policy gradient needs but nobody could hand it directly.
+  <Steps>
+    <Step label="Fitting r is ordinary logistic regression">
+      Fitting $r$ from observed comparisons is exactly Part II's logistic regression, with each comparison
+      contributing one cross-entropy term.
+    </Step>
+    <Step label="The fitted score stands in for the reward">
+      Once a reward model is fit this way, it can score a response the same way any other trained reward
+      function would — and that score is what stands in for the reward Chapter 4's policy gradient needs but
+      nobody could hand it directly.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
