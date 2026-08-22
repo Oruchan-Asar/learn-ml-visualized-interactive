@@ -26,7 +26,14 @@ import { IntuitionDemo, PlayDemo, RnnCheckpoint } from "./Demos";
     <Variable>**$\tanh$** — the squashing activation that keeps the hidden state bounded between $-1$ and $1$.</Variable>
   </Variables>
 
-  The same weights $W_x$, $W_h$, $b$ are reused at every timestep — exactly the "share one small set of weights across many positions" idea from convolution, just applied across time instead of space. The recurrence is what makes $h_2$ depend on the *entire* sequence seen so far, not just the token that just arrived.
+  <Steps>
+    <Step label="Weights shared across time">
+      The same weights $W_x$, $W_h$, $b$ are reused at every timestep — exactly the "share one small set of weights across many positions" idea from convolution, just applied across time instead of space.
+    </Step>
+    <Step label="Recurrence carries the whole history">
+      The recurrence is what makes $h_2$ depend on the *entire* sequence seen so far, not just the token that just arrived.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
