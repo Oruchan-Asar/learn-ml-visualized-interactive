@@ -26,7 +26,16 @@ import { IntuitionDemo, PlayDemo, SeqToSeqCheckpoint } from "./Demos";
     <Variable>**$\text{Decoder}$** — the RNN that unrolls its own sequence starting from the context vector.</Variable>
   </Variables>
 
-  Nothing ties $n$ and $m$ together. The encoder's job is compression; the decoder's job is generation — and the context vector is the only channel between them.
+  <Steps>
+    <Step label="Input and output lengths are decoupled">
+      Nothing ties $n$ and $m$ together — the decoder can unroll for however many steps the task needs,
+      independent of how long the input sequence was.
+    </Step>
+    <Step label="One network compresses, the other generates">
+      The encoder's job is compression; the decoder's job is generation — and the context vector is the only
+      channel between them.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
