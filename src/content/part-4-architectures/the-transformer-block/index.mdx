@@ -22,7 +22,18 @@ import { IntuitionDemo, PlayDemo, TransformerBlockCheckpoint } from "./Demos";
     <Variable>**output** — the block's final result, after the feedforward sublayer, its own residual add, and the second LayerNorm.</Variable>
   </Variables>
 
-  The residual "$x + \dots$" means each sublayer only has to learn a *correction* to its input, not reproduce the whole thing from scratch — and it gives the gradient a direct, addition-only path back through the block, exactly like the **LSTM**'s — short for **Long Short-Term Memory** — cell state in Chapter 7. LayerNorm rescales each token's vector to zero mean and unit variance, independently of every other token, which keeps values from drifting as they pass through dozens of stacked blocks.
+  <Steps>
+    <Step label="Residual connections ease gradient flow">
+      The residual "$x + \dots$" means each sublayer only has to learn a *correction* to its input, not
+      reproduce the whole thing from scratch — and it gives the gradient a direct, addition-only path back
+      through the block, exactly like the **LSTM**'s — short for **Long Short-Term Memory** — cell state in
+      Chapter 7.
+    </Step>
+    <Step label="LayerNorm keeps values from drifting">
+      LayerNorm rescales each token's vector to zero mean and unit variance, independently of every other
+      token, which keeps values from drifting as they pass through dozens of stacked blocks.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
