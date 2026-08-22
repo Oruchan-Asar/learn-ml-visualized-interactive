@@ -25,7 +25,17 @@ import { IntuitionDemo, PlayDemo, BertCheckpoint } from "./Demos";
     <Variable>**$\{t_j : j \neq i\}$** — the bidirectional context: every token except the mask itself, on both sides.</Variable>
   </Variables>
 
-  **BERT** — short for **Bidirectional Encoder Representations from Transformers** — uses the second form. Since there's no autoregressive generation step to protect — the whole point is reconstructing a token that's already there — nothing stops the model from using tokens on *both* sides. That's the entire architectural difference from a **GPT** (short for **Generative Pre-trained Transformer**)-style model: which half of the sentence is allowed to inform each prediction.
+  <Steps>
+    <Step label="BERT commits to the bidirectional form">
+      **BERT** — short for **Bidirectional Encoder Representations from Transformers** — uses the second form.
+      Since there's no autoregressive generation step to protect — the whole point is reconstructing a token
+      that's already there — nothing stops the model from using tokens on *both* sides.
+    </Step>
+    <Step label="The only difference from GPT is who can see whom">
+      That's the entire architectural difference from a **GPT** (short for **Generative Pre-trained
+      Transformer**)-style model: which half of the sentence is allowed to inform each prediction.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
