@@ -24,7 +24,19 @@ import { IntuitionDemo, PlayDemo, JointEmbeddingCheckpoint } from "./Demos";
     <Variable>**$d(u, v)$** — the distance between the two embeddings: how well the caption matches the image.</Variable>
   </Variables>
 
-  Nothing about the distance formula changed. What's new is that $u$ came from a completely different encoder (one built for pixels) than $v$ (one built for text) — and both encoders were trained so that their outputs land in the *same* coordinate system, not just two similar-looking but separate spaces.
+  <Steps>
+    <Step label="The formula itself didn't change">
+      Nothing about the distance formula is new — it's exactly Part IV's word-embedding distance, applied unchanged.
+    </Step>
+    <Step label="What changed is where u and v come from">
+      $u$ comes from a completely different encoder (one built for pixels) than $v$ (one built for text) — two
+      separate networks, not one.
+    </Step>
+    <Step label="Both encoders share one coordinate system">
+      They're trained so their outputs land in the *same* coordinate system, not just two similar-looking but
+      separate spaces — that's what makes comparing them by distance meaningful at all.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
