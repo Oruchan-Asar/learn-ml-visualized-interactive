@@ -30,9 +30,16 @@ import { IntuitionDemo, PlayDemo, RedTeamCheckpoint } from "./Demos";
     <Variable>**$\text{isRestricted}(r)$** — the ground-truth label for whether $r$ actually carries restricted intent.</Variable>
   </Variables>
 
-  A patch that fixes the one case a red-teamer found without being checked against everything else can
-  introduce a brand-new failure nobody was looking for. The suite is what turns "I fixed it" into a
-  falsifiable claim.
+  <Steps>
+    <Step label="A narrow fix can introduce a new failure">
+      A patch that fixes the one case a red-teamer found without being checked against everything else
+      can introduce a brand-new failure nobody was looking for.
+    </Step>
+    <Step label="The suite makes 'fixed' falsifiable">
+      The suite is what turns "I fixed it" into a falsifiable claim, checked against every known case
+      instead of just the one that motivated the patch.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
