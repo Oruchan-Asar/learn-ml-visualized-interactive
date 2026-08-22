@@ -29,10 +29,21 @@ import { IntuitionDemo, PlayDemo, PipelineCheckpoint } from "./Demos";
     <Variable>**$D_{KL}(P_{\text{train}} \Vert P_{\text{live}})$** — the drift score: the **KL divergence**, short for **Kullback–Leibler divergence**, between the training and live input distributions.</Variable>
   </Variables>
 
-  A static test suite verifies that code hasn't regressed — the join still returns the right number for a
-  fixed historical label, today, tomorrow, forever. It says nothing about what today's *live* traffic looks
-  like. Only a distribution-level monitor watches that, and only because it's designed to watch something
-  accuracy structurally can't.
+  <Steps>
+    <Step label="Static tests verify code, not traffic">
+      A static test suite checks that the join still returns the right number for a fixed historical label —
+      today, tomorrow, forever.
+    </Step>
+    <Step label="That says nothing about live traffic">
+      A green test suite is silent on what today's *live* traffic actually looks like, because it never
+      queries live traffic in the first place.
+    </Step>
+    <Step label="Only a distribution-level monitor watches that">
+      $D_{KL}(P_{\text{train}} \Vert P_{\text{live}})$ is designed to watch exactly the thing accuracy
+      structurally can't — the shape of the incoming distribution, independent of whether it changes the
+      accuracy number.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
