@@ -25,7 +25,18 @@ import { IntuitionDemo, PlayDemo, KMeansCheckpoint } from "./Demos";
     <Variable>**$S_k$** — the set of points currently assigned to cluster $k$.</Variable>
   </Variables>
 
-  Assign every point to its nearest centroid, then move each centroid to the mean of the points now assigned to it. Neither step alone finds the clusters — assignment without updating just repeats the same bad guess forever, and updating without reassigning never notices when a point should switch sides.
+  <Steps>
+    <Step label="Assign, then update">
+      Assign every point to its nearest centroid, then move each centroid to the mean of the points now assigned
+      to it.
+    </Step>
+    <Step label="Assignment alone stalls">
+      Assignment without updating just repeats the same bad guess forever.
+    </Step>
+    <Step label="Updating alone misses reassignments">
+      And updating without reassigning never notices when a point should switch sides.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
