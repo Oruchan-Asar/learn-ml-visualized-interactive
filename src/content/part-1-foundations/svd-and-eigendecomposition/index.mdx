@@ -27,8 +27,14 @@ import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
     <Variable>**$\lambda$** — the eigenvalue: how much that direction gets stretched (or flipped, if negative).</Variable>
   </Variables>
 
-  $\lambda$ is the corresponding **eigenvalue**: how much that direction gets stretched (or, if $\lambda<0$,
-  stretched *and flipped*). For a symmetric matrix, the eigenvectors are always perpendicular to each
+  <Steps>
+    <Step label="What the eigenvalue means">
+      $\lambda$ is the corresponding **eigenvalue**: how much that direction gets stretched (or, if
+      $\lambda<0$, stretched *and flipped*).
+    </Step>
+  </Steps>
+
+  For a symmetric matrix, the eigenvectors are always perpendicular to each
   other, and $A$ can be rebuilt exactly from them:
 
   $$
@@ -40,10 +46,17 @@ import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
     <Variable>**$\Lambda$** — the diagonal matrix holding the eigenvalues, in the same order as $Q$'s columns.</Variable>
   </Variables>
 
-  where $Q$'s columns are the (unit) eigenvectors and $\Lambda$ is diagonal with the eigenvalues on it.
-  This is the **eigendecomposition**. The **singular value decomposition (SVD)**, $A = U\Sigma V^\top$,
-  is the same idea generalized to *any* matrix, square or not — but its diagonal $\Sigma$ is always
-  non-negative, so a negative eigenvalue's direction gets its sign absorbed into $U$ instead.
+  <Steps>
+    <Step label="Naming the eigendecomposition">
+      Here $Q$'s columns are the (unit) eigenvectors and $\Lambda$ is diagonal with the eigenvalues on it —
+      this is the **eigendecomposition**.
+    </Step>
+    <Step label="Generalizing to the SVD">
+      The **singular value decomposition (SVD)**, $A = U\Sigma V^\top$, is the same idea generalized to
+      *any* matrix, square or not — but its diagonal $\Sigma$ is always non-negative, so a negative
+      eigenvalue's direction gets its sign absorbed into $U$ instead.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
