@@ -24,7 +24,16 @@ import { IntuitionDemo, PlayDemo, AssistantCheckpoint } from "./Demos";
     <Variable>**$x_t$, $t$** — the noisy diffusion state and current timestep, unchanged from that chapter's process.</Variable>
   </Variables>
 
-  Nothing here is a new mechanism — it's the exact retrieval rule from audio embeddings, feeding the exact conditioning slot from text-conditioned diffusion. A working multimodal system is very often just two or three single-modality mechanisms, connected so one's output becomes the next one's input.
+  <Steps>
+    <Step label="No new mechanism — just reused pieces">
+      Nothing here is a new mechanism — it's the exact retrieval rule from audio embeddings, feeding the exact
+      conditioning slot from text-conditioned diffusion.
+    </Step>
+    <Step label="This is the general shape of multimodal systems">
+      A working multimodal system is very often just two or three single-modality mechanisms, connected so one's
+      output becomes the next one's input.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
