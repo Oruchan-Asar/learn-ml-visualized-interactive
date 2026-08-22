@@ -27,10 +27,17 @@ import { IntuitionDemo, PlayDemo, JailbreakCheckpoint } from "./Demos";
     <Variable>**$\text{keywordFilter}(x)$** — true when the request contains one of the filter's fixed trigger phrases.</Variable>
   </Variables>
 
-  Nothing about the *intent* changed between a direct request and an indirect one asking for the same
-  thing — only the surface form did. A filter built to pattern-match surface form has no way to
-  distinguish "the exact same ask, reworded" from "a genuinely different, safe request" — both simply
-  fail to contain the trigger phrase.
+  <Steps>
+    <Step label="Intent stays fixed while surface form changes">
+      Nothing about the *intent* changed between a direct request and an indirect one asking for the same
+      thing — only the surface form did.
+    </Step>
+    <Step label="A surface-form filter can't tell the difference">
+      A filter built to pattern-match surface form has no way to distinguish "the exact same ask,
+      reworded" from "a genuinely different, safe request" — both simply fail to contain the trigger
+      phrase.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
