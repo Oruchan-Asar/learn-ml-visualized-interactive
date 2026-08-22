@@ -26,7 +26,21 @@ import { IntuitionDemo, PlayDemo, VanishingCheckpoint } from "./Demos";
     <Variable>**$w$** — the weight, repeated at every layer in this example.</Variable>
   </Variables>
 
-  Multiply a number smaller than $1$ by itself ten times and it's gone. Unlike Chapter 8's forward pass, there's no weight scale that fixes this for sigmoid — a bigger $w$ pushes $z$ further from $0$, which makes $\sigma'(z)$ *even smaller*, not larger. Sigmoid's derivative is capped at $0.25$, so this particular chain can only ever shrink going backward. The mirror-image failure — *exploding* gradients — shows up instead in linear or ReLU layers with large weights, where nothing caps that per-layer factor above $1$; it's the exact same backward multiplication as Chapter 8's forward one, just run in reverse.
+  <Steps>
+    <Step label="Repeated shrinking compounds to nothing">
+      Multiply a number smaller than $1$ by itself ten times and it's gone.
+    </Step>
+    <Step label="No weight scale rescues sigmoid">
+      Unlike Chapter 8's forward pass, there's no weight scale that fixes this — a bigger $w$ pushes $z$ further
+      from $0$, which makes $\sigma'(z)$ *even smaller*, not larger. Sigmoid's derivative is capped at $0.25$, so
+      this particular chain can only ever shrink going backward.
+    </Step>
+    <Step label="Exploding gradients are the mirror image">
+      The mirror-image failure — *exploding* gradients — shows up instead in linear or ReLU layers with large
+      weights, where nothing caps that per-layer factor above $1$; it's the exact same backward multiplication
+      as Chapter 8's forward one, just run in reverse.
+    </Step>
+  </Steps>
 </Formalize>
 
 <Play>
