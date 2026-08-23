@@ -1,0 +1,75 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ModelEditingCheckpoint } from "./Demos";
+
+<Hook>
+  Retraining a language model to fix one wrong fact — it says Paris with total confidence, and you need
+  it to say Rome — means touching every weight and risking every *other* fact it knows along the way.
+  ROME's alternative: compute one closed-form update to one weight matrix that overwrites exactly that
+  fact, provably leaving unrelated facts untouched.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  At α = 0 the network still answers "capital of France" with Paris; at α = 1 it answers with Rome
+  instead. Meanwhile "capital of Germany" never moves off Berlin, at either setting — because the edit
+  reused a key vector that Germany's key happens to be orthogonal to.
+</Intuition>
+
+<Formalize>
+  A fact lives in one weight matrix $W$ as a (key, value) association: $W \cdot k \approx v$. Editing it
+  means finding the change $\Delta W$ that forces $W \cdot k$ onto a new target value $v^*$ exactly:
+
+  $$
+  \Delta W = \frac{(v^* - Wk)\,k^\top}{k^\top k}, \qquad W' = W + \Delta W
+  $$
+
+  <Variables>
+    <Variable>**$W$** — the original weight matrix, mapping every subject's key to its object's value.</Variable>
+    <Variable>**$k$** — the key vector for the one fact being edited (its subject).</Variable>
+    <Variable>**$v^*$** — the new target value (its new object).</Variable>
+    <Variable>**$\Delta W$** — the rank-1 update: an outer product of the needed residual with the key, scaled by $k^\top k$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="It hits the target exactly">$W'k = Wk + \Delta W k = Wk + (v^*-Wk)\dfrac{k^\top k}{k^\top k} = v^*$.</Step>
+    <Step label="It leaves orthogonal keys alone">For any other key $k_c$ with $k^\top k_c = 0$: $\Delta W k_c = (v^*-Wk)\dfrac{k^\top k_c}{k^\top k} = 0$, so $W'k_c = Wk_c$ — unchanged.</Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag α from 0 to 1: the France fact's Rome-retrieval score rises in a straight line from 0.25 to
+  exactly 1.00, because the output itself is a linear interpolation between the old and new value. The
+  Germany fact's own retrieval score sits at exactly 1.00 for every value of α — it was never touched.
+</Play>
+
+<WorkedExample>
+  Editing "capital of France" from Paris to Rome, with $k_{\text{France}}=[1,0]$, $v_{\text{Paris}}=[2,1]$,
+  $v_{\text{Rome}}=[0,4]$, and $W = \begin{bmatrix}2 & 0\\1 & 3\end{bmatrix}$:
+
+  <Steps>
+    <Step label="Current output for this key">$Wk_{\text{France}} = [2,1] = v_{\text{Paris}}$, as expected.</Step>
+    <Step label="Residual">$v^* - Wk = [0,4]-[2,1] = [-2,3]$. And $k^\top k = 1$.</Step>
+    <Step label="Rank-1 update">$\Delta W = [-2,3] \otimes [1,0] = \begin{bmatrix}-2 & 0\\3 & 0\end{bmatrix}$.</Step>
+    <Step label="Edited matrix and check">
+      $W' = \begin{bmatrix}0 & 0\\4 & 3\end{bmatrix}$. $W'k_{\text{France}} = [0,4] = v_{\text{Rome}}$ exactly.
+      $W'k_{\text{Germany}} = [0,3] = v_{\text{Berlin}}$, untouched — since $k_{\text{France}}\cdot k_{\text{Germany}}=0$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ModelEditingCheckpoint />
+
+<Summary>
+  $$
+  \Delta W = \frac{(v^* - Wk)\,k^\top}{k^\top k}
+  $$
+
+  One rank-1 update, computed once in closed form, overwrites a single (key, value) fact exactly while
+  leaving every orthogonal key's mapping provably unchanged. ROME edits one fact this way per layer;
+  MEMIT extends the same closed-form idea to update thousands of facts at once by solving for a shared
+  update across many keys simultaneously — the mechanism this chapter traced by hand scales up, it
+  doesn't change in kind.
+</Summary>
