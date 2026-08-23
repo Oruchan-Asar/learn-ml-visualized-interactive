@@ -1,0 +1,96 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  This part built three genuinely different ways to fight overfitting: average many overfit trees, chain weak
+  learners toward the gradient, and vote by similarity in a kernel space. Run all three on the exact same data —
+  and on their own naive settings — who actually wins?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is the same 25-point noisy training set and 24-point clean validation set from the trees chapters,
+  unchanged. Switch models and watch the fitted regions redraw completely, even though nothing about the data
+  did.
+</Intuition>
+
+<Formalize>
+  Every model here answers the same question — where's the boundary at $x=9.5$? — but each one combines
+  evidence its own way:
+
+  $$
+  \hat{y}(x) = \text{majority vote} \quad \text{or} \quad \text{sign}\Big(\textstyle\sum_m h_m(x)\Big) \quad \text{or} \quad \text{sign}\Big(\textstyle\sum_i \text{sign}(y_i)\,e^{-\gamma(x-x_i)^2}\Big)
+  $$
+
+  <Variables>
+    <Variable>**$\hat{y}(x)$** — the model's final predicted label at input $x$.</Variable>
+    <Variable>**$h_m(x)$** — round $m$'s stump prediction, for the boosted ensemble.</Variable>
+    <Variable>**$\gamma$** — the kernel's bandwidth: how quickly similarity falls off with distance.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Random Forest">
+      Twenty bagged, individually-overfit depth-6 trees, majority-voted (Chapter 3).
+    </Step>
+    <Step label="XGBoost-style booster">
+      A squared-loss, Newton-boosted stump ensemble — five rounds, split by the exact gain formula
+      $G_L^2/(H_L+\lambda) + G_R^2/(H_R+\lambda)$ from Chapter 6 — run once with no regularization and once
+      with $\lambda=1$.
+    </Step>
+    <Step label="Kernel SVM (simplified)">
+      Every training point votes with an RBF-kernel-weighted sign, run once with a too-narrow bandwidth
+      ($\gamma=1$) and once tuned ($\gamma=0.1$). A real SVM solves for a *sparse* set of support-vector
+      weights; this keeps the essential mechanism — similarity-weighted, non-linear voting — at toy scale.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The too-narrow kernel SVM ($\gamma=1$) tops the *training* column at 100% — and comes in dead last on
+  validation at 79%. It memorized the training set's five mislabeled points instead of the boundary between
+  them. Random Forest can't out-train it (88%) but comfortably out-generalizes it (92%). Only the two
+  *regularized* configurations — XGBoost with $\lambda=1$, and the kernel tuned to $\gamma=0.1$ — reach a
+  perfect 100% validation, and both do it by explicitly damping how far a single point is allowed to move the
+  decision.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="XGBoost round 1 finds the exact boundary, with clean numbers">
+      Splitting at $x=9.5$: the left 10 points have gradient sum $G_L=6$ and Hessian sum $H_L=10$ (every point's
+      toy Hessian is 1), so at $\lambda=0$: $w_L^* = -6/10 = -0.6$. The right 15 points have $G_R=-9$, $H_R=15$,
+      giving $w_R^* = 9/15 = 0.6$. This split's gain, $6^2/10 + 9^2/15 = 3.6 + 5.4 = 9$, beats every other
+      candidate threshold outright.
+    </Step>
+    <Step label="Regularization pulls both leaf values toward zero">
+      With $\lambda=1$ instead: $w_L^* = -6/11 \approx -0.545$ and $w_R^* = 9/16 = 0.5625$ — both leaves take a
+      smaller step. Small enough, across five rounds, that the ensemble never chases the noise into a wrong
+      answer, landing at 100% validation instead of the unregularized version's 96%.
+    </Step>
+    <Step label="A too-narrow kernel gets fooled by exactly one point">
+      At the clean validation point $x=15.25$ (true label B), $\gamma=1$'s kernel score comes out to
+      $\approx -0.106$ — negative, predicting A — because the single nearby *mislabeled* training point at
+      $x=15$ dominates a kernel that's too narrow to look past its immediate neighbor.
+    </Step>
+    <Step label="Widening the kernel fixes it, the same way weighting by shard size fixed averaging">
+      At $\gamma=0.1$, the same point's score is $\approx 3.05$ — solidly positive, predicting B correctly —
+      because a wider kernel pools evidence from the many genuine B points surrounding that one noisy A, instead
+      of trusting its nearest neighbor alone.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapstoneCheckpoint />
+
+<Summary>
+  The scoreboard's real lesson isn't which mechanism wins — every one of them is capable of reaching the true
+  boundary, and every one of them is also capable of memorizing noise instead. Random Forest fights overfitting
+  by averaging away disagreement, gradient boosting fights it by explicitly regularizing how far each round is
+  allowed to step, and a kernel method fights it by choosing how wide a neighborhood counts as "similar." Three
+  different knobs, one shared failure mode underneath, and the win was never "pick the fancier technique" —
+  it was "use whichever knob this technique gives you correctly." This closes Part V. The next part turns to
+  problems with no labels at all: clustering, dimensionality reduction, and time series.
+</Summary>
