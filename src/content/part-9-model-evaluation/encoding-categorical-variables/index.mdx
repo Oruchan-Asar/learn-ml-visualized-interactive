@@ -1,0 +1,81 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, EncodingCheckpoint } from "./Demos";
+
+<Hook>
+  A model only understands numbers. So what do you do with a column like `city`, whose values are `"NYC"`, `"LA"`, `"SF"` — and why does the most tempting fix quietly hand the model the answer key?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same six rows, same `city` column, three different ways to turn it into numbers. Ordinal encoding just assigns each city an integer. One-hot spreads it into a binary column per city. Naive target encoding replaces each city with the average outcome for that city — watch the lone `SF` row especially closely as you switch to it.
+</Intuition>
+
+<Formalize>
+  Three ways to turn a category into numbers, each with a different failure mode:
+
+  $$
+  \text{ordinal}(c) = \text{index of } c, \qquad \text{target}(c) = \frac{1}{|\{i : c_i = c\}|}\sum_{i \,:\, c_i = c} y_i
+  $$
+
+  <Variables>
+    <Variable>**$c$** — a category value, e.g. `"SF"`.</Variable>
+    <Variable>**index of $c$** — ordinal encoding's arbitrary position for that category in some fixed list.</Variable>
+    <Variable>**$y_i$** — the label of row $i$.</Variable>
+    <Variable>**target$(c)$** — the mean label among rows sharing category $c$; naive target encoding includes the current row in that average, leave-one-out excludes it.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Ordinal encoding invents an ordering">
+      Mapping `LA→0, NYC→1, SF→2` makes `SF` numerically "greater than" `NYC`, which means nothing —
+      a model that uses distance or magnitude will treat that fake ordering as real information.
+    </Step>
+    <Step label="One-hot encoding avoids false order, at the cost of width">
+      Three categories become three binary columns, each independent. No fake ordering, but a
+      column per category — fine for a handful of cities, unworkable for a column with thousands
+      of distinct values.
+    </Step>
+    <Step label="Target encoding is compact, and dangerous by default">
+      Compressing a category down to "the average outcome for rows like this" packs in real signal
+      in one column — but if that average is computed using the row's *own* label, the row is
+      handed a feature derived from the very thing you're trying to predict.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Look at the `SF` row: it's the only row with that city, so naive target encoding's "average outcome for `SF`" is an average of exactly one number — its own label. The encoded value and the true label become the same number. Leave-one-out encoding excludes the current row before averaging, so a singleton category has no other rows left to average — it falls back to the global mean instead of leaking.
+</Play>
+
+<WorkedExample>
+  Six rows: `NYC,1` `LA,0` `NYC,1` `SF,1` `LA,0` `NYC,0` — global mean label $= 3/6 = 0.5$:
+
+  <Steps>
+    <Step label="NYC appears three times: 1, 1, 0">
+      Naive target encoding for every NYC row is the same number, $\tfrac{1+1+0}{3} = 0.667$ — safe, since no
+      single row dominates the average.
+    </Step>
+    <Step label="SF appears exactly once: label 1">
+      Naive target encoding averages that one label with itself: $\tfrac{1}{1} = 1$ — identical to the row's
+      own label. The "feature" is the answer, restated.
+    </Step>
+    <Step label="Leave-one-out catches it">
+      For the SF row, leave-one-out excludes the row itself — and there are no *other* SF rows to average, so
+      it falls back to the global mean, $0.5$. For an NYC row, e.g. the one labeled $0$, leave-one-out averages
+      the *other two* NYC labels ($1, 1$), giving $1.0$ — a real average of other rows, not a copy of its own
+      answer.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<EncodingCheckpoint />
+
+<Summary>
+  $$
+  \text{target}_{\text{naive}}(c_i) \ \text{includes } y_i \implies \text{leakage, worst for rare categories}
+  $$
+
+  One-hot and ordinal encoding never see the label at all, so they can't leak it — their tradeoff is width versus false ordering. Target encoding is the one that touches $y$ directly, which makes it powerful and risky in the same breath: the fix isn't to avoid it, it's to always exclude each row's own label from its own encoding, exactly the way cross-validation excludes each fold from its own evaluation. Encoded or not, not every column deserves to be in the model at all — the next chapter turns to deciding which features earn their place.
+</Summary>
