@@ -1,0 +1,88 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ModernBoostersCheckpoint } from "./Demos";
+
+<Hook>
+  Plain gradient boosting sets each leaf to the mean of its residuals — free, unregularized, first-order. What
+  changes if the leaf value comes from an actual optimization instead of a shortcut?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The faint curve is last chapter's plain GBM fit. Drag $\lambda$ up and watch the bold curve pull back toward
+  round 1's fit — regularization is literally the ensemble refusing to fully trust round 2's correction.
+</Intuition>
+
+<Formalize>
+  XGBoost and LightGBM both replace "leaf value = mean of residuals" with a **second-order (Newton) step** on
+  the loss, using each point's gradient *and* its curvature (Hessian):
+
+  $$
+  w^*_{\text{leaf}} = -\frac{G}{H + \lambda}, \qquad G = \sum_{i \in \text{leaf}} g_i, \quad H = \sum_{i \in \text{leaf}} h_i
+  $$
+
+  <Variables>
+    <Variable>**$w^*_{\text{leaf}}$** — the leaf's optimal prediction, replacing "mean of residuals."</Variable>
+    <Variable>**$g_i$** — point $i$'s gradient of the loss with respect to the current prediction; for squared error, $g_i = F(x_i) - y_i$.</Variable>
+    <Variable>**$h_i$** — point $i$'s Hessian (second derivative) of the loss — how sharply the loss curves at the current prediction.</Variable>
+    <Variable>**$\lambda$** — an L2 regularization strength penalizing large leaf values directly.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Squared error's Hessian is a constant, which is why GBM could skip it">
+      For squared-error loss, $h_i = 1$ for every point, always. At $\lambda = 0$ that makes $w^* = -G/H = -\big(\sum g_i\big)/n = $
+      mean of residuals — exactly plain gradient boosting's leaf value. Newton boosting doesn't replace GBM here; it generalizes it.
+    </Step>
+    <Step label="Regularization shrinks every leaf toward zero, not just the extreme ones">
+      Increasing $\lambda$ grows the denominator for every leaf, pulling $w^*$ toward 0 regardless of how large
+      $G$ is — a direct brake on how far any single leaf is allowed to move the prediction.
+    </Step>
+    <Step label="Histogram binning speeds up finding the split, without changing what's optimized">
+      LightGBM (and XGBoost's histogram mode) bucket each feature into a fixed number of bins before searching
+      for the best split, trading a small amount of split precision for a search that's proportional to the
+      number of bins instead of the number of distinct values — the leaf-value formula above is unaffected.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Both $\lambda$ and a toy per-point Hessian are live. Raising either one shrinks the leaf values — a real
+  curvature signal and an artificial regularization penalty end up looking identical in the formula, which is
+  exactly the point: $H$ and $\lambda$ enter the denominator the same way.
+</Play>
+
+<WorkedExample>
+  Reusing last chapter's round 2 exactly: splitting at $x = 4.5$ gives a left leaf of 4 points with gradients
+  $g = [0.5, -0.5, 2, 1]$ and a right leaf of 1 point with $g = -3$.
+
+  <Steps>
+    <Step label="Left leaf: G = 3, H = 4 (at hessian=1)">
+      $G = 0.5 - 0.5 + 2 + 1 = 3$. With $\lambda = 0$: $w^* = -3/4 = -0.75$ — identical to plain GBM's leaf value.
+    </Step>
+    <Step label="Add regularization: lambda = 1">
+      $w^* = -3/(4+1) = -0.6$ — a smaller step than before, exactly as $\lambda$ is supposed to do.
+    </Step>
+    <Step label="Add curvature: toy Hessian = 2 per point">
+      Now $H = 4 \times 2 = 8$. At $\lambda=0$: $w^* = -3/8 = -0.375$. At $\lambda=1$: $w^* = -3/9 = -1/3$.
+    </Step>
+    <Step label="The right leaf shrinks the same way">
+      $G = -3$, $H = 1 \times h$. At $h=1,\lambda=0$: $w^*=3$ (matches GBM). At $h=1,\lambda=1$: $w^*=1.5$. At
+      $h=2,\lambda=1$: $w^*=1$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ModernBoostersCheckpoint />
+
+<Summary>
+  $$
+  w^*_{\text{leaf}} = -\frac{G}{H + \lambda}
+  $$
+
+  Plain gradient boosting's "fit the mean of the residuals" was never a separate idea from this — it's the
+  special case where $H$ is always 1 and $\lambda$ is 0. Making the Hessian and the regularizer explicit is
+  what lets a modern booster take a smaller, more careful step exactly where the loss is curving sharply or a
+  leaf is trying to move too far, instead of taking the same size step everywhere.
+</Summary>
