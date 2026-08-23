@@ -9,7 +9,7 @@ import { recordCheckpointAttempt } from "@/lib/mastery/store";
 import { useCheckpointPassed } from "@/lib/mastery/useCheckpointPassed";
 import styles from "../gradient-descent-variants/DescentControls.module.css";
 
-const CONCEPT_ID = "ensembles-boosting";
+const CONCEPT_ID = "ensembles-boosting-and-adaboost";
 const TOLERANCE = 0.01;
 const BEST_ACCURACY = ensembleAccuracy(BOOST_ROUNDS, MAX_BOOST_ROUNDS, BOOST_POINTS);
 

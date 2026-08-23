@@ -12,7 +12,7 @@ import { IntuitionDemo, PlayDemo, BoostingCheckpoint } from "./Demos";
 </Intuition>
 
 <Formalize>
-  This is **boosting** (specifically **AdaBoost** — short for **Adaptive Boosting**). Each round trains one weak learner — here, the exact single-split "stump" from Chapter 7, but scored by weighted error instead of information gain — then reweights the data before the next round:
+  This is **boosting** (specifically **AdaBoost** — short for **Adaptive Boosting**). Each round trains one weak learner — here, the exact single-split "stump" from Chapter 1 of this part, but scored by weighted error instead of information gain — then reweights the data before the next round:
 
   $$
   \alpha_t = \frac{1}{2}\ln\frac{1-\epsilon_t}{\epsilon_t}, \qquad w_i \leftarrow w_i \, e^{-\alpha_t \, y_i \, h_t(x_i)}
