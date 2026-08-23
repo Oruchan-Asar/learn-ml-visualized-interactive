@@ -1,0 +1,74 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, InterleavedGenerationCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 5 turned an image into tokens shaped exactly like text tokens. But a captioning pipeline and an image-generating pipeline are usually two separate systems handed off to each other. What if one single model just generated words and image tokens back to back, in one stream, deciding at every step which kind comes next?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through generation one token at a time. The sequence starts as ordinary words — "a," "photo," "of" — then, with no special mode switch, starts producing image-patch tokens instead. After all four patches appear, it drops right back into words: "on," "the," "mat." One stream, one mechanism, the whole way through.
+</Intuition>
+
+<Formalize>
+  Every step, text or image, runs through the identical decision rule — Part IV's softmax, over whatever candidates happen to be on the table this step:
+
+  $$
+  w_i = \text{softmax}(\ell)_i, \qquad \text{next} = \underset{i}{\arg\max}\; w_i
+  $$
+
+  <Variables>
+    <Variable>**$\ell$** — this step's candidate logits, one number per candidate token.</Variable>
+    <Variable>**$w_i$** — the softmax weight on candidate $i$, after normalizing the logits into a distribution.</Variable>
+    <Variable>**$\text{next}$** — the token actually emitted: whichever candidate has the highest weight.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="The candidates can be anything">
+      A step's candidate set might be all words, all image tokens, or — as at the handoff points — a mix of
+      both.
+    </Step>
+    <Step label="Softmax and argmax don't know or care">
+      The formula never looks at whether a candidate is a word or a patch; it only looks at its logit.
+    </Step>
+    <Step label="Interleaving falls out for free">
+      If an image-token candidate happens to have the highest logit at some step, it gets emitted — right in
+      the middle of a sentence, with no separate "switch to image mode" instruction anywhere.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Step forward past the third word. Watch the bar chart: the winning bar is always dramatically taller than the other two, whether the winner is a word or an image token — softmax doesn't get any less confident just because this candidate happens to be a patch. Once an image token wins, its embedding is printed too: the *exact same numbers* Chapter 5's projector produced for that patch, carried into this sequence unchanged.
+</Play>
+
+<WorkedExample>
+  Step 4, right at the text-to-image handoff. Candidates: "top-left" (image, patch 0) with logit $2$, "of" with logit $-1$, "the" with logit $-1$:
+
+  <Steps>
+    <Step label="Exponentiate each logit">
+      $e^{2}\approx 7.389$, $e^{-1}\approx 0.368$, $e^{-1}\approx 0.368$.
+    </Step>
+    <Step label="Normalize into weights">
+      Sum $\approx 8.125$, giving weights $\approx 0.909$, $0.045$, $0.045$ — "top-left" wins by a wide
+      margin, the same kind of margin every earlier all-text step also produced.
+    </Step>
+    <Step label="Emit and carry the embedding forward">
+      The emitted token is the image patch "top-left," carrying embedding $(3, 7)$ — Chapter 5's own number
+      for that exact patch, now just the fourth entry in this sequence.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<InterleavedGenerationCheckpoint />
+
+<Summary>
+  $$
+  w_i = \text{softmax}(\ell)_i, \qquad \text{next} = \underset{i}{\arg\max}\; w_i
+  $$
+
+  Interleaved generation isn't a new mechanism — it's the ordinary next-token decision rule, applied to a vocabulary that happens to mix words and image-patch tokens together. Nothing branches on modality; a caption can turn into an embedded picture and back into a caption using the exact same softmax-and-argmax step every time. The next chapter brings a third modality, audio, into this same picture.
+</Summary>
