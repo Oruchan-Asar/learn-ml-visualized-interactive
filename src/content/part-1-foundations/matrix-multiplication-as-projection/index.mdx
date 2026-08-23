@@ -1,0 +1,84 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ProjectionCheckpoint } from "./Demos";
+
+<Hook>
+  $Ax = b$ has no guarantee of a solution — $A$ can only ever produce outputs inside its **column
+  space**, and $b$ might simply live outside it. So what does "solving" $Ax=b$ even mean when an exact
+  solution doesn't exist?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Here $A$'s column space has collapsed to a single line (drawn through $a$). Drag $b$ anywhere on the
+  plane and watch $p$ — the closest point on that line to $b$ — barely budge in comparison. $p$ is the
+  best $Ax$ can ever do.
+</Intuition>
+
+<Formalize>
+  The projection of $b$ onto the line spanned by $a$ is the point $p=ta$ that's closest to $b$, found by
+  requiring the leftover piece to be perpendicular to $a$:
+
+  $$
+  p = \frac{a \cdot b}{a \cdot a}\, a
+  $$
+
+  <Variables>
+    <Variable>**$a$** — the vector spanning the column space (here, a single column, so the column space is a line).</Variable>
+    <Variable>**$b$** — the target vector being projected.</Variable>
+    <Variable>**$p$** — the projection: the closest point on the line to $b$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Where this scalar comes from">
+      Writing $p=ta$ and demanding $a\cdot(b-p)=0$ (the residual is perpendicular to the line) gives
+      $a\cdot b - t(a\cdot a)=0$, which solves directly to $t=(a\cdot b)/(a\cdot a)$.
+    </Step>
+    <Step label="This is exactly what Ax=b means geometrically">
+      When $A$ has one column $a$, solving $Ax=b$ means finding a scalar $x$ with $xa=b$ — possible only
+      when $b$ already lies on the line. $p$ is the nearest point on that line when it doesn't.
+    </Step>
+    <Step label="The residual is never part of the column space">
+      $b - p$ is perpendicular to $a$ by construction, so it has zero component along the only direction
+      $A$ can reach — it's the part of $b$ that gets permanently left behind.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Toggle between a $b$ that sits off the line (no exact solution — $p$ is a genuine approximation) and a
+  $b$ that sits exactly on it (an exact solution exists, and $p=b$).
+</Play>
+
+<WorkedExample>
+  For $a=(2,1)$ and $b=(3,4)$:
+
+  <Steps>
+    <Step label="Compute the scalar">
+      $a\cdot b = 2(3)+1(4)=10$, and $a\cdot a = 4+1=5$, so $t = 10/5 = 2$.
+    </Step>
+    <Step label="Compute the projection">
+      $p = 2(2,1) = (4,2)$ — the closest point on the line through $a$ to $b$.
+    </Step>
+    <Step label="Verify the residual is perpendicular to a">
+      $b-p = (3,4)-(4,2) = (-1,2)$. Check: $a\cdot(b-p) = 2(-1)+1(2) = -2+2 = 0$ — exactly perpendicular,
+      confirming $p$ really is the closest point.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ProjectionCheckpoint />
+
+<Summary>
+  $$
+  p = \frac{a \cdot b}{a \cdot a}\, a
+  $$
+
+  Every matrix's column space is some subspace of its output space — sometimes the whole space,
+  sometimes (as here) a lower-dimensional slice of it. $Ax=b$ only has an exact solution when $b$
+  happens to fall inside that subspace; otherwise the best you can do is project $b$ onto it. This
+  exact mechanism — minimize the perpendicular residual — is what least-squares regression solves in
+  full generality, just with a column space spanned by many columns instead of one.
+</Summary>
