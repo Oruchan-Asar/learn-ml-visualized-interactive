@@ -3,8 +3,8 @@ import { CURRICULUM, getChapterMeta, getChapterNeighbors } from "@/lib/curriculu
 import { ABBREVIATIONS } from "@/lib/abbreviations";
 
 describe("Curriculum Master Structure", () => {
-  it("contains exactly 229 chapters", () => {
-    expect(CURRICULUM.length).toBe(229);
+  it("contains exactly 234 chapters", () => {
+    expect(CURRICULUM.length).toBe(234);
   });
 
   it("spans exactly 23 unique parts", () => {
@@ -14,15 +14,17 @@ describe("Curriculum Master Structure", () => {
 
   it("has strictly unique slugs for every chapter", () => {
     const slugs = new Set(CURRICULUM.map((c) => c.slug));
-    expect(slugs.size).toBe(229);
+    expect(slugs.size).toBe(234);
   });
 
-  it("contains exactly 23 capstone chapters, covering 22 of the 23 parts", () => {
+  it("contains exactly 28 capstone chapters, covering 22 of the 23 parts", () => {
     // Part XXI (Explainable AI) has two capstones — one per original pre-reorg XAI part it merged —
-    // and Part XXIII (Modern Architectures, Generative Models & LLM Engineering) has none, so this
-    // isn't a strict one-per-part invariant like it used to be.
+    // Parts IV, VI, X, XV, and XVII each picked up a second capstone reviving orphaned pre-reorg
+    // content that didn't overlap with what was already built there — and Part XXIII (Modern
+    // Architectures, Generative Models & LLM Engineering) has none, so this isn't a strict
+    // one-per-part invariant like it used to be.
     const capstones = CURRICULUM.filter((c) => c.capstone);
-    expect(capstones.length).toBe(23);
+    expect(capstones.length).toBe(28);
 
     const partsWithCapstone = new Set(capstones.map((c) => c.part));
     expect(partsWithCapstone.size).toBe(22);
@@ -46,7 +48,7 @@ describe("Curriculum Master Structure", () => {
     expect(first.next?.slug).toBe("the-gradient-in-multiple-dimensions");
 
     const last = getChapterNeighbors("experiment-tracking-and-reproducibility");
-    expect(last.index).toBe(228);
+    expect(last.index).toBe(233);
     expect(last.next).toBeNull();
     expect(last.prev?.slug).toBe("scaling-laws");
   });

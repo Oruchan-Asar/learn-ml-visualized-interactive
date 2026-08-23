@@ -8,7 +8,7 @@ export interface ChapterMeta {
 }
 
 /**
- * The full 23-Part, 229-Chapter Zero-to-Hero AI & Machine Learning Curriculum.
+ * The full 23-Part, 234-Chapter Zero-to-Hero AI & Machine Learning Curriculum.
  * Single source of truth for the home page, search, chapter headers, and navigation.
  */
 export const CURRICULUM: ChapterMeta[] = [
@@ -318,6 +318,14 @@ export const CURRICULUM: ChapterMeta[] = [
     blurb: "Construct and regularize a multi-class probabilistic linear classifier.",
     capstone: true,
   },
+  {
+    slug: "capstone-classifier-pipeline",
+    part: "Part IV — Supervised Learning: Regression & Linear Classifiers",
+    chapterNumber: 12,
+    title: "Build and compare a full classifier pipeline",
+    blurb: "Same dataset, several models from this part, one scoreboard.",
+    capstone: true,
+  },
 
   // ---------- Part V — Non-Linear Models, Trees, Ensembles & Kernel Methods ----------
   {
@@ -462,6 +470,14 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "Build a customer segmentation & recommendation engine",
     blurb: "Unify UMAP, HDBSCAN, and collaborative filtering into a complete pipeline.",
+    capstone: true,
+  },
+  {
+    slug: "capstone-classical-ml-grab-bag",
+    part: "Part VI — Unsupervised Learning, Clustering, Dimensionality & Time Series",
+    chapterNumber: 11,
+    title: "Pick the right classical tool",
+    blurb: "Same messy dataset, run through kNN, Naive Bayes, and DBSCAN — see which one actually fits its shape.",
     capstone: true,
   },
 
@@ -758,6 +774,14 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "Train a CNN and inspect its learned feature filters",
     blurb: "Train a CNN live in the browser and visualize convolutional kernel activations.",
+    capstone: true,
+  },
+  {
+    slug: "capstone-fine-tune-a-pretrained-model",
+    part: "Part X — Computer Vision: CNNs, ResNets, Object Detection & Segmentation",
+    chapterNumber: 11,
+    title: "Fine-tune a small pretrained model",
+    blurb: "Take a network that already works, and specialize it to a new task in a fraction of the steps.",
     capstone: true,
   },
 
@@ -1115,6 +1139,14 @@ export const CURRICULUM: ChapterMeta[] = [
     blurb: "Combine visual embeddings, dense retrieval, and a VLM into a working assistant.",
     capstone: true,
   },
+  {
+    slug: "capstone-multimodal-assistant",
+    part: "Part XV — Multimodal Foundation Models: CLIP, Cross-Attention & VLMs",
+    chapterNumber: 11,
+    title: "Assemble a tiny multimodal assistant",
+    blurb: "Audio in, retrieval in the middle, an image out — every modality from this course, in one pipeline.",
+    capstone: true,
+  },
 
   // =========================================================================
   // PHASE 5: REINFORCEMENT LEARNING, POST-TRAINING & REASONING
@@ -1263,6 +1295,14 @@ export const CURRICULUM: ChapterMeta[] = [
     chapterNumber: 10,
     title: "Train a reasoning model using GRPO & verifiable rewards",
     blurb: "Train a compact model to produce verifiable step-by-step mathematical reasoning.",
+    capstone: true,
+  },
+  {
+    slug: "capstone-ship-a-tiny-assistant",
+    part: "Part XVII — LLM Post-Training: SFT, DPO, GRPO & Reasoning / Test-Time Compute",
+    chapterNumber: 11,
+    title: "Ship a tiny fine-tuned assistant",
+    blurb: "LoRA, a system prompt, and a KV-cache — the whole gap between a capstone and a product.",
     capstone: true,
   },
 
