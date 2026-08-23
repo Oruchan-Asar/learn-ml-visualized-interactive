@@ -1,0 +1,95 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, TaylorCheckpoint } from "./Demos";
+
+<Hook>
+  A tangent line matches a curve's value and slope at one point — and nowhere else. How much of the *actual*
+  curve can you recover just by adding more information at that same single point?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The dashed curve is $f(x)=x^3$. The solid line is its tangent at $x_0$ — drag the slider and watch the line
+  pivot, matching the curve closely right at $x_0$ but drifting away fast on either side.
+</Intuition>
+
+<Formalize>
+  A **Taylor series** keeps adding derivative terms at $x_0$ to build a better local approximation:
+
+  $$
+  f(x) \approx f(x_0) + f'(x_0)(x-x_0) + \frac{f''(x_0)}{2}(x-x_0)^2 + \cdots
+  $$
+
+  <Variables>
+    <Variable>**$x_0$** — the point the approximation is built around (the point of expansion).</Variable>
+    <Variable>**$f(x_0)$** — the function's actual value at $x_0$; the zeroth-order term.</Variable>
+    <Variable>**$f'(x_0)(x-x_0)$** — the first-order (linear) term: the tangent line's contribution.</Variable>
+    <Variable>**$\dfrac{f''(x_0)}{2}(x-x_0)^2$** — the second-order (quadratic) term: adds curvature.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Truncating after one term is the tangent line">
+      Stopping after the linear term recovers exactly the tangent-line approximation from Chapter 1 — same
+      formula, new name.
+    </Step>
+    <Step label="Adding the quadratic term adds curvature">
+      The quadratic term is the first one that can bend — it uses $f''(x_0)$ to curve the approximation the
+      same way the true function curves near $x_0$.
+    </Step>
+    <Step label="Every term after that keeps closing the gap">
+      Each additional term corrects more of what the previous ones missed; for a well-behaved function, the
+      approximation converges to $f(x)$ itself as more terms are added.
+    </Step>
+    <Step label="It only works locally">
+      All of this accuracy is local — no matter how many terms you add, expect the approximation to get worse
+      the farther $x$ strays from $x_0$.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Move $x_0$ and the evaluation point independently. Near $x_0$, both approximations track the curve almost
+  perfectly; the quadratic one keeps tracking noticeably farther out, because it bends with the curve instead
+  of running straight through it.
+</Play>
+
+<WorkedExample>
+  Expand $f(x)=x^3$ around $x_0=1$ and evaluate at $x=1.5$:
+
+  <Steps>
+    <Step label="Compute the ingredients at x0=1">
+      $$
+      f(1)=1,\qquad f'(1)=3(1)^2=3,\qquad f''(1)=6(1)=6
+      $$
+    </Step>
+    <Step label="Build the linear approximation">
+      $$
+      L(1.5) = 1 + 3(0.5) = 2.5
+      $$
+    </Step>
+    <Step label="Build the quadratic approximation">
+      $$
+      Q(1.5) = 1 + 3(0.5) + \frac{6}{2}(0.5)^2 = 1 + 1.5 + 0.75 = 3.25
+      $$
+    </Step>
+    <Step label="Compare against the true value">
+      $f(1.5)=3.375$. The linear approximation misses by $0.875$; the quadratic one misses by only $0.125$ —
+      seven times closer, from one extra term.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<TaylorCheckpoint />
+
+<Summary>
+  $$
+  f(x) \approx f(x_0) + f'(x_0)(x-x_0) + \frac{f''(x_0)}{2}(x-x_0)^2
+  $$
+
+  Every "linear approximation" and "quadratic approximation" you'll meet later — a linearized loss landscape,
+  a locally-quadratic optimizer step — is exactly this truncated Taylor series, keeping just enough terms to
+  be cheap while still capturing the curvature that matters nearby. The next chapter picks the second-order
+  term back up and asks what curvature means for an entire multivariable landscape at once.
+</Summary>
