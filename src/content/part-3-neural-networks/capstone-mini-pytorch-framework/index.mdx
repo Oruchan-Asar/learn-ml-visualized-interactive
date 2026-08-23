@@ -1,0 +1,93 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  This part built every piece of a deep learning framework separately: a Tensor's forward pass through
+  layers, a loss function, backprop computing every gradient, and last chapter's Adam turning gradients
+  into steps. A real framework just wires those pieces into one loop. Does wiring them to a slightly
+  smarter optimizer change how fast the same XOR network — the one a single perceptron couldn't touch —
+  actually learns?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same XOR points from Chapter 2, same tiny network shape: 2 inputs, 4 hidden neurons, 1 output. Click
+  train and watch the shaded decision region fold around the two "on" corners — except this time the
+  optimizer behind every step is **AdamW**, not plain gradient descent.
+</Intuition>
+
+<Formalize>
+  **AdamW** is Adam plus one change: weight decay applied directly to the parameter, decoupled from the
+  gradient-based moment estimates.
+
+  $$
+  \hat m = \frac{m}{1-\beta_1^t}, \qquad \hat v = \frac{v}{1-\beta_2^t}, \qquad \theta \leftarrow \theta - \eta\left(\frac{\hat m}{\sqrt{\hat v}+\epsilon} + \lambda\theta\right)
+  $$
+
+  <Variables>
+    <Variable>**$\hat m, \hat v$** — Chapter 9's bias-corrected running averages of the gradient and its square.</Variable>
+    <Variable>**$\theta$** — the parameter being updated: any single weight or bias in the network's Tensor.</Variable>
+    <Variable>**$\eta$** — the learning rate.</Variable>
+    <Variable>**$\lambda$** — the weight decay coefficient, shrinking every parameter a little on every step.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Everything except one term is Adam, unchanged">
+      $\hat m/(\sqrt{\hat v}+\epsilon)$ is exactly Chapter 9's Adam update — nothing new there.
+    </Step>
+    <Step label="The new piece: decoupled weight decay">
+      $\lambda\theta$ is added straight onto the update, applied to the raw parameter — not folded into the
+      gradient the way plain L2 regularization would be. That decoupling is the "W" in AdamW.
+    </Step>
+    <Step label="One update rule, every parameter in the network">
+      The same formula runs once per weight and bias — 17 parameters total in this tiny network, billions in a
+      real one — each keeping its own $m$, $v$, and $t$, all driven by the one gradient backprop computed for it.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the four individual outputs. AdamW's adaptive step size means the two that need to climb toward $1$
+  and the two that need to fall toward $0$ move faster and more evenly than plain gradient descent managed on
+  this exact same network in Chapter 2 — the per-parameter scaling matters even on a network this small.
+</Play>
+
+<WorkedExample>
+  From this network's fixed random start, before any training:
+
+  <Steps>
+    <Step label="Pick one parameter: the weight from hidden neuron 1 to the output">
+      $\theta = 0.166168$. A full backward pass through all four XOR points gives its gradient:
+      $g = -0.012081$.
+    </Step>
+    <Step label="At the very first step, the moving averages start from zero">
+      $t=1$, so $\hat m = m/(1-\beta_1) = g$ exactly, and $\hat v = v/(1-\beta_2) = g^2$ exactly — the bias
+      correction perfectly cancels the very first $(1-\beta)$ factor on both averages.
+    </Step>
+    <Step label="That collapses the ratio to just the gradient's sign">
+      $\hat m/\sqrt{\hat v} = g/|g| = -1$ — same "first step ignores magnitude" behavior Chapter 9 found for
+      RMSProp and Adam.
+    </Step>
+    <Step label="Add the weight decay term and take the step">
+      With $\eta=0.1$ and $\lambda=0.01$: update $= 0.1\,(-1 + 0.01\times0.166168) \approx -0.099834$, so
+      $\theta \leftarrow 0.166168 - (-0.099834) = 0.266002$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapstoneCheckpoint />
+
+<Summary>
+  $$
+  \theta \leftarrow \theta - \eta\left(\frac{\hat m}{\sqrt{\hat v}+\epsilon} + \lambda\theta\right)
+  $$
+
+  Forward pass, loss, backprop, and an optimizer step, run in a loop until the loss is small enough — that's
+  every framework's training loop, from this four-line XOR network to a model with billions of parameters.
+  Swapping AdamW in for plain gradient descent didn't change any of the pieces this part built by hand; it
+  only changed how the last piece, the update rule, turns a gradient into a step. Part IV starts asking what
+  happens when the *pieces themselves* get more specialized, starting with images.
+</Summary>
