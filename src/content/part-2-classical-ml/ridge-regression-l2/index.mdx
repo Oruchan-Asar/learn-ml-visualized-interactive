@@ -1,0 +1,93 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RidgeCheckpoint } from "./Demos";
+
+<Hook>
+  Two predictors that move together almost perfectly — a company's revenue in dollars and in thousands
+  of dollars, say — shouldn't confuse a model. But ordinary least squares can hand one of them a huge
+  positive weight and the other a huge negative one, and still call it the "best" fit. What's going on,
+  and how do you stop it?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  These two predictors are correlated at nearly 0.998 — practically the same signal, twice. At λ=0, watch
+  the fitted weights: one strongly positive, one strongly negative, even though both features move with
+  the target in the same direction. Push λ up and watch that flip resolve into two ordinary, positive
+  weights instead.
+</Intuition>
+
+<Formalize>
+  Ridge regression adds a penalty on the size of the weights themselves to the squared-error loss being minimized:
+
+  $$
+  \text{SSE}(\mathbf{w}) + \lambda \sum_j w_j^2
+  $$
+
+  <Variables>
+    <Variable>**SSE($\mathbf{w}$)** — the sum of squared errors of the fit, same as ordinary least squares.</Variable>
+    <Variable>**$\lambda$** — the penalty strength. $\lambda=0$ recovers plain OLS; larger $\lambda$ shrinks weights harder.</Variable>
+    <Variable>**$w_j$** — the model's $j$-th weight (the intercept, if there is one, is conventionally left unpenalized).</Variable>
+  </Variables>
+
+  Minimizing this is still a quadratic problem, so it still has a closed form — just with $\lambda$ added to
+  the diagonal of the normal equations: $(\mathbf{X}^\top\mathbf{X} + \lambda I)\mathbf{w} = \mathbf{X}^\top\mathbf{y}$.
+
+  <Steps>
+    <Step label="Collinearity makes X^TX nearly singular">
+      When two predictors are highly correlated, $\mathbf{X}^\top\mathbf{X}$ is close to singular — its
+      inverse blows up, and tiny changes in the data produce wildly different "optimal" weights.
+    </Step>
+    <Step label="Adding λ to the diagonal fixes that directly">
+      Adding $\lambda$ to every diagonal entry pulls $\mathbf{X}^\top\mathbf{X} + \lambda I$ away from
+      singular, however close the raw predictors are to collinear — the matrix stays invertible and the
+      solution stays finite and stable.
+    </Step>
+    <Step label="With correlated predictors, ridge splits credit evenly">
+      Ridge has no way to prefer one of two near-identical predictors over the other — its penalty treats
+      them symmetrically — so as $\lambda$ grows it pushes their weights toward being *equal*, sharing the
+      job between them instead of letting one dominate.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the sum of squared errors (SSE) as you move λ: it barely changes, even while the two weights swing
+  from wildly different to nearly identical. Near-perfect collinearity means many different weight
+  combinations fit the data almost equally well — OLS just happens to land on an unstable one.
+</Play>
+
+<WorkedExample>
+  Two predictors, $x_1 = [1,2,3,4]$ and $x_2 = [1,2,3,4.5]$ — correlated at $\approx 0.998$ — fit to
+  $y=[2,4,7,8]$ with no intercept.
+
+  <Steps>
+    <Step label="Unregularized: an unstable, sign-flipped fit">
+      Solving the plain normal equations gives $w_1 \approx 3.929$, $w_2 \approx -1.714$. Both predictors
+      rise together, yet one gets a strongly negative weight — a symptom of collinearity, not a real
+      pattern in the data.
+    </Step>
+    <Step label="A modest penalty (λ = 1) already fixes the sign">
+      $(\mathbf{X}^\top\mathbf{X} + 1 \cdot I)\mathbf{w} = \mathbf{X}^\top\mathbf{y}$ solves to
+      $w_1 \approx 1.116$, $w_2 \approx 0.887$ — both positive, and much closer together.
+    </Step>
+    <Step label="A strong penalty (λ = 5) makes them nearly equal">
+      At $\lambda=5$: $w_1 \approx 0.940$, $w_2 \approx 0.941$ — ridge has split the credit between the two
+      near-identical predictors almost exactly evenly, exactly as the theory predicts.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RidgeCheckpoint />
+
+<Summary>
+  $$
+  \text{SSE}(\mathbf{w}) + \lambda \sum_j w_j^2, \qquad (\mathbf{X}^\top\mathbf{X}+\lambda I)\mathbf{w} = \mathbf{X}^\top \mathbf{y}
+  $$
+
+  Ridge regression's job is stability, not sparsity: by adding $\lambda$ to the diagonal of the normal
+  equations, it keeps a near-singular system invertible and turns wildly unstable, sign-flipped weights
+  into a sane, shared split of credit among correlated predictors.
+</Summary>
