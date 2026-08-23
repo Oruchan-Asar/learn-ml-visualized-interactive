@@ -1,0 +1,70 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DerivativeCheckpoint } from "./Demos";
+
+<Hook>
+  You're standing on a curve and can only feel the ground right under your feet — no view of the whole shape. Which way is downhill?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the point along the curve. The dashed line is its tangent — tilt down to the right means the curve is falling there; tilt up means it's rising.
+</Intuition>
+
+<Formalize>
+  That tilt has a name: the **derivative**. It's the instantaneous rate of change of $f$ at the point $x$ —
+
+  $$
+  \frac{df}{dx}
+  $$
+
+  <Variables>
+    <Variable>**$df/dx$** — the derivative of $f$ at the point $x$: how fast $f$ changes as $x$ nudges slightly.</Variable>
+    <Variable>**$f(x)$** — the function whose steepness we're measuring.</Variable>
+    <Variable>**$x$** — the point along the curve where the derivative is evaluated.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Differentiate this specific curve">
+      For the curve above, $f(x) = x^2 - 4x + 5$. Differentiating term by term gives:
+
+      $$
+      \frac{df}{dx} = 2x - 4
+      $$
+    </Step>
+    <Step label="Read the sign">
+      Its sign tells you the direction: positive means the curve rises as $x$ grows, negative means it falls, and zero means you've hit a flat spot.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag again — now watch the formula's value track the tangent line exactly. The derivative is the tangent's slope, nothing more.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Evaluate the derivative at x = 5">
+      $$
+      f'(5) = 2(5) - 4 = 6
+      $$
+    </Step>
+    <Step label="Read the sign">
+      Positive, so the curve is rising there — to decrease $f$, move in the negative $x$ direction. This one fact —
+      "the derivative points toward increase, so step against it" — is the entire idea behind gradient descent,
+      several chapters from now.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DerivativeCheckpoint />
+
+<Summary>
+  $$
+  \frac{df}{dx}
+  $$
+
+  The derivative is the slope of the tangent line at a point: it points in the direction the function increases fastest, and it's exactly zero at a flat spot like a minimum. The next chapter generalizes this same idea to functions of several variables at once — the **gradient**.
+</Summary>
