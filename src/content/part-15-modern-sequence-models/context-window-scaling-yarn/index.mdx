@@ -1,0 +1,93 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, YarnCheckpoint } from "./Demos";
+
+<Hook>
+  A model trained on sequences up to length 8 gets handed a prompt of length 64. Every RoPE rotation angle
+  past position 8 is one it has never seen produced during training. Retraining on longer sequences fixes
+  it, but that's expensive — is there a way to reuse the same weights and just reinterpret the positions?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Push the scaling factor up and watch two numbers: the fast dimension's effective position never budges,
+  but the slow dimension's collapses back down toward the trained range. The two frequencies aren't treated
+  the same way at all — and that asymmetry is the entire idea.
+</Intuition>
+
+<Formalize>
+  YaRN checks each RoPE frequency's *wavelength* — how many positions it takes to complete one full
+  rotation — against the length the model was actually trained on, and only rescales the ones that need it:
+
+  $$
+  \text{pos}_{\text{eff}}(pos, i) = \begin{cases} pos / s & \text{wavelength}(i) > L \\ pos & \text{otherwise} \end{cases}
+  $$
+
+  <Variables>
+    <Variable>**$pos$** — the token's true position in the (extended) sequence.</Variable>
+    <Variable>**$i$** — which frequency this is; $\text{wavelength}(i) = 2\pi / \text{rate}(i)$.</Variable>
+    <Variable>**$L$** — the original trained context length.</Variable>
+    <Variable>**$s$** — the scaling factor: how many times longer the new context is meant to be.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="A fast dimension has already lapped the trained range many times">
+      If its wavelength is shorter than $L$, it completed full rotations *inside* training. One more turn
+      past $L$ looks, geometrically, exactly like turns it already learned from — safe to extrapolate as-is.
+    </Step>
+    <Step label="A slow dimension never even finished one turn during training">
+      Its wavelength exceeds $L$, so every angle past $L$ is new territory. Dividing its position by $s$
+      before rotating maps the *extended* range of positions back down into the angles the model actually
+      trained on.
+    </Step>
+    <Step label="Real YaRN ramps smoothly between the two, this demo snaps">
+      Production YaRN blends interpolation and extrapolation across a band of intermediate wavelengths so
+      there's no hard seam. With only two frequencies here, the boundary is exact and hand-checkable — the
+      idea is identical either way.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The dashed line is the fast dimension: flat, because it's never rescaled. The bold curve is the slow
+  dimension's effective position at position 64 as the scaling factor slides from 1x (no rescaling — the
+  raw, unsafe extrapolation) to 8x. By 8x it lands exactly on 8 — the length the model actually trained on.
+</Play>
+
+<WorkedExample>
+  Trained context $L=8$; extended position $pos=64$ (an 8x-longer sequence); fast rate $=1$, slow rate
+  $=0.01$ (so wavelengths $2\pi\approx6.28 < 8$ and $200\pi\approx628 > 8$):
+
+  <Steps>
+    <Step label="No scaling (s = 1): the slow dimension extrapolates raw">
+      Angle $= 64 \times 0.01 = 0.64$ radians — over $9\times$ larger than any slow-dimension angle seen in
+      training (the largest trained angle is $\approx 8\times0.01=0.08$).
+    </Step>
+    <Step label="Scale by 8x: divide position by 8 before rotating">
+      Effective position $=64/8=8$. Angle $=8\times0.01=0.08$ — precisely the boundary angle the model
+      trained up to.
+    </Step>
+    <Step label="The fast dimension is untouched throughout">
+      Angle $=64\times1=64$ radians regardless of $s$ — it already completed more than 10 full turns inside
+      the trained range, so extrapolating further changes nothing about how familiar the angle looks.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<YarnCheckpoint />
+
+<Summary>
+  $$
+  \text{pos}_{\text{eff}}(pos, i) = \begin{cases} pos / s & \text{wavelength}(i) > L \\ pos & \text{otherwise} \end{cases}
+  $$
+
+  YaRN stretches a trained context window without touching a single weight, by rescaling *positions*
+  rather than the model — and only for the RoPE frequencies whose wavelength is long enough that
+  extrapolation would otherwise land them in angles never seen during training. Fast-rotating dimensions
+  are left alone because they've already lapped the trained range many times over. It's a purely
+  inference-time fix for the mismatch RoPE creates once a prompt runs longer than training — but it says
+  nothing about the *cost* of actually processing that longer prompt, which is where the next chapter picks
+  up.
+</Summary>
