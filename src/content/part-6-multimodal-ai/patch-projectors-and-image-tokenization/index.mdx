@@ -1,0 +1,77 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PatchProjectorsCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 3 fed cross-attention a handful of ready-made "image patch" vectors and never asked where they came from. A raw image is just a grid of pixel numbers — how does anyone turn that grid into vectors a text-trained attention mechanism can even read?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This tiny picture is a 4×4 grid of pixel values. Click any cell — it belongs to one of four non-overlapping 2×2 blocks. That whole block, four raw pixel numbers, collapses into just two numbers: a patch embedding. Every one of those four blocks goes through the exact same collapsing step.
+</Intuition>
+
+<Formalize>
+  Flatten a patch's pixels into one vector $x$, then apply a fixed weight matrix $W$:
+
+  $$
+  e = Wx
+  $$
+
+  <Variables>
+    <Variable>**$x$** — one patch's pixels, flattened row-major into a length-4 vector.</Variable>
+    <Variable>**$W$** — the projector: a fixed $2\times4$ weight matrix, learned in a real model but hand-picked here.</Variable>
+    <Variable>**$e$** — the resulting patch embedding, a single point in the same 2D space text tokens live in.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Patchify">
+      Slice the image into non-overlapping blocks — here, four 2×2 blocks out of a 4×4 image.
+    </Step>
+    <Step label="Flatten">
+      Read each block's pixels out in row order, turning a 2D block into a 1D vector $x$ of length 4.
+    </Step>
+    <Step label="Project linearly">
+      Multiply by $W$: row 0 of $W$ sums $x$'s top-row pixels, row 1 sums its bottom-row pixels — one
+      genuine (if simplified) linear layer, mapping 4 numbers down to 2.
+    </Step>
+    <Step label="Land in a shared space">
+      $e$ is now a point in the same 2D coordinate system as this chapter's text-token embeddings — nothing
+      about $e$'s shape reveals it came from pixels rather than a word.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Click through all four patches. Each one lands at a different point in the embedding space — and each point sits exactly on top of one particular text token's own embedding. That's not a coincidence built into this toy example so much as the entire goal of a real patch projector: train it so a patch of sky lands near the word "sky," a patch of dog lands near the word "dog," and so on.
+</Play>
+
+<WorkedExample>
+  The bottom-right patch's raw pixels are $\begin{bmatrix}13 & 14\\ 15 & 16\end{bmatrix}$:
+
+  <Steps>
+    <Step label="Flatten row-major">
+      $x = (13, 14, 15, 16)$.
+    </Step>
+    <Step label="Apply the projector">
+      Top-row sum: $13+14=27$. Bottom-row sum: $15+16=31$. So $e = Wx = (27, 31)$.
+    </Step>
+    <Step label="Compare to every text token">
+      The text token "dog" sits at exactly $(27, 31)$ — distance $0$. Every other text token ("sky," "grass,"
+      "cat") is at least $8$ units away in each coordinate. The nearest-neighbor search from Chapter 1 has
+      an unambiguous winner.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PatchProjectorsCheckpoint />
+
+<Summary>
+  $$
+  e = Wx
+  $$
+
+  A patch projector is nothing more exotic than a linear layer: flatten a patch's pixels, multiply by a weight matrix, and the result is a token — indistinguishable in shape from a word embedding, and directly comparable to one by ordinary distance. This is the missing piece behind every image patch this Part has been feeding into attention and joint embedding spaces: real models learn $W$ end-to-end so that patches and words that mean the same thing land in the same place. The next chapter asks what happens once a model has to generate a whole sequence of these tokens — text and image alike — one at a time.
+</Summary>
