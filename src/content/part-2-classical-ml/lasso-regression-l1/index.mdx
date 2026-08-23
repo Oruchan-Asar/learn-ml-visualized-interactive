@@ -1,0 +1,88 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LassoCheckpoint } from "./Demos";
+
+<Hook>
+  Ridge regression shrinks correlated predictors toward each other, but it never drops one entirely — no
+  matter how large the penalty, both weights stay some nonzero decimal. What would it take for a
+  regularizer to actually decide "this predictor isn't worth keeping" and set its weight to *exactly* zero?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same two nearly-identical predictors as the ridge chapter. Push λ up and, past a small threshold, $w_2$
+  doesn't just shrink toward zero the way ridge's would — it lands exactly on it and stays there.
+</Intuition>
+
+<Formalize>
+  Lasso swaps ridge's squared penalty for an absolute-value one:
+
+  $$
+  \text{MSE}(\mathbf{w}) + \lambda \sum_j |w_j|
+  $$
+
+  <Variables>
+    <Variable>**MSE($\mathbf{w}$)** — mean squared error (lasso conventionally penalizes the *averaged* error, not the raw sum ridge uses — so the same numeric λ lands at a different effective strength for each).</Variable>
+    <Variable>**$\lambda$** — the penalty strength, same role as in ridge.</Variable>
+    <Variable>**$|w_j|$** — the absolute value of the $j$-th weight — the source of everything that follows.</Variable>
+  </Variables>
+
+  Unlike ridge, this loss has no closed form — it's minimized by cyclic **coordinate descent**: repeatedly
+  pick one weight, hold the others fixed, and solve for it via **soft-thresholding**,
+  $\text{soft}(\rho, \gamma) = \text{sign}(\rho)\max(|\rho|-\gamma, 0)$.
+
+  <Steps>
+    <Step label="A squared penalty is smooth at zero; an absolute-value one has a corner">
+      $w^2$ has zero slope at $w=0$, so shrinking a weight that's already small barely pulls it further.
+      $|w|$ has a constant-slope *kink* at $w=0$ — that corner is what a coordinate update can land exactly on.
+    </Step>
+    <Step label="Soft-thresholding is the algebraic form of that corner">
+      Solving the 1D optimality condition for one weight at a time gives exactly the soft-threshold rule:
+      if the weight's "signal" $\rho$ is smaller in magnitude than $\gamma$, the optimal weight is precisely
+      $0$ — not close to it.
+    </Step>
+    <Step label="Correlated predictors can make lasso's choice unstable">
+      When two predictors carry almost the same signal, which one gets zeroed can depend on arbitrary
+      details like update order — a real quirk of lasso under collinearity, and the reason ElasticNet
+      exists (next chapter).
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Same λ, fed to both penalties on the same data. Lasso routinely shows a flat $0.000$ for $w_2$; ridge,
+  right below it, never does — its $w_2$ is always some nonzero decimal, however small.
+</Play>
+
+<WorkedExample>
+  Same toy setup as ridge: $x_1=[1,2,3,4]$, $x_2=[1,2,3,4.5]$ (correlation $\approx 0.998$), $y=[2,4,7,8]$.
+
+  <Steps>
+    <Step label="Unregularized, lasso agrees with OLS">
+      At $\lambda=0$, coordinate descent converges to the same unstable fit as before: $w_1\approx3.929$,
+      $w_2\approx-1.714$.
+    </Step>
+    <Step label="A tiny penalty already zeroes w2 (λ = 0.03)">
+      By $\lambda=0.03$, soft-thresholding has pushed $w_2$'s "signal" inside the dead zone: $w_2$ becomes
+      exactly $0$, while $w_1\approx2.096$ absorbs essentially the whole fit.
+    </Step>
+    <Step label="It stays exactly zero across a wide range (λ = 0.5)">
+      At $\lambda=0.5$: $w_1\approx2.033$, $w_2=0$ — lasso has picked predictor 1 and permanently discarded
+      predictor 2, a form of automatic feature selection ridge structurally cannot do.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<LassoCheckpoint />
+
+<Summary>
+  $$
+  \text{MSE}(\mathbf{w}) + \lambda \sum_j |w_j|
+  $$
+
+  Lasso's $|w_j|$ penalty has a corner at zero that ridge's smooth $w_j^2$ doesn't — and coordinate-wise
+  optimization tends to land exactly on that corner. The result is automatic feature selection: past a
+  threshold λ, a weak predictor's weight isn't just small, it's *exactly* $0$.
+</Summary>
