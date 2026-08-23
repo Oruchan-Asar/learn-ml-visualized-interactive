@@ -1,0 +1,101 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PruningCheckpoint } from "./Demos";
+
+<Hook>
+  A tree that gets 100% of its training data right sounds perfect. Is it?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The top row is training data — five of those points are quietly mislabeled, noise a real dataset would have. Drag depth up: watch the tree stop finding *the* boundary and start carving out tiny one-point regions instead, each one built to rescue a single mislabeled point.
+</Intuition>
+
+<Formalize>
+  Nothing stops a tree from growing until every training point is classified perfectly — split enough times and you can isolate any single point into its own leaf. The question isn't whether it *can* memorize noise, it's whether doing so helps on data it hasn't seen:
+
+  $$
+  \text{gap} = \text{accuracy}_{\text{train}} - \text{accuracy}_{\text{validation}}
+  $$
+
+  <Variables>
+    <Variable>**gap** — the difference between training and validation accuracy; a growing gap signals overfitting.</Variable>
+    <Variable>**$\text{accuracy}_{\text{train}}$** — the fraction of training points the tree classifies correctly.</Variable>
+    <Variable>**$\text{accuracy}_{\text{validation}}$** — the fraction of held-out (never-trained-on) points the tree classifies correctly.</Variable>
+  </Variables>
+
+  The gap tells you *that* a tree is overfitting, but it needs a validation set to compute. Cost-complexity pruning finds the right size using only training data, by charging a fixed toll for every leaf a tree keeps:
+
+  $$
+  R_\alpha(T) = R(T) + \alpha|T|
+  $$
+
+  <Variables>
+    <Variable>**$R_\alpha(T)$** — tree $T$'s cost-complexity score at penalty strength $\alpha$; smaller is better.</Variable>
+    <Variable>**$R(T)$** — $T$'s training misclassification rate, $1 - \text{accuracy}_{\text{train}}$.</Variable>
+    <Variable>**$\alpha$** — the price charged per leaf; $\alpha = 0$ charges nothing, larger $\alpha$ charges more.</Variable>
+    <Variable>**$|T|$** — $T$'s leaf count, i.e. how many regions it carved feature space into.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="alpha=0 reduces to pure training error">
+      With no penalty, $R_\alpha(T)$ is just $R(T)$ — whichever tree fits training data best wins, no matter how
+      many leaves it took to get there. This is exactly the overfitting problem, restated as an objective.
+    </Step>
+    <Step label="Growing alpha makes extra leaves cost more than they're worth">
+      Each split only pays for itself if the training-error improvement it buys is bigger than $\alpha$. As $\alpha$
+      rises, splits that were only rescuing one or two noisy points stop being worth their toll first.
+    </Step>
+    <Step label="This finds the right complexity blind — no validation set needed">
+      Real pruning algorithms (e.g. scikit-learn's `ccp_alpha`) minimize exactly this objective. It's not magic:
+      it works because $\alpha$ acts as a stand-in for "how much do I trust that this split reflects real
+      structure, not noise" — the same judgment a validation set makes empirically.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The bottom row is validation data the tree never trained on — clean, no mislabeled points. Depth 1 or 2 already gets every single one right. Push the depth slider past that and watch validation accuracy start dropping *while training accuracy keeps climbing*. The α buttons show a different way to catch this: cost-complexity pruning picks a depth using only the training-side numbers above, no validation peek required — watch its pick shrink as α grows.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Depth 1, the shallow tree">
+      One split at $x = 9.5$ gets $20/25 = 80\%$ of training points right (the 5 mislabeled ones are the only
+      misses) and $24/24 = 100\%$ of validation points right. It has 2 leaves, so $R(T) = 0.20$ and $|T| = 2$.
+    </Step>
+    <Step label="Depth 5, the overgrown tree">
+      Splitting all the way to depth 5 carves out 10 leaves and rescues 4 of the 5 noisy points, reaching
+      $24/25 = 96\%$ training accuracy — but validation accuracy *falls* to $20/24 \approx 83\%$. So
+      $R(T) = 0.04$ and $|T| = 10$. (Depth 6 adds one more leaf for zero extra training accuracy, so it never
+      wins at any $\alpha \geq 0$ — pruning drops that redundant split for free.)
+    </Step>
+    <Step label="alpha=0: raw training error wins, and the overgrown tree looks unbeatable">
+      $R_0(\text{depth }1) = 0.20 + 0 \times 2 = 0.20$, while $R_0(\text{depth }5) = 0.04 + 0 \times 10 = 0.04$.
+      Depth 5 wins by this metric alone — exactly the overfitting trap, since it's also the worse tree on
+      validation data.
+    </Step>
+    <Step label="alpha=0.02: an exact tie, and ties favor the smaller tree">
+      $R_{0.02}(\text{depth }1) = 0.20 + 0.02 \times 2 = 0.24$ and $R_{0.02}(\text{depth }5) = 0.04 + 0.02 \times 10 = 0.24$
+      — dead even. Real weakest-link pruning (and the code here) breaks such ties in favor of the smaller tree, so
+      $\alpha = 0.02$ is already enough to recover depth 1 — and depth 1 is also the validation-optimal tree.
+    </Step>
+    <Step label="alpha=0.03: no longer even close">
+      $R_{0.03}(\text{depth }1) = 0.20 + 0.03 \times 2 = 0.26$, while $R_{0.03}(\text{depth }5) = 0.04 + 0.03 \times 10 = 0.34$.
+      Depth 1 wins outright now — cost-complexity pruning found the right size using only training-side
+      arithmetic, no validation set required.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PruningCheckpoint />
+
+<Summary>
+  $$
+  R_\alpha(T) = R(T) + \alpha|T|
+  $$
+
+  Training accuracy alone can't tell memorization apart from generalization — a tree can always reach 100% on data it's already seen, and $\alpha = 0$ inherits that blind spot exactly. But charge a per-leaf toll and raise it: at some $\alpha$, the leaves that only existed to rescue noise stop paying for themselves, and the objective's own minimum shifts from the overgrown tree to the right-sized one — the same tree a validation set would have picked, found without ever looking at one.
+</Summary>
