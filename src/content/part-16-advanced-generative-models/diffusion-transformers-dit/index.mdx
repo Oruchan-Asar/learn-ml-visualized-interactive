@@ -1,0 +1,99 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DitCheckpoint } from "./Demos";
+
+<Hook>
+  Every diffusion model so far has leaned on a U-Net: a convolutional encoder-decoder built specifically
+  for images, with skip connections carrying detail across resolutions. But the model doesn't predict noise
+  because convolutions are special — it predicts noise because that's the training target. What if the
+  backbone were just... a transformer?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A **Diffusion Transformer (DiT)** starts exactly like a Vision Transformer: cut the (noisy) image into
+  patches, flatten the grid into a sequence, and run ordinary self-attention over it. The heatmap above is
+  the same scaled dot-product softmax from the attention chapters — nothing about it knows these tokens
+  came from pixels instead of words.
+</Intuition>
+
+<Formalize>
+  The one new ingredient is how the model learns *which noise level* it's looking at. Instead of a
+  per-resolution encoder path, DiT folds the timestep into every patch with a simplified **adaptive layer
+  norm (adaLN)** — a scale and shift applied identically to every patch, before attention runs:
+
+  $$
+  c = \frac{t}{T}, \qquad \gamma(t) = 1 + w_\gamma c, \qquad \beta(t) = w_\beta c, \qquad \tilde{v} = \gamma(t)\,v + \beta(t)
+  $$
+
+  <Variables>
+    <Variable>**$t$** — the diffusion timestep this forward pass is conditioned on; $T$ is the total number of timesteps.</Variable>
+    <Variable>**$c$** — the timestep normalized to $[0,1]$: the only input the conditioning below depends on.</Variable>
+    <Variable>**$\gamma(t), \beta(t)$** — the per-timestep scale and shift, shared identically across every patch at a given $t$.</Variable>
+    <Variable>**$v$** — a patch's raw content value; $\tilde v$ is that value after adaLN conditioning, the value attention actually sees.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="t=0 is an ordinary, unconditioned ViT block">
+      At $t=0$, $c=0$, so $\gamma=1$ and $\beta=0$: $\tilde v = v$, exactly the plain patch embedding a
+      normal Vision Transformer would use.
+    </Step>
+    <Step label="Rising t stretches and shifts every patch the same way">
+      As $t$ grows, $\gamma$ and $\beta$ move linearly away from the identity, scaling every patch's content
+      by the same factor and shifting it by the same amount — the timestep never singles out one patch over
+      another.
+    </Step>
+    <Step label="Conditioned content flows into ordinary self-attention">
+      Attention then runs on the conditioned values $\tilde v$ exactly as it would on any transformer's
+      token embeddings — same queries, keys, values, same scaled dot product, same softmax.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the timestep from $0$ to $4$. Because the conditioning applies the *same* scale and shift to every
+  patch, it doesn't reorder which patch p0 attends to most — it just stretches the gap between p0's own
+  (largest) content and everyone else's, so p0's self-attention weight on itself climbs as $t$ rises.
+</Play>
+
+<WorkedExample>
+  Four patches with raw content $[3, 1, 0, 2]$ for $p_0, p_1, p_2, p_3$, $T=4$, $w_\gamma=0.5$, $w_\beta=-1$:
+
+  <Steps>
+    <Step label="Condition each patch at t=2">
+      $c = 2/4 = 0.5$, so $\gamma = 1.25$, $\beta = -0.5$. Conditioned values:
+      $\tilde v_0 = 1.25(3) - 0.5 = 3.25$, $\tilde v_1 = 0.75$, $\tilde v_2 = -0.5$, $\tilde v_3 = 2$.
+    </Step>
+    <Step label="Score p0's query against every key">
+      Adding a small position term (0.1 per grid index) and scoring $p_0$'s embedding against all four
+      (including itself), then dividing by $\sqrt{2}$ and taking a softmax gives weights
+      $\approx [0.943, 0.003, 0.0002, 0.053]$ — p0 attends overwhelmingly to itself, then to $p_3$, the next
+      closest content value.
+    </Step>
+    <Step label="Attention output mixes values by those weights">
+      $p_0$'s attention output is $\approx 0.943(3.25) + 0.003(0.75) + 0.0002(-0.5) + 0.053(2) \approx 3.175$
+      — pulled almost entirely from its own conditioned content, with a small nudge from $p_3$.
+    </Step>
+    <Step label="Self-attention sharpens further as t keeps rising">
+      At $t=3$, p0's self-attention weight on itself climbs past $0.95$; by $t=2$ it's still below that —
+      the conditioning needs to stretch the gap a bit further before self-attention all but ignores every
+      other patch.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DitCheckpoint />
+
+<Summary>
+  $$
+  \tilde v = \gamma(t)\,v + \beta(t), \qquad \text{Attention}(Q,K,V) = \text{softmax}\!\left(\frac{QK^\top}{\sqrt{d}}\right)V
+  $$
+
+  Nothing about self-attention needed to change to move from words to (noisy) image patches — only the
+  tokenizer changed, from a vocabulary lookup to a fixed patch grid, and the model gained one small
+  timestep-conditioning mechanism to tell every patch which noise level it's denoising. This is the
+  architecture behind Stable Diffusion 3 and Sora: swap the U-Net for a transformer, and the same scaling
+  laws that made text transformers bigger and better start applying to image generation too.
+</Summary>
