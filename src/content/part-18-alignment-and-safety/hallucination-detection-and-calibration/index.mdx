@@ -1,0 +1,72 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, HallucinationCheckpoint } from "./Demos";
+
+<Hook>
+  A model that says "I'm 95% sure" and is wrong 5% of the time is calibrated and mostly harmless. A model
+  that says "I'm 95% sure" and is wrong 40% of the time is confidently hallucinating — and the stated
+  number alone can't tell you which one you're looking at until you check it against what actually
+  happened.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch between the low and high threshold. A low bar trusts almost everything — including the one
+  overconfident wrong answer sitting at 0.70. A high bar flags almost everything, including some
+  genuinely correct answers that just weren't stated with top confidence. Neither extreme separates
+  correct from wrong as cleanly as a threshold in between.
+</Intuition>
+
+<Formalize>
+  Turn a stated confidence into a trust/flag decision with a single threshold, then measure how often
+  that decision matches reality:
+
+  $$
+  \text{trust}(x) = \mathbb{1}[\text{confidence}(x) \ge t], \qquad \text{accuracy}(t) = \frac{1}{n}\sum_{x} \mathbb{1}[\text{trust}(x) = \text{correct}(x)]
+  $$
+
+  <Variables>
+    <Variable>**$\text{confidence}(x)$** — the model's own stated probability that prediction $x$ is right.</Variable>
+    <Variable>**$t$** — the threshold: trust anything at or above it, flag anything below.</Variable>
+    <Variable>**$\text{correct}(x)$** — ground truth: was $x$ actually right?</Variable>
+    <Variable>**$\text{accuracy}(t)$** — the fraction of predictions where the trust/flag call matched reality, at this threshold.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Too low">A threshold below the overconfident wrong answer's 0.70 confidence trusts it — a miss.</Step>
+    <Step label="Too high">A threshold above the lowest genuinely correct answer's 0.85 confidence flags it too — also a miss.</Step>
+    <Step label="Just right">Anywhere strictly above 0.70 and up to 0.85, every one of the seven predictions is classified correctly.</Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the threshold up from 0: accuracy rises, peaks at a perfect 7/7 for any value between the
+  hallucination's 0.70 and the lowest genuinely correct answer's 0.85, then falls again as the threshold
+  climbs past 0.85 and starts flagging correct answers too.
+</Play>
+
+<WorkedExample>
+  Checking threshold $t=0.75$ against all seven predictions:
+
+  <Steps>
+    <Step label="The three confident, correct ones">0.95, 0.90, 0.85 all clear 0.75 → trusted, and all three are actually correct. Three matches.</Step>
+    <Step label="The overconfident hallucination">0.70 does not clear 0.75 → flagged, and it's actually wrong. A match — exactly the case a lower threshold would have missed.</Step>
+    <Step label="The three lower-confidence wrong ones">0.50, 0.35, 0.15 all fall short of 0.75 → flagged, and all three are actually wrong. Three more matches.</Step>
+    <Step label="Total">7 out of 7 — perfect separation, for this dataset, at this threshold.</Step>
+  </Steps>
+</WorkedExample>
+
+<HallucinationCheckpoint />
+
+<Summary>
+  $$
+  \text{accuracy}(t) = \frac{1}{n}\sum_x \mathbb{1}\big[\mathbb{1}[\text{confidence}(x)\ge t] = \text{correct}(x)\big]
+  $$
+
+  A single threshold on stated confidence is only as good as the gap between a model's well-calibrated
+  cluster and its overconfident mistakes — when a hallucination's confidence sits inside that gap
+  instead of below it, no threshold can catch it, and detecting it needs a signal confidence alone
+  doesn't carry, such as consistency across resampled answers or a probe on the model's internal states.
+</Summary>

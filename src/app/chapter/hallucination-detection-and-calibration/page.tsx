@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ChapterFrame } from "@/components/chapter/ChapterFrame";
 import { getChapterMeta } from "@/lib/curriculum";
-import { PlaceholderContent } from "@/components/chapter/PlaceholderContent";
+import ChapterContent from "@/content/part-18-alignment-and-safety/hallucination-detection-and-calibration/ClientContent";
 
 const SLUG = "hallucination-detection-and-calibration";
 
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ChapterFrame slug={SLUG}>
-      <PlaceholderContent slug={SLUG} />
+      <ChapterContent />
     </ChapterFrame>
   );
 }
