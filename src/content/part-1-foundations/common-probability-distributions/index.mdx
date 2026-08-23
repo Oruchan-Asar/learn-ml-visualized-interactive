@@ -1,0 +1,103 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DistributionsCheckpoint } from "./Demos";
+
+<Hook>
+  A coin flip, a count of rare events, a bell curve, a probability vector that's itself uncertain — four
+  completely different-looking situations, and machine learning reaches for a named distribution to model
+  every one of them.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Toggle between the four. Each one has an exact formula behind it, and every bar (or curve point) on screen
+  is that formula evaluated at a specific value — nothing here is approximated or simulated.
+</Intuition>
+
+<Formalize>
+  Each distribution answers a different shape of question:
+
+  $$
+  \text{Bernoulli: } P(X{=}1)=p \qquad \text{Poisson: } P(X{=}k)=\frac{e^{-\lambda}\lambda^k}{k!} \qquad
+  \text{Gaussian: } f(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}}
+  $$
+
+  <Variables>
+    <Variable>**$p$** — the Bernoulli's single parameter: the probability of outcome 1.</Variable>
+    <Variable>**$\lambda$** — the Poisson's rate parameter: the expected count.</Variable>
+    <Variable>**$\mu, \sigma$** — the Gaussian's mean and standard deviation.</Variable>
+  </Variables>
+
+  A **Dirichlet** distribution is one level up: instead of putting mass on numbers, it puts mass on
+  *probability vectors themselves*. Its expected vector has a strikingly simple form:
+
+  $$
+  \mathbb{E}[p_i] = \frac{\alpha_i}{\sum_j \alpha_j}
+  $$
+
+  <Variables>
+    <Variable>**$\alpha_i$** — the concentration parameter for category $i$ (a pseudo-count of prior observations).</Variable>
+    <Variable>**$\mathbb{E}[p_i]$** — the expected probability the Dirichlet assigns to category $i$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Bernoulli is the atom">
+      Every other discrete distribution here is built by combining or generalizing Bernoulli trials.
+    </Step>
+    <Step label="Poisson counts, Gaussian measures">
+      Poisson lives on non-negative integers (counts); the Gaussian lives on the whole real line
+      (measurements) and is fully determined by just its first two moments.
+    </Step>
+    <Step label="Dirichlet is a distribution over distributions">
+      Where Bernoulli/Poisson/Gaussian describe one random *number*, the Dirichlet describes an entire
+      random *categorical distribution* — exactly the object a classifier's softmax output is trying to
+      estimate.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Poisson's bars and the Gaussian's curve both come from a single closed-form line of code — the same
+  determinism that made the coin-flip Bernoulli exact also makes $e^{-2}\lambda^k/k!$ and the bell-curve
+  formula exact, just with more decimal places to track by hand.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Poisson(λ=2): compute P(X=0)">
+      $$
+      P(X{=}0) = \frac{e^{-2}\cdot 2^0}{0!} = e^{-2} \approx 0.1353
+      $$
+    </Step>
+    <Step label="Poisson(λ=2): compute P(X=1) and P(X=2) — and notice they tie">
+      $$
+      P(X{=}1) = \frac{e^{-2}\cdot 2^1}{1!} = 2e^{-2} \approx 0.2707 \qquad
+      P(X{=}2) = \frac{e^{-2}\cdot 2^2}{2!} = \frac{4e^{-2}}{2} = 2e^{-2} \approx 0.2707
+      $$
+      When $\lambda$ is a whole number, $P(X{=}\lambda{-}1)$ and $P(X{=}\lambda)$ are always exactly equal —
+      the distribution has two tied modes.
+    </Step>
+    <Step label="Dirichlet(α=[2,3,5]): compute the expected vector">
+      $$
+      \mathbb{E}[p] = \left[\frac{2}{10}, \frac{3}{10}, \frac{5}{10}\right] = [0.2,\ 0.3,\ 0.5]
+      $$
+      The concentration parameters' own proportions become the expected probabilities — no extra machinery
+      needed.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DistributionsCheckpoint />
+
+<Summary>
+  $$
+  P(X{=}1)=p \qquad P(X{=}k)=\frac{e^{-\lambda}\lambda^k}{k!} \qquad
+  f(x)=\frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{(x-\mu)^2}{2\sigma^2}} \qquad \mathbb{E}[p_i]=\frac{\alpha_i}{\sum_j\alpha_j}
+  $$
+
+  Almost every probabilistic model in this course is one of these four shapes wearing a different hat: a
+  classifier's output layer is Bernoulli or categorical, a count-based likelihood is Poisson, a continuous
+  noise model is Gaussian, and a prior over class probabilities is Dirichlet.
+</Summary>
