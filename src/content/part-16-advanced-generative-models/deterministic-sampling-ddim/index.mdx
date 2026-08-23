@@ -1,0 +1,104 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DdimCheckpoint } from "./Demos";
+
+<Hook>
+  The last chapter's reverse process only ever moved one adjacent timestep at a time: $x_t \to x_{t-1}$,
+  over and over, a full Markov chain's worth of model calls to generate a single sample. What if the
+  model's noise prediction let you jump straight from $x_t$ to *any* earlier timestep — skipping most of
+  the chain — and still land in exactly the same place?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Toggle between **Deterministic (DDIM)** and **Stochastic (DDPM-style)**, then step through the same
+  4-step schedule with the same starting noise and the same (perfect) predictor. The deterministic path
+  retraces a single fixed trajectory back to $x_0=5$ every time. The stochastic path, built from the exact
+  same ingredients plus one injected random draw per step, wanders off that trajectory and never quite
+  gets back.
+</Intuition>
+
+<Formalize>
+  Every reverse step first estimates $x_0$ directly from the current $x_t$, then rebuilds $x_{t_{\text{prev}}}$
+  from that estimate using the forward process's own closed form:
+
+  $$
+  \hat{x}_0 = \frac{x_t - \sqrt{1-\bar\alpha_t}\,\hat\epsilon}{\sqrt{\bar\alpha_t}}, \qquad
+  x_{t_{\text{prev}}} = \sqrt{\bar\alpha_{t_{\text{prev}}}}\,\hat{x}_0 + \sqrt{1-\bar\alpha_{t_{\text{prev}}}}\Big[(1-\eta)\hat\epsilon + \eta z\Big]
+  $$
+
+  <Variables>
+    <Variable>**$\bar\alpha_t$** — the cumulative signal-retained fraction at timestep $t$: how much of the original signal survives, all the way from $t=0$.</Variable>
+    <Variable>**$\hat\epsilon$** — the model's predicted noise direction at $x_t$, assumed here to be exactly correct.</Variable>
+    <Variable>**$\hat{x}_0$** — the estimate of the clean data, computed directly from $x_t$ and $\hat\epsilon$, regardless of which path reached $(x_t, t)$.</Variable>
+    <Variable>**$\eta$** — the noise-injection knob. $\eta=0$ is DDIM: fully deterministic. $\eta=1$ replaces the predicted direction with an injected draw $z$, a DDPM-style stochastic step.</Variable>
+    <Variable>**$t_{\text{prev}}$** — the *next* timestep in the schedule — any earlier timestep, not necessarily $t-1$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="x0 is estimated the same way no matter how x_t was reached">
+      Because $\hat{x}_0$ depends only on $(x_t, t, \hat\epsilon)$ — never on the sequence of steps that
+      produced $x_t$ — a perfect predictor recovers the exact same $\hat{x}_0$ whether $t_{\text{prev}}$ is
+      one step back or ten.
+    </Step>
+    <Step label="That's what makes skipping timesteps free">
+      Since $t_{\text{prev}}$ can be *any* earlier timestep in the formula above, a schedule can skip
+      straight from $t=4$ to $t=2$ to $t=0$, using the model only twice instead of four times, and land on
+      the identical trajectory a full step-by-step schedule would trace.
+    </Step>
+    <Step label="Injected noise breaks that guarantee">
+      Setting $\eta > 0$ swaps part of the deterministic direction for a random draw $z$. Once $x_t$ is
+      knocked off the clean marginal it was estimated from, the *next* step's $\hat{x}_0$ estimate inherits
+      that error — which is exactly why a stochastic path drifts even from identical starting noise and an
+      identical predictor.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag $\eta$ from $0$ up to $1$. At $\eta=0$ (pure DDIM) the reconstruction is exact. As $\eta$ rises, more
+  of each step's direction comes from the fixed random draws instead of the predictor, and the final
+  reconstructed $x_0$ drifts further from the true value — even though the predictor itself never changes.
+</Play>
+
+<WorkedExample>
+  With $x_0=5$, $\hat\epsilon=1$ always correct, and $\bar\alpha = [1, 0.8, 0.6, 0.4, 0.2]$ for
+  $t=0,1,2,3,4$:
+
+  <Steps>
+    <Step label="Full schedule: every step, t = 4 -> 3 -> 2 -> 1 -> 0">
+      $x_4 \approx 3.1305 \to x_3 \approx 3.9369 \to x_2 \approx 4.5054 \to x_1 \approx 4.9193 \to x_0 = 5$.
+    </Step>
+    <Step label="Skip schedule: t = 4 -> 2 -> 0, two model calls instead of four">
+      Starting from the identical $x_4 \approx 3.1305$, jumping straight to $t=2$ lands on the *exact same*
+      $x_2 \approx 4.5054$ the full schedule passed through — then one more jump reaches $x_0=5$ exactly.
+    </Step>
+    <Step label="Single jump: t = 4 -> 0">
+      Even one call, straight from $x_4$ to $x_0$, reconstructs $x_0=5$ exactly. With a perfect predictor,
+      the number of steps only changes the compute cost — never the destination.
+    </Step>
+    <Step label="Now inject noise: eta = 1, fixed draws">
+      Running the same full schedule with $\eta=1$ and fixed draws $z = [0.5, -0.5, 0.5, 0.3]$ reaches only
+      $x_0 \approx 2.913$ — an error of about $2.09$, because each step's injected noise knocks the next
+      step's estimate off the clean marginal it assumes.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DdimCheckpoint />
+
+<Summary>
+  $$
+  \hat{x}_0 = \frac{x_t - \sqrt{1-\bar\alpha_t}\,\hat\epsilon}{\sqrt{\bar\alpha_t}}, \qquad
+  x_{t_{\text{prev}}} = \sqrt{\bar\alpha_{t_{\text{prev}}}}\,\hat{x}_0 + \sqrt{1-\bar\alpha_{t_{\text{prev}}}}\,\hat\epsilon \quad (\eta=0)
+  $$
+
+  DDIM doesn't change what the model learns — it's trained exactly like the DDPM from the last chapter, to
+  predict noise. What changes is *sampling*: because the reverse update estimates $x_0$ directly and is
+  path-independent, the same trained model can generate in 50 steps instead of 1000, trading a small amount
+  of quality for a large amount of speed, purely by choosing a different schedule at inference time. The
+  next chapter asks what happens when the U-Net doing that noise prediction is replaced with a plain
+  transformer.
+</Summary>
