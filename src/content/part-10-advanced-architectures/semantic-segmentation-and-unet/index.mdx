@@ -1,0 +1,85 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, UNetCheckpoint } from "./Demos";
+
+<Hook>
+  A detector draws a box. A segmentation network has to color in every pixel inside it. But every encoder in this course shrinks its input down to extract features — by the time an image reaches a useful bottleneck, most of its spatial detail is already gone. How do you get it back?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A tiny image, pooled down twice to a single number, then upsampled back out with nothing else to go on. Step through the trace and watch exactly how much detail each pooling step throws away — and how little a plain upsample can do to bring it back.
+</Intuition>
+
+<Formalize>
+  A **U-Net** is an encoder-decoder: the encoder repeatedly pools an image down toward a small **bottleneck**, and the decoder upsamples it back out to full resolution. A **skip connection** carries each encoder stage's own feature map across to the matching decoder stage, so the decoder has real spatial detail to combine with, not just a coarse upsampled guess:
+
+  $$
+  \text{decode}_i = \text{combine}\big(\text{upsample}(\text{decode}_{i+1}),\ \text{skip}_i\big)
+  $$
+
+  <Variables>
+    <Variable>**$\text{decode}_i$** — the decoder's output at resolution level $i$ (matching the encoder's resolution at that same level).</Variable>
+    <Variable>**$\text{skip}_i$** — the encoder's own feature map at level $i$, saved before it was pooled down further.</Variable>
+    <Variable>**$\text{combine}$** — how the upsampled signal and the skip are merged (concatenation and a conv in a real U-Net; a plain average here, to keep the arithmetic exact by hand).</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Pooling is lossy, on purpose">
+      Each $2\times2$ max pool keeps only a block's maximum — the other three values are gone the moment the
+      encoder moves to the next stage. That's what makes the bottleneck cheap to compute over.
+    </Step>
+    <Step label="Upsampling alone can't undo that loss">
+      Nearest-neighbor upsampling only repeats each value into a bigger block. Chained twice from a $1\times1$
+      bottleneck, it can only ever produce one repeated number across the whole image.
+    </Step>
+    <Step label="The skip connection is the only path detail can take back">
+      Because $\text{skip}_i$ was saved *before* the corresponding pooling step, it still has the detail that
+      step discarded — the decoder can only recover what the skip connection hands it directly.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The same $4\times4$ input, decoded two ways: one path only ever saw the bottleneck's single number, the other had the encoder's own feature maps to combine with at every stage. The reconstruction error tells the same story the heatmaps show.
+</Play>
+
+<WorkedExample>
+  Input:
+  $$
+  \begin{bmatrix} 1 & 3 & 6 & 2 \\ 4 & 2 & 8 & 5 \\ 7 & 1 & 3 & 9 \\ 0 & 5 & 2 & 6 \end{bmatrix}
+  $$
+
+  <Steps>
+    <Step label="Encoder: two poolings to a bottleneck">
+      Pooling each $2\times2$ block gives $\text{skip}_1=\begin{bmatrix}4&8\\7&9\end{bmatrix}$ (block maxima), then
+      pooling that once more gives a bottleneck of just $9$ — the single largest pixel in the whole image.
+    </Step>
+    <Step label="Without skip connections: a uniform blur">
+      Upsampling $9$ twice produces a $4\times4$ grid of nothing but $9$s. Squared error against the original
+      input, averaged over all $16$ pixels: $\text{MSE}=31.75$.
+    </Step>
+    <Step label="With skip connections: real detail comes back">
+      Averaging the upsampled bottleneck with $\text{skip}_1$, then upsampling *that* and averaging with the
+      original input, gives values like $3.75$ and $5.5$ in place of a flat $9$ — much closer to the true
+      pixels they're standing in for. $\text{MSE}=5.421875$.
+    </Step>
+    <Step label="The skip connection alone accounts for the entire gap">
+      Both decoders start from the exact same bottleneck. The only difference is whether $\text{skip}_0$ and
+      $\text{skip}_1$ ever entered the computation — and that alone cuts reconstruction error by
+      $31.75/5.421875\approx5.86\times$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<UNetCheckpoint />
+
+<Summary>
+  $$
+  \text{decode}_i = \text{combine}\big(\text{upsample}(\text{decode}_{i+1}),\ \text{skip}_i\big)
+  $$
+
+  Encoders discard spatial detail to make a bottleneck cheap; skip connections are the only path that detail can take back to the decoder, since upsampling alone can only repeat coarse values, never recover what was pooled away. This is the same identity-shortcut idea from residual connections, applied to *resolution* instead of *depth* — carry forward exactly what the next stage would otherwise have to reconstruct from nothing. This closes out the architectures in this part; the capstone ahead puts one of them to work end-to-end on a real pretrained model.
+</Summary>
