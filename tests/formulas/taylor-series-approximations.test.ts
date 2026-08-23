@@ -35,6 +35,17 @@ describe("Taylor approximations of f around x0=1, evaluated at x=1.5", () => {
   });
 });
 
+describe("Checkpoint problem: Taylor approximations around x0=2, evaluated at x=2.5", () => {
+  it("computes Q(2.5) = 8 + 12(0.5) + 6(0.25) = 15.5", () => {
+    expect(f(2)).toBe(8);
+    expect(fPrime(2)).toBe(12);
+    expect(fDoublePrime(2)).toBe(12);
+    expect(linearApprox(2, 2.5)).toBeCloseTo(14, 10);
+    expect(quadraticApprox(2, 2.5)).toBeCloseTo(15.5, 10);
+    expect(f(2.5)).toBeCloseTo(15.625, 10);
+  });
+});
+
 describe("both approximations are exact at the expansion point itself", () => {
   it("linear and quadratic approximations equal f(x0) when x = x0", () => {
     expect(linearApprox(1, 1)).toBe(f(1));

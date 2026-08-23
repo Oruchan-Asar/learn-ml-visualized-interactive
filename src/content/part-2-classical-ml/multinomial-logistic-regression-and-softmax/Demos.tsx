@@ -113,7 +113,7 @@ export function SoftmaxCheckpoint() {
     <CheckpointFrame
       instructions={
         <>
-          Three logits: $z = [1, 1, 2]$ for {CLASS_LABELS.join(", ")}. Which value is the probability of the{" "}
+          Three logits: <code>z = [1, 1, 2]</code> for {CLASS_LABELS.join(", ")}. Which value is the probability of the{" "}
           <strong>{CLASS_LABELS[argmax(CHECKPOINT_LOGITS)]}</strong> class (the one with the highest logit)?
         </>
       }

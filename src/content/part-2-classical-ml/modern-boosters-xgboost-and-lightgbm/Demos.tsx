@@ -132,8 +132,8 @@ export function ModernBoostersCheckpoint() {
     <CheckpointFrame
       instructions={
         <>
-          Round 2&rsquo;s left leaf has $G = 3$ over 4 points. With $\lambda = 1$ and a toy Hessian of 2 per
-          point, compute $w^* = -G/(H+\lambda)$.
+          Round 2&rsquo;s left leaf has <code>G = 3</code> over 4 points. With <code>λ = 1</code> and a toy Hessian of 2 per
+          point, compute <code>w* = −G / (H + λ)</code>.
         </>
       }
       passed={passed || everPassed}

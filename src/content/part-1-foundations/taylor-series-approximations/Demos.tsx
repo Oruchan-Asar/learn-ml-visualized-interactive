@@ -118,10 +118,12 @@ export function PlayDemo() {
   );
 }
 
-const CANDIDATES = [3.25, 2.5, 4, 3.375];
-const CORRECT = quadraticApprox(1, 1.5);
+const CHECKPOINT_X0 = 2;
+const CHECKPOINT_X = 2.5;
+const CANDIDATES = [15.5, 14, 17, 15.625];
+const CORRECT = quadraticApprox(CHECKPOINT_X0, CHECKPOINT_X);
 
-/** Checkpoint: given x0=1 and x=1.5, compute the quadratic approximation's value and pick it out. */
+/** Checkpoint: given x0=2 and x=2.5, compute the quadratic approximation's value and pick it out. */
 export function TaylorCheckpoint() {
   const [chosen, setChosen] = useState<number | null>(null);
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -136,13 +138,13 @@ export function TaylorCheckpoint() {
     <CheckpointFrame
       instructions={
         <>
-          Expanding $f(x)=x^3$ around $x_0=1$, compute the <strong>quadratic</strong> Taylor approximation&apos;s
-          value at $x=1.5$.
+          Expanding <code>f(x) = x³</code> around <code>x₀ = 2</code>, compute the <strong>quadratic</strong> Taylor approximation&apos;s
+          value at <code>x = 2.5</code>.
         </>
       }
       passed={passed || everPassed}
       hasInteracted={hasInteracted}
-      idleLabel="Compute Q(1.5), then pick a value"
+      idleLabel="Compute Q(2.5), then pick a value"
     >
       <div className={styles.buttons}>
         {CANDIDATES.map((c) => (
