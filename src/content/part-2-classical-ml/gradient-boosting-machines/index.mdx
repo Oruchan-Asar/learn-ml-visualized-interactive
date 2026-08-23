@@ -1,0 +1,104 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GbmCheckpoint } from "./Demos";
+
+<Hook>
+  AdaBoost reweights *points* — misclassified ones get louder. What if, instead of reweighting anything, each new
+  model just predicted whatever the current model still gets wrong?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Five points, nowhere near a straight line. At 0 rounds the fit is just the flat average — bad everywhere.
+  Each round after that fits a small step to whatever's still left over, and the curve bends closer to the data.
+</Intuition>
+
+<Formalize>
+  This is **gradient boosting**. Start from the simplest possible model — a constant — then repeatedly fit a new
+  small model to whatever the current ensemble still gets wrong, and add it in:
+
+  $$
+  F_0(x) = \bar{y}, \qquad F_m(x) = F_{m-1}(x) + h_m(x)
+  $$
+
+  <Variables>
+    <Variable>**$F_0(x)$** — the starting prediction: just the training mean $\bar{y}$, before any model has run.</Variable>
+    <Variable>**$F_m(x)$** — the ensemble's prediction after $m$ rounds.</Variable>
+    <Variable>**$h_m(x)$** — round $m$'s new "weak learner", here a single-split regression stump.</Variable>
+  </Variables>
+
+  $h_m$ is fit to each point's **pseudo-residual** — the negative gradient of the loss with respect to the
+  *current* prediction. For squared-error loss $L = \frac{1}{2}(y - F)^2$, that gradient works out to something
+  completely ordinary:
+
+  $$
+  r_i^{(m)} = -\frac{\partial L}{\partial F(x_i)}\bigg|_{F = F_{m-1}} = y_i - F_{m-1}(x_i)
+  $$
+
+  <Variables>
+    <Variable>**$r_i^{(m)}$** — point $i$'s pseudo-residual going into round $m$.</Variable>
+    <Variable>**$y_i$** — point $i$'s true target value.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Squared-error loss makes it literal">
+      For squared-error loss, "fit the negative gradient" and "fit the ordinary leftover residual" are the exact
+      same instruction — that's why the very first boosting example anyone sees is usually just "fit the
+      residuals," with the gradient framing hidden underneath.
+    </Step>
+    <Step label="Any differentiable loss plugs into the same recipe">
+      Swap in a different differentiable loss (say, one built for classification) and the pseudo-residual formula
+      changes, but the outer loop — fit a small model to the current gradient, add it in, repeat — doesn't.
+    </Step>
+    <Step label="Every round only ever sees what's still wrong">
+      Round $m$'s stump never sees $y$ directly — only $r^{(m)}$, the part of $y$ that $F_{m-1}$ hasn't explained
+      yet. Whatever the ensemble already gets right stays untouched.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the residual list shrink as rounds are added — this is the "pseudo-residual" input each new stump is
+  actually trained on, made visible.
+</Play>
+
+<WorkedExample>
+  Five points: $(1,1), (2,2), (3,8), (4,9), (5,13)$.
+
+  <Steps>
+    <Step label="F0 is just the mean">
+      $\bar{y} = (1+2+8+9+13)/5 = 6.6$. Every point's residual going into round 1 is $y_i - 6.6$: $-5.6, -4.6,
+      1.4, 2.4, 6.4$ — total SSE $= 101.2$.
+    </Step>
+    <Step label="Round 1's stump finds the split at x = 2.5">
+      Splitting into $\{1,2\}$ and $\{3,4,5\}$, the group means are $-5.1$ and $3.4$ — this beats every other
+      candidate split by a wide margin. $F_1(x) = 6.6 - 5.1 = 1.5$ for $x < 2.5$, and $6.6 + 3.4 = 10$ for
+      $x \geq 2.5$.
+    </Step>
+    <Step label="New residuals, and a new SSE">
+      $y - F_1 = -0.5, 0.5, -2, -1, 3$ — SSE has dropped from $101.2$ to $14.5$. Real progress, but $x=3,4,5$ are
+      still off by as much as 3.
+    </Step>
+    <Step label="Round 2 fits a fresh stump to those residuals">
+      Splitting at $x = 4.5$ (isolating the single worst point, $x=5$), the group means are $-0.75$ and $3$.
+      $F_2(x) = F_1(x) - 0.75$ for $x < 4.5$, and $F_1(x) + 3 = 13$ for $x \geq 4.5$ — giving
+      $F_2 = 0.75, 0.75, 9.25, 9.25, 13$ and a final SSE of just $3.25$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GbmCheckpoint />
+
+<Summary>
+  $$
+  F_m(x) = F_{m-1}(x) + h_m(x), \qquad h_m \text{ fit to } r_i^{(m)} = y_i - F_{m-1}(x_i)
+  $$
+
+  AdaBoost reweights the *data*; gradient boosting reweights nothing — it just keeps handing each new weak
+  learner a smaller and smaller piece of what's left unexplained. Two rounds here cut total error from $101.2$ to
+  $3.25$ — over 30x — and
+  the mechanism generalizes past regression: swap the loss, and the same "fit the gradient, add it in" loop
+  produces a boosted classifier instead.
+</Summary>
