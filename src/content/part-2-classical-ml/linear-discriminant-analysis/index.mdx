@@ -1,0 +1,90 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LdaCheckpoint } from "./Demos";
+
+<Hook>
+  PCA finds the direction of maximum variance — but it doesn't know or care about class labels. Two
+  clusters can overlap completely along PCA's favorite direction while sitting far apart along some other
+  direction PCA never considers. What if you *do* have labels, and want the direction that best tells the
+  classes apart?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Class B's mean never moves. Shrink its spread and watch the dashed projection axis rotate — and the
+  separation score climb — purely because the classes have gotten *individually tighter*, not because
+  they've moved any further apart.
+</Intuition>
+
+<Formalize>
+  Fisher's LDA looks for the direction $\mathbf{w}$ that maximizes the ratio of between-class separation to
+  within-class spread once every point is projected onto it:
+
+  $$
+  \mathbf{w} = S_W^{-1}(\boldsymbol{\mu}_A - \boldsymbol{\mu}_B)
+  $$
+
+  <Variables>
+    <Variable>**$\boldsymbol{\mu}_A, \boldsymbol{\mu}_B$** — the mean position of class A and class B.</Variable>
+    <Variable>**$S_W$** — the **within-class scatter**: how spread out each class is around its own mean, summed across both classes. Small $S_W$ means tight clusters.</Variable>
+    <Variable>**$S_W^{-1}$** — inverting it means directions where the classes are *naturally tight* get amplified more than directions where they're naturally spread out.</Variable>
+    <Variable>**$\mathbf{w}$** — the resulting direction: not just "toward the other class's mean," but rescaled by how reliable each axis is.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Between-class scatter is the mean gap, squared">
+      $S_B = (\boldsymbol{\mu}_A-\boldsymbol{\mu}_B)(\boldsymbol{\mu}_A-\boldsymbol{\mu}_B)^\top$ — large
+      when the class means are far apart, independent of how tight or loose either cluster is.
+    </Step>
+    <Step label="Without S_W^-1, this would just be PCA on the mean difference">
+      Projecting onto the raw mean-difference vector alone ignores each class's own shape — a direction
+      where both classes happen to be tightly packed is far more useful for separating them than a raw
+      "toward the other mean" heading.
+    </Step>
+    <Step label="A degenerate S_W (perfectly collinear class spread) breaks the inverse">
+      If both classes' points fall on a single shared line, $S_W$ becomes singular and $S_W^{-1}$
+      doesn't exist — the same failure mode ridge regression exists to patch, one chapter over.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The raw Euclidean distance between the two class means never changes as you move the slider — only
+  class B's own spread does. Yet the LDA separation score moves a lot: distance between means alone isn't
+  what makes classes separable, distance *relative to how tight each class is* does.
+</Play>
+
+<WorkedExample>
+  Class A: $(1,2), (3,2)$, mean $(2,2)$. Class B: $(6,3), (6,5)$, mean $(6,4)$.
+
+  <Steps>
+    <Step label="Within-class scatter for each class">
+      Class A spreads only along $x$: $S_A = \begin{bmatrix}2&0\\0&0\end{bmatrix}$. Class B spreads only
+      along $y$: $S_B = \begin{bmatrix}0&0\\0&2\end{bmatrix}$. Summed: $S_W = \begin{bmatrix}2&0\\0&2\end{bmatrix}$
+      — a clean multiple of the identity, so $S_W^{-1} = \begin{bmatrix}0.5&0\\0&0.5\end{bmatrix}$.
+    </Step>
+    <Step label="The mean-difference vector">
+      $\boldsymbol{\mu}_A - \boldsymbol{\mu}_B = (2-6,\, 2-4) = (-4,-2)$.
+    </Step>
+    <Step label="The LDA direction, and the resulting separation">
+      $\mathbf{w} = S_W^{-1}(-4,-2) = (-2,-1)$. Projecting each point onto $\mathbf{w}$ (raw dot product):
+      class A's points land at $-4$ and $-8$ (mean $-6$); class B's land at $-15$ and $-17$ (mean $-16$) —
+      a gap of exactly $10$, with each class landing tightly around its own mean.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<LdaCheckpoint />
+
+<Summary>
+  $$
+  \mathbf{w} = S_W^{-1}(\boldsymbol{\mu}_A - \boldsymbol{\mu}_B)
+  $$
+
+  LDA's direction isn't just "point from one class mean toward the other" — it's that heading, corrected
+  by $S_W^{-1}$ so that directions where the classes are naturally tight count for more than directions
+  where they're naturally spread out. That's what makes it a *classification*-aware projection, where PCA
+  is not.
+</Summary>
