@@ -1,0 +1,49 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+}
+
+.rowPass {
+  composes: row;
+  border-color: var(--accent2);
+}
+
+.rowFail {
+  composes: row;
+  color: var(--ink-faint);
+}
+
+.mark {
+  width: 14px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.rowPass .mark {
+  color: var(--accent2-ink);
+}
+
+.rowFail .mark {
+  color: var(--ink-faint);
+}
+
+.label {
+  flex: 1;
+}
+
+.expected {
+  color: var(--ink-faint);
+  font-size: 12px;
+}

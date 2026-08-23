@@ -1,0 +1,100 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, BenchmarkCheckpoint } from "./Demos";
+
+<Hook>
+  Two patches for the same bug both look reasonable, and both pass the one test case you can see while
+  writing them. Only one of them actually fixes the underlying issue. How do you tell which — without
+  reading either patch's code?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click through the three patches. `indexOf` (Patch A) and the hardcoded shortcut (Patch C) both pass
+  exactly 3 of the 5 hidden tests — the scoreboard shows the identical bar for both — but look at *which*
+  three: the two patches don't agree with each other, because they're wrong for entirely different
+  reasons.
+</Intuition>
+
+<Formalize>
+  SWE-bench and its relatives score a patch against a **hidden test suite** — a fixed set of unit tests the
+  model never sees while writing the patch. A patch's score is just the fraction of those tests it passes,
+  and it only counts as **resolving the issue** if that fraction is exactly 1 — no partial credit.
+
+  $$
+  \text{passRate}(p) = \frac{1}{|T|}\sum_{t \in T} \mathbb{1}[p(t) = \text{expected}(t)], \qquad
+  \text{resolves}(p) \iff \text{passRate}(p) = 1
+  $$
+
+  <Variables>
+    <Variable>**$p$** — a candidate patch: a function that's actually executed, not graded by inspection.</Variable>
+    <Variable>**$T$** — the fixed hidden test suite (5 cases here); the model never sees these while writing $p$.</Variable>
+    <Variable>**$\mathbb{1}[\cdot]$** — 1 if the patch's output matches the expected value on that test, else 0.</Variable>
+    <Variable>**resolves($p$)** — the actual SWE-bench bar: every single test must pass, not "most."</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="The bug: last_index should find the LAST match, not the first">
+      `last_index([1,2,3,2,1], 2)` should return `3` (the last position of `2`), not `1`.
+    </Step>
+    <Step label="Patch A (indexOf) passes the easy cases, fails the ones that matter">
+      `[1,2,3,2,1]` → `indexOf` gives `1`, expected `3`: fail. `[5,5,5]` → `indexOf` gives `0`, expected
+      `2`: fail. The other three tests pass regardless, because there's no duplicate to disagree on — first
+      and last position coincide.
+    </Step>
+    <Step label="Patch B (lastIndexOf) is the real fix">
+      All 5 cases match exactly, because `lastIndexOf` is what "last occurrence" actually means.
+    </Step>
+    <Step label="Patch C ties Patch A's score for a completely different reason">
+      Patch C hardcodes the answer for the one test that was visible during development and falls back to
+      `-1` for everything else. It matches Patch A's 3-of-5 score without sharing a single line of real
+      logic — and it fails a different pair of tests.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch to Patch B and the readout flips to "resolves the issue" — the only one of the three that does.
+  Every hidden test has to agree; there's no reward here for getting most of them right.
+</Play>
+
+<WorkedExample>
+  Score Patch C by hand against all 5 hidden tests:
+
+  <Steps>
+    <Step label="[1,2,3,2,1], target 2 → expected 3">
+      `arr.length === 5 && target === 2` is true, so Patch C returns `3`. Matches. Pass.
+    </Step>
+    <Step label="[5,5,5], target 5 → expected 2">
+      Length is 3, not 5, so the condition is false and it falls to `-1`. Expected `2`. Fail.
+    </Step>
+    <Step label="[1,2,3], target 4 → expected -1">
+      Condition is false, returns `-1`. Matches. Pass.
+    </Step>
+    <Step label="[], target 1 → expected -1">
+      Condition is false (length is 0, not 5), returns `-1`. Matches. Pass.
+    </Step>
+    <Step label="[7], target 7 → expected 0">
+      Condition is false (length is 1, not 5), returns `-1`. Expected `0`. Fail.
+    </Step>
+  </Steps>
+
+  3 of 5 pass — passRate = 0.6, the identical number Patch A scored, but on rows 1, 3, 4 instead of A's
+  rows 3, 4, 5. Neither patch resolves the issue.
+</WorkedExample>
+
+<BenchmarkCheckpoint />
+
+<Summary>
+  $$
+  \text{resolves}(p) \iff \text{passRate}(p) = 1
+  $$
+
+  A pass rate alone can't tell a patch that's *almost* right from one that's right by coincidence in a
+  completely different spot — Patch A and Patch C proved that by tying at 0.6 while failing different
+  tests. SWE-bench sidesteps the ambiguity by refusing partial credit: the hidden suite either passes in
+  full or the issue isn't resolved. The next chapter asks what happens once running that hidden suite is
+  only safe to do after a human has signed off on the action in the first place.
+</Summary>
