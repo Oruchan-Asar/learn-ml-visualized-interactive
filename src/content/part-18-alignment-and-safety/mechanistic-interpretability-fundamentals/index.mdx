@@ -1,0 +1,81 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MechInterpCheckpoint } from "./Demos";
+
+<Hook>
+  Somewhere inside a trained network there's a number — one neuron's activation — that goes up on some
+  inputs and down on others. Reading that number and guessing "it means large animals" is a hypothesis,
+  not a fact. Mechanistic interpretability's job is turning "I think this neuron means X" into an
+  experiment that can actually falsify it.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Toggle each feature on and off. Neuron A only ever moves for "large AND not metal" — legs don't matter
+  to it at all. Neuron B doesn't care about size or material; it fires for anything with legs. Two
+  sharply different, cleanly separable jobs, found here by brute-force toggling because this network is
+  small enough to try every combination by hand.
+</Intuition>
+
+<Formalize>
+  **Probing** finds correlations: which inputs make a neuron fire. **Activation patching** tests
+  causation instead: take a neuron's activation from one input (the *source*), splice it into an
+  otherwise-normal forward pass on a different input (the *target*), and check whether the *output*
+  moves toward the source's own output. If it does, that neuron was carrying at least part of the causal
+  difference between the two inputs — not just correlated with it.
+
+  $$
+  \text{output}_{\text{patched}} = w_A \cdot a_{\text{patch}} + w_B \cdot b_{\text{patch}}
+  $$
+
+  <Variables>
+    <Variable>**$a_{\text{patch}}, b_{\text{patch}}$** — each neuron's activation, taken from either the target (left alone) or the source (spliced in).</Variable>
+    <Variable>**$w_A, w_B$** — the fixed output weights combining both neurons into the network's single output score.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Run the target normally, note the output">Baseline: both neurons take the target's own values.</Step>
+    <Step label="Swap in one neuron's source value">Everything else about the forward pass — the other neuron, all the weights — stays exactly as it was for the target.</Step>
+    <Step label="Compare the patched output to both baselines">If it lands on the source's actual output, that one neuron explains the entire target/source difference.</Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Patch mouse's neuron A with elephant's value, and the output jumps all the way to elephant's own
+  output — because mouse and elephant already agree on neuron B (both have legs), so neuron A alone was
+  carrying the entire size difference. Patch neuron B instead, from the same pair, and nothing moves.
+</Play>
+
+<WorkedExample>
+  Patching neuron A from "elephant" into "mouse"'s forward pass:
+
+  <Steps>
+    <Step label="Mouse's own values">
+      size=0, legs=1, metal=0 → neuron A = ReLU(2·0 − 3·0 − 1) = 0, neuron B = ReLU(3·1 − 1) = 2.
+      Output = 2(0) − 0.5(2) = **−1**.
+    </Step>
+    <Step label="Elephant's own values">
+      size=1, legs=1, metal=0 → neuron A = ReLU(2·1 − 3·0 − 1) = 1, neuron B = ReLU(3·1 − 1) = 2.
+      Output = 2(1) − 0.5(2) = **1**.
+    </Step>
+    <Step label="Patch: mouse's B, elephant's A">
+      Output = 2(1) − 0.5(2) = 2 − 1 = **1** — exactly elephant's output. Neuron A alone accounts for
+      the entire −1 → 1 gap, confirmed causally, not just by correlation.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MechInterpCheckpoint />
+
+<Summary>
+  $$
+  \text{output} = w_A \cdot \text{ReLU}(\dots) + w_B \cdot \text{ReLU}(\dots)
+  $$
+
+  Toggling inputs finds correlations; patching activations between forward passes tests which of those
+  correlations are actually load-bearing for the output. Real networks make both much harder — millions
+  of neurons instead of two, and, as the next chapter shows, a single neuron often encodes more than one
+  concept at once, so there may be no clean "this neuron means X" to find in the first place.
+</Summary>
