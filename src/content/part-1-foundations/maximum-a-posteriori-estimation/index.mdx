@@ -1,0 +1,96 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MapCheckpoint } from "./Demos";
+
+<Hook>
+  Maximum likelihood trusts the data completely — four flips is a tiny sample, and MLE will happily report
+  $\hat{p}=0.75$ off of it. What if you walked in already believing tails were a bit more likely?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The faint curve is the plain likelihood from the flips alone; the bold curve adds in a tails-favoring
+  prior. Dial the prior's strength up and watch the bold curve's peak slide away from the faint curve's —
+  that gap *is* the prior's influence.
+</Intuition>
+
+<Formalize>
+  Bayes' rule turns a likelihood into a posterior by multiplying in a prior belief over the parameter
+  itself. The **MAP estimate** maximizes that posterior instead of the raw likelihood:
+
+  $$
+  \hat{p}_{\text{MAP}} = \arg\max_p \big[\log L(p) + \log \pi(p)\big]
+  $$
+
+  <Variables>
+    <Variable>**$\hat{p}_{\text{MAP}}$** — the maximum a posteriori estimate.</Variable>
+    <Variable>**$L(p)$** — the data likelihood, same as in plain MLE.</Variable>
+    <Variable>**$\pi(p)$** — the prior density over $p$, encoding belief held before seeing any data.</Variable>
+  </Variables>
+
+  Using a Beta$(\alpha,\beta)$ prior — encoded as $\alpha-1$ imagined extra heads and $\beta-1$ imagined
+  extra tails — gives a closed form that looks just like the MLE with pseudo-counts folded in:
+
+  $$
+  \hat{p}_{\text{MAP}} = \frac{k+\alpha-1}{n+\alpha+\beta-2}
+  $$
+
+  <Variables>
+    <Variable>**$\alpha,\beta$** — the prior's pseudo-counts: imagined extra heads and tails, respectively.</Variable>
+    <Variable>**$k, n$** — the actually observed heads and total flips, exactly as in MLE.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="A uniform prior (α=β=1) reduces exactly to MLE">
+      Plug in $\alpha=\beta=1$ and the pseudo-counts vanish: $\hat{p}_{\text{MAP}} = k/n = \hat{p}_{\text{MLE}}$.
+    </Step>
+    <Step label="MAP is a compromise, not a replacement">
+      $\hat{p}_{\text{MAP}}$ always sits between the prior's own mean $\alpha/(\alpha+\beta)$ and the MLE —
+      more data pulls it toward the MLE; a stronger prior pulls it toward the prior mean.
+    </Step>
+    <Step label="The normalizing constant never matters">
+      The true posterior divides by $P(\text{data})$, but that constant doesn't depend on $p$, so it can
+      never change *where* the maximum sits — only the unnormalized numerator matters for MAP.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  At strength 0 the two peaks coincide exactly — an uninformative prior changes nothing. Every notch up adds
+  more imagined tails-observations, and the MAP estimate keeps sliding toward the prior's own mean.
+</Play>
+
+<WorkedExample>
+  Same four flips as the MLE chapter's toy — H, H, H, T, so $k=3$, $n=4$ — now with a Beta($\alpha{=}2,\beta{=}4$) prior.
+
+  <Steps>
+    <Step label="The MLE, ignoring the prior entirely">
+      $$
+      \hat{p}_{\text{MLE}} = \frac{3}{4} = 0.75
+      $$
+    </Step>
+    <Step label="Apply the MAP closed form">
+      $$
+      \hat{p}_{\text{MAP}} = \frac{k+\alpha-1}{n+\alpha+\beta-2} = \frac{3+2-1}{4+2+4-2} = \frac{4}{8} = 0.5
+      $$
+    </Step>
+    <Step label="Compare to the prior's own mean">
+      The prior alone believes $\alpha/(\alpha+\beta) = 2/6 \approx 0.333$. The MAP estimate, $0.5$, lands
+      exactly between that prior belief and the MLE's $0.75$ — pulled by the prior, not overridden by it.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MapCheckpoint />
+
+<Summary>
+  $$
+  \hat{p}_{\text{MAP}} = \frac{k+\alpha-1}{n+\alpha+\beta-2}
+  $$
+
+  MAP estimation is MLE with a built-in regularizer: prior pseudo-counts act exactly like extra observations,
+  pulling small-sample estimates back toward a belief you held before seeing any data — the same mechanism
+  that shows up later as L2 regularization's Gaussian prior on weights.
+</Summary>
