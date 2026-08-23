@@ -1,0 +1,88 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
+
+<Hook>
+  A matrix bends almost every direction you feed it into something new. But "almost" is doing real
+  work in that sentence — are there directions a given matrix leaves alone, only stretching them,
+  never rotating them at all?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag $v$ around. For most positions, $Av$ points somewhere completely different from $v$ — the
+  rotation angle swings all over the place. But near two particular directions, that angle collapses
+  toward $0°$: $A$ stops rotating and only scales.
+</Intuition>
+
+<Formalize>
+  A vector $v$ is an **eigenvector** of $A$ if $A$ doesn't rotate it at all — only scales it:
+
+  $$
+  Av = \lambda v
+  $$
+
+  <Variables>
+    <Variable>**$A$** — the matrix being analyzed.</Variable>
+    <Variable>**$v$** — the eigenvector: a direction $A$ only scales, never rotates.</Variable>
+    <Variable>**$\lambda$** — the eigenvalue: how much that direction gets stretched (or flipped, if negative).</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Finding lambda first">
+      Rearranging gives $(A-\lambda I)v = 0$, which has a nonzero solution $v$ only when
+      $\det(A-\lambda I)=0$ — a polynomial in $\lambda$ called the **characteristic polynomial**. Its
+      roots are exactly the eigenvalues.
+    </Step>
+    <Step label="Then solving for each eigenvector">
+      Once $\lambda$ is known, $(A-\lambda I)v=0$ becomes a system with a whole line of solutions —
+      any nonzero vector along that line is a valid eigenvector for that eigenvalue.
+    </Step>
+    <Step label="Eigenvectors need not be perpendicular">
+      Unlike a symmetric matrix, a general matrix's eigenvectors don't have to be at right angles to
+      each other — this chapter's example has eigenvectors at $(1,1)$ and $(1,-2)$, which are not
+      orthogonal.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the stretch ratio $|Av|/|v|$ alongside the rotation angle. At each of the two special
+  directions, the ratio locks onto a fixed number — that number *is* $\lambda$ for that direction, no
+  matter how far out you drag $v$ along it.
+</Play>
+
+<WorkedExample>
+  For $A = \begin{pmatrix}4&1\\2&3\end{pmatrix}$:
+
+  <Steps>
+    <Step label="Solve the characteristic equation">
+      $\det(A-\lambda I) = (4-\lambda)(3-\lambda) - (1)(2) = \lambda^2 - 7\lambda + 10 = (\lambda-5)(\lambda-2) = 0$,
+      so $\lambda_1=5$ and $\lambda_2=2$.
+    </Step>
+    <Step label="Solve for the first eigenvector">
+      For $\lambda_1=5$: $(A-5I)v=0 \Rightarrow -x+y=0 \Rightarrow y=x$, giving direction $(1,1)$. Check:
+      $A(1,1) = (4+1, 2+3) = (5,5) = 5(1,1)$. ✓
+    </Step>
+    <Step label="Solve for the second eigenvector">
+      For $\lambda_2=2$: $(A-2I)v=0 \Rightarrow 2x+y=0 \Rightarrow y=-2x$, giving direction $(1,-2)$. Check:
+      $A(1,-2) = (4-2, 2-6) = (2,-4) = 2(1,-2)$. ✓
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<EigenvectorCheckpoint />
+
+<Summary>
+  $$
+  Av = \lambda v
+  $$
+
+  Every square matrix carries its own set of invariant directions — the eigenvectors — each with its
+  own private scale factor, the eigenvalue. Finding them means solving one polynomial and then one
+  linear system per root, no guessing required. Later chapters build directly on this: positive
+  semi-definite matrices are defined by the sign of their eigenvalues, and the SVD generalizes this
+  exact machinery to matrices that aren't even square.
+</Summary>
