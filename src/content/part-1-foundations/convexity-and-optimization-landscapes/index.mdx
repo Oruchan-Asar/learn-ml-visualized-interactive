@@ -1,0 +1,91 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LandscapeCheckpoint } from "./Demos";
+
+<Hook>
+  Every bowl you've dragged a point across so far had exactly one bottom, findable from anywhere. Real loss
+  landscapes are rarely a single bowl — they can fold into separate dips, and worse, they can have flat spots
+  that look like a minimum from one direction and a maximum from another.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This surface has two dips separated by a ridge. Drag along the ridge itself, right through the middle —
+  the gradient can shrink to nearly nothing there too, even though it obviously isn't the bottom of anything.
+</Intuition>
+
+<Formalize>
+  A function is **convex** if the Hessian's eigenvalues are non-negative everywhere — informally, if it curves
+  upward (or stays flat) in *every* direction, at *every* point. When that fails, a critical point (where
+  $\nabla f = 0$) needs a second test to classify:
+
+  $$
+  \det H_f = f_{xx}f_{yy} - f_{xy}^2
+  $$
+
+  <Variables>
+    <Variable>**$H_f$** — the Hessian of $f$ at the critical point being classified.</Variable>
+    <Variable>**$f_{xx}, f_{yy}$** — the two pure second partials (curvature along each axis).</Variable>
+    <Variable>**$f_{xy}$** — the mixed second partial (how curvature along one axis changes as the other moves).</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="det > 0 and fxx > 0: a minimum">
+      Both axes curve upward and agree with each other — a genuine local bottom.
+    </Step>
+    <Step label="det > 0 and fxx < 0: a maximum">
+      Both axes curve downward together — a genuine local top.
+    </Step>
+    <Step label="det < 0: a saddle point">
+      The axes disagree — curving up along one direction and down along another. The gradient still vanishes
+      here, but it's neither a min nor a max: this is exactly what happened on the ridge above.
+    </Step>
+    <Step label="Convex functions never produce a saddle">
+      If $f$ is convex everywhere, $\det H_f \geq 0$ and $f_{xx}\geq 0$ hold at every point, so this test can
+      only ever report "minimum" — which is precisely why convexity was such a strong guarantee in the first
+      place.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  On the convex bowl, every critical point the test finds is a minimum — there's no other option. Switch to
+  the non-convex landscape and settle near the ridge at the center: same test, same formula, and this time it
+  reports "saddle."
+</Play>
+
+<WorkedExample>
+  Let $f(x,y) = (x^2-2)^2+y^2$, which has three critical points: the ridge at the origin, and two wells at
+  $x=\pm\sqrt2$.
+
+  <Steps>
+    <Step label="Confirm the origin is critical">
+      $$
+      \nabla f(0,0) = \big(4(0)(0^2-2),\ 2(0)\big) = (0,0)
+      $$
+    </Step>
+    <Step label="Classify it with the Hessian test">
+      $f_{xx}=12x^2-8$, $f_{yy}=2$, $f_{xy}=0$. At $x=0$: $f_{xx}=-8$, so
+      $\det H_f = (-8)(2) - 0^2 = -16 < 0$ — a **saddle**, exactly as the drag confirmed.
+    </Step>
+    <Step label="Classify a well the same way">
+      At $x=\sqrt2$: $f_{xx}=12(2)-8=16>0$, so $\det H_f = (16)(2)=32>0$ and $f_{xx}>0$ — a **minimum**, with
+      $f(\sqrt2,0)=0$, the global minimum value.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<LandscapeCheckpoint />
+
+<Summary>
+  $$
+  \det H_f = f_{xx}f_{yy}-f_{xy}^2
+  $$
+
+  A vanishing gradient is necessary for a minimum, but never sufficient — the second-derivative test is what
+  tells a genuine bottom apart from a saddle or a ridge. Neural network loss landscapes are almost never
+  convex, and in high dimensions saddle points, not local minima, turn out to be the more common obstacle —
+  which is exactly why practical optimizers need more than "follow the gradient downhill" to escape them.
+</Summary>
