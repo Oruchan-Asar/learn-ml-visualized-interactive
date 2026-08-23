@@ -1,0 +1,86 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SoftmaxCheckpoint } from "./Demos";
+
+<Hook>
+  Sigmoid squashes one number into a probability between 0 and 1 — perfect for two classes, "yes" or "no."
+  But what happens when there are three classes, or ten? You need something that turns a whole *vector* of
+  scores into a whole *vector* of probabilities, one per class, all landing between 0 and 1 and summing to
+  exactly 1.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Three raw scores ("logits"), one per class. Drag any slider and every probability updates — raise one
+  class's logit and the others don't just drop independently, they get squeezed out proportionally, because
+  the three numbers are locked together by that "sums to 1" constraint.
+</Intuition>
+
+<Formalize>
+  Softmax turns a vector of logits into a probability distribution by exponentiating each one and
+  normalizing by the total:
+
+  $$
+  \text{softmax}(\mathbf{z})_k = \frac{e^{z_k}}{\sum_{j=1}^{K} e^{z_j}}
+  $$
+
+  <Variables>
+    <Variable>**$\mathbf{z}$** — the vector of raw scores ("logits"), one per class, with no constraints on their range.</Variable>
+    <Variable>**$z_k$** — the logit for class $k$, the one whose probability this expression computes.</Variable>
+    <Variable>**$K$** — the number of classes.</Variable>
+    <Variable>**$e^{z_k}$** — exponentiating makes every term strictly positive, whatever sign $z_k$ had.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Set K=2 and this is exactly sigmoid">
+      With two classes, softmax reduces algebraically to $\sigma(z_1-z_2)$ — the same sigmoid from the
+      binary chapter, just reframed as a difference of two scores instead of one score against a fixed 0.
+    </Step>
+    <Step label="Shifting every logit by the same constant changes nothing">
+      $\text{softmax}(\mathbf{z}) = \text{softmax}(\mathbf{z}+c)$ for any constant $c$ — it cancels between
+      every numerator and the shared denominator. In practice, implementations subtract $\max(\mathbf{z})$
+      before exponentiating purely to avoid overflow, with no effect on the result.
+    </Step>
+    <Step label="A ratio of two logits is not the ratio of two probabilities">
+      Doubling a logit does not double its probability — the exponential and the shared normalization mean
+      the mapping from logits to probabilities is nonlinear throughout.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Same three logits, one dial: **temperature**. Divide every logit by $T$ before the softmax. $T<1$ sharpens
+  the distribution toward one confident class; $T>1$ flattens it toward uniform — the ranking of classes
+  never changes, only how sure the model sounds.
+</Play>
+
+<WorkedExample>
+  Logits $z = [2, 0, -1]$ for cat, dog, bird:
+
+  <Steps>
+    <Step label="Exponentiate each logit">
+      $e^2 \approx 7.389$, $e^0=1$, $e^{-1}\approx0.368$.
+    </Step>
+    <Step label="Sum them for the normalizer">
+      $7.389 + 1 + 0.368 = 8.757$.
+    </Step>
+    <Step label="Divide each by the sum">
+      $p(\text{cat}) \approx 0.844$, $p(\text{dog}) \approx 0.114$, $p(\text{bird}) \approx 0.042$ — and
+      $0.844+0.114+0.042 = 1$ exactly, as it must.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SoftmaxCheckpoint />
+
+<Summary>
+  $$
+  \text{softmax}(\mathbf{z})_k = \frac{e^{z_k}}{\sum_j e^{z_j}}
+  $$
+
+  Softmax is sigmoid's generalization to $K$ classes: exponentiate every logit to make it positive, then
+  normalize so the whole vector sums to exactly 1. It's the standard way a linear classifier's raw scores
+  become calibrated, comparable probabilities across any number of classes.
+</Summary>
