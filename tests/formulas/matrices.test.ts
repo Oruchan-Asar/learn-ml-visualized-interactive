@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { apply, ROTATE_90, SCALE, FLIP_X, SHEAR } from "@/lib/math-core/matrices";
+import { apply, ROTATE_90, SCALE, FLIP_X, SHEAR, PROJECT_X } from "@/lib/math-core/matrices";
 
 describe("apply (matrix-vector multiplication)", () => {
   it("rotates (1,0) to (0,1) with a 90° rotation matrix", () => {
@@ -32,11 +32,17 @@ describe("apply (matrix-vector multiplication)", () => {
     expect(result.y).toBeCloseTo(3);
   });
 
+  it("collapses (5, 3) onto the x-axis: PROJECT_X gives (5, 0)", () => {
+    const result = apply(PROJECT_X, { x: 5, y: 3 });
+    expect(result.x).toBeCloseTo(5);
+    expect(result.y).toBeCloseTo(0);
+  });
+
   it("is linear: M(a+b) = Ma + Mb, for every preset matrix", () => {
     const a = { x: 2, y: -3 };
     const b = { x: -1, y: 5 };
     const sum = { x: a.x + b.x, y: a.y + b.y };
-    for (const m of [ROTATE_90, SCALE, FLIP_X, SHEAR]) {
+    for (const m of [ROTATE_90, SCALE, FLIP_X, SHEAR, PROJECT_X]) {
       const combined = apply(m, sum);
       const separate = apply(m, a);
       const other = apply(m, b);

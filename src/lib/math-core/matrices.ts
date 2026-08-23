@@ -20,3 +20,5 @@ export const ROTATE_90: Mat2 = { a: 0, b: -1, c: 1, d: 0 };
 export const SCALE: Mat2 = { a: 2, b: 0, c: 0, d: 0.5 };
 export const FLIP_X: Mat2 = { a: -1, b: 0, c: 0, d: 1 };
 export const SHEAR: Mat2 = { a: 1, b: 1, c: 0, d: 1 };
+/** Collapses every vector onto the x-axis — the simplest possible projection. */
+export const PROJECT_X: Mat2 = { a: 1, b: 0, c: 0, d: 0 };

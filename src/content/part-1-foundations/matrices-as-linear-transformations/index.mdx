@@ -1,0 +1,72 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MatrixCheckpoint } from "./Demos";
+
+<Hook>
+  A function takes a number to a number. What does a function from arrows to arrows look like?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag $v$ anywhere. $Mv$ always stays exactly $90°$ ahead of it — the matrix isn't picking a new direction each time, it's applying the same fixed rule to whatever you hand it.
+</Intuition>
+
+<Formalize>
+  A $2\times2$ matrix is that fixed rule —
+
+  $$
+  M = \begin{pmatrix} a & b \\ c & d \end{pmatrix}, \qquad
+  Mv = \begin{pmatrix} a\,v_x + b\,v_y \\ c\,v_x + d\,v_y \end{pmatrix}
+  $$
+
+  <Variables>
+    <Variable>**$M$** — the $2\times2$ matrix representing the transformation.</Variable>
+    <Variable>**$a, b, c, d$** — the four entries of $M$ that determine what kind of transformation it performs.</Variable>
+    <Variable>**$v$** — the input vector being transformed, with components $v_x, v_y$.</Variable>
+    <Variable>**$Mv$** — the output vector after applying the transformation.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Each output is a weighted mix">
+      Each output component is a weighted mix of $v$'s own components.
+    </Step>
+    <Step label="The entries decide the transformation">
+      Change $a,b,c,d$ and you change *what kind* of transformation it is — a stretch, a rotation, a shear,
+      or a projection that collapses a whole dimension away.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch matrices and drag $v$ around each time. The same arrow gets rotated, stretched, sheared, or flattened onto an axis depending only on which numbers are sitting in $M$.
+</Play>
+
+<WorkedExample>
+  With $M = \begin{pmatrix} 2 & 0 \\ 0 & 0.5 \end{pmatrix}$ (the "Scale" preset) and $v=(3,4)$:
+
+  <Steps>
+    <Step label="Multiply the matrix by the vector">
+      $$
+      Mv = \begin{pmatrix} 2(3) + 0(4) \\ 0(3) + 0.5(4) \end{pmatrix} = \begin{pmatrix} 6 \\ 2 \end{pmatrix}
+      $$
+    </Step>
+    <Step label="Read what each component did">
+      The $x$-component doubled, the $y$-component halved — exactly what a diagonal matrix does: scale each axis
+      independently. Push that idea further — set the second diagonal entry to exactly $0$, as in the "Project"
+      preset — and the $y$-component vanishes entirely: every vector collapses onto the $x$-axis. Projection is
+      just a transformation with nothing left in one direction.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MatrixCheckpoint />
+
+<Summary>
+  $$
+  Mv = \begin{pmatrix} a\,v_x + b\,v_y \\ c\,v_x + d\,v_y \end{pmatrix}
+  $$
+
+  A matrix is a fixed rule for turning any vector into another one. The same four numbers, applied consistently, are all it takes to rotate, stretch, shear, or project every arrow in the plane.
+</Summary>
