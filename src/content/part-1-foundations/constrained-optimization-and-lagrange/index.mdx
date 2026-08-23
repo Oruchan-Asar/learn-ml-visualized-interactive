@@ -1,0 +1,87 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LagrangeCheckpoint } from "./Demos";
+
+<Hook>
+  Every optimum so far has been free to sit anywhere. What happens when the answer is required to lie
+  exactly on some boundary — a fixed budget, a fixed total — and "downhill" would otherwise walk straight
+  off of it?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The dashed line is a hard constraint: every point on it satisfies $x+y=4$. The circles are level sets of
+  $f(x,y)=x^2+y^2$ — the smaller the circle, the smaller $f$ is there. Slide along the line and watch the
+  circle passing through the point grow and shrink.
+</Intuition>
+
+<Formalize>
+  At the constrained optimum, the objective's level curve is exactly **tangent** to the constraint — their
+  gradients point the same direction:
+
+  $$
+  \nabla f(x,y) = \lambda\, \nabla g(x,y)
+  $$
+
+  <Variables>
+    <Variable>**$f(x,y)$** — the objective being minimized (or maximized).</Variable>
+    <Variable>**$g(x,y)=0$** — the equality constraint the solution must satisfy.</Variable>
+    <Variable>**$\lambda$** — the Lagrange multiplier: the scalar that makes the two gradients equal.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Why tangency is the condition">
+      If the level curve *crossed* the constraint instead of touching it, you could slide a little further
+      along the constraint and keep decreasing $f$ — so a crossing point can never be optimal. Only where the
+      curve is tangent to the line is there nowhere better left to slide.
+    </Step>
+    <Step label="Tangent curves share a normal direction">
+      Two curves are tangent exactly when their gradients (normal directions) are parallel — which is what
+      $\nabla f = \lambda\nabla g$ says algebraically.
+    </Step>
+    <Step label="λ measures sensitivity to the constraint">
+      $\lambda$ isn't just bookkeeping: it says how much the optimal $f$ would change per unit of slack if the
+      constraint (here, the "4") were relaxed.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The accent arrow is $\nabla f$ at the current point; the dashed-line-colored arrow is the fixed direction
+  of $\nabla g=(1,1)$. Slide until they point the same way — that's the only spot on the whole line where
+  they agree, and it's exactly where the level circle stops crossing the line and just touches it.
+</Play>
+
+<WorkedExample>
+  Minimize $f(x,y)=x^2+y^2$ subject to $g(x,y)=x+y-4=0$:
+
+  <Steps>
+    <Step label="Write the Lagrange condition componentwise">
+      $\nabla f = (2x, 2y)$ and $\nabla g=(1,1)$, so $\nabla f=\lambda\nabla g$ means $2x=\lambda$ and
+      $2y=\lambda$ — which forces $x=y$.
+    </Step>
+    <Step label="Combine with the constraint">
+      Substituting $x=y$ into $x+y=4$ gives $2x=4$, so $x=y=2$ and $\lambda=2x=4$.
+    </Step>
+    <Step label="Check a non-optimal point for contrast">
+      At $(0,4)$: $\nabla f=(0,8)$. Matching components gives $\lambda=0$ from $x$ but $\lambda=8$ from $y$ —
+      they disagree, so $(0,4)$ is *not* a critical point of the constrained problem, and indeed
+      $f(0,4)=16 > f(2,2)=8$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<LagrangeCheckpoint />
+
+<Summary>
+  $$
+  \nabla f(x,y) = \lambda\, \nabla g(x,y)
+  $$
+
+  Constrained optimization doesn't abandon "follow the gradient" — it just adds one requirement: stay on the
+  constraint, and stop only where the objective's gradient has nothing left to offer that the constraint
+  would still allow. This exact condition, generalized to inequality constraints via the KKT conditions, is
+  what SVMs solve to find their maximum-margin boundary.
+</Summary>
