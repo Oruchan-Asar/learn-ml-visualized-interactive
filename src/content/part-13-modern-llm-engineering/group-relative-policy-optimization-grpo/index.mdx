@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GrpoCheckpoint } from "./Demos";
+
+<Hook>
+  Part XVI's PPO chapter needed a critic network to estimate a baseline — how good a state "should" be
+  — so the policy only gets credit for beating expectations. Training a whole second network just to
+  produce one number per state is expensive. What if the samples you already drew could supply that
+  baseline themselves?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Five sampled responses to one math problem, each with its own binary verifiable reward from the
+  previous chapter. Toggle to the group-relative advantage and watch it appear — computed entirely
+  from these five numbers, no separate network trained anywhere.
+</Intuition>
+
+<Formalize>
+  **GRPO** (short for **Group Relative Policy Optimization**) samples a GROUP of $G$ responses to the
+  same prompt, then normalizes each one's reward against that group's own statistics:
+
+  $$
+  A_i = \frac{r_i - \text{mean}(r_1, \dots, r_G)}{\text{std}(r_1, \dots, r_G)}
+  $$
+
+  <Variables>
+    <Variable>**$A_i$** — the advantage assigned to sampled response $i$.</Variable>
+    <Variable>**$r_i$** — response $i$'s own reward (e.g. RLVR's binary verifiable reward from the previous chapter).</Variable>
+    <Variable>**$\text{mean}(r_1,\dots,r_G)$, $\text{std}(r_1,\dots,r_G)$** — the mean and standard deviation of all $G$ rewards in the group.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="The baseline comes from the samples themselves">
+      PPO's baseline is a learned prediction of expected return. GRPO's baseline is just the group's
+      own mean — no network, no separate training signal, no value-function bias to worry about.
+    </Step>
+    <Step label="The scale comes from the samples too">
+      Dividing by the group's standard deviation keeps the advantage's scale comparable across prompts
+      of very different difficulty — a group where everyone agrees produces small, tightly-scaled
+      advantages; a group with wildly different rewards produces larger ones.
+    </Step>
+    <Step label="No critic network, anywhere">
+      That's GRPO's entire pitch: PPO's clipped policy-gradient update, unchanged, but fed an advantage
+      computed in closed form from one batch of samples instead of a trained critic's guess.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Same formula, two different groups. On the easy problem, four of five responses are correct — being
+  the one that's wrong is expensive: advantage $-2.0$, far below the four correct responses' modest
+  $+0.5$ each. On the hard problem, only one of five is correct — now being right is what's rare and
+  valuable: advantage $+2.0$, while each of the four wrong responses only drops to $-0.5$. The exact
+  same rewards, interpreted relative to two different groups, produce two very different training
+  signals.
+</Play>
+
+<WorkedExample>
+  Five sampled responses to an easy problem, rewards $[1, 1, 1, 1, 0]$ — four correct, one wrong:
+
+  <Steps>
+    <Step label="Group statistics">
+      Mean $= 4/5 = 0.8$. This is a Bernoulli group, so variance $= p(1-p) = 0.8 \times 0.2 = 0.16$,
+      and $\text{std} = \sqrt{0.16} = 0.4$.
+    </Step>
+    <Step label="Advantage for a correct response">
+      $A = (1 - 0.8)/0.4 = 0.2/0.4 = 0.5$.
+    </Step>
+    <Step label="Advantage for the one wrong response">
+      $A = (0 - 0.8)/0.4 = -0.8/0.4 = -2.0$ — four times the magnitude of the reward for getting it
+      right, purely because being wrong was rare in this group.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GrpoCheckpoint />
+
+<Summary>
+  $$
+  A_i = \frac{r_i - \text{mean}(r_1, \dots, r_G)}{\text{std}(r_1, \dots, r_G)}
+  $$
+
+  GRPO's entire innovation is replacing a trained critic's baseline with one computed directly from a
+  group of samples — mean for the baseline, standard deviation for the scale. It's the exact
+  combination that made scaling RLVR to reasoning models practical: no second network to train and
+  keep in sync, just statistics over whatever batch of responses was already sampled. The next chapter
+  goes one level deeper than a single final-answer reward: scoring each individual reasoning STEP, not
+  just the finished response.
+</Summary>

@@ -1,0 +1,83 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PpoCheckpoint } from "./Demos";
+
+<Hook>
+  Actor-critic's gradient step can, in principle, be as large as the math allows — nothing stops a single update from making a good action ten times more likely in one shot. If the advantage estimate that step was based on happens to be wrong (and it often is, especially early on), that's a huge, hard-to-undo mistake.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the ratio $r$ — how much more (or less) likely the new policy makes the action the old policy took. The dashed line is the plain, unlimited objective; the bold line is PPO's version. They agree almost everywhere, then the bold line goes flat once $r$ crosses $1+\varepsilon$: past that point, moving further doesn't earn any more reward in the objective, no matter how far the policy actually moves.
+</Intuition>
+
+<Formalize>
+  With probability ratio $r(\theta) = \frac{\pi_\theta(a|s)}{\pi_{\theta_{\text{old}}}(a|s)}$ and advantage estimate $A$, **PPO's clipped surrogate objective** is:
+
+  $$
+  L^{\text{CLIP}}(\theta) = \min\big(r(\theta)\, A,\ \text{clip}(r(\theta),\, 1{-}\varepsilon,\, 1{+}\varepsilon)\, A\big)
+  $$
+
+  <Variables>
+    <Variable>**$r(\theta)$** — the probability ratio: how much more (or less) likely the *new* policy makes the action taken, relative to the policy that generated the data.</Variable>
+    <Variable>**$A$** — the advantage estimate for that action (e.g. the actor-critic TD error from last chapter).</Variable>
+    <Variable>**$\varepsilon$** — the clip range, typically around $0.2$.</Variable>
+    <Variable>**$\text{clip}(r, 1{-}\varepsilon, 1{+}\varepsilon)$** — $r$ clamped into $[1{-}\varepsilon,\ 1{+}\varepsilon]$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="r = 1 means 'no change yet'">
+      $r(\theta)=1$ exactly when the new policy assigns the same probability to that action as the old
+      one did — the starting point before any update has moved anything.
+    </Step>
+    <Step label="The min makes it a pessimistic bound">
+      Taking the $\min$ of the raw and clipped terms means the objective can never be *more* generous
+      about a large policy change than the honest, unclipped number — it can only be more conservative.
+    </Step>
+    <Step label="The clip only bites on one side">
+      For a positive advantage, increasing $r$ past $1+\varepsilon$ gets capped — no extra credit for
+      over-committing to a good action. But decreasing $r$ below $1-\varepsilon$ isn't clipped at all: the
+      $\min$ just picks the (already smaller) unclipped term, so nothing stops the policy from moving a
+      good action's probability *down* as far as the raw gradient wants. The clip specifically prevents
+      exploiting an advantage by moving too far in the *rewarding* direction, not the punishing one.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Step through ratios from $0.7$ up to $1.5$. Below $1+\varepsilon=1.2$, the bold and dashed lines sit exactly on top of each other — nothing is being clipped. Past $1.2$, the bold line stays flat at $1.2 \times A$ no matter how much further $r$ climbs.
+</Play>
+
+<WorkedExample>
+  With $A=1$ and $\varepsilon=0.2$ (so the clip range is $[0.8, 1.2]$):
+
+  <Steps>
+    <Step label="r = 0.9 — inside the clip range, nothing happens">
+      $\text{clip}(0.9) = 0.9$, so both terms equal $0.9 \times 1 = 0.9$. The objective is just the plain
+      policy gradient here — the clip hasn't engaged at all.
+    </Step>
+    <Step label="r = 0.7 — below 1-epsilon, but still not clipped">
+      $\text{clip}(0.7) = 0.8$, giving a clipped term of $0.8$. But the raw unclipped term is
+      $0.7 \times 1 = 0.7$, which is *smaller* — so $\min(0.7, 0.8) = 0.7$ wins. The clip exists but never
+      binds here, exactly the asymmetry described above.
+    </Step>
+    <Step label="r = 1.3 — past 1+epsilon, and now it bites">
+      $\text{clip}(1.3) = 1.2$, giving a clipped term of $1.2$. The unclipped term is
+      $1.3 \times 1 = 1.3$. Now $\min(1.3, 1.2) = 1.2$ — the objective is held down to $1.2$, even though
+      the policy actually moved the ratio to $1.3$. That gap is the clip doing its job: refusing to reward
+      the update any further for moving past the trust region.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PpoCheckpoint />
+
+<Summary>
+  $$
+  L^{\text{CLIP}}(\theta) = \min\big(r(\theta)\, A,\ \text{clip}(r(\theta),\, 1{-}\varepsilon,\, 1{+}\varepsilon)\, A\big)
+  $$
+
+  PPO keeps actor-critic's exact advantage estimate and policy-gradient machinery, but caps how much credit a single update can take for moving the policy a long way in one step — cheaply approximating a hard trust-region constraint with nothing more than a $\min$ and a $\text{clip}$. That's the full arc of this part: from a policy with no memory of state at all (the bandit), to knowing a state's value under a fixed policy, to finding the optimal values and policy exactly, to learning them from experience, to learning a policy directly, and finally to constraining how aggressively that policy is allowed to change on any single step.
+</Summary>

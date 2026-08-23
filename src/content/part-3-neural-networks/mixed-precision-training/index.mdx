@@ -1,0 +1,86 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MixedPrecisionCheckpoint } from "./Demos";
+
+<Hook>
+  Half-precision floats train faster and use half the memory. They also can't represent a gradient like $0.00005$ at
+  all — it just rounds down to zero. So how does anyone train in FP16 without every small gradient silently vanishing?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This gradient is real — it's genuinely pushing a weight in a direction — but it's too small for the low-precision
+  format to store. Cast it directly and it becomes exactly $0$: not "small," gone. A gradient of $0$ means that
+  weight gets no update at all.
+</Intuition>
+
+<Formalize>
+  Loss scaling multiplies the loss (and hence every gradient) by a constant before the backward pass, then divides
+  the optimizer's update by the same constant afterward:
+
+  $$
+  g_{\text{used}} = \frac{\text{cast}_{\text{fp16}}(s \cdot g)}{s}
+  $$
+
+  <Variables>
+    <Variable>**$g$** — the true, full-precision gradient.</Variable>
+    <Variable>**$s$** — the loss scale, a constant chosen large enough to lift small gradients above FP16's
+    representable range.</Variable>
+    <Variable>**$\text{cast}_{\text{fp16}}$** — rounding to low precision, including flushing anything still too
+    small to zero.</Variable>
+    <Variable>**$g_{\text{used}}$** — the gradient actually applied to the weight, after undoing the scale.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Scale up before storage">
+      $s\cdot g$ is large enough to survive being rounded into FP16, even though $g$ alone wasn't.
+    </Step>
+    <Step label="Scale back down before the update">
+      Dividing by $s$ afterward recovers a value extremely close to the original $g$ — the update itself still
+      happens in full precision, only the *storage* was ever low-precision.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the scale slider up from $1\times$. Below a threshold, the recovered gradient is a flat $0$ — the update is
+  silently skipped. Cross it, and the true gradient comes back essentially exactly, every time, for every larger
+  scale you try afterward.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Without loss scaling">
+      A true gradient of $5\times10^{-5}$ is smaller than the toy format's representable floor. Cast directly, it
+      stores as exactly $0$ — that parameter stops learning for this step, and nothing downstream indicates why.
+    </Step>
+    <Step label="With loss scaling at 2×">
+      Scaled up to $1\times10^{-4}$, the value survives casting. Divided back down by $2$, it comes back out as
+      $5\times10^{-5}$ — the exact true gradient, recovered.
+    </Step>
+    <Step label="A second problem: the weight itself">
+      Loss scaling protects gradients in flight, but the weight being updated has its own precision problem. A
+      weight of $1.234567$ stored directly in the toy low-precision format rounds to $1.23$ — and a tiny update of
+      $-0.0001$ added to $1.23$ still rounds right back to $1.23$. Applied for 10 steps, the fp16-only weight never
+      moves from $1.23$, while a full-precision master copy of the same weight, receiving the same updates, reaches
+      $1.233567$ — a real, accumulated difference of about $0.0036$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MixedPrecisionCheckpoint />
+
+<Summary>
+  $$
+  g_{\text{used}} = \frac{\text{cast}_{\text{fp16}}(s \cdot g)}{s}
+  $$
+
+  Mixed precision training isn't "just use smaller floats" — it's two separate fixes stacked together. Loss scaling
+  keeps small-but-real gradients from being flushed to zero on the way through the backward pass. A full-precision
+  master copy of the weights keeps small-but-real *updates* from vanishing on contact once they're applied. Drop
+  either fix and FP16's speed and memory advantages come with silent, hard-to-diagnose training stalls. That's the
+  last individual fix this part introduces — the closing chapter puts it back to back with normalization, warmup,
+  and decoupled decay, all at once, on a single network that won't train without them.
+</Summary>

@@ -1,0 +1,98 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RepresentingCheckpoint } from "./Demos";
+
+<Hook>
+  A 3D scanner, a game engine, and a physics simulator all need to store "a shape" — but they almost
+  never agree on *how*. Before any neural network or renderer touches 3D data, someone has to decide: a
+  cloud of points, a grid of occupied cells, or a surface built from triangles?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same unit cube, three representations, side by side. The point cloud and the mesh don't care about the
+  slider at all — they store 8 exact corners no matter what. The voxel grid is the odd one out: its cost
+  is a knob you turn, and turning it up doesn't just cost more memory, it's the *only* way a voxel grid
+  gets more precise.
+</Intuition>
+
+<Formalize>
+  A point cloud stores $n$ points as raw coordinates — cheap, exact, but with no notion of "surface" or
+  "inside." A voxel grid instead quantizes space itself into a resolution$^3$ array of occupied/empty
+  cells — connectivity is free (neighboring cells are just array neighbors), but any point snaps to its
+  cell's center:
+
+  $$
+  \text{bytes}_{\text{cloud}} = 3n \cdot b_f, \qquad
+  \text{bytes}_{\text{voxel}} = r^3 \cdot b_v, \qquad
+  \text{error}_{\text{voxel}} = \frac{s}{2r}
+  $$
+
+  A mesh pays for both: exact vertex coordinates *and* a triangle list describing how they connect into a
+  surface —
+
+  $$
+  \text{bytes}_{\text{mesh}} = 3n \cdot b_f + 3t \cdot b_i
+  $$
+
+  <Variables>
+    <Variable>**$n$** — number of points or vertices; **$t$** — number of triangles.</Variable>
+    <Variable>**$r$** — voxel grid resolution (cells per axis); **$s$** — the shape's side length.</Variable>
+    <Variable>**$b_f, b_i$** — bytes per stored float coordinate and per stored triangle index (4 each, float32/uint32).</Variable>
+    <Variable>**$\text{error}_{\text{voxel}}$** — the worst-case distance a true position can be from the cell center it got quantized to.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Point cloud: 8 corners, no connectivity">
+      $3 \times 8 \times 4 = 96$ bytes. Exact positions, but no way to tell "inside" from "outside" the
+      cube, or which points are neighbors on the surface.
+    </Step>
+    <Step label="Voxel grid at resolution 8">
+      $8^3 \times 1 = 512$ bytes — already more than the point cloud, for a *less* precise cube (every
+      corner snaps to the nearest cell center, error $= 1/16 = 0.0625$).
+    </Step>
+    <Step label="Mesh: 8 vertices + 12 triangles">
+      $96 + (12 \times 3 \times 4) = 96 + 144 = 240$ bytes. Exact *and* connected — the extra 144 bytes
+      buy back everything the voxel grid gave up.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the crossover: past a certain resolution, the "simple" occupancy grid costs more bytes than the
+  exact mesh it's approximating — and it's *still* only approximate. That tradeoff is exactly why later
+  chapters reach for neither: a neural field or a pile of Gaussians stores shape as continuous function
+  parameters instead of a discretized grid.
+</Play>
+
+<WorkedExample>
+  The same cube, two more resolutions:
+
+  <Steps>
+    <Step label="Resolution 4 — coarse">
+      $4^3 = 64$ bytes, error $= 1/8 = 0.125$ — cheaper than the point cloud, but a corner could be
+      misplaced by an eighth of the cube's side.
+    </Step>
+    <Step label="Resolution 16 — fine">
+      $16^3 = 4096$ bytes, error $= 1/32 \approx 0.031$ — over 40x the point cloud's cost, for a cube
+      whose *exact* corners take only 96 bytes to store outright.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RepresentingCheckpoint />
+
+<Summary>
+  $$
+  \text{bytes}_{\text{cloud}} = 3n b_f, \quad \text{bytes}_{\text{voxel}} = r^3 b_v, \quad \text{bytes}_{\text{mesh}} = 3n b_f + 3t b_i
+  $$
+
+  Three representations, three different bets: a point cloud bets that raw coordinates are enough, a
+  voxel grid bets that quantized occupancy is worth its resolution cost, a mesh bets that explicit
+  connectivity is worth storing on top of exact vertices. Every one of them assumes you already know
+  *where* the camera is and how it turns 3D points into pixels — which is exactly what the next chapter
+  builds before the rest of this Part replaces grids and meshes with something stranger: a scene stored
+  as the weights of a tiny neural network.
+</Summary>

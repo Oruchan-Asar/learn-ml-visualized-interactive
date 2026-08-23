@@ -1,0 +1,100 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, VlaCheckpoint } from "./Demos";
+
+<Hook>
+  A vision-language-action (VLA) model like RT-2, OpenVLA, or $\pi_0$ takes in the same two things at
+  once — a camera frame and a typed or spoken instruction — and outputs a robot action, end to end, with
+  no hand-built perception pipeline or planner in between. The vision side of that is a large pretrained
+  backbone. The part that's actually new, and small enough to compute by hand, is what happens after: how
+  a tokenized instruction turns into a concrete motion.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same arm, same starting position, two different instructions. Each word in the instruction carries its
+  own fixed action contribution — directional words push the arm, filler words like "move" or "the"
+  contribute nothing — and the action the arm actually takes is just those contributions added up.
+</Intuition>
+
+<Formalize>
+  A VLA policy's action head reduces to a language-to-action embedding sum: every token contributes a
+  fixed vector, and the commanded action is their total.
+
+  $$
+  a = \sum_{i=1}^{n} e(t_i)
+  $$
+
+  <Variables>
+    <Variable>**$a$** — the action vector the policy outputs: here, a 2D delta for the end effector.</Variable>
+    <Variable>**$t_i$** — the $i$-th token of the language instruction.</Variable>
+    <Variable>**$e(\cdot)$** — the token-to-action embedding: each token's fixed contribution to the action.</Variable>
+    <Variable>**$n$** — the number of tokens in the instruction.</Variable>
+  </Variables>
+
+  The new position is the current observation (what the camera reports) plus that action, kept inside the
+  workspace:
+
+  $$
+  p' = \text{clip}(p + a, -B, B)
+  $$
+
+  <Variables>
+    <Variable>**$p'$** — the end effector's next position.</Variable>
+    <Variable>**$p$** — the current end-effector position, as read from the vision input.</Variable>
+    <Variable>**$B$** — the workspace bound the end effector is confined to.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Vision fixes where you start; language decides where you go">
+      The camera observation supplies $p$; the instruction supplies $a$. Change either one and the output
+      changes — that's what makes it a genuinely multimodal policy rather than a language model with a
+      robot bolted on.
+    </Step>
+    <Step label="Token order doesn't matter here, only which tokens appear">
+      Because $a$ is a sum, "move up right" and "move right up" produce the identical action. Real VLA
+      action heads are far richer than a sum, but the shape of the problem — tokens in, a continuous
+      action out — is the same one being simplified here.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Three different instructions, same vocabulary, same starting position. "Reach the cup left" and "move
+  down left" land on different final positions because "reach" and "the" and "cup" contribute nothing —
+  only "left" and "down" move the arm.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Tokenize the instruction">
+      "move up right" → tokens `["move", "up", "right"]`.
+    </Step>
+    <Step label="Sum each token's fixed action vector">
+      `move` contributes $(0,0)$, `up` contributes $(0,1)$, `right` contributes $(1,0)$. Sum:
+      $a = (0,0) + (0,1) + (1,0) = (1,1)$.
+    </Step>
+    <Step label="Apply the action to the observed position">
+      Starting at $p=(0,0)$: $p' = (0,0) + (1,1) = (1,1)$, well inside the workspace bound of 3, so no
+      clipping is needed.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<VlaCheckpoint />
+
+<Summary>
+  $$
+  a = \sum_{i=1}^{n} e(t_i) \qquad p' = \text{clip}(p + a, -B, B)
+  $$
+
+  A real VLA model replaces this fixed per-token lookup with a trained transformer that conditions the
+  action on the *entire* image and the *entire* instruction jointly, and it outputs a much richer
+  action — often torques or joint targets across many degrees of freedom, not a single 2D delta. But the
+  structural claim survives the simplification: language and vision are combined into one representation,
+  and one head maps that representation to a physical motion. The next chapter looks at how that action
+  gets generated in the first place — not as a single vector, but as a whole future trajectory, produced
+  by denoising noise into a smooth path.
+</Summary>

@@ -1,0 +1,99 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, InstructionTuningCheckpoint } from "./Demos";
+
+<Hook>
+  A model pretrained on raw text is extremely good at one thing: predicting what word comes next in a
+  document. Ask it "Explain gravity:" and it might just continue the pattern — writing "Explain
+  friction:" next, the way a dictionary of definitions would. It was never trained to *answer*
+  anything. What has to change to fix that?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Slide the mask boundary across the same eight tokens. Everything left of the boundary is
+  parenthesized — masked out, contributing nothing to the loss. Watch the loss change as the boundary
+  moves, and notice that nothing about *how* the loss is computed ever changes — only which tokens are
+  allowed to vote.
+</Intuition>
+
+<Formalize>
+  Instruction tuning (**SFT**, short for **Supervised Fine-Tuning**) uses the exact same next-token
+  cross-entropy loss as pretraining, with one change: a binary mask that zeroes out every prompt
+  position, so only response tokens contribute.
+
+  $$
+  \mathcal{L}_{\text{SFT}} = \frac{1}{|y|}\sum_{t \,\in\, \text{response}} -\log p(y_t \mid x, y_{<t})
+  $$
+
+  <Variables>
+    <Variable>**$\mathcal{L}_{\text{SFT}}$** — the SFT loss for one (prompt, response) example.</Variable>
+    <Variable>**$x$** — the prompt tokens, masked out of the loss entirely.</Variable>
+    <Variable>**$y$** — the response tokens, the only ones that vote.</Variable>
+    <Variable>**$y_t$** — the $t$-th response token; $y_{&lt;t}$ is every token (prompt and response) before it.</Variable>
+    <Variable>**$p(y_t \mid x, y_{&lt;t})$** — the model's predicted probability of the true next token, given everything before it.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Pretraining's loss masks nothing">
+      Every position in the sequence, prompt included, contributes its own $-\log p(\cdot)$ term to the
+      mean — the model is graded on predicting the prompt too, since during pretraining there was no
+      such thing as a "prompt" at all, just one long document.
+    </Step>
+    <Step label="SFT's loss masks the prompt">
+      The architecture, the optimizer, the loss function itself — none of it changes. Only the mask
+      does: prompt positions still get fed forward through the model (they're needed as context), but
+      their prediction error no longer counts.
+    </Step>
+    <Step label="What the model actually learns from this">
+      Since only response tokens are graded, the model is pushed toward producing response-shaped text
+      after a prompt — the behavior of *answering*, not just continuing whatever pattern the text
+      happened to be in.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Same three-token prompt, same underlying model architecture. The base model falls back on the
+  dictionary-entry pattern it saw constantly during pretraining. The SFT-tuned model — trained with
+  exactly the masked loss above, on examples that look like this one — actually answers. Nothing about
+  the model's capacity changed; only what it was graded on.
+</Play>
+
+<WorkedExample>
+  The toy sequence `Explain gravity : It pulls masses together .` — a 3-token prompt followed by a
+  5-token response — with a hand-picked per-token NLL of
+  `[2.1, 1.8, 0.3, 1.2, 0.9, 1.5, 0.7, 0.2]`:
+
+  <Steps>
+    <Step label="Pretraining's loss: every token votes">
+      Mean of all 8 values: $(2.1+1.8+0.3+1.2+0.9+1.5+0.7+0.2)/8 = 1.0875$.
+    </Step>
+    <Step label="SFT's loss: only the response's 5 tokens vote">
+      Mean of just the last 5 values: $(1.2+0.9+1.5+0.7+0.2)/5 = 0.9$ — lower than pretraining's loss on
+      this example, because the two high-NLL prompt tokens ($2.1$ and $1.8$) no longer drag the average
+      up.
+    </Step>
+    <Step label="The boundary has to land exactly on the prompt">
+      Move the mask one token short (boundary at index $2$ instead of $3$) and the last prompt token
+      sneaks back into the average: $(0.3+1.2+0.9+1.5+0.7+0.2)/6 = 0.8$ — a different number, for a
+      genuinely different (and wrong) training signal.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<InstructionTuningCheckpoint />
+
+<Summary>
+  $$
+  \mathcal{L}_{\text{SFT}} = \frac{1}{|y|}\sum_{t \,\in\, \text{response}} -\log p(y_t \mid x, y_{<t})
+  $$
+
+  Instruction tuning isn't a new loss function or a new architecture — it's pretraining's own
+  cross-entropy loss, with a mask deciding which tokens are allowed to vote. That's the entire
+  mechanism that turns a text-completer into something that follows instructions at all. Everything
+  that comes after in this part — preference optimization, RLVR, reasoning — assumes this step already
+  happened: a model that at least attempts to answer, rather than continue.
+</Summary>

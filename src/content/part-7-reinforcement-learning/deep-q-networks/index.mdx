@@ -1,0 +1,88 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DeepQNetworksCheckpoint } from "./Demos";
+
+<Hook>
+  Q-learning's table had exactly one number for every state-action pair — completely fine for a 4-state corridor, hopeless for a state space too large to enumerate (a screen of pixels, say). What if $Q(s,a)$ were computed by a tiny function instead of looked up in a table?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same 4-state gridworld, same 6-move script Q-learning used — but instead of a table entry, $Q(s,a)$ now comes from a network with exactly 6 numbers: one hidden unit feeding two output values, one per action. Step through the same moves and watch those 6 numbers get nudged by gradient descent, using the exact same TD-error signal Q-learning used.
+</Intuition>
+
+<Formalize>
+  A **Deep Q-Network** replaces the table with a function $Q(s,a;\theta)$, trained by gradient descent on the squared TD error:
+
+  $$
+  \mathcal{L}(\theta) = \Big(r + \gamma \max_{a'} Q(s',a';\theta^-) - Q(s,a;\theta)\Big)^2
+  $$
+
+  <Variables>
+    <Variable>**$\theta$** — the online network's parameters, the ones being trained right now.</Variable>
+    <Variable>**$\theta^-$** — the **target network's** parameters: a frozen, periodically-refreshed copy of $\theta$.</Variable>
+    <Variable>**$Q(s,a;\theta)$** — the online network's current prediction for state-action pair $(s,a)$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="This is Q-learning's TD error, squared into a loss">
+      The parenthesized term is exactly the same TD error from the Q-learning chapter. DQN just treats it
+      as a regression target and takes a gradient step against it, instead of nudging a table entry
+      directly by $\alpha \times$ error.
+    </Step>
+    <Step label="Why a separate target network at all?">
+      If $\theta^-=\theta$, the target moves every time $\theta$ does — the network would be chasing a
+      target it just changed, one gradient step ago. Freezing $\theta^-$ for a stretch of steps (only
+      periodically copying $\theta$ into it) gives the online network a stable target to regress toward,
+      instead of an ever-shifting one.
+    </Step>
+    <Step label="Experience replay, in one sentence">
+      Real DQN also stores past transitions in a buffer and samples random past experience for each
+      update, instead of training only on the transition just seen — this breaks the strong correlation
+      between consecutive steps that plain online updates would otherwise have. The toy script here is
+      too short to need it, but every update it runs has the exact same shape as one replay-buffer sample.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  A table needs one slot for every state times every action — double the state count, and it doubles in size. The network's parameter count never moves: the same 6 numbers that handled 4 states could, in principle, be asked to handle 1000. Whether they'd generalize *well* is a separate question — but they don't run out of room the way a table eventually would.
+</Play>
+
+<WorkedExample>
+  Starting from $Q_\theta(0,\text{right})=-2$ (computed from the network's initial 6 numbers), with learning rate $0.05$:
+
+  <Steps>
+    <Step label="Step 1 — a clean TD error of exactly 1">
+      Taking "right" from state 0 lands on state 1 with reward $-1$. Since $\theta^-=\theta$ still at this
+      point, the target network's best action-value at state 1 happens to be exactly $0$
+      ($\max(Q(1,\text{left}), Q(1,\text{right})) = \max(0,-1) = 0$), so the target is $-1 + 0.9(0) = -1$.
+      TD error $= -1 - (-2) = 1$, loss $=1$. The output bias for "right" shifts, moving $Q_\theta(0,\text{right})$
+      from $-2$ to exactly $-1.9$ — a small step toward the target, the same shape as a Q-table update but
+      landing on a shared parameter instead of an isolated cell.
+    </Step>
+    <Step label="Step 3 — a 'left' move with zero TD error">
+      Taking "left" from state 2 happens to produce a target that already exactly matches the current
+      prediction (both $-1$) — TD error $0$, loss $0$, and the left-branch weights don't move at all this
+      step. Zero error means zero gradient, exactly like a reward of $0$ left the softmax policy
+      untouched in the REINFORCE chapter.
+    </Step>
+    <Step label="Step 4 — the target network has just re-synced">
+      After step 3, the target network copies the online network's weights. Step 4's target computation
+      now uses those freshly-updated numbers instead of the original initialization — the "moving target"
+      problem is kept in check by only letting it move in these periodic jumps, not on every single step.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DeepQNetworksCheckpoint />
+
+<Summary>
+  $$
+  \mathcal{L}(\theta) = \Big(r + \gamma \max_{a'} Q(s',a';\theta^-) - Q(s,a;\theta)\Big)^2
+  $$
+
+  DQN keeps Q-learning's exact update signal — a TD error bootstrapped off the best next action — but hands it to a network trained by gradient descent instead of a table updated in place. A target network keeps the bootstrap target from chasing itself, and (in practice) experience replay keeps updates from over-fitting to whatever just happened. The next chapter moves away from value-based learning entirely, going back to a directly-learned policy — but this time paired with a value function that helps it learn faster.
+</Summary>

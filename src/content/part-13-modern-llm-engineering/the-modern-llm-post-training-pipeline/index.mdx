@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PostTrainingPipelineCheckpoint } from "./Demos";
+
+<Hook>
+  This part has three chapters left to teach before it's done: instruction tuning, preference
+  optimization, and RL against verifiable rewards. It's tempting to treat them as three competing
+  ideas. They're not — they're three *stages* of one pipeline, each one only possible because the
+  previous one already ran.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step forward through the pipeline, one stage at a time, on one held-out benchmark. Nothing here
+  jumps straight from a raw pretrained model to a fully aligned reasoning model — every stage takes
+  whatever the previous stage produced as its starting point.
+</Intuition>
+
+<Formalize>
+  Each stage's output accuracy is whatever the previous stage achieved, plus that stage's own
+  contribution:
+
+  $$
+  \text{acc}_i = \text{acc}_{i-1} + \Delta_i
+  $$
+
+  <Variables>
+    <Variable>**$\text{acc}_i$** — benchmark accuracy after stage $i$ has run.</Variable>
+    <Variable>**$\text{acc}_{i-1}$** — the previous stage's output; for stage $1$ (SFT), this is the raw pretrained model's accuracy.</Variable>
+    <Variable>**$\Delta_i$** — stage $i$'s own marginal contribution, on top of whatever it started from.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Stage 1 — SFT teaches the model to attempt an answer at all">
+      Chapter 2's masked cross-entropy loss turns a text-completer into something that at least tries
+      to follow an instruction.
+    </Step>
+    <Step label="Stage 2 — preference optimization picks the better of the attempts it can already make">
+      RLHF or DPO (Chapters 3-4, and the KTO/SimPO variants) refine *which* SFT-style answer the model
+      prefers to produce — no new capability, just better taste among outputs it could already generate.
+    </Step>
+    <Step label="Stage 3 — RLVR pushes past what any human preference alone could teach">
+      On tasks with a checkable ground truth, RLVR (this part's next chapters) optimizes directly
+      against verifiable correctness — a signal preference data never had access to.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Three bars, three completely different mechanisms, three different-sized contributions. SFT does the
+  heaviest lifting here — going from "can't follow instructions at all" to "follows them passably" is a
+  bigger jump than any later polish. That doesn't make the later stages optional: each is solving a
+  problem the previous one structurally can't.
+</Play>
+
+<WorkedExample>
+  A pretrained base model scoring $0.15$ on some held-out benchmark, run through all three stages:
+
+  <Steps>
+    <Step label="After SFT">
+      Accuracy rises to $0.45$ — a gain of $0.45 - 0.15 = 0.30$, the largest single jump in the
+      pipeline.
+    </Step>
+    <Step label="After preference optimization">
+      Accuracy rises to $0.62$ — a gain of $0.62 - 0.45 = 0.17$.
+    </Step>
+    <Step label="After RLVR">
+      Accuracy rises to $0.81$ — a gain of $0.81 - 0.62 = 0.19$.
+    </Step>
+    <Step label="Total improvement">
+      $0.81 - 0.15 = 0.66$, exactly the sum of the three individual gains: $0.30+0.17+0.19=0.66$. Every
+      stage's contribution is additive and separately measurable — none of them do each other's job.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PostTrainingPipelineCheckpoint />
+
+<Summary>
+  $$
+  \text{acc}_i = \text{acc}_{i-1} + \Delta_i
+  $$
+
+  "Post-training" isn't one algorithm competing with the others for the title of best technique — it's
+  a pipeline where SFT, preference optimization, and RLVR each solve a problem structurally out of
+  reach for the others: attempting an answer at all, picking the *better* of two attempts, and
+  optimizing against *ground truth* where one exists. The rest of this part builds each stage's
+  machinery in turn, starting with why a learned reward model — not yet a verifiable one — was the
+  first way anyone taught a language model what "better" even means.
+</Summary>

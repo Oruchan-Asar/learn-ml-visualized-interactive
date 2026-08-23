@@ -70,7 +70,7 @@ export function PlayDemo() {
   );
 }
 
-const CANDIDATES = [23, 24, 10, 1];
+const CANDIDATES = [15, 16, 10, 1];
 const CHECKPOINT_POINT = { x: 1, y: 4 };
 const CORRECT_DET = determinant2(jacobian(CHECKPOINT_POINT.x, CHECKPOINT_POINT.y));
 

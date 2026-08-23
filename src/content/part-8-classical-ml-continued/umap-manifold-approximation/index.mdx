@@ -1,0 +1,84 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, UmapCheckpoint } from "./Demos";
+
+<Hook>
+  Five points trace an L-shaped bend through space. Point C sits right at the corner — closer, in a straight line, to both ends of the L than plain distance would suggest. How do you build a map of "who's really a neighbor of whom" that respects the bend instead of cutting across it?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  C sits at the elbow of the path. Even though A and E are only two hops away along the bend, C's actual nearest neighbors are always B and D — never A or E — no matter whether you ask for its 1 or 2 closest points. The neighbor graph tracks the path, not a straight ruler laid across the page.
+</Intuition>
+
+<Formalize>
+  UMAP builds a **fuzzy neighbor graph**: instead of a hard yes/no "is this a neighbor," every pair of points gets a membership *strength* between 0 and 1.
+
+  $$
+  \rho_i = \min_{j \neq i} d(x_i, x_j), \qquad v_{j \mid i} = \exp\!\left(-\frac{d(x_i, x_j) - \rho_i}{\sigma}\right)
+  $$
+
+  <Variables>
+    <Variable>**$\rho_i$** — point $i$'s *local radius*: the distance to its single closest neighbor.</Variable>
+    <Variable>**$d(x_i, x_j)$** — the distance between points $i$ and $j$.</Variable>
+    <Variable>**$\sigma$** — a bandwidth controlling how fast membership decays with distance (fixed here for exact arithmetic; real UMAP solves for it per point).</Variable>
+    <Variable>**$v_{j \mid i}$** — the *directed* membership of $j$ in $i$'s neighborhood: $1$ at the local radius, decaying beyond it, and exactly $0$ once $j$ isn't among $i$'s $k$ nearest neighbors at all.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Every point gets a full-strength connection to its nearest neighbor">
+      Subtracting $\rho_i$ shifts the exponential so that $j$'s membership is exactly $1$ right at $i$'s
+      local radius — regardless of whether $i$ lives in a dense or sparse region. That's what makes this
+      "uniform": density doesn't change how strongly a point connects to its own closest neighbor.
+    </Step>
+    <Step label="Membership is directed, and can disagree in each direction">
+      $v_{j\mid i}$ answers "how much does $i$ consider $j$ a neighbor" — which need not match $v_{i \mid j}$,
+      the reverse question. C might see B as an obvious neighbor while B has closer points of its own to
+      worry about.
+    </Step>
+    <Step label="Symmetrize with a fuzzy-set union, not an average">
+      $$v_{ij} = v_{j\mid i} + v_{i\mid j} - v_{j\mid i}\, v_{i\mid j}$$
+      An edge counts as long as *either* direction sees it — the same logic as a union of probabilities of
+      independent events. A plain average would let one side's "no" cancel out the other side's "yes."
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Starting from a random-looking jumble, the same attract-along-edges, repel-everywhere-else rule that drives the real optimizer pulls A and B — connected at full strength — together almost immediately, while A and D — never neighbors — drift apart. Step forward and watch the gap between "A to B" and "A to D" open up.
+</Play>
+
+<WorkedExample>
+  Point A's true nearest neighbor is B, one unit away; C sits two units from A, and A doesn't make *C's* own shortlist:
+
+  <Steps>
+    <Step label="A's local radius">
+      $\rho_A = d(A, B) = 1$ — A's nearest neighbor is exactly one unit away, so full-strength membership
+      starts there.
+    </Step>
+    <Step label="A's view of C">
+      $d(A, C) = 2$, so $v_{C \mid A} = \exp(-(2 - 1)/1) = \exp(-1) \approx 0.368$. A genuinely considers C a
+      neighbor — just a weaker one than B.
+    </Step>
+    <Step label="C's view of A — nothing at all">
+      C's two nearest neighbors are B and D, not A — so $v_{A \mid C} = 0$. From C's side, A isn't close
+      enough to register.
+    </Step>
+    <Step label="The symmetrized edge survives on A's vote alone">
+      $v_{AC} = 0.368 + 0 - (0.368)(0) = 0.368$. The fuzzy union means A's "yes" is enough to create a real,
+      if partial, edge — even though C's own answer was "no."
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<UmapCheckpoint />
+
+<Summary>
+  $$
+  v_{j \mid i} = \exp\!\left(-\frac{d(x_i, x_j) - \rho_i}{\sigma}\right), \qquad v_{ij} = v_{j\mid i} + v_{i\mid j} - v_{j\mid i}\, v_{i\mid j}
+  $$
+
+  UMAP turns raw distances into a fuzzy graph — full strength at each point's own local radius, decaying beyond it, symmetrized by a union rather than an average — and then lays that graph out in low dimensions by pulling connected points together and pushing everything else apart. The result preserves *local* neighbor structure (who's close to whom) even when the manifold itself bends through the original space, the way C's true neighbors stayed B and D no matter how the raw straight-line distances to A and E looked.
+</Summary>

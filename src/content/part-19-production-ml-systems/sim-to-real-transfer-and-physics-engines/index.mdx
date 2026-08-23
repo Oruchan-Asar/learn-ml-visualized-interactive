@@ -1,0 +1,88 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SimRealCheckpoint } from "./Demos";
+
+<Hook>
+  A policy trained entirely in a physics engine like MuJoCo or Isaac Gym never has to fight friction it
+  didn't expect, backlash in a gearbox, or a battery that delivers a little less torque than the spec
+  sheet promised. The real robot does. That mismatch is the reality gap, and it doesn't need a full
+  physics simulator to demonstrate — a controller that assumes it's getting 100% of its commanded motion,
+  meeting an actuator that only delivers 60%, shows the exact same failure mode.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same gain, same target, same number of control steps. In sim the arrow lands on the target dot. In
+  "real," with the actuator delivering less motion per command than assumed, the same gain undershoots —
+  not because anything is broken, just because the model the controller was tuned against wasn't quite
+  right.
+</Intuition>
+
+<Formalize>
+  A proportional controller commands motion equal to gain times error, but the actuator only delivers a
+  fraction of what's commanded. That turns the position error into a geometric sequence:
+
+  $$
+  e_T = e_0 \,\bigl|1 - f\,K\bigr|^{\,T}
+  $$
+
+  <Variables>
+    <Variable>**$e_T$** — the remaining distance to the target after $T$ control steps.</Variable>
+    <Variable>**$e_0$** — the starting distance to the target.</Variable>
+    <Variable>**$f$** — the friction factor: the fraction of commanded motion the actuator actually delivers ($f=1$ is the sim's assumption).</Variable>
+    <Variable>**$K$** — the controller's proportional gain.</Variable>
+    <Variable>**$T$** — the fixed number of control steps before checking success.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Sim assumes f = 1">
+      A gain tuned so that $|1-K|$ is small enough to converge within $T$ steps in sim is really only
+      tuned for $f=1$ — it has no reason to also work for a smaller $f$.
+    </Step>
+    <Step label="Domain randomization means tuning against a range of f, not one value">
+      Training against $f=1$ produces a controller that's brittle to exactly one number. Training against
+      many sampled $f$ values (0.6, 0.8, 1.0, ...) produces a gain that keeps $e_T$ small across the whole
+      range — the real robot's actual $f$ just needs to be somewhere in that trained range.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Identical gain, identical target, identical step budget — only the friction changed, and that alone
+  flips the outcome from success to failure.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Sim: f=1, K=0.5, four steps">
+      $e_4 = 4 \cdot |1 - 1(0.5)|^4 = 4 \cdot 0.5^4 = 4(0.0625) = 0.25$ — comfortably inside the 0.5
+      tolerance.
+    </Step>
+    <Step label="Real: same gain, f=0.6">
+      $e_4 = 4 \cdot |1 - 0.6(0.5)|^4 = 4 \cdot 0.7^4 = 4(0.2401) = 0.9604$ — the exact same controller,
+      the exact same math, now fails the tolerance.
+    </Step>
+    <Step label="Compensating for the known friction closes the gap">
+      Solving $4|1-0.6K|^4 \le 0.5$ for $K$ shows any gain past roughly $K \approx 0.68$ brings the real
+      robot back under tolerance in the same four steps — the controller doesn't need a better simulator,
+      it needs a gain that assumes less friction than sim did.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SimRealCheckpoint />
+
+<Summary>
+  $$
+  e_T = e_0 \,\bigl|1 - f\,K\bigr|^{\,T}
+  $$
+
+  The reality gap here isn't a bug in the physics engine — it's the simulator's clean assumption ($f=1$)
+  simply not matching a real actuator's honest ($f<1$) delivery. High-throughput GPU physics engines make
+  it cheap to train against thousands of randomized $f$ values instead of one, which is exactly what
+  domain randomization buys: a policy whose gain was never allowed to overfit to a friction that only
+  existed in simulation. The next chapters turn away from robotics and toward the infrastructure that
+  serves any trained model at scale, starting with the memory hierarchy every GPU kernel has to respect.
+</Summary>

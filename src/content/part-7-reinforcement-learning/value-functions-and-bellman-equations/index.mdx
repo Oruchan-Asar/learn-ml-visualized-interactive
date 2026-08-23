@@ -1,0 +1,85 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ValueFunctionsCheckpoint } from "./Demos";
+
+<Hook>
+  The last chapter's Bellman equation was conditioned on a policy someone else handed you: $V^\pi(s)$, the value *if you follow $\pi$*. But nobody handed the gridworld's agent "always right" — it has to be discovered. That means asking a sharper question: not "how good is this policy," but "how good can any policy possibly make this state?"
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through each state and compare its two available one-step lookaheads, $Q^*(s,\text{left})$ and $Q^*(s,\text{right})$ — the value of taking that action once, then acting optimally forever after. Whichever is larger *is* $V^*(s)$, the optimal value of that state. There's no policy input here at all: the "best possible" value falls straight out of comparing the actions.
+</Intuition>
+
+<Formalize>
+  The **optimal value function** $V^*(s)$ is the best expected discounted return achievable from $s$, over every possible policy. It satisfies the **Bellman optimality equation** — the same recursive shape as before, but with a $\max$ over actions replacing a policy's fixed choice:
+
+  $$
+  V^*(s) = \max_a \Big[ R(s,a) + \gamma\, V^*\big(P(s,a)\big) \Big]
+  $$
+
+  <Variables>
+    <Variable>**$V^*(s)$** — the optimal value of state $s$: the best expected discounted return any policy can achieve from here.</Variable>
+    <Variable>**$a$** — a candidate action, ranged over by the $\max$.</Variable>
+    <Variable>**$R(s,a)$** — the immediate reward for taking action $a$ from state $s$.</Variable>
+    <Variable>**$\gamma$** — the discount factor.</Variable>
+    <Variable>**$P(s,a)$** — the state landed in after taking action $a$ from $s$.</Variable>
+  </Variables>
+
+  It's often useful to split the bracketed quantity out into its own object, the **optimal action-value function**:
+
+  $$
+  Q^*(s,a) = R(s,a) + \gamma\, V^*\big(P(s,a)\big)
+  $$
+
+  <Variables>
+    <Variable>**$Q^*(s,a)$** — the value of taking action $a$ from $s$ once, then behaving optimally forever after.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="V* and Q* are two views of the same thing">
+      $V^*(s) = \max_a Q^*(s,a)$ — the optimal value of a state is just the best action-value available
+      from it. Every $V^*$ number in this chapter is secretly a $\max$ over two $Q^*$ numbers.
+    </Step>
+    <Step label="The optimal policy falls out for free">
+      Once $Q^*$ is known, the optimal policy is simply $\pi^*(s) = \arg\max_a Q^*(s,a)$ — no separate
+      search required. This is exactly the relationship Q-learning exploits: learn $Q^*$, and a policy
+      comes along for free.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  These are the exact same numbers the MDP chapter computed for "always right" — $6.2, 8, 10, 0$. That's not a coincidence: with only two actions and a reward structure where moving away from the goal is strictly worse, "always right" already achieves the best possible value from every state. $V^\pi = V^*$ here only because $\pi$ happened to already be optimal.
+</Play>
+
+<WorkedExample>
+  Using the already-known $V^*$ values $V^*(3){=}0$, $V^*(2){=}10$, $V^*(1){=}8$, $V^*(0){=}6.2$ (from the previous chapter), check that the Bellman optimality equation actually holds at each state:
+
+  <Steps>
+    <Step label="State 2 — where the two actions disagree the most">
+      $Q^*(2,\text{right}) = 10 + 0.9(0) = 10$. $Q^*(2,\text{left}) = -1 + 0.9(8) = 6.2$. The max is $10$,
+      exactly $V^*(2)$ — and "right" is clearly the better action here, by $3.8$.
+    </Step>
+    <Step label="State 0 — furthest from the goal">
+      $Q^*(0,\text{right}) = -1 + 0.9(8) = 6.2$. $Q^*(0,\text{left})$ bounces back to state $0$ itself:
+      $-1 + 0.9(6.2) = 4.58$. The max is $6.2$, exactly $V^*(0)$.
+    </Step>
+    <Step label="The equation is a consistency check, not a solving method">
+      Every one of these checks passes only because the correct $V^*$ values were already plugged in on
+      the right-hand side. Nothing here computed $V^*$ from scratch — that's the job of the next chapter.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ValueFunctionsCheckpoint />
+
+<Summary>
+  $$
+  V^*(s) = \max_a Q^*(s,a), \qquad Q^*(s,a) = R(s,a) + \gamma\, V^*\big(P(s,a)\big)
+  $$
+
+  The Bellman optimality equation defines what $V^*$ and $Q^*$ *are* — a fixed point that the true optimal values must satisfy — but it doesn't by itself say how to find them when they aren't already known. Here, they were simply recognized by re-using a policy already proven optimal. The next chapter shows the general algorithm: start from a wrong guess for every state's value, and keep applying this exact equation as an update rule until it stops changing anything.
+</Summary>

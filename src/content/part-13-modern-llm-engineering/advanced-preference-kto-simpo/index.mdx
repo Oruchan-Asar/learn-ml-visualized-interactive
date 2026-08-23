@@ -1,0 +1,101 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, KtoSimpoCheckpoint } from "./Demos";
+
+<Hook>
+  DPO needs two things RLHF also needed: PAIRED preference data ("A beats B," not just "A is good")
+  and a frozen REFERENCE model to measure drift against. Both are real costs. What happens if a method
+  drops one of them?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The same 3 comparisons DPO's chapter used — "B beats A," "B beats C," "C beats A" — but relabeled as
+  6 completely independent judgments: each response is just "desirable" or "undesirable," on its own,
+  with no memory of which other response it was compared against. Step through them one at a time.
+</Intuition>
+
+<Formalize>
+  **KTO** (short for **Kahneman-Tversky Optimization**) keeps DPO's reference-relative log-ratio and
+  its logistic loss shape, but scores ONE response at a time instead of a pair:
+
+  $$
+  \mathcal{L}_{\text{KTO}} = -\log\sigma\Big(\lambda\,\beta\big[\log\pi(y) - \log\pi_{\text{ref}}(y)\big]\Big), \quad \lambda = \begin{cases}+1 & y \text{ desirable} \\ -1 & y \text{ undesirable}\end{cases}
+  $$
+
+  **SimPO** (short for **Simple Preference Optimization**) keeps DPO's pairing, but drops the
+  reference model entirely — the implicit reward is a response's OWN length-normalized log-probability,
+  compared against a fixed target margin $\gamma$:
+
+  $$
+  \mathcal{L}_{\text{SimPO}} = -\log\sigma\Big(\frac{\beta}{|y_w|}\log\pi(y_w) - \frac{\beta}{|y_l|}\log\pi(y_l) - \gamma\Big)
+  $$
+
+  <Variables>
+    <Variable>**$\lambda$** — KTO's sign flip: $+1$ for a desirable response, $-1$ for an undesirable one — the only place pairing information used to live.</Variable>
+    <Variable>**$y$** — the single response being judged, in KTO; **$y_w$, $y_l$** — the winning and losing responses of a pair, in SimPO.</Variable>
+    <Variable>**$\pi_{\text{ref}}$** — the frozen reference model DPO and KTO both compare against; SimPO has no such term at all.</Variable>
+    <Variable>**$|y|$** — the response's length in tokens, used to normalize its log-probability so longer responses aren't penalized just for being longer.</Variable>
+    <Variable>**$\gamma$** — SimPO's fixed target reward margin, replacing the role a reference model's baseline would otherwise play.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="KTO drops PAIRING">
+      Each of DPO's comparisons becomes two independent examples: the winner labeled desirable, the
+      loser labeled undesirable. Only one response's log-ratio is touched per update — there's no
+      "loser" to simultaneously push down in the same step, because pairing information was thrown away.
+    </Step>
+    <Step label="SimPO drops the REFERENCE MODEL">
+      Instead of $\log\pi(y) - \log\pi_{\text{ref}}(y)$, SimPO uses $\log\pi(y)$ alone, divided by
+      length. No second frozen copy of the model needs to be kept in memory during training at all.
+    </Step>
+    <Step label="Both keep DPO's core trick">
+      Neither method needs a separately trained reward model — like DPO, the loss is computed directly
+      on the policy's own log-probabilities.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Both variants still recover roughly DPO's ranking — $B$ preferred, then $C$, then $A$ — using
+  strictly less machinery than DPO started with: KTO drops the paired structure, SimPO drops the
+  reference model. Neither is strictly "better" than DPO; each is a different cost DPO's original
+  formulation was willing to pay, removed.
+</Play>
+
+<WorkedExample>
+  KTO's very first example, "$B$ is desirable," starting from a uniform policy:
+
+  <Steps>
+    <Step label="At initialization, the policy IS the reference">
+      $\pi(B) = \pi_{\text{ref}}(B) = 1/3$, so the log-ratio is $0$. With $\lambda=+1$ for "desirable,"
+      $z = \beta \cdot 0 = 0$, so $\sigma(z) = 0.5$.
+    </Step>
+    <Step label="The update touches ONLY B">
+      $\theta_B \to 0 + 0.5 \times (1-0.5) \times 0.5 \times 1 = 0.125$ — identical in magnitude to
+      DPO's very first update, but $\theta_A$ and $\theta_C$ are untouched here; DPO's paired update
+      would have pushed a loser DOWN by the same amount in the same step.
+    </Step>
+    <Step label="After all 6 examples">
+      $\theta_B \approx 0.246$, $\theta_C \approx 0.006$, $\theta_A \approx -0.243$ — the same $B > C >
+      A$ ordering DPO found, recovered without ever using a preference pair.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<KtoSimpoCheckpoint />
+
+<Summary>
+  $$
+  \mathcal{L}_{\text{KTO}} = -\log\sigma\big(\lambda\beta[\log\pi(y)-\log\pi_{\text{ref}}(y)]\big) \qquad \mathcal{L}_{\text{SimPO}} = -\log\sigma\Big(\tfrac{\beta}{|y_w|}\log\pi(y_w)-\tfrac{\beta}{|y_l|}\log\pi(y_l)-\gamma\Big)
+  $$
+
+  DPO, KTO, and SimPO are three points on the same spectrum, not three unrelated ideas: DPO needs
+  paired data and a reference model; KTO trades pairing for the ability to use ordinary
+  desirable/undesirable labels; SimPO trades the reference model for a length-normalized reward and a
+  fixed target margin. Every one of them still needs preference OR feedback data collected up front.
+  The next chapters move to a different source of signal entirely — reward that can be checked by a
+  program, not judged by a person.
+</Summary>

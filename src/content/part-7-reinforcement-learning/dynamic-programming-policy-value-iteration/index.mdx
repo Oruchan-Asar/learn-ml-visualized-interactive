@@ -1,0 +1,83 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DynamicProgrammingCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter's Bellman optimality equation was checked using $V^*$ values that were simply recognized — borrowed from a policy already known to be optimal. Real problems don't offer that shortcut. What if all that's known up front is the MDP itself, and every state's value starts out just... wrong?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Start every state's value at exactly $0$ — a deliberately bad guess. Then, sweep by sweep, replace every state's value with the Bellman optimality backup computed from the *previous* sweep's numbers. Step forward and watch a wrong guess turn into the exact right answer, purely from applying the same equation over and over.
+</Intuition>
+
+<Formalize>
+  **Value iteration** turns the Bellman optimality equation into an update rule, applied to *every* state on each pass:
+
+  $$
+  V_{k+1}(s) \leftarrow \max_a \Big[ R(s,a) + \gamma\, V_k\big(P(s,a)\big) \Big]
+  $$
+
+  <Variables>
+    <Variable>**$V_k(s)$** — the current estimate of state $s$'s value, after $k$ sweeps.</Variable>
+    <Variable>**$V_{k+1}(s)$** — the updated estimate, computed from a one-step lookahead using $V_k$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Every state updates from the same snapshot">
+      A **sweep** computes $V_{k+1}$ for *every* state using $V_k$ — the previous sweep's values, not
+      values already updated earlier in the same sweep. This is exactly why "sweep 1" and "sweep 2" are
+      meaningful checkpoints: within a sweep, nothing has propagated yet.
+    </Step>
+    <Step label="Why not just solve it directly, like last chapter did?">
+      Last chapter reused $V^*$ from a policy already known to reach the goal by the shortest route —
+      that only worked because moving *away* from the goal was provably never better. In general an MDP
+      can have cycles (bouncing between states is possible here too, via repeated "left" moves), so
+      there's no safe order to compute states in just once. Iterating to a fixed point sidesteps the
+      ordering problem entirely.
+    </Step>
+    <Step label="Policy iteration is the other half of dynamic programming">
+      Instead of iterating on *values* directly, **policy iteration** alternates two steps: fully
+      evaluate the current policy's $V^\pi$ (sweeping the fixed-policy Bellman equation, no $\max$, to
+      its own fixed point), then improve the policy by acting greedily on that $V^\pi$. Repeat until the
+      policy stops changing. Both algorithms provably converge to the same $V^*$ and $\pi^*$.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Every state starts at a flatly wrong $0$. Five sweeps later, the values are $6.2, 8, 10$ — exactly the $V^*$ from the previous chapter, recovered without ever being told the optimal policy in advance.
+</Play>
+
+<WorkedExample>
+  With $\gamma = 0.9$, starting from $V_0(s) = 0$ for every state:
+
+  <Steps>
+    <Step label="Sweep 1 — only the immediate reward is visible">
+      $V_1(2) = \max(-1 + 0.9(0),\ 10 + 0.9(0)) = 10$ — the goal's reward reaches state 2 immediately.
+      But $V_1(0) = V_1(1) = -1$: neither has a neighbor with useful value yet, so both just reflect the
+      cost of a single step.
+    </Step>
+    <Step label="Sweep 2 — the goal's value takes one more step back">
+      Using $V_1$: $V_2(1) = \max(-1 + 0.9(-1),\ -1 + 0.9(10)) = 8$ — now that $V_1(2)=10$ exists, state 1
+      can see it. $V_2(0)$ still can't see past state 1's *old* value: $V_2(0) = \max(-1+0.9(-1), -1+0.9(-1)) = -1.9$.
+    </Step>
+    <Step label="Sweep 3 — every state has settled">
+      $V_3(0) = \max(-1+0.9(8),\ -1+0.9(-1.9)) = 6.2$. Checking sweep 4 against sweep 3 changes nothing at
+      all — the fixed point has been reached in exactly 3 sweeps, and it's the exact $V^*$ from the
+      previous chapter.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DynamicProgrammingCheckpoint />
+
+<Summary>
+  $$
+  V_{k+1}(s) \leftarrow \max_a \Big[ R(s,a) + \gamma\, V_k\big(P(s,a)\big) \Big]
+  $$
+
+  Value iteration finds $V^*$ from nothing but the MDP's own definition — no policy needs to be guessed correctly in advance, and no special ordering of states is required, because repeated sweeps converge to the same fixed point regardless of where they started. The catch is what this chapter assumed throughout: $R$ and $P$ had to be fully known to compute every backup. The next chapter drops that assumption entirely — learning $Q^*$ from nothing but experienced transitions, without ever being handed the transition model itself.
+</Summary>

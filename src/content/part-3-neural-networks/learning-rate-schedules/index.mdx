@@ -1,0 +1,88 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LearningRateScheduleCheckpoint } from "./Demos";
+
+<Hook>
+  A learning rate that's perfect once training has settled down is often wildly too large at the very first step,
+  while everything is still far from where it needs to be. One fixed number can't be right for both moments.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This toy problem just wants to minimize $f(x)=x^2$ starting from $x=10$. The base rate here is deliberately too
+  large to use constantly. Watch $\log_{10}(\text{loss})$ over 12 steps — it doesn't wobble, it climbs, forever.
+</Intuition>
+
+<Formalize>
+  Two schedules address this from different angles. Step decay reduces the rate at fixed checkpoints:
+
+  $$
+  \eta_{\text{step}}(t) = \eta_0 \cdot \gamma^{\lfloor t / k \rfloor}
+  $$
+
+  Warmup + cosine instead starts the rate at (near) zero and ramps it up before easing it back down:
+
+  $$
+  \eta_{\text{warmup}}(t) = \begin{cases} \eta_0 \cdot \dfrac{t}{T_w} & t < T_w \\[4pt] \dfrac{\eta_0}{2}\left(1+\cos\!\left(\pi \cdot \dfrac{t - T_w}{T - T_w}\right)\right) & t \geq T_w \end{cases}
+  $$
+
+  <Variables>
+    <Variable>**$\eta_0$** — the base (peak) learning rate.</Variable>
+    <Variable>**$\gamma$** — the step-decay shrink factor applied every $k$ steps.</Variable>
+    <Variable>**$T_w$** — the number of warmup steps, ramping linearly from $0$ up to $\eta_0$.</Variable>
+    <Variable>**$T$** — the total number of training steps, by which the cosine term reaches its floor.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Step decay still starts at the full (too-large) rate">
+      Until the first checkpoint at $t=k$, $\eta_{\text{step}}(t)=\eta_0$ — exactly the same too-large rate as never
+      decaying at all. Whatever damage a too-large rate does in those first $k$ steps still happens.
+    </Step>
+    <Step label="Warmup never applies the full rate until x has already moved toward the optimum">
+      $\eta_{\text{warmup}}(0)=0$, and it only reaches $\eta_0$ at $t=T_w$ — by which point gradient descent has
+      already taken several small, safe steps. The large rate arrives once it's less likely to cause an overshoot.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch between all three. Step decay eventually gets the loss down too — but only after a huge overshoot in the
+  middle, while it's still using the full base rate. Warmup + cosine reaches a comparably tiny final loss without
+  ever letting the loss climb above where it started.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Constant: diverges immediately and never recovers">
+      At the base rate, $x_{t+1}=x_t(1-2\eta_0)=x_t\cdot(-1.4)$ — each step *grows* in magnitude by 40%. By step 12,
+      $x$ has swung from $10$ to over $566$, and the loss has grown from $100$ to over $321{,}000$.
+    </Step>
+    <Step label="Step decay: the same explosion, temporarily">
+      For the first 4 steps (before the first decay), step decay is identical to constant — $x$ already reaches
+      about $38$ (loss $\approx1476$, nearly $15\times$ its starting value) before the rate ever drops. Once it does,
+      the trajectory recovers quickly and the final loss ends up tiny — but only after that mid-run spike.
+    </Step>
+    <Step label="Warmup + cosine: no spike at all">
+      $\eta(0)=0$ leaves $x$ completely unchanged for the first step. By the time the rate ramps up to its peak at
+      $t=4$, $x$ has already shrunk to $0.64$ on its own from the small early steps. The loss never exceeds its
+      starting value of $100$ anywhere along the run, and still ends near $6\times10^{-4}$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<LearningRateScheduleCheckpoint />
+
+<Summary>
+  $$
+  \eta_{\text{warmup}}(t) = \begin{cases} \eta_0 \cdot t/T_w & t < T_w \\ \frac{\eta_0}{2}\left(1+\cos\left(\pi\frac{t-T_w}{T-T_w}\right)\right) & t \geq T_w \end{cases}
+  $$
+
+  A constant learning rate has to compromise between "large enough to make progress" and "small enough not to
+  overshoot" for every step of training at once — usually failing at both once the ideal rate changes over time.
+  Step decay fixes the long run but not the start. Warmup fixes the start; cosine decay fixes the end. Together
+  they let the rate be small when the network can't yet handle anything larger, large once it can, and small again
+  for fine convergence — which is exactly why a flat rate is the exception in modern training, not the rule. The
+  next chapter turns to a different training-time constraint: numeric precision itself.
+</Summary>

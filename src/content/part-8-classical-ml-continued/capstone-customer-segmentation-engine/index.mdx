@@ -1,0 +1,86 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CustomerSegmentationCheckpoint } from "./Demos";
+
+<Hook>
+  Six customers, three raw numbers each — spend, visits, days since last purchase. No labels, no pre-made segments, and a handful of product ratings with one entry missing. Everything this part built separately now has to work as one pipeline: turn raw behavior into segments, and segments into a recommendation.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through the three stages. The embedding stage doesn't know about "segments" — it just lays out points so similar customers end up close together. The segmentation stage doesn't know about "recommendations" — it just finds two groups in whatever geometry it's handed. Each stage feeds the next one blind.
+</Intuition>
+
+<Formalize>
+  Three mechanisms, chained: the output of each becomes the input to the next.
+
+  $$
+  v_{ij} = v_{j\mid i} + v_{i \mid j} - v_{j \mid i}\, v_{i \mid j} \quad\text{(embed)}
+  $$
+
+  $$
+  P(x) = \frac{D(x)^2}{\sum_{x'} D(x')^2} \quad\text{(segment)}
+  $$
+
+  $$
+  \hat r_{ij} = u_i \cdot v_j \quad\text{(recommend)}
+  $$
+
+  <Variables>
+    <Variable>**$v_{ij}$** — this part's UMAP fuzzy-graph edge weight, built from the 6 customers' raw 3-feature vectors, then laid out in 2D by attraction and repulsion.</Variable>
+    <Variable>**$P(x)$** — the k-means++ probability of picking $x$ as a centroid, run on the 2D layout instead of the original features.</Variable>
+    <Variable>**$\hat r_{ij}$** — the matrix-factorization prediction for customer $i$'s rating of product $j$, trained independently of the geometry entirely.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Embed: 3 features become 2D geometry">
+      The fuzzy neighbor graph and force layout from this part's UMAP chapter run unmodified on the
+      customers' raw behavioral features — no relabeling, no rewriting, just a direct function call.
+    </Step>
+    <Step label="Segment: geometry becomes group membership">
+      k-means++ seeding and Lloyd's algorithm, also unmodified, run on the 2D layout instead of the original
+      k-means chapter's synthetic blobs.
+    </Step>
+    <Step label="Recommend: a separate, parallel signal — product ratings">
+      Matrix factorization trains on a completely different dataset (product ratings, not behavioral
+      features) using the exact same gradient-descent mechanism as the standalone chapter. It never sees the
+      embedding or the segments at all.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  With one latent factor, the recommendation stage badly misjudges customers whose taste doesn't reduce to a single number — the same capacity limit the standalone chapter demonstrated on a smaller ratings table. With two, the fit tightens substantially, even though this table isn't perfectly rank-2 like the earlier toy example.
+</Play>
+
+<WorkedExample>
+  Two behaviorally opposite groups of customers, run through all three stages:
+
+  <Steps>
+    <Step label="Embedding collapses each group to (essentially) one point">
+      C1, C2, and C3 — all frequent, recent, high-spending — land within $0.0001$ units of each other after
+      layout. C4, C5, C6 do the same, at a *different* point roughly $27.2$ units away.
+    </Step>
+    <Step label="Segmentation recovers exactly those two groups">
+      k-means++ seeding on that 2D layout, followed by Lloyd's algorithm, assigns C1-C3 to one segment and
+      C4-C6 to the other — with no access to the original features, only the embedded positions.
+    </Step>
+    <Step label="Recommendation fills in the missing rating using a completely separate signal">
+      C2's rating of product Y was never collected. Trained on the ratings table alone — with no knowledge
+      of C2's segment — two latent factors predict it at about $3.59$; one factor predicts a noticeably
+      worse $2.79$, the same capacity gap seen in isolation.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CustomerSegmentationCheckpoint />
+
+<Summary>
+  $$
+  v_{ij} \to P(x) \to \hat r_{ij}
+  $$
+
+  Nothing in this pipeline was rewritten to fit together — the UMAP layout, the k-means++ seeding, and the matrix factorization are the exact same functions from their standalone chapters, just called in sequence and handed different data. That's the real payoff of building each piece as a small, pure, well-tested function: a pipeline is just composition, not a rewrite. Real recommendation and segmentation systems are built from exactly this kind of stage — an unsupervised embedding, an unsupervised grouping, and a supervised (or self-supervised) prediction — chained the same way.
+</Summary>

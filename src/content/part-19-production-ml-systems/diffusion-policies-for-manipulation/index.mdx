@@ -1,0 +1,89 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
+
+<Hook>
+  The last chapter's VLA policy output one action at a time: an instruction goes in, a single delta comes
+  out. A diffusion policy does something structurally different — it outputs the robot's *entire* future
+  trajectory in one shot, as a sequence of waypoints, by starting from pure noise and denoising toward a
+  smooth path. That's also how it captures multi-modality: two equally valid ways to reach for a mug (from
+  the left, or from the right) are two different clean trajectories the same noisy start could denoise
+  toward.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Three arrows, three target dots. Each denoising step slides every arrow a fixed fraction of the way from
+  where it started toward its target — press the button enough times and the noisy scatter becomes the
+  smooth path underneath it.
+</Intuition>
+
+<Formalize>
+  At denoising step $t$ out of $T$ total steps, every waypoint sits at a fixed fraction of the way from its
+  noisy start to its clean target:
+
+  $$
+  w_t = w_{\text{noise}} + \frac{t}{T}\left(w_{\text{clean}} - w_{\text{noise}}\right)
+  $$
+
+  <Variables>
+    <Variable>**$w_t$** — one waypoint's position after $t$ denoising steps.</Variable>
+    <Variable>**$w_{\text{noise}}$** — that waypoint's pure-noise starting position, at $t=0$.</Variable>
+    <Variable>**$w_{\text{clean}}$** — that waypoint's position in the clean trajectory the policy was trained to produce, reached at $t=T$.</Variable>
+    <Variable>**$t / T$** — how far through the denoising schedule this step is, from $0$ (all noise) to $1$ (fully clean).</Variable>
+  </Variables>
+
+  Real diffusion and flow-matching policies replace this fixed linear path with one predicted step-by-step
+  by a trained network, conditioned on the current noisy trajectory and the observation — but every step
+  still moves a fixed amount from wherever the trajectory currently is toward wherever the network
+  believes "clean" looks like.
+
+  <Steps>
+    <Step label="Every waypoint denoises independently, at the same rate">
+      Because $t/T$ is shared across all waypoints, they all close the same fraction of their own
+      individual gap at each step — that's why the whole scattered set visibly tightens into a path
+      together, rather than one point arriving first.
+    </Step>
+    <Step label="More steps trade compute for a cleaner trajectory">
+      $t=0$ is unusable noise; $t=T$ is exact. Real policies pick $T$ as the smallest step count that still
+      lands close enough to a trajectory worth executing.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The distance from clean drops from roughly 15 units at pure noise to exactly 0 at the final step — not
+  linearly in distance, since each *waypoint* closes a fixed fraction of its own gap, and those gaps
+  started at different sizes.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="The middle waypoint's noise and clean positions">
+      Noise: $(3, -3)$. Clean: $(2, 2)$.
+    </Step>
+    <Step label="At step 3 of 4, t/T = 0.75">
+      $w_{0.75} = (3,-3) + 0.75\big((2,2)-(3,-3)\big) = (3,-3) + 0.75(-1, 5)$.
+    </Step>
+    <Step label="Compute each coordinate">
+      $x = 3 + 0.75(-1) = 2.25$. $y = -3 + 0.75(5) = 0.75$. The waypoint lands at exactly $(2.25, 0.75)$ —
+      three-quarters of the way from noise to clean.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DiffusionCheckpoint />
+
+<Summary>
+  $$
+  w_t = w_{\text{noise}} + \frac{t}{T}\left(w_{\text{clean}} - w_{\text{noise}}\right)
+  $$
+
+  A diffusion policy turns "predict the next action" into "denoise a whole trajectory," which is what lets
+  it represent genuinely multi-modal behavior and produce smooth, temporally consistent motion instead of
+  a jittery sequence of independent single-step guesses. The trajectory this chapter denoised was still
+  produced entirely in simulation-perfect math — the next chapter asks what happens when a policy trained
+  this cleanly meets a real actuator that doesn't behave quite the way the simulator promised.
+</Summary>

@@ -1,0 +1,84 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LayerGroupNormCheckpoint } from "./Demos";
+
+<Hook>
+  Batch normalization needs a batch — it measures a mean and variance *across examples*. What happens the moment
+  your batch has one example in it, or your model processes one sequence position at a time?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same idea as batch norm — force a healthy mean and variance — but measured across a completely different axis:
+  not across examples in a batch, but across this one example's own channels. No batch required, no matter how many
+  examples you're processing at once.
+</Intuition>
+
+<Formalize>
+  Split a layer's output channels into groups, then normalize each group independently using only that group's own
+  statistics:
+
+  $$
+  \hat h_i = \frac{h_i - \mu_g}{\sqrt{\sigma_g^2 + \epsilon}}, \quad i \in \text{group } g
+  $$
+
+  <Variables>
+    <Variable>**$h_i$** — channel $i$'s raw output, for this one example.</Variable>
+    <Variable>**$\mu_g$**, **$\sigma_g^2$** — the mean and variance of *only the channels in group $g$*, for this one
+    example.</Variable>
+    <Variable>**$\hat h_i$** — channel $i$ after normalization.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="One group (LayerNorm)">
+      Every channel lands in the same group — $\mu_g$ and $\sigma_g^2$ are the mean and variance across *all* of
+      this example's channels at once.
+    </Step>
+    <Step label="Several groups (GroupNorm)">
+      Channels split into smaller groups, each normalized against only its own members — a middle ground between
+      one giant group and every channel alone.
+    </Step>
+    <Step label="One channel per group (InstanceNorm, the degenerate limit)">
+      Each group has exactly one member, so that member's "mean" is itself — every value normalizes to exactly $0$,
+      which is why this extreme is rarely useful on its own.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Slide from one group up to six. The channels get shuffled into smaller and smaller clusters, each computing its
+  *own* mean and variance — completely independent of whatever else is in the batch, or whether there's a batch at
+  all.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Six raw activations">
+      $[2, -1, 0.5, 3, -2.5, 1]$ — mean $0.5$, variance $20/6\approx3.33$.
+    </Step>
+    <Step label="One group (LayerNorm)">
+      Normalizing across all six at once gives mean $\approx0$ and variance $\approx1$ for the whole vector — the
+      same guarantee batch norm gives, just measured across channels instead of across a batch.
+    </Step>
+    <Step label="Three groups of two">
+      Each pair happens to split into two values equally far from their own mean — so *every* one of the six
+      outputs lands at exactly $+1$ or $-1$, regardless of how spread out the original six numbers were.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<LayerGroupNormCheckpoint />
+
+<Summary>
+  $$
+  \hat h_i = \frac{h_i - \mu_g}{\sqrt{\sigma_g^2 + \epsilon}}, \quad i \in \text{group } g
+  $$
+
+  Batch norm normalizes across examples; layer and group norm normalize across channels, for one example at a time.
+  That single change in axis is what makes them usable with a batch size of 1, inside a recurrent step, or across
+  variable-length sequences — exactly the settings where batch norm's batch-level statistics either don't exist or
+  don't mean anything stable. The next chapter takes this same idea and strips it down even further, dropping the
+  mean-centering step entirely.
+</Summary>

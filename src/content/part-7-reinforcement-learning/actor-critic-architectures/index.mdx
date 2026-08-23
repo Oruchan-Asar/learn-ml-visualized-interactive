@@ -1,0 +1,91 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ActorCriticCheckpoint } from "./Demos";
+
+<Hook>
+  REINFORCE scaled every update by the *raw* return $G$ — a noisy number that depends on everything that happened for the rest of the episode. What if something else, learned alongside the policy, could tell it "that was better than expected" or "worse than expected," instead of just "here's a number"?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Back to the familiar gridworld, but now two things learn at once: an **actor** (a softmax policy, one preference per action per state, just like REINFORCE) and a **critic** (a $V(s)$ table, updated the same TD way as the value-function chapters). Step through a trace and watch both bar charts move together — every single step, off the exact same number.
+</Intuition>
+
+<Formalize>
+  The critic learns $V(s)$ by ordinary one-step TD, producing a **TD error**:
+
+  $$
+  \delta = r + \gamma V(s') - V(s)
+  $$
+
+  The actor then uses that *same* $\delta$ as its **advantage** estimate, in place of REINFORCE's raw return $G$:
+
+  $$
+  \theta_i \leftarrow \theta_i + \alpha\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)\,\delta
+  $$
+
+  <Variables>
+    <Variable>**$\delta$** — the TD error: how much better or worse the actual outcome was than the critic's own expectation.</Variable>
+    <Variable>**$V(s)$** — the critic's current value estimate for state $s$.</Variable>
+    <Variable>**$\pi_\theta(i)$** — the actor's current probability of action $i$, from the softmax over its preferences.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Same update shape as REINFORCE, different scale">
+      The $(\mathbb{1}[i{=}a] - \pi_\theta(i))$ term is identical to the REINFORCE chapter. The only thing
+      that changed is what multiplies it: a *baseline-subtracted* advantage instead of a raw return.
+    </Step>
+    <Step label="Why this reduces variance">
+      $G$ can swing wildly step to step, purely from randomness far in the future. $\delta$ only measures
+      the gap between one real step and the critic's own prediction — a much smaller, steadier number to
+      scale a gradient step by, even though it points in the same useful direction on average.
+    </Step>
+    <Step label="Two learners, one shared signal">
+      The critic isn't "used" and then discarded — it's trained by its own TD update every step, using
+      the exact same $\delta$ the actor consumes. Neither one needs to fully converge before the other
+      starts learning from it.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Before any updates, $\pi(\cdot \mid S_2)$ is a coin flip between left and right — nothing has been learned yet. After six steps, "right" has pulled ahead, driven entirely by the critic's own value estimates, which shifted right alongside it.
+</Play>
+
+<WorkedExample>
+  With $\alpha=0.5$ for both actor and critic, $\gamma=0.9$, starting from an all-zero critic and a uniform actor:
+
+  <Steps>
+    <Step label="Step 1 — no signal yet, so the update is uninformative but harmless">
+      From $S_0$, "right" lands on $S_1$ with reward $-1$; $V(S_1)=0$ still, so $\delta = -1+0.9(0)-0=-1$.
+      $V(S_0) \leftarrow 0.5(-1) = -0.5$. The actor nudges $\theta(S_0,\text{right})$ down to $-0.25$ and
+      $\theta(S_0,\text{left})$ up to $0.25$ — discouraging the very action just taken, purely because the
+      critic (still near-zero everywhere) rated the outcome as worse than expected.
+    </Step>
+    <Step label="Step 3 — a real mistake, correctly penalized">
+      From $S_2$, taking "left" moves *away* from the goal, landing on $S_1$ (whose value, by now, is
+      already $-0.5$). $\delta = -1 + 0.9(-0.5) - 0 = -1.45$ — a bigger penalty than step 1's, because this
+      time the critic has real (negative) information about where "left" leads. $\theta(S_2,\text{left})$
+      drops to $-0.3625$; $\theta(S_2,\text{right})$ rises to $0.3625$ — already favoring "right" with more
+      than half the probability, after a single update.
+    </Step>
+    <Step label="Step 5 — reaching the goal spikes the advantage">
+      From $S_2$, "right" reaches the goal directly: reward $+10$, advantage $\delta = 10.725$ — far
+      larger than anything seen so far, since the critic had rated $S_2$ quite pessimistically
+      ($V(S_2)=-0.725$ at that point). $V(S_2)$ jumps to $4.6375$, and $\theta(S_2,\text{right})$ jumps
+      with it — the actor and critic correcting course together, in the same step.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ActorCriticCheckpoint />
+
+<Summary>
+  $$
+  \delta = r + \gamma V(s') - V(s), \qquad \theta_i \leftarrow \theta_i + \alpha\big(\mathbb{1}[i{=}a] - \pi_\theta(i)\big)\,\delta
+  $$
+
+  Actor-critic keeps REINFORCE's direct policy gradient but replaces its noisiest ingredient — the raw return — with a TD error computed by a value function learned alongside it. Both halves are simple, familiar algorithms from earlier chapters, run in parallel and coupled through one shared number. The next chapter takes this same clipped-nowhere update and adds one more piece of machinery: a hard limit on how far a single gradient step is allowed to move the policy at all.
+</Summary>

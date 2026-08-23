@@ -1,0 +1,79 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, TsneCheckpoint } from "./Demos";
+
+<Hook>
+  PCA only ever draws straight lines through your data — it can't bend to follow a curve. If two points are genuinely close in some high-dimensional, twisty sense but far apart along every straight axis, PCA has no way to notice. What kind of algorithm *can*?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Two true pairs, $P_1$/$P_2$ and $P_3$/$P_4$, start jumbled together at random. After training, the pairs pull apart from each other and tighten internally — nothing here promises *where* each pair ends up, only that points that were neighbors stay neighbors.
+</Intuition>
+
+<Formalize>
+  **t-SNE** converts distances into probabilities in both spaces, then makes the low-dimensional probabilities match the high-dimensional ones as closely as possible.
+
+  $$
+  p_{ij} \propto \exp\!\left(-\frac{\lVert x_i - x_j \rVert^2}{2\sigma^2}\right), \qquad q_{ij} \propto \frac{1}{1 + \lVert y_i - y_j \rVert^2}
+  $$
+
+  <Variables>
+    <Variable>**$p_{ij}$** — how similar points $i,j$ are in the *original* high-dimensional space, from a Gaussian centered on each point.</Variable>
+    <Variable>**$q_{ij}$** — how similar their images $y_i, y_j$ are in the *low-dimensional* embedding, from a heavier-tailed Student-t distribution.</Variable>
+    <Variable>**$\sigma$** — the Gaussian's bandwidth (fixed here; real t-SNE solves for it per point to hit a target "perplexity").</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="A heavier-tailed kernel in low dimensions, on purpose">
+      Squeezing high-dimensional neighborhoods into 2D leaves less room for everyone — the Student-t kernel's
+      heavy tails let moderately-distant points spread out further in the embedding without being punished,
+      easing that crowding.
+    </Step>
+    <Step label="Minimize how much Q disagrees with P">
+      Gradient descent adjusts every embedded point $y_i$ to make $q_{ij}$ track $p_{ij}$ as closely as
+      possible — the **KL divergence** between the two distributions is what's actually being minimized.
+    </Step>
+    <Step label="Only local structure is preserved">
+      Nothing in this objective cares about the *absolute* distance between two far-apart points, or which
+      direction a cluster lands in — only whether true neighbors stay neighbors survives the compression.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the steps slider. KL divergence doesn't fall smoothly — early on it can briefly get *worse* before the optimizer finds a better arrangement, the same way loss curves elsewhere in this course occasionally tick upward before a bigger drop. Given enough steps, it settles low and stays there.
+</Play>
+
+<WorkedExample>
+  Two tight pairs, $(0,0)$–$(1,0)$ and $(20,0)$–$(21,0)$, twenty units apart from each other:
+
+  <Steps>
+    <Step label="Within-pair affinity">
+      With $\sigma=1$, $P_1$'s Gaussian weight on $P_2$ (distance $1$) completely dominates its weight on
+      the far points (distance $20$ and $21$, both astronomically small by comparison) — so $p_{12} \approx
+      (1+1)/(2\cdot 4) = 0.25$, and symmetrically $p_{34} \approx 0.25$.
+    </Step>
+    <Step label="Cross-pair affinity is essentially zero">
+      $p_{13}$, between the two far-apart pairs, comes out indistinguishable from $0$ — high-dimensional
+      space has already declared these pairs unrelated.
+    </Step>
+    <Step label="Training pulls each true pair together, blind to the original coordinates">
+      Neither $P_1$ nor $P_2$'s *training* process ever sees the numbers $0$, $1$, $20$, or $21$ again once
+      $p_{ij}$ is computed — only the affinities. Yet gradient descent still finds an embedding where each
+      pair ends up close and the two pairs end up apart, purely by matching $q_{ij}$ to $p_{ij}$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<TsneCheckpoint />
+
+<Summary>
+  $$
+  p_{ij} \propto \exp\!\left(-\frac{\lVert x_i - x_j \rVert^2}{2\sigma^2}\right), \qquad q_{ij} \propto \frac{1}{1 + \lVert y_i - y_j \rVert^2}
+  $$
+
+  t-SNE gives up everything PCA guarantees — no straight-line projection, no preserved absolute distances, no consistent orientation between runs — in exchange for one thing PCA can't do at all: following genuinely curved structure by preserving *who's a neighbor of whom*. That tradeoff is exactly why t-SNE plots are for looking, not measuring — the axes and distances between separated clusters carry no meaning, only the clustering itself does.
+</Summary>

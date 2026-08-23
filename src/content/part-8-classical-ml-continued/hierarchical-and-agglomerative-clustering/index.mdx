@@ -1,0 +1,84 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, HierarchicalCheckpoint } from "./Demos";
+
+<Hook>
+  k-means makes you commit to a number of clusters before you've even looked at the data. What if, instead, you built every possible clustering at once — from 5 separate points all the way down to 1 big cluster — and picked afterward?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through the merges one at a time. The closest pair joins first, then the next-closest pair or point, and so on, until everything is one cluster. Nothing here ever needed to be told how many groups to expect.
+</Intuition>
+
+<Formalize>
+  **Agglomerative clustering** starts with every point in its own cluster and repeatedly merges the two closest clusters, using **single linkage** — the distance between a pair of clusters is the distance between their single closest members:
+
+  $$
+  d_{\text{single}}(A, B) = \min_{i \in A,\ j \in B} \lVert x_i - x_j \rVert
+  $$
+
+  <Variables>
+    <Variable>**$A, B$** — two clusters, each a set of points.</Variable>
+    <Variable>**$x_i, x_j$** — a point from $A$ and a point from $B$.</Variable>
+    <Variable>**$d_{\text{single}}(A,B)$** — the smallest distance between any pair drawn one from each cluster.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Start with n singleton clusters">
+      Every point begins as its own one-member cluster — no assumption about count or shape yet.
+    </Step>
+    <Step label="Merge the closest pair of clusters">
+      Compute $d_{\text{single}}$ between every pair of current clusters, and merge whichever pair is
+      smallest.
+    </Step>
+    <Step label="Record the merge height">
+      That minimum distance becomes the merge's **height** — how far apart the two groups were when they
+      joined. Stacking every merge by height, in order, draws the **dendrogram**.
+    </Step>
+    <Step label="Repeat until one cluster remains">
+      Keep merging the closest pair, one merge at a time, until every point belongs to a single cluster.
+      Cutting the finished dendrogram at any height recovers a full clustering — no re-running required.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Cut near height 0 and every point is alone. Cut anywhere between the tight inner merges and the one big final jump, and the two true groups fall right out. Push the cut past that final jump, and everything collapses into a single cluster — the same tradeoff $k$ posed for k-means, now expressed as *where to slice*, not *how many bins to pre-declare*.
+</Play>
+
+<WorkedExample>
+  Five points on a line — $0, 1, 2$ close together, then $6, 7$ close together, with a wide gap between the two groups:
+
+  <Steps>
+    <Step label="Closest pair merges first, at height 1">
+      Points at $0$ and $1$ are exactly $1$ apart — the smallest distance anywhere in the data. They merge
+      first, at height $1$.
+    </Step>
+    <Step label="The third point joins at the same height">
+      Point $2$ is distance $1$ from point $1$ (single linkage only needs the *closest* member) — it joins
+      $\{0,1\}$, also at height $1$.
+    </Step>
+    <Step label="The other pair merges independently, also at height 1">
+      Points $6$ and $7$ merge into their own cluster, at height $1$ — completely unrelated to the first
+      group so far.
+    </Step>
+    <Step label="The two groups finally join at height 4">
+      The closest pair *across* the groups is $2$ and $6$, distance $4$ apart — a jump four times larger
+      than any merge before it. That's the dendrogram's one big gap, and exactly where cutting recovers the
+      two true clusters.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<HierarchicalCheckpoint />
+
+<Summary>
+  $$
+  d_{\text{single}}(A, B) = \min_{i \in A,\ j \in B} \lVert x_i - x_j \rVert
+  $$
+
+  Agglomerative clustering trades k-means' single answer for the *entire family* of clusterings, stacked by merge height in a dendrogram — you decide how many clusters you want after seeing the structure, by choosing where to cut. The cost is speed: computing every pairwise cluster distance at every merge is far more expensive than k-means' handful of centroid updates, which is exactly why k-means remains the default choice for very large datasets.
+</Summary>

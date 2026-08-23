@@ -1,0 +1,89 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RlvrCheckpoint } from "./Demos";
+
+<Hook>
+  Part XVIII's RLHF chapter fit a reward model because nobody could write down "this answer is worth
+  7.3 points" for an open-ended response. But a math problem has exactly one right number. Why train a
+  fallible proxy to guess at something you can just *check*?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Four sampled responses to one arithmetic problem. Step through them — each one gets checked against
+  the true answer directly, no reward model involved anywhere in the loop.
+</Intuition>
+
+<Formalize>
+  RLVR's reward is the verifier's own output, nothing learned in between:
+
+  $$
+  r(y) = \mathbb{1}[\,\text{verify}(y) = \text{correct}\,]
+  $$
+
+  <Variables>
+    <Variable>**$r(y)$** — the reward assigned to sampled response $y$.</Variable>
+    <Variable>**$\text{verify}(y)$** — a program that checks $y$ against ground truth: exact-match on a final answer, or a test suite that a piece of code either passes or fails.</Variable>
+    <Variable>**$\mathbb{1}[\cdot]$** — the indicator function: $1$ if the condition holds, $0$ otherwise.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="No reward model to fit, no reward model to fool">
+      RLHF's reward model has to be trained on preference data and can be exploited by any response
+      that merely *looks* convincing to it. A verifier that checks an exact answer or runs a test suite
+      has no such surface to attack.
+    </Step>
+    <Step label="The reward is binary and exact">
+      Every sampled response gets exactly $0$ or $1$ — no in-between score, no calibration to worry
+      about, no drift between the reward model and the policy being trained against it.
+    </Step>
+    <Step label="This only works where a verifier exists">
+      RLVR is not a universal replacement for RLHF — open-ended writing has no ground-truth checker.
+      It's the right tool specifically for math, code, and anything else with a checkable answer.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The verifiable reward and the learned reward model's guesses average out to almost the same number
+  across these four responses. But look at which SPECIFIC response each one likes best: the verifier
+  correctly picks a response that got the right answer. The learned reward model — scoring based on
+  what *sounds* plausible — picks a response that's flatly wrong. That's reward hacking in miniature,
+  and it's exactly the failure mode a verifiable reward can't have.
+</Play>
+
+<WorkedExample>
+  Four sampled responses to "What is 17 + 26?" (correct answer: $43$):
+
+  <Steps>
+    <Step label="Verify each response exactly">
+      "$43$" → correct → reward $1$. "$39$" → wrong → reward $0$. "$43$" → correct → reward $1$. "$44$"
+      → wrong → reward $0$. Mean verifiable reward: $(1+0+1+0)/4 = 0.5$.
+    </Step>
+    <Step label="Compare against the learned reward model's guesses">
+      Guesses of $0.62, 0.71, 0.55, 0.30$ for those same four responses, in order. Mean: $2.18/4 =
+      0.545$ — close to the verifier's $0.5$ on average.
+    </Step>
+    <Step label="But the rankings disagree where it matters">
+      The learned RM's highest guess ($0.71$) belongs to "$39$" — the WRONG answer. The verifier would
+      never make that mistake: it isn't guessing, it's checking.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RlvrCheckpoint />
+
+<Summary>
+  $$
+  r(y) = \mathbb{1}[\,\text{verify}(y) = \text{correct}\,]
+  $$
+
+  RLVR replaces a learned proxy for correctness with correctness itself, wherever a verifier can be
+  written. It's not a fix for RLHF's reward model — it's a sidestep, available only on the subset of
+  tasks (math, code, anything checkable) where "correct" isn't a matter of preference at all. The next
+  chapter asks a harder question: once responses are sampled and scored this way, how does the policy
+  actually turn that binary signal into a training update — without training a separate critic network
+  to estimate a baseline?
+</Summary>

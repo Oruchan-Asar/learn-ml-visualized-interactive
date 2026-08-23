@@ -1,0 +1,78 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RmsNormCheckpoint } from "./Demos";
+
+<Hook>
+  LayerNorm computes a mean and a variance every single forward pass. What if the mean-centering step was never
+  buying you much in the first place?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same six activations as the last chapter — mean $0.5$, not $0$. LayerNorm would force the output's mean back to
+  $0$. RMSNorm doesn't: it never subtracts a mean at all, so whatever bias was in the input mean survives into the
+  output, just rescaled.
+</Intuition>
+
+<Formalize>
+  RMSNorm divides by the root-mean-square of the vector — no mean subtraction anywhere in the formula:
+
+  $$
+  \hat h_i = \frac{h_i}{\text{RMS}(h)} \cdot g, \qquad \text{RMS}(h) = \sqrt{\frac{1}{n}\sum_{j=1}^n h_j^2 + \epsilon}
+  $$
+
+  <Variables>
+    <Variable>**$h_i$** — channel $i$'s raw value.</Variable>
+    <Variable>**RMS($h$)** — the root-mean-square of the *whole* vector: the square root of its average squared
+    value.</Variable>
+    <Variable>**$g$** — a learned (here, shared-scalar) gain applied after normalizing.</Variable>
+    <Variable>**$\epsilon$** — a tiny constant keeping the division well-defined near zero.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="LayerNorm: subtract the mean, then divide by the standard deviation">
+      $\hat h_i = (h_i-\mu)/\sigma$ — two statistics computed from the data, one subtraction, one division.
+    </Step>
+    <Step label="RMSNorm: skip the subtraction entirely">
+      $\hat h_i = h_i/\text{RMS}(h)$ — one statistic, one division. Whatever mean the input had is still there,
+      just divided down along with everything else.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the gain. Every one of the six channels scales up or down by exactly the same factor — RMSNorm never treats
+  any channel differently based on where the group's center happens to sit, because it never computed a center.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="RMS of the six activations">
+      $[2,-1,0.5,3,-2.5,1]$ has mean-of-squares $21.5/6\approx3.583$, so $\text{RMS}\approx1.893$.
+    </Step>
+    <Step label="RMSNorm's output mean isn't 0">
+      Dividing every value by $1.893$ divides the *mean* by $1.893$ too: $0.5/1.893\approx0.264$. LayerNorm on the
+      identical input forces that same quantity to exactly $0$ by construction.
+    </Step>
+    <Step label="One fewer statistic, one fewer reduction">
+      RMSNorm needs only $\sum h_j^2$, not both $\sum h_j$ and $\sum(h_j-\mu)^2$ — cheaper to compute, and in
+      practice competitive with LayerNorm's accuracy on large transformer models, which is why models like LLaMA
+      and T5 use it instead.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RmsNormCheckpoint />
+
+<Summary>
+  $$
+  \hat h_i = \frac{h_i}{\text{RMS}(h)} \cdot g
+  $$
+
+  RMSNorm keeps normalization's core benefit — controlling the *scale* of activations layer after layer — while
+  dropping the assumption that re-centering to mean zero was doing meaningful work. One fewer statistic to compute,
+  one fewer place for a bug to hide, and empirically little accuracy lost. The next few chapters turn from
+  activation stability to a different training concern: keeping the model from simply memorizing its training data.
+</Summary>

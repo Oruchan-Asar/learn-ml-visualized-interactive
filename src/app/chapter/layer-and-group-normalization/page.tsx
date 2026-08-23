@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ChapterFrame } from "@/components/chapter/ChapterFrame";
 import { getChapterMeta } from "@/lib/curriculum";
-import { PlaceholderContent } from "@/components/chapter/PlaceholderContent";
+import ChapterContent from "@/content/part-3-neural-networks/layer-and-group-normalization/ClientContent";
 
 const SLUG = "layer-and-group-normalization";
 
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ChapterFrame slug={SLUG}>
-      <PlaceholderContent slug={SLUG} />
+      <ChapterContent />
     </ChapterFrame>
   );
 }

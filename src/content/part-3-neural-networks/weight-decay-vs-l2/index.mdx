@@ -1,0 +1,90 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, WeightDecayCheckpoint } from "./Demos";
+
+<Hook>
+  Two textbooks tell you "L2 regularization" and "weight decay" are the same thing. With plain SGD, they're right. Plug either one into Adam, and they quietly stop agreeing.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Two weights, $w_1$ and $w_2$, start identical. The only difference is their optimizer history: $w_1$ has barely been
+  updated (small accumulated squared gradient $v$), $w_2$ has been updated constantly (large $v$). Watch what the
+  *same* $\lambda$ does to each under the two decay schemes.
+</Intuition>
+
+<Formalize>
+  L2 regularization is usually implemented by adding $\lambda w$ to the gradient before the optimizer's update rule
+  divides by $\sqrt{v}+\epsilon$. Weight decay (as in AdamW) skips that division entirely:
+
+  $$
+  \Delta w_{\text{L2}} = \frac{\eta\,\lambda\,w}{\sqrt{v}+\epsilon} \qquad \Delta w_{\text{decoupled}} = \eta\,\lambda\,w
+  $$
+
+  <Variables>
+    <Variable>**$\eta$** — the learning rate.</Variable>
+    <Variable>**$\lambda$** — the regularization strength.</Variable>
+    <Variable>**$w$** — the current weight value.</Variable>
+    <Variable>**$v$** — Adam's accumulated squared-gradient history for this parameter.</Variable>
+    <Variable>**$\epsilon$** — a tiny constant that keeps the division well-defined.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Plain SGD: v is effectively 1 for every parameter">
+      SGD has no per-parameter adaptive scaling, so both formulas reduce to the same thing: $\Delta w = \eta\lambda w$.
+      There's no distinction to make — this is why the two terms got used interchangeably for years.
+    </Step>
+    <Step label="Adam: v varies wildly per parameter">
+      A parameter with a small $v$ (rarely updated) gets *divided by a small number*, so $\Delta w_{\text{L2}}$ comes
+      out close to $\eta\lambda w$ — full-strength regularization. A parameter with a large $v$ (frequently updated)
+      gets divided by a large number, so its coupled decay shrinks toward zero no matter how large $\lambda$ is.
+    </Step>
+    <Step label="Decoupled decay never looks at v">
+      $\Delta w_{\text{decoupled}} = \eta\lambda w$ doesn't reference $v$ at all — every parameter decays by the same
+      fraction of itself, exactly matching the original intent of "shrink every weight a little."
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Push $\lambda$ up. The two coupled bars (L2-in-Adam) spread apart — $w_1$'s decay grows fast, $w_2$'s barely moves.
+  The two decoupled bars stay stacked on top of each other the entire time, because decoupled decay was never looking
+  at each parameter's gradient history in the first place.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Same λ = 0.5, two parameters">
+      $w_1$ has $v=0.01$ (so $\sqrt{v}=0.1$), $w_2$ has $v=4$ (so $\sqrt{v}=2$). With $\eta=0.1$: coupled decay on
+      $w_1$ is $\approx 0.1\times0.5\times1 / 0.1 = 0.5$ — half the weight, in one step. Coupled decay on $w_2$ is
+      $0.1\times0.5\times1/2=0.025$ — twenty times smaller, for the identical $\lambda$.
+    </Step>
+    <Step label="Decoupled decay doesn't care">
+      At that same $\lambda=0.5$, decoupled decay gives *both* parameters exactly $0.1\times0.5\times1=0.05$ — a
+      fixed 5% shrink, independent of how often either parameter has been updated.
+    </Step>
+    <Step label="Why this matters in practice">
+      Rarely-updated parameters (think: embeddings for infrequent tokens) get crushed by coupled L2 long before
+      frequently-updated ones feel any pull — an accident of optimizer bookkeeping, not a deliberate regularization
+      choice. Decoupled decay applies the *same* regularization strength everywhere, which is why AdamW dropped
+      coupled L2 in favor of it.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<WeightDecayCheckpoint />
+
+<Summary>
+  $$
+  \Delta w_{\text{L2}} = \frac{\eta\,\lambda\,w}{\sqrt{v}+\epsilon} \qquad \Delta w_{\text{decoupled}} = \eta\,\lambda\,w
+  $$
+
+  "Weight decay" and "L2 regularization" are the same formula only when there's no adaptive per-parameter scaling to
+  interact with. The moment you add one — Adam, RMSProp, anything that divides by an accumulated gradient
+  statistic — coupling the two lets the optimizer's own bookkeeping decide how much regularization each parameter
+  actually receives. Decoupling them, as AdamW does, restores $\lambda$ to meaning what it says. The next few
+  chapters look at other places training goes wrong not because the math is broken, but because a hyperparameter
+  interacts with something it was never designed to interact with — starting with the learning rate itself.
+</Summary>

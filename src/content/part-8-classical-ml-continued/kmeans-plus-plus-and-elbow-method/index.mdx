@@ -1,0 +1,84 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, KmeansElbowCheckpoint } from "./Demos";
+
+<Hook>
+  Plain k-means picks its starting centroids uniformly at random — sometimes two of them land in the same blob by pure bad luck, and the algorithm never fully recovers. And nobody handed you the "right" number of clusters to begin with. Can both problems be fixed with the same idea?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through the seeding process. Every point gets a bar proportional to how far it is from every centroid chosen *so far* — a point already close to an existing centroid barely registers, while a point stuck in an untouched blob towers over the rest. That's the whole trick: distant points get picked more often, without ever being forced to.
+</Intuition>
+
+<Formalize>
+  **k-means++** replaces uniform-random seeding with distance-weighted sampling, and the **elbow method** replaces a guessed $k$ with one read off a curve.
+
+  $$
+  P(x) = \frac{D(x)^2}{\sum_{x'} D(x')^2}, \qquad J(k) = \sum_{i} \min_{c} \lVert x_i - c \rVert^2
+  $$
+
+  <Variables>
+    <Variable>**$D(x)$** — the distance from point $x$ to the *nearest* centroid already chosen.</Variable>
+    <Variable>**$P(x)$** — the probability of picking $x$ as the next centroid: proportional to $D(x)^2$, normalized over every not-yet-chosen point.</Variable>
+    <Variable>**$J(k)$** — the *inertia*: total squared distance from every point to its assigned centroid, once $k$ centroids have converged via Lloyd's algorithm.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="First centroid, then weighted draws">
+      The first centroid is picked arbitrarily (uniformly at random in practice). Every centroid after that
+      is sampled from $P(x)$ — walk the cumulative $D(x)^2$ distribution until a random draw lands inside a
+      point's slot.
+    </Step>
+    <Step label="Farther points are more likely, never guaranteed">
+      A point ten units from every existing centroid has a much bigger slice of the distribution than one
+      sitting right next to a centroid — but it's still a lottery, not a rule. Any point can still be drawn.
+    </Step>
+    <Step label="Run Lloyd's algorithm to convergence, once seeded">
+      With $k$ centroids chosen this way, ordinary k-means (assign, recompute, repeat) takes over from here.
+    </Step>
+    <Step label="Increase k and watch inertia only ever fall">
+      More centroids can only help — $J(k)$ never increases with $k$. The **elbow** is the $k$ whose drop is
+      dramatically larger than the next one: the last point where adding a centroid genuinely helped, before
+      returns collapse to "barely worth it."
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  At $k=1$, everything is forced into one centroid at the grand mean — a big inertia, badly fit. At $k=3$, one centroid per true blob, and inertia bottoms out almost entirely. At $k=4$, a blob gets needlessly split in two, but the improvement over $k=3$ is tiny compared to every earlier jump.
+</Play>
+
+<WorkedExample>
+  Three tight blobs of 3 points each, far apart from one another; the very first draw is fixed to land exactly halfway through the cumulative distribution each time:
+
+  <Steps>
+    <Step label="D(x)^2 from the first centroid, (0,0)">
+      Squared distances to the other 8 points: $1, 1, 100, 121, 101, 125, 136, 146$ — summing to $731$.
+    </Step>
+    <Step label="The halfway draw lands on the far blob">
+      Half of $731$ is $365.5$. Walking the cumulative sum in point order — $1, 2, 102, 223, 324, 449,
+      \ldots$ — it first exceeds $365.5$ at the point $(5,10)$: the second centroid.
+    </Step>
+    <Step label="A third halfway draw finds the last untouched blob">
+      With two centroids now placed — one in each of two blobs — the same rule picks $(11,0)$ next,
+      landing the third centroid in the one remaining blob. All three blobs now have exactly one seed.
+    </Step>
+    <Step label="Inertia across k=1..4">
+      $J(1)=354$, $J(2)=154$, $J(3)=4$, $J(4)=19/6 \approx 3.17$. The drop from $k=2$ to $k=3$ is $150$; the
+      drop from $k=3$ to $k=4$ is under $1$. $k=3$ is the elbow.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<KmeansElbowCheckpoint />
+
+<Summary>
+  $$
+  P(x) = \frac{D(x)^2}{\sum_{x'} D(x')^2}, \qquad J(k) = \sum_{i} \min_{c} \lVert x_i - c \rVert^2
+  $$
+
+  k-means++ fixes *where* k-means starts — weighting the random draw by squared distance so centroids spread themselves across the data instead of clumping by chance. The elbow method fixes *how many* centroids to use — tracking inertia as $k$ grows and stopping at the point where more centroids stop paying for themselves. Neither removes the randomness or the guesswork entirely, but both turn a blind guess into an informed one.
+</Summary>

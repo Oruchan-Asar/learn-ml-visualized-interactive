@@ -1,0 +1,91 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PrmTreeSearchCheckpoint } from "./Demos";
+
+<Hook>
+  RLVR's reward only looks at the FINAL answer — correct or not, after the whole reasoning chain is
+  already written. That's late feedback: a promising-looking first step can lead nowhere, and nothing
+  catches it until the very end. What if each individual step could be scored on its own?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A reasoning tree: 3 possible first steps, each branching into 2 possible second steps. Step through
+  each branch and see the two numbers that make up a path's score — a **Process Reward Model** (PRM)
+  score for each individual step, not just one score for the finished answer.
+</Intuition>
+
+<Formalize>
+  A path's overall score is the PRODUCT of its per-step PRM scores — exactly like chaining conditional
+  probabilities:
+
+  $$
+  \text{score}(\text{path}) = \prod_{t} \text{PRM}(\text{step}_t)
+  $$
+
+  <Variables>
+    <Variable>**$\text{score}(\text{path})$** — the overall score for one complete root-to-leaf reasoning path.</Variable>
+    <Variable>**$\text{PRM}(\text{step}_t)$** — the process reward model's score for step $t$: how likely this partial derivation is to still be on track to a correct final answer.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Scoring steps, not just outcomes">
+      An Outcome Reward Model (ORM) — RLVR's verifier from the previous chapter — only ever sees the
+      finished response. A PRM scores every intermediate step, giving a signal *before* the reasoning is
+      finished.
+    </Step>
+    <Step label="Per-step scores enable a search, not just a rating">
+      Once every candidate step has its own score, a search procedure can branch: expand several
+      candidate next steps, score each with the PRM, and keep pursuing only the promising ones —
+      instead of committing to one linear chain and hoping.
+    </Step>
+    <Step label="Full-path evaluation beats greedy, step-by-step commitment">
+      A greedy search that locks in whichever first step scores highest, then only looks at that
+      branch's children, can miss the actual best path entirely — evaluating full paths (as a real tree
+      search does) is what catches that.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Branch A's first step scores highest in isolation ($0.9$) — the most tempting one to commit to
+  greedily. But its best second step only reaches $0.3$, for a final path score of just $0.27$: the
+  WORST of the three branches. Branch C's first step looks weakest ($0.35$) yet leads to an excellent
+  second step ($0.95$), landing the best overall path at $0.3325$. A search that only looked one step
+  ahead would never have found it.
+</Play>
+
+<WorkedExample>
+  The full tree, all six paths:
+
+  <Steps>
+    <Step label="Branch A (first-step score 0.9 — the tempting one)">
+      A→A1: $0.9 \times 0.3 = 0.27$. A→A2: $0.9 \times 0.2 = 0.18$. Best in this branch: $0.27$.
+    </Step>
+    <Step label="Branch B (first-step score 0.5)">
+      B→B1: $0.5 \times 0.6 = 0.30$. B→B2: $0.5 \times 0.4 = 0.20$. Best in this branch: $0.30$.
+    </Step>
+    <Step label="Branch C (first-step score 0.35 — the weakest-looking one)">
+      C→C1: $0.35 \times 0.2 = 0.07$. C→C2: $0.35 \times 0.95 = 0.3325$. Best in this branch: $0.3325$
+      — the best path in the ENTIRE tree, despite starting from the lowest first-step score of the
+      three branches.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PrmTreeSearchCheckpoint />
+
+<Summary>
+  $$
+  \text{score}(\text{path}) = \prod_{t} \text{PRM}(\text{step}_t)
+  $$
+
+  A Process Reward Model turns "is this answer right?" into "is this STEP still on track?" — a signal
+  available before the reasoning chain is even finished. That per-step signal is what makes tree search
+  over reasoning paths possible at all, and it's what catches exactly the failure mode this chapter's
+  tree demonstrated: the step that looks most promising in isolation isn't always the one that leads
+  anywhere good. The next chapter turns back to alignment training itself, with two DPO variants that
+  each drop one of DPO's own requirements.
+</Summary>
