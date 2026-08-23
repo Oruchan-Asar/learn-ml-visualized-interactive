@@ -1,0 +1,93 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, HybridCheckpoint } from "./Demos";
+
+<Hook>
+  Attention layers can pull up any token from anywhere in the sequence, but pay O(n²) for it. SSM layers
+  run in O(n), but everything before the current token has to have already been squeezed into one
+  fixed-size state. Rather than pick a side, why not build a model out of both — and let most layers be
+  cheap while a few stay expensive?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Flip a layer from SSM to attention and its bar jumps — even at this toy sequence length of 8, an
+  attention layer already costs noticeably more than an SSM layer at the same width. Flip all four and the
+  total climbs every time; flip them all back and it falls. The stack's total cost is just the sum of
+  whatever each layer happens to be.
+</Intuition>
+
+<Formalize>
+  A hybrid stack's total cost is the sum of each layer's own cost, and only the *count* of attention layers
+  matters — not where they sit in the stack:
+
+  $$
+  \text{cost}(k, n) = k\cdot n^2 d \;+\; (L-k)\cdot n d s
+  $$
+
+  <Variables>
+    <Variable>**$k$** — how many of the $L$ layers are full attention.</Variable>
+    <Variable>**$L$** — the total number of layers in the stack.</Variable>
+    <Variable>**$n$**, **$d$** — sequence length and model width, shared by every layer.</Variable>
+    <Variable>**$s$** — the SSM's fixed hidden-state size.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Each attention layer contributes its own full n²d term">
+      There's no sharing between layers — every attention layer independently pays the full quadratic cost
+      at whatever $n$ the model is run at.
+    </Step>
+    <Step label="Every SSM layer instead contributes a linear nds term">
+      Swapping an attention layer for an SSM layer doesn't shrink the *existing* attention layers' cost —
+      it just removes one $n^2d$ term from the sum and replaces it with a much smaller $nds$ one.
+    </Step>
+    <Step label="Even one leftover attention layer keeps the whole stack quadratic in n">
+      $\text{cost}(k,n)$ is still $\Theta(n^2)$ for any $k \geq 1$ — a hybrid with even a single attention
+      layer scales the same *way* the all-attention stack does, just with a far smaller constant in front.
+      Only $k=0$ (pure SSM) removes the quadratic term entirely.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The bold curve (all 4 layers attention) curves upward fast — pure O(n²). The dashed line (all 4 layers
+  SSM) stays nearly flat by comparison — O(n). The middle curve is the hybrid with just one attention
+  layer: still curving upward, since it's still quadratic in shape, but starting from a much smaller base —
+  three of its four layers are paying the cheap linear cost instead.
+</Play>
+
+<WorkedExample>
+  $d=8$, SSM state size $s=4$, $n=64$, $L=4$ layers:
+
+  <Steps>
+    <Step label="All 4 layers attention">
+      Each layer costs $64^2\times8=32{,}768$. Total: $4\times32{,}768=131{,}072$.
+    </Step>
+    <Step label="All 4 layers SSM">
+      Each layer costs $64\times8\times4=2{,}048$. Total: $4\times2{,}048=8{,}192$ — a 16x reduction.
+    </Step>
+    <Step label="Hybrid: 1 attention layer, 3 SSM layers">
+      $32{,}768 + 3\times2{,}048 = 32{,}768+6{,}144=38{,}912$ — roughly a 3.4x reduction from all-attention,
+      while keeping one layer able to retrieve any token exactly, however far back it sits.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<HybridCheckpoint />
+
+<Summary>
+  $$
+  \text{cost}(k, n) = k\cdot n^2 d \;+\; (L-k)\cdot n d s
+  $$
+
+  A hybrid architecture's total cost is just the sum of its layers' individual costs, so every attention
+  layer swapped for an SSM layer trades a full $n^2d$ term for a much smaller $nds$ one — but the stack
+  stays fundamentally quadratic in shape as long as even one attention layer remains. Positional schemes
+  fixed attention's blindness to order, RoPE and YaRN made that scheme rotate and stretch cleanly,
+  FlashAttention made the quadratic cost that's left as memory-cheap as possible, and hybrid architectures
+  are the move that questions whether every layer needs to pay that cost at all. The closing capstone puts
+  a pure Transformer and a pure Mamba stack head to head on exactly that trade-off, at a sequence length
+  long enough for it to matter.
+</Summary>
