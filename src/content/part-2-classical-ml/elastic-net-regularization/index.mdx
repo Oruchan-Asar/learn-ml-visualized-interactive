@@ -1,0 +1,85 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ElasticNetCheckpoint } from "./Demos";
+
+<Hook>
+  Lasso picks one of two nearly-identical predictors and throws the other away — but *which* one it keeps
+  can be an arbitrary accident of the data, not a meaningful choice. What if you wanted the sparsity of
+  lasso, but without that fragile all-or-nothing bet on correlated features?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same two correlated predictors as the last two chapters, same total penalty strength — only the *mix*
+  between L1 and L2 changes. At α=1 it's pure lasso: $w_2$ sits at exact zero. Slide α down and watch $w_2$
+  revive, smoothly, long before you reach pure ridge.
+</Intuition>
+
+<Formalize>
+  ElasticNet's penalty is a weighted blend of both:
+
+  $$
+  \text{MSE}(\mathbf{w}) + \lambda\left[\alpha \sum_j |w_j| \;+\; \frac{1-\alpha}{2}\sum_j w_j^2\right]
+  $$
+
+  <Variables>
+    <Variable>**$\lambda$** — the total penalty strength, same role as in ridge and lasso.</Variable>
+    <Variable>**$\alpha$** — the mixing parameter, between 0 and 1: $\alpha=1$ is pure lasso, $\alpha=0$ is pure ridge.</Variable>
+    <Variable>**$\sum_j |w_j|$, $\sum_j w_j^2$** — the L1 and L2 penalty terms from the last two chapters, now combined.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Each coordinate update generalizes both single-penalty rules">
+      Coordinate descent still soft-thresholds by the L1 share of the penalty, then divides by the data
+      term *plus* the L2 share — set $\alpha=1$ and the L2 share vanishes, recovering lasso's update
+      exactly; set $\alpha=0$ and the soft-threshold cutoff vanishes, recovering a ridge-like update.
+    </Step>
+    <Step label="The L2 term restores ridge's grouping effect">
+      Even a small amount of L2 ($\alpha$ just under 1) is enough to stop lasso's arbitrary all-or-nothing
+      choice between correlated predictors — both stay in the model, sharing the fit instead of one
+      evicting the other.
+    </Step>
+    <Step label="The L1 term keeps sparsity available">
+      Push $\alpha$ close enough to 1 and the sparsity comes back — ElasticNet doesn't have to choose
+      between "shrinks everything" and "zeros out weak predictors"; $\alpha$ dials between them.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag α down from 1. Somewhere before you reach 0, $w_2$ stops being exactly zero and starts climbing —
+  that's the L2 term's grouping effect outweighing L1's corner.
+</Play>
+
+<WorkedExample>
+  Same toy setup as ridge and lasso: $x_1=[1,2,3,4]$, $x_2=[1,2,3,4.5]$, $y=[2,4,7,8]$, fixed $\lambda=0.5$.
+
+  <Steps>
+    <Step label="α = 1 (pure lasso): sparse, as expected">
+      $w_1 \approx 2.033$, $w_2 = 0$ exactly — identical to the lasso chapter's own result at this λ.
+    </Step>
+    <Step label="α = 0.5: both predictors survive, close together">
+      $w_1 \approx 1.069$, $w_2 \approx 0.902$ — no longer sparse, but the two nearly-collinear predictors
+      are now sharing credit almost the way ridge would.
+    </Step>
+    <Step label="α = 0 (pure ridge): fully grouped">
+      $w_1 \approx 1.028$, $w_2 \approx 0.941$ — the two weights are about as close together as ridge alone
+      would produce (a differently-scaled λ than the closed-form ridge chapter, since this loss averages
+      the squared error instead of summing it — but the qualitative grouping behavior matches).
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ElasticNetCheckpoint />
+
+<Summary>
+  $$
+  \text{MSE}(\mathbf{w}) + \lambda\left[\alpha \sum_j |w_j| + \frac{1-\alpha}{2}\sum_j w_j^2\right]
+  $$
+
+  ElasticNet doesn't pick a side between L1 and L2 — it interpolates. Lasso's sparsity stays available
+  near $\alpha=1$, and even a little L2 mixed in restores ridge's grouping effect on correlated predictors,
+  fixing the exact fragility that pure lasso has no way to fix on its own.
+</Summary>
