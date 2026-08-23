@@ -1,0 +1,86 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LowRankCheckpoint } from "./Demos";
+
+<Hook>
+  A matrix's SVD splits it into a sum of pieces, each carrying a singular value that measures how much
+  of the matrix that piece accounts for. What happens if you just... throw away the small pieces?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The rank-1 heatmap keeps only the SVD's largest term; rank-2 keeps both and reconstructs the original
+  exactly. Watch how close rank-1 already gets, and exactly how large the leftover error is.
+</Intuition>
+
+<Formalize>
+  The Eckart-Young theorem says the best possible rank-$k$ approximation to $A$ — the one closest to it
+  in Frobenius norm, among *every* rank-$k$ matrix — is obtained by keeping only the $k$ largest terms
+  of $A$'s SVD:
+
+  $$
+  A_k = \sum_{i=1}^{k} \sigma_i u_i v_i^\top \qquad \|A - A_k\|_F = \sqrt{\sum_{i>k} \sigma_i^2}
+  $$
+
+  <Variables>
+    <Variable>**$\sigma_i$** — the $i$-th singular value of $A$, sorted largest to smallest.</Variable>
+    <Variable>**$u_i, v_i$** — the corresponding left and right singular vectors.</Variable>
+    <Variable>**$A_k$** — the best possible rank-$k$ approximation of $A$.</Variable>
+    <Variable>**$\|\cdot\|_F$** — the Frobenius norm: the square root of the sum of every entry squared.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Truncation error is exact, not a bound">
+      The right-hand equation isn't an upper bound — it's the *exact* error, computable directly from
+      the singular values you dropped, without ever forming $A_k$ and subtracting.
+    </Step>
+    <Step label="Why the small singular values matter least">
+      Since the dropped singular values are squared and summed, a handful of small $\sigma_i$'s
+      contribute far less error than their count alone would suggest — this is what makes low-rank
+      compression work at all.
+    </Step>
+    <Step label="It's the best rank-k matrix, full stop">
+      No other rank-$k$ matrix — found by any method — can get closer to $A$ in Frobenius norm than
+      $A_k$ does. Truncating the SVD isn't just convenient; it's provably optimal.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  $\sigma_1=5$ carries far more of the squared-Frobenius "energy" than $\sigma_2=1$ — which is exactly
+  why dropping $\sigma_2$ costs so little.
+</Play>
+
+<WorkedExample>
+  $A=\begin{pmatrix}3&2\\2&3\end{pmatrix}$ has singular values $\sigma_1=5,\ \sigma_2=1$, with singular
+  vectors $u_1=v_1=(\tfrac{1}{\sqrt2},\tfrac{1}{\sqrt2})$ and $u_2=v_2=(\tfrac{1}{\sqrt2},-\tfrac{1}{\sqrt2})$:
+
+  <Steps>
+    <Step label="Build the rank-1 approximation">
+      $A_1 = 5 u_1 v_1^\top = 5\cdot\tfrac12\begin{pmatrix}1&1\\1&1\end{pmatrix} = \begin{pmatrix}2.5&2.5\\2.5&2.5\end{pmatrix}$.
+    </Step>
+    <Step label="Compute the error directly">
+      $A - A_1 = \begin{pmatrix}0.5&-0.5\\-0.5&0.5\end{pmatrix}$, and
+      $\|A-A_1\|_F=\sqrt{4\times0.5^2}=\sqrt{1}=1$.
+    </Step>
+    <Step label="Confirm it matches the formula">
+      Eckart-Young predicts $\|A-A_1\|_F = \sqrt{\sigma_2^2} = \sigma_2 = 1$ — exactly what direct
+      subtraction gave. Retained energy: $\sigma_1^2/(\sigma_1^2+\sigma_2^2)=25/26\approx96.2\%$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<LowRankCheckpoint />
+
+<Summary>
+  $$
+  \|A - A_k\|_F = \sqrt{\sum_{i>k} \sigma_i^2}
+  $$
+
+  Compression, denoising, and dimensionality reduction all lean on the same fact: a matrix's
+  "important" information concentrates in its largest singular values, and the Eckart-Young theorem
+  guarantees that truncating the rest is the best possible rank-$k$ summary you could build. The
+  capstone ahead applies exactly this to compress an actual image.
+</Summary>
