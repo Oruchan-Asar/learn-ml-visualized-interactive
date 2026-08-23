@@ -1,0 +1,75 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, InductionCheckpoint } from "./Demos";
+
+<Hook>
+  A transformer that has never seen "Ohm's Law" before can still complete "Ohm's Law states that V = I"
+  correctly the *second* time the phrase appears in the same context — purely from having seen it once
+  already. No weight update, no training example: just one forward pass finding the pattern's earlier
+  occurrence and copying whatever followed it.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Switch sequences. Whenever the last token has appeared earlier, attention concentrates almost entirely
+  on the position right after that earlier occurrence — and the predicted token is whatever sat there.
+  When nothing in the sequence matches, there's no earlier occurrence to point to, and attention spreads
+  out with no real preference.
+</Intuition>
+
+<Formalize>
+  An induction head is two attention heads working in sequence. A **previous-token head** first writes,
+  into every position $i$, a report about whatever token sat at $i-1$. The **induction head** then reads
+  the *current* (last) token as a query and compares it against every position's previous-token report,
+  used as a key:
+
+  $$
+  \text{score}_i = q \cdot k_i, \qquad k_i = \text{embed}(x_{i-1}), \qquad q = \text{embed}(x_T), \qquad \alpha_i = \frac{\text{score}_i}{\sum_j \text{score}_j}
+  $$
+
+  <Variables>
+    <Variable>**$x_T$** — the current (last) token in the sequence, the one we're predicting a continuation for.</Variable>
+    <Variable>**$k_i$** — position $i$'s previous-token report: the embedding of whatever token came right before it.</Variable>
+    <Variable>**$q$** — the query: the embedding of the current token.</Variable>
+    <Variable>**$\alpha_i$** — the resulting attention weight on position $i$, normalized to sum to 1 across all earlier positions.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Match found">If some earlier position's previous token equals the current token, $\text{score}_i = 1$ there and 0 everywhere else — attention locks onto that position.</Step>
+    <Step label="No match anywhere">Every score is 0; normalizing 0/0 is undefined, so the head falls back to spreading weight uniformly instead.</Step>
+    <Step label="Prediction">The output copies the token actually sitting at $\arg\max_i \alpha_i$ — not $i-1$, but $i$ itself, since that's what followed the matching earlier occurrence.</Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  "A B C A B" and "C A B C A" both lock onto a single earlier position with weight 1.00 — a genuine
+  repeated token gives an unambiguous match. "A B C" has no repeated token anywhere, so the best it can
+  do is 0.50, split between two equally uninformed guesses.
+</Play>
+
+<WorkedExample>
+  Predicting the continuation of "A B C A B":
+
+  <Steps>
+    <Step label="Embed the tokens">One-hot in a 3-symbol vocabulary: A = [1,0,0], B = [0,1,0], C = [0,0,1].</Step>
+    <Step label="Build each position's previous-token report">$k_1=\text{embed}(x_0)=A$, $k_2=\text{embed}(x_1)=B$, $k_3=\text{embed}(x_2)=C$, $k_4=\text{embed}(x_3)=A$.</Step>
+    <Step label="Score against the query">$q = \text{embed}(x_4) = B$. $\text{score}_1 = B{\cdot}A=0$, $\text{score}_2=B{\cdot}B=1$, $\text{score}_3=B{\cdot}C=0$, $\text{score}_4=B{\cdot}A=0$.</Step>
+    <Step label="Normalize and predict">$\alpha = [0,1,0,0]$ — all the weight lands on position 2. The token actually at position 2 is C, so the prediction is **C**.</Step>
+  </Steps>
+</WorkedExample>
+
+<InductionCheckpoint />
+
+<Summary>
+  $$
+  \alpha_i = \frac{\text{embed}(x_T) \cdot \text{embed}(x_{i-1})}{\sum_j \text{embed}(x_T) \cdot \text{embed}(x_{j-1})}
+  $$
+
+  Two heads, chained: one reports "what came right before me," the other matches that report against
+  the current token and copies whatever followed the match. Real induction heads (identified in
+  small transformers by Olsson, Elhage, and collaborators at Anthropic) run on continuous embeddings and
+  noisy matches instead of clean one-hot vectors, but the mechanism — match on the past, copy what
+  followed — is the same circuit this chapter traced exactly.
+</Summary>
