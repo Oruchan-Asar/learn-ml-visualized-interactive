@@ -1,0 +1,76 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, NormsCheckpoint } from "./Demos";
+
+<Hook>
+  A feature vector's "size" sounds like one number. Drag this arrow around — watch three different rulers disagree about how big it is.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same arrow, three measurements. One adds up the straight-line steps along each axis, one measures the direct diagonal distance, and one just asks "what's the single biggest component?"
+</Intuition>
+
+<Formalize>
+  Those three rulers are the **L1**, **L2**, and **L∞ norms** of a vector $v = (v_x, v_y)$ —
+
+  $$
+  \|v\|_1 = |v_x| + |v_y|, \qquad \|v\|_2 = \sqrt{v_x^2 + v_y^2}, \qquad \|v\|_\infty = \max(|v_x|, |v_y|)
+  $$
+
+  <Variables>
+    <Variable>**$\|v\|_1$** — the L1 (Manhattan) norm: sum of absolute components, like walking city blocks.</Variable>
+    <Variable>**$\|v\|_2$** — the L2 (Euclidean) norm: straight-line length, the one "distance" usually means.</Variable>
+    <Variable>**$\|v\|_\infty$** — the L∞ norm: just the largest component in absolute value.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="They never disagree about ordering">
+      For any vector, $\|v\|_\infty \le \|v\|_2 \le \|v\|_1$ — the diagonal is never longer than the sum of the
+      legs, and the single biggest leg is never longer than the diagonal.
+    </Step>
+    <Step label="They disagree about how much a large single component matters">
+      L1 punishes every nonzero component equally; L∞ only ever cares about the worst one. That difference
+      is exactly why L1 vs. L2 regularization (a few chapters ahead) produce such different behavior.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Norms measure the size of *one* vector. Drag $b$ around the fixed $a$ and watch **cosine similarity** — the same dot-product machinery, but normalized by both magnitudes so it only measures *direction*, not size.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Compute all three norms of v = (3, 4)">
+      $$
+      \|v\|_1 = 3+4=7, \qquad \|v\|_2=\sqrt{9+16}=5, \qquad \|v\|_\infty=\max(3,4)=4
+      $$
+
+      Exactly the ordering the Formalize step predicted: $4 \le 5 \le 7$.
+    </Step>
+    <Step label="Compute cosine similarity and distance for a=(4,0), b=(3,4)">
+      $$
+      \cos\theta = \frac{a\cdot b}{\|a\|_2\,\|b\|_2} = \frac{12}{4\times5}=0.6, \qquad \text{cosine distance}=1-0.6=0.4
+      $$
+
+      Two feature vectors can point in a similar direction (cosine close to 1) even if their L2 norms are wildly
+      different sizes — which is exactly why cosine similarity, not raw distance, is the standard way to compare
+      documents or embeddings of different lengths.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<NormsCheckpoint />
+
+<Summary>
+  $$
+  \|v\|_1, \ \|v\|_2, \ \|v\|_\infty, \qquad \cos\theta = \frac{a\cdot b}{\|a\|_2\,\|b\|_2}
+  $$
+
+  Norms measure how big a single vector is — L1, L2, and L∞ disagree about *how* to measure it. Cosine
+  similarity ignores size entirely and measures only direction, which is why it's the default way to compare
+  feature vectors in machine learning.
+</Summary>
