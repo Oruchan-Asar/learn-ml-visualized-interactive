@@ -1,0 +1,103 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, BayesianClassifierCheckpoint } from "./Demos";
+
+<Hook>
+  A new message contains a word your spam class has never seen and a word your "not spam" class has never
+  seen either. Raw maximum likelihood has an answer for that — and it's a silent, catastrophic zero.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Toggle to MLE: two cells sit at exactly $0.000$, in red — words that never once appeared with that class in
+  training. Toggle to MAP: the smoothing pulls every estimate off the boundary, exactly where MLE broke.
+</Intuition>
+
+<Formalize>
+  Naive Bayes classifies a message by combining a class prior with a per-word likelihood, assuming word
+  presence is conditionally independent given the class:
+
+  $$
+  P(\text{label}\mid \text{message}) \propto P(\text{label}) \prod_{w \in \text{vocab}} P(w \in \text{message}\mid \text{label})
+  $$
+
+  <Variables>
+    <Variable>**$P(\text{label})$** — the class prior, estimated as the fraction of training messages with that label.</Variable>
+    <Variable>**$P(w \in \text{message}\mid \text{label})$** — the likelihood that word $w$'s presence/absence matches the label, estimated from training counts.</Variable>
+  </Variables>
+
+  Raw (MLE) word likelihoods are just counts: $\text{count}(w, \text{label}) / \text{count}(\text{label})$.
+  **Laplace smoothing** reframes this as a MAP estimate under a Beta$(1{+}\alpha, 1{+}\alpha)$ prior on each
+  word:
+
+  $$
+  P_{\text{MAP}}(w\mid \text{label}) = \frac{\text{count}(w,\text{label}) + \alpha}{\text{count}(\text{label}) + 2\alpha}
+  $$
+
+  <Variables>
+    <Variable>**$\alpha$** — the smoothing strength (here $\alpha=1$): imagined extra present and extra absent examples.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="A single zero collapses the whole product">
+      Naive Bayes multiplies likelihoods across every vocab word. One factor of exactly $0$ makes the entire
+      class likelihood $0$ — no matter how strongly every other word points the other way.
+    </Step>
+    <Step label="Two zero classes means an undefined posterior">
+      If *every* class's likelihood hits zero for a given message, Bayes' rule divides $0$ by $0$ — the
+      classifier has no answer at all, not even a bad one.
+    </Step>
+    <Step label="Smoothing is exactly the MAP fix from the last two chapters">
+      Add-$\alpha$ smoothing isn't a separate trick; it's the MAP estimate from the MLE/MAP chapters applied
+      once per word, with a prior that assumes every word is plausible in every class until proven otherwise.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Under MLE, the message [urgent, link] earns a likelihood of exactly $0$ under *both* classes — the
+  classifier is stuck. Switch to MAP and a full, normalized posterior appears, because smoothing kept every
+  likelihood strictly between $0$ and $1$.
+</Play>
+
+<WorkedExample>
+  Vocabulary: win, urgent, link. New message: [urgent, link] — "win" is absent.
+
+  <Steps>
+    <Step label="MLE likelihoods hit zero on both sides">
+      "urgent" never appeared in a "not spam" message ($P=0$); "link" never appeared in a "spam" message
+      ($P=0$). Both class likelihoods for this message come out to exactly $0$ — MLE cannot classify it.
+    </Step>
+    <Step label="MAP smooths every word likelihood off the boundary">
+      With $\alpha=1$: $P(\text{urgent}\mid\text{spam})=0.6$, $P(\text{urgent}\mid\text{not spam})=0.2$,
+      $P(\text{link}\mid\text{spam})=0.2$, $P(\text{link}\mid\text{not spam})=0.6$, and "win" absent gives
+      $0.4$ under spam, $0.6$ under not spam.
+    </Step>
+    <Step label="Multiply through and apply Bayes' rule">
+      $$
+      P(\text{msg}\mid\text{spam}) = 0.4 \times 0.6 \times 0.2 = 0.048 \qquad
+      P(\text{msg}\mid\text{not spam}) = 0.6 \times 0.2 \times 0.6 = 0.072
+      $$
+      With equal priors ($0.5$ each): unnormalized scores $0.024$ and $0.036$, summing to $0.06$. Normalizing:
+      $$
+      P(\text{spam}\mid\text{msg}) = \frac{0.024}{0.06} = 0.4 \qquad P(\text{not spam}\mid\text{msg}) = \frac{0.036}{0.06} = 0.6
+      $$
+      Predicted label: **not spam** — by a clean $40/60$ split, computed entirely from exact fractions.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<BayesianClassifierCheckpoint />
+
+<Summary>
+  $$
+  P(\text{label}\mid\text{message}) \propto P(\text{label}) \prod_w P_{\text{MAP}}(w\mid\text{label})
+  $$
+
+  This is the whole pipeline the course has been building toward: a prior, a likelihood built one MAP
+  estimate at a time, and Bayes' rule to combine them — the same three ingredients behind spam filters,
+  anomaly detectors, and any classifier that needs to say "here's my probability," not just "here's my
+  guess."
+</Summary>
