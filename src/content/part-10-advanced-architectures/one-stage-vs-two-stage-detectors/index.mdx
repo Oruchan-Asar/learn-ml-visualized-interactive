@@ -1,0 +1,78 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DetectorCheckpoint } from "./Demos";
+
+<Hook>
+  The last chapter scored a detection once it already existed. It never asked how a network decides, in the first place, which of the thousands of possible boxes in an image are even worth scoring. Two entirely different answers to that question became two families of detector — and the difference between them isn't just architecture, it's a straight speed-versus-precision trade.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Six candidate boxes, one shared ground truth per box. Toggle between scoring every box in a single pass and scoring them through a cheap filter followed by a careful second look — watch which boxes get flagged as detected change.
+</Intuition>
+
+<Formalize>
+  A **one-stage detector** (e.g. YOLO) evaluates every candidate box exactly once, in a single dense pass — fast, but every score shares whatever precision that one pass can afford. A **two-stage detector** (e.g. Faster R-CNN) runs a cheap **region proposal** pass over every box first, then spends a second, expensive classifier only on the boxes that clear a proposal threshold:
+
+  $$
+  \text{cost}_{\text{one-stage}} = N\cdot c_{\text{full}} \qquad\text{vs.}\qquad \text{cost}_{\text{two-stage}} = N\cdot c_{\text{proposal}} + K\cdot c_{\text{refine}}
+  $$
+
+  <Variables>
+    <Variable>**$N$** — the total number of candidate boxes considered.</Variable>
+    <Variable>**$K$** — the number of boxes that survive the proposal filter and reach the expensive second pass ($K \le N$).</Variable>
+    <Variable>**$c_{\text{full}}$**, **$c_{\text{proposal}}$**, **$c_{\text{refine}}$** — the compute cost of one one-stage evaluation, one cheap proposal, and one expensive refine, respectively.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="One-stage pays a flat cost for every box, once">
+      There's no filtering step — every one of the $N$ boxes gets the same single, cheap-per-box evaluation.
+    </Step>
+    <Step label="Two-stage trades one expensive pass for two cheaper ones">
+      Even though $c_{\text{refine}} \gg c_{\text{full}}$ per box, only $K$ boxes ever reach it — but when $K$ isn't
+      small enough, or $c_{\text{refine}}$ is large enough, the total can still exceed one-stage's flat cost.
+    </Step>
+    <Step label="The extra pass buys precision the coarse pass didn't have">
+      A box near the decision boundary can flip its final call depending on how much refinement it got — that's
+      the accuracy two-stage is paying its extra compute for.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The same six boxes, scored both ways side by side, plus the total compute each pipeline actually spent getting there. One box's final call depends on which pipeline scored it.
+</Play>
+
+<WorkedExample>
+  Six boxes with true objectness confidence $0.92, 0.77, 0.47, 0.18, 0.84, 0.56$ (boxes A–F), a detection threshold of $0.5$:
+
+  <Steps>
+    <Step label="One-stage rounds every box onto a coarse 0.1 grid">
+      Box C's true confidence $0.47$ rounds to $0.5$ — right at the threshold, so one-stage calls it *detected*.
+    </Step>
+    <Step label="Two-stage's proposal pass is coarser still, but only decides pass/fail">
+      On a $0.25$ grid, $0.47$ rounds to $0.5$ too, clearing the $\ge0.5$ proposal threshold — so box C proceeds
+      to the expensive second pass with its *exact* confidence, $0.47$, restored.
+    </Step>
+    <Step label="The refine pass flips the call">
+      $0.47 < 0.5$: two-stage calls box C *not detected*. One-stage and two-stage disagree on this one box —
+      everywhere else, both pipelines agree.
+    </Step>
+    <Step label="But two-stage still cost more overall">
+      One-stage: $6$ boxes $\times\,1 = 6$ cost units. Two-stage: $6\times0.2 + 5\times3 = 1.2+15=16.2$ —
+      over $2.5\times$ the compute, entirely to correct one boundary case.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DetectorCheckpoint />
+
+<Summary>
+  $$
+  \text{cost}_{\text{one-stage}} = N\cdot c_{\text{full}}, \qquad \text{cost}_{\text{two-stage}} = N\cdot c_{\text{proposal}} + K\cdot c_{\text{refine}}
+  $$
+
+  One-stage detectors spend a fixed, cheap budget on every box and accept whatever precision that buys; two-stage detectors spend far more, but only on the boxes worth a second look, and can correct calls the coarse pass got wrong. Neither is strictly better — it's a speed-for-precision trade, tuned by how expensive a wrong call actually is. The next chapter moves from boxes to something finer-grained still: labeling every individual pixel.
+</Summary>
