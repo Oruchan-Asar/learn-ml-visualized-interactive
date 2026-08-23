@@ -1,0 +1,84 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MlpCheckpoint } from "./Demos";
+
+<Hook>
+  Last chapter's perceptron draws exactly one straight line. Here are four points — $(0,0)$ and $(1,1)$ in one class, $(0,1)$ and $(1,0)$ in the other — that no single line can ever separate. Does adding a second perceptron help, or does the problem just double?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is **XOR**, the classic case no line can separate. Click through all four corners: two small perceptrons — labeled A and B — look at the same $(x_1,x_2)$ and disagree, feeding their two answers into a third perceptron that combines them. Every corner comes out correct, something neither A nor B could do alone with a single line.
+</Intuition>
+
+<Formalize>
+  Stack perceptrons into a **hidden layer**, then feed their outputs into another perceptron:
+
+  $$
+  h_i = \text{step}(w_i \cdot x + b_i), \qquad y = \text{step}(v \cdot h + c)
+  $$
+
+  <Variables>
+    <Variable>**$h_i$** — hidden perceptron $i$'s output, itself a $0/1$ decision.</Variable>
+    <Variable>**$w_i, b_i$** — hidden perceptron $i$'s own weights and bias.</Variable>
+    <Variable>**$v, c$** — the output perceptron's weights and bias, applied to the hidden layer's outputs $h$ instead of the raw input.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Two lines, not one">
+      Perceptron A fires like $\text{OR}(x_1,x_2)$: on for every corner except $(0,0)$. Perceptron B fires like
+      $\text{NAND}(x_1,x_2)$: on for every corner except $(1,1)$. Two different lines, two different opinions.
+    </Step>
+    <Step label="A third perceptron combines their opinions">
+      Feed $h_A$ and $h_B$ into an output perceptron wired like $\text{AND}(h_A, h_B)$: it fires only when *both*
+      hidden neurons agree the point is "in." That happens at exactly the two corners XOR calls true.
+    </Step>
+    <Step label="Depth bought a new kind of boundary">
+      No single one of these three perceptrons can solve XOR. Stacked, they draw a boundary that's the
+      intersection of two lines — a shape one line could never make.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The hidden layer's weights are fixed at the OR/NAND solution above — only the output perceptron's bias $c$ is
+  yours to drag. Watch the truth table: most values of $c$ get 2 of the 4 rows right by accident, since $h_A$ and
+  $h_B$ already agree on those two corners. Getting all 4 takes finding the exact bias that reproduces AND.
+</Play>
+
+<WorkedExample>
+  Weights fixed at $w_A=(1,1)$, $b_A=-0.5$, $w_B=(-1,-1)$, $b_B=1.5$, $v=(1,1)$:
+
+  <Steps>
+    <Step label="Try c = 0 (a plausible-looking guess)">
+      At $(0,0)$: $h_A=\text{step}(-0.5)=0$, $h_B=\text{step}(1.5)=1$, so $z_{\text{out}}=0+1+0=1$ and
+      $y=\text{step}(1)=1$ — but the target is $0$. Wrong. The same thing happens at $(1,1)$ by symmetry:
+      $h_A=1$, $h_B=0$, $z_{\text{out}}=1$, $y=1$ against a target of $0$. Both "same-input" corners fail —
+      $c=0$ only gets 2 of 4 rows right.
+    </Step>
+    <Step label="Try c = -1.5 instead">
+      At $(0,0)$: $z_{\text{out}} = 0+1-1.5=-0.5$, so $y=\text{step}(-0.5)=0$ — correct. At $(1,1)$:
+      $z_{\text{out}}=1+0-1.5=-0.5$, $y=0$ — correct.
+    </Step>
+    <Step label="Check it didn't break the other two">
+      At $(0,1)$ and $(1,0)$: $h_A=1$, $h_B=1$, so $z_{\text{out}}=1+1-1.5=0.5$, $y=1$ — still correct, matching
+      the target of $1$ at both.
+    </Step>
+    <Step label="All four, from one bias">
+      $c=-1.5$ is the exact bias an AND gate uses on $(h_A,h_B)$ — fire only when both hidden neurons agree — and
+      that alone solves every row of XOR.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MlpCheckpoint />
+
+<Summary>
+  $$
+  h_i = \text{step}(w_i \cdot x + b_i), \qquad y = \text{step}(v \cdot h + c)
+  $$
+
+  A hidden layer doesn't add a fundamentally new kind of unit — it's perceptrons feeding perceptrons, the exact same building block from last chapter, just composed. That composition is what turns "one straight line" into "the intersection of several," and it's the whole reason depth matters at all. The next chapters ask what happens once these hand-picked weights get replaced with weights a network *learns* on its own.
+</Summary>
