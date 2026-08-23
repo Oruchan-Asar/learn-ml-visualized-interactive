@@ -1,0 +1,91 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary, Variables, Variable } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RiskScorerCheckpoint } from "./Demos";
+
+<Hook>
+  Everything in this part comes together for one job: score a loan applicant's risk across more than two
+  categories, using probabilities a lender could actually act on. Get the regularization wrong, though, and
+  the model doesn't just get *less accurate* — it stays just as confident while being wrong, which is a far
+  more dangerous failure in a system making real lending decisions.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Four applicants, three risk classes, one softmax classifier. At λ=0 every prediction matches the true
+  risk. Push λ up and watch predictions start flipping to the wrong class — while the probability bars
+  stay just as confident-looking as before.
+</Intuition>
+
+<Formalize>
+  The engine is multinomial logistic regression — softmax over a per-class linear score — with the same
+  weight-shrinkage mechanism from the ridge chapter applied to every class's weights at once:
+
+  $$
+  p_k(\mathbf{x}) = \text{softmax}\big(\mathbf{w}_k^{(\lambda)} \cdot \mathbf{x} + b_k\big)_k, \qquad
+  \mathbf{w}_k^{(\lambda)} = \frac{\mathbf{w}_k^{\text{raw}}}{1+\lambda}
+  $$
+
+  <Variables>
+    <Variable>**$\mathbf{w}_k^{\text{raw}}$** — class $k$'s unregularized weight vector, over the applicant's features.</Variable>
+    <Variable>**$b_k$** — class $k$'s bias — left unpenalized, exactly as in the ridge and lasso chapters.</Variable>
+    <Variable>**$\lambda$** — the shrinkage strength; this $1/(1+\lambda)$ form is ridge's own closed-form shrinkage in the special case of standardized, uncorrelated features.</Variable>
+    <Variable>**$p_k(\mathbf{x})$** — the calibrated probability applicant $\mathbf{x}$ belongs to risk class $k$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Regularization here isn't about sparsity — it's about calibration">
+      Unlike lasso, nothing here is meant to zero out; the goal is to keep any one class's weights from
+      dominating the score purely due to unconstrained magnitude.
+    </Step>
+    <Step label="Softmax doesn't know the weights were regularized">
+      Softmax just normalizes whatever logits it's handed — it has no way to flag "these logits came from an
+      over-shrunk model" versus "these logits are trustworthy." A miscalibrated model can look exactly as
+      confident as a good one.
+    </Step>
+    <Step label="Over-regularization has a real direction of failure here">
+      As every class's weights shrink toward zero, the classifier increasingly falls back on each class's
+      *bias* alone — and the bias ranking (low > medium > high) means over-shrinking systematically
+      under-estimates risk, not randomly misclassifies it.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch accuracy and average confidence side by side as λ moves. Accuracy falls off a cliff between λ=0.2
+  and λ=0.3 — but average confidence barely moves, staying in the 70s-to-80s percent the entire time.
+  Confidence alone would never warn you that the model just started getting people wrong.
+</Play>
+
+<WorkedExample>
+  Bao: debt ratio 5, 0 late payments — a lender's judgment: **medium** risk.
+
+  <Steps>
+    <Step label="At λ=0.2, correctly medium — but barely">
+      Shrunk weights give logits (low, medium, high) = $(1.833, 2.000, 0.167)$. Softmax:
+      $p \approx (0.422, 0.498, 0.080)$ — medium wins, but by a margin of less than 0.08.
+    </Step>
+    <Step label="At λ=0.3, that thin margin flips">
+      Logits become $(2.154, 2.000, -0.154)$ — low has overtaken medium. Softmax: $p \approx (0.511, 0.438, 0.051)$.
+      Bao is now predicted **low** risk: an under-flagged applicant, purely from one notch more shrinkage.
+    </Step>
+    <Step label="Confidence gives no warning either way">
+      Bao's top-class probability is $0.498$ right before the flip and $0.511$ right after — essentially
+      unchanged. The model is equally "sure" of two opposite answers.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RiskScorerCheckpoint />
+
+<Summary>
+  $$
+  p_k(\mathbf{x}) = \text{softmax}\big(\mathbf{w}_k^{(\lambda)}\cdot\mathbf{x}+b_k\big)_k, \qquad \mathbf{w}_k^{(\lambda)} = \frac{\mathbf{w}_k^{\text{raw}}}{1+\lambda}
+  $$
+
+  A calibrated multi-class scorer combines softmax's normalized probabilities with regularization's weight
+  control — but calibration is not accuracy. This toy engine stays confidently wrong across a wide range of
+  over-shrunk λ, which is exactly why choosing λ needs a real accuracy check, not a glance at how sure the
+  model sounds.
+</Summary>
