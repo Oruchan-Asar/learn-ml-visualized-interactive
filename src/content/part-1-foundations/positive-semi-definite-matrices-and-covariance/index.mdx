@@ -1,0 +1,87 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PSDCheckpoint } from "./Demos";
+
+<Hook>
+  Every real dataset has a covariance matrix, and every real covariance matrix shares one strange
+  property: no matter which direction you measure variance along, you never get a negative number.
+  That's not a coincidence — it's baked into what "variance" means, and it has a name: **positive
+  semi-definite**.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Each bar is $v^\top M v$ at a different direction $v$. For the covariance matrix, every bar stays on
+  the positive side no matter which direction you check. Switch to the other matrix and watch one bar
+  cross to the negative side — proof that matrix could never be a real covariance matrix.
+</Intuition>
+
+<Formalize>
+  A symmetric matrix $M$ is **positive semi-definite (PSD)** if its quadratic form never goes negative:
+
+  $$
+  v^\top M v \geq 0 \quad \text{for every vector } v
+  $$
+
+  <Variables>
+    <Variable>**$M$** — a symmetric matrix (so $M=M^\top$).</Variable>
+    <Variable>**$v$** — any vector; the condition must hold for *all* of them, not just some.</Variable>
+    <Variable>**$v^\top M v$** — the quadratic form: a single number measuring how $M$ acts along direction $v$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Why covariance matrices are always PSD">
+      For a covariance matrix $C$, $v^\top C v$ is exactly the variance of the data projected onto
+      direction $v$ — and variance, being an average of squared numbers, can never be negative.
+    </Step>
+    <Step label="What it means for the eigenvalues">
+      $M$ is PSD if and only if every eigenvalue of $M$ is $\geq 0$. Along an eigenvector $v$,
+      $v^\top M v = \lambda\|v\|^2$, so a negative eigenvalue immediately produces a negative quadratic
+      form there.
+    </Step>
+    <Step label="Not every symmetric matrix qualifies">
+      Symmetry alone isn't enough — a symmetric matrix with even one negative eigenvalue fails the test,
+      and could never arise as an actual covariance matrix of real data.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Same eight directions, both matrices. The covariance matrix's bars all sit at or above zero; the
+  other matrix's bars straddle it. That's the entire PSD test, run by hand, eight times.
+</Play>
+
+<WorkedExample>
+  Four mean-centered points $(3,1), (1,3), (-3,-1), (-1,-3)$ give the covariance matrix
+  $C=\begin{pmatrix}5&3\\3&5\end{pmatrix}$ (population covariance, dividing by $n=4$):
+
+  <Steps>
+    <Step label="Variance along the x-axis">
+      $v=(1,0)$: $v^\top C v = 1(5\cdot1+3\cdot0)+0(\cdot) = 5$ — matches $\mathrm{Var}(x)=5$ directly.
+    </Step>
+    <Step label="Variance along the direction of maximum spread">
+      $v=(\tfrac{1}{\sqrt2},\tfrac{1}{\sqrt2})$: expanding $v^\top C v = 5x^2+6xy+5y^2$ with
+      $x^2=y^2=xy=0.5$ gives $2.5+3+2.5=8$ — this is $C$'s top eigenvalue, and $(1,1)$ its eigenvector.
+    </Step>
+    <Step label="Confirm PSD-ness at the minimum-variance direction too">
+      $v=(\tfrac{1}{\sqrt2},-\tfrac{1}{\sqrt2})$ gives $2.5-3+2.5=2$ — still positive. $8$ and $2$ are
+      $C$'s two eigenvalues; both positive, so $C$ is (strictly) positive definite.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PSDCheckpoint />
+
+<Summary>
+  $$
+  v^\top M v \geq 0 \quad \text{for every vector } v
+  $$
+
+  Positive semi-definiteness is what separates "a matrix that could plausibly be a covariance matrix"
+  from "a matrix that never could be" — and it reduces entirely to a sign check on eigenvalues. This
+  matters beyond statistics: kernel matrices in SVMs, Hessians at a true minimum, and Gram matrices in
+  optimization all have to be PSD for the same underlying reason, and the low-rank and SVD chapters
+  ahead lean directly on this eigenvalue-sign machinery.
+</Summary>
