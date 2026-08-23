@@ -1,0 +1,80 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CalibrationCheckpoint } from "./Demos";
+
+<Hook>
+  A model says it's 90% confident. Is it actually right 90% of the time — or is "90%" just a number it outputs, with no relationship to how often it's actually correct?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Eight predictions, split into a "predicted low" group and a "predicted high" group. Drag $k$ and watch the model's *stated* confidence in each group pull away from the *actual* fraction of positives it contains. At $k=1$ the two bars in each pair match exactly — a calibrated model. Anywhere else, they diverge.
+</Intuition>
+
+<Formalize>
+  A **reliability diagram** buckets predictions by confidence and compares two numbers per bucket:
+
+  $$
+  \text{predictedAvg}_b = \frac{1}{|b|}\sum_{i \in b} \hat{p}_i, \qquad \text{actualFreq}_b = \frac{1}{|b|}\sum_{i \in b} y_i
+  $$
+
+  <Variables>
+    <Variable>**$b$** — one bucket of predictions (here: "predicted $< 0.5$" or "predicted $\ge 0.5$").</Variable>
+    <Variable>**$\hat{p}_i$** — the model's stated probability for example $i$.</Variable>
+    <Variable>**$y_i$** — the actual binary outcome for example $i$ ($0$ or $1$).</Variable>
+    <Variable>**predictedAvg$_b$** — the average confidence the model claims within bucket $b$.</Variable>
+    <Variable>**actualFreq$_b$** — the fraction of examples in $b$ that were actually positive.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Calibrated means the two numbers agree">
+      A model is calibrated exactly when, in every bucket, its average stated confidence equals the
+      actual positive rate — a stated 70% should, on average, be right 70% of the time.
+    </Step>
+    <Step label="Platt scaling learns a correction">
+      When they don't agree, Platt scaling fits a simple 1D transform (a scaled, shifted sigmoid) from
+      raw scores to calibrated probabilities on held-out data — the same shape of correction used here,
+      just learned instead of known in advance.
+    </Step>
+    <Step label="Expected Calibration Error condenses both buckets into one number">
+      $\text{ECE} = \sum_b \frac{|b|}{n}\,|\text{predictedAvg}_b - \text{actualFreq}_b|$ — a size-weighted
+      average gap between confidence and reality, zero exactly when every bucket is calibrated.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  At $k=1.2$, the low bucket's stated confidence drops to $0.20$ while its actual positive rate stays at $0.25$ — and the high bucket's stated confidence rises to $0.80$ against an actual rate of $0.75$. The model isn't wrong about *which* examples are more likely positive — its ranking is untouched — it's just systematically overstating how sure it should be.
+</Play>
+
+<WorkedExample>
+  Eight examples, true probabilities $(0.2,0.3,0.4,0.1,0.6,0.7,0.8,0.9)$ chosen so they're already perfectly calibrated — the low four average $0.25$, and exactly $2$ of them ($25\%$) are positive; the high four average $0.75$, and exactly $3$ of them ($75\%$) are positive:
+
+  <Steps>
+    <Step label="k=1: the honest case">
+      Raw prediction $= 0.5 + 1\cdot(\text{true}-0.5) = \text{true}$ — predicted average equals actual
+      frequency in both buckets, by construction. $\text{ECE}=0$.
+    </Step>
+    <Step label="k=1.2: exaggerating confidence">
+      Raw prediction $=0.5+1.2(\text{true}-0.5)$ pushes every value further from $0.5$. Low bucket average
+      becomes $0.5 - 1.2\times0.25 = 0.2$; high bucket average becomes $0.5+1.2\times0.25=0.8$. Actual
+      frequencies never moved — they're properties of the labels, not the model.
+    </Step>
+    <Step label="ECE quantifies the damage">
+      $|0.2-0.25| = 0.05$ in the low bucket, $|0.8-0.75|=0.05$ in the high bucket. Both buckets hold 4 of 8
+      examples, so $\text{ECE} = \tfrac{4}{8}(0.05) + \tfrac{4}{8}(0.05) = 0.05$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CalibrationCheckpoint />
+
+<Summary>
+  $$
+  \text{ECE} = \sum_b \frac{|b|}{n}\,\big|\,\text{predictedAvg}_b - \text{actualFreq}_b\,\big|
+  $$
+
+  A model can rank examples perfectly — the best AUC in the course so far — while still being badly calibrated, because ranking only cares about relative order and calibration cares about the actual numeric value of the confidence. Platt scaling (and its nonparametric cousin, isotonic regression) fix this after the fact, on held-out data, without touching whatever produced the ranking in the first place. The next chapter puts every metric from this Part — accuracy, F1, AUC, cross-validation, tuning, and now calibration — against one real pipeline at once.
+</Summary>
