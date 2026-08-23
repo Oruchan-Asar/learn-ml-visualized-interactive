@@ -1,0 +1,75 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneTransformerBlockCheckpoint } from "./Demos";
+
+<Hook>
+  Multi-head attention lets every token look at every other token, from several angles at once. On its own, that's still just one computation. A real Transformer stacks dozens of these, and stacking anything that deep needs two things attention alone doesn't provide: a way to keep gradients from vanishing across all those layers, and a place to actually think about each token individually, not just compare it to its neighbors.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A Transformer block is four pieces, always in this order: **multi-head self-attention**, **add the input back in** (a residual connection), **normalize**, a **feedforward layer** (an MLP) applied to each token separately, add and normalize again. The two heads above are the same Head A / Head B split from the previous chapter — one attending over a token's first two dimensions, the other over its third — concatenated back into a single vector before anything else happens. Two tiny 3D tokens go all the way through below — watch the numbers actually change at every stage.
+</Intuition>
+
+<Formalize>
+  $$
+  z = \text{LayerNorm}(x + \text{MultiHeadAttention}(x)), \qquad \text{output} = \text{LayerNorm}(z + \text{FFN}(z))
+  $$
+
+  <Variables>
+    <Variable>**$x$** — the block's input: one token's vector before this block touches it.</Variable>
+    <Variable>**MultiHeadAttention($x$)** — $\text{concat}(\text{head}_1, \text{head}_2)$, each head computed exactly as in the previous chapter, then stitched back together into one vector the same width as $x$.</Variable>
+    <Variable>**$z$** — the intermediate result after multi-head attention, the residual add, and the first LayerNorm.</Variable>
+    <Variable>**FFN($z$)** — a two-layer MLP, $W_2\,\text{ReLU}(W_1 z + b)$, applied identically and independently to every token's vector.</Variable>
+    <Variable>**output** — the block's final result, after the feedforward sublayer, its own residual add, and the second LayerNorm.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Concatenation is what makes attention 'multi-head'">
+      Head A and Head B each attend over their own slice of the token — different queries, keys, and
+      values, computed completely independently — and their outputs are simply placed side by side. No
+      new math happens at the seam; the concatenation *is* the multi-head operation.
+    </Step>
+    <Step label="Residual connections ease gradient flow">
+      The residual "$x + \dots$" means each sublayer only has to learn a *correction* to its input, not
+      reproduce the whole thing from scratch — and it gives the gradient a direct, addition-only path back
+      through the block, exactly like the **LSTM**'s — short for **Long Short-Term Memory** — cell state in
+      Chapter 3.
+    </Step>
+    <Step label="LayerNorm keeps values from drifting">
+      LayerNorm rescales each token's vector to zero mean and unit variance, independently of every other
+      token, which keeps values from drifting as they pass through dozens of stacked blocks.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the feedforward bias down toward the bottom of its range. Watch <strong>x1</strong>'s hidden units in the feedforward stage: both stuck at exactly $0$ — a dead **ReLU** (short for **Rectified Linear Unit**), contributing nothing. And yet x1's final output is still perfectly well-defined, identical to its post-attention value. That's the residual connection doing its job: even when a sublayer computes nothing useful for a given token, the block doesn't break — it just passes that token through unchanged.
+</Play>
+
+<WorkedExample>
+  x1's feedforward hidden units are computed as $\text{ReLU}(W_1 z_1 + b)$, where $z_1$ is x1's vector after multi-head attention, the residual add, and LayerNorm.
+
+  <Steps>
+    <Step label="At bias = 0">
+      Both units land at or below zero, so both get clipped to exactly $0$ — no correction is added, and
+      $\text{residual}_2 = z_1 + 0 = z_1$ exactly.
+    </Step>
+    <Step label="Raise the bias past about 0.466">
+      The second hidden unit crosses zero, so the feedforward layer starts contributing a real, non-zero
+      correction to x1's output for the first time — residual$_2$ now visibly differs from $z_1$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapstoneTransformerBlockCheckpoint />
+
+<Summary>
+  $$
+  z = \text{LayerNorm}(x + \text{MultiHeadAttention}(x)), \qquad \text{output} = \text{LayerNorm}(z + \text{FFN}(z))
+  $$
+
+  Stack this exact block — same structure, independently learned weights each time — a dozen or more times, and the result is a Transformer encoder. Every piece here was already built in this Part: multi-head attention from the previous two chapters, feedforward layers and ReLU from Part III, and the residual connection's gradient benefit from Chapter 3's LSTM cell state. This capstone is where they stop being separate ideas and become one repeating unit — the same unit, stacked, that every modern large language model is built from.
+</Summary>
