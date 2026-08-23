@@ -1,0 +1,94 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CameraProjectionCheckpoint } from "./Demos";
+
+<Hook>
+  A camera sensor is flat. The world isn't. How does a point floating five meters in front of a lens turn
+  into one specific pixel on a flat grid?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the world point. Push it further away (larger Z) and its image-plane dot creeps back toward the
+  center — the same real-world displacement covers less of the frame the farther away it happens. That
+  shrinking-with-distance effect *is* perspective, and it's the whole reason a camera needs more than a
+  ruler to describe.
+</Intuition>
+
+<Formalize>
+  A pinhole camera projects a 3D point onto the 2D image plane in two stages. First, **extrinsics** move
+  the point from world coordinates into the camera's own frame — for a camera at center $C$ with no
+  rotation, that's just a subtraction:
+
+  $$
+  P_{\text{cam}} = P_{\text{world}} - C
+  $$
+
+  Then **intrinsics** turn the camera-space point into a pixel: divide by depth to get the perspective
+  effect, then scale by focal length $f$ and shift by the principal point $(c_x, c_y)$:
+
+  $$
+  u = f\cdot\frac{X}{Z} + c_x, \qquad v = f\cdot\frac{Y}{Z} + c_y
+  $$
+
+  <Variables>
+    <Variable>**$P_{\text{world}}$, $C$** — the 3D point and the camera's center, both in world coordinates.</Variable>
+    <Variable>**$P_{\text{cam}} = (X, Y, Z)$** — the same point re-expressed relative to the camera.</Variable>
+    <Variable>**$Z$** — depth: distance in front of the camera along its viewing axis.</Variable>
+    <Variable>**$f$** — focal length, in pixels: how strongly the camera magnifies the scene.</Variable>
+    <Variable>**$(c_x, c_y)$** — the principal point: the pixel where the camera's forward axis itself lands.</Variable>
+    <Variable>**$(u, v)$** — the resulting pixel coordinates on the image plane.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Extrinsics: world to camera">
+      With the camera sitting at the world origin, $P_{\text{cam}} = P_{\text{world}}$ exactly — the world
+      point $(1, 1, 5)$ is already in camera coordinates.
+    </Step>
+    <Step label="Perspective divide">
+      Divide by depth: $X/Z = 1/5 = 0.2$ and $Y/Z = 1/5 = 0.2$. This is the step that makes farther points
+      shrink toward the center — the same $X$ produces a smaller ratio at larger $Z$.
+    </Step>
+    <Step label="Intrinsics: scale and shift">
+      With $f = 100$ and $(c_x, c_y) = (50, 50)$: $u = 100(0.2) + 50 = 70$ and $v = 100(0.2) + 50 = 70$.
+      The point lands at pixel $(70, 70)$.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the point and watch $Y/Z$ directly — it's the single number that decides $v$ once $f$ and $c_y$ are
+  fixed. Push $Y$ far negative or $Z$ close to the camera and $Y/Z$ blows up, sending the point flying off
+  the edge of the frame.
+</Play>
+
+<WorkedExample>
+  Two more points through the same camera ($f = 100$, $c_x = c_y = 50$):
+
+  <Steps>
+    <Step label="P = (2, -1, 4), camera at the origin">
+      $X/Z = 2/4 = 0.5$, $Y/Z = -1/4 = -0.25$. So $u = 100(0.5) + 50 = 100$ and
+      $v = 100(-0.25) + 50 = 25$ — pixel $(100, 25)$.
+    </Step>
+    <Step label="P = (3, 1, 5), camera moved to C = (1, 0, 0)">
+      Extrinsics first: $P_{\text{cam}} = (3, 1, 5) - (1, 0, 0) = (2, 1, 5)$. Then $X/Z = 2/5 = 0.4$,
+      $Y/Z = 1/5 = 0.2$, giving $u = 100(0.4) + 50 = 90$ and $v = 100(0.2) + 50 = 70$ — pixel $(90, 70)$.
+      Moving the camera changed the pixel even though the world point never moved.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CameraProjectionCheckpoint />
+
+<Summary>
+  $$
+  u = f\cdot\frac{X - C_x}{Z - C_z} + c_x, \qquad v = f\cdot\frac{Y - C_y}{Z - C_z} + c_y
+  $$
+
+  Every pixel a camera reports is the result of two matrices: extrinsics place the world relative to the
+  camera, intrinsics turn that relative position into a pixel via perspective divide. The next chapter
+  looks at what's on the *other* side of that projection — the raw 3D data a scene gets represented as
+  before any camera ever looks at it.
+</Summary>

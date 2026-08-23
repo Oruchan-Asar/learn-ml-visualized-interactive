@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ChapterFrame } from "@/components/chapter/ChapterFrame";
 import { getChapterMeta } from "@/lib/curriculum";
-import { PlaceholderContent } from "@/components/chapter/PlaceholderContent";
+import ChapterContent from "@/content/part-3d-vision/camera-projections-and-coordinate-systems/ClientContent";
 
 const SLUG = "camera-projections-and-coordinate-systems";
 
@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ChapterFrame slug={SLUG}>
-      <PlaceholderContent slug={SLUG} />
+      <ChapterContent />
     </ChapterFrame>
   );
 }
