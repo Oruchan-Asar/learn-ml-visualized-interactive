@@ -1,0 +1,97 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SandboxCheckpoint } from "./Demos";
+
+<Hook>
+  An agent that can only read files can be wrong about a lot, but the worst it can do is give you a bad
+  answer. Give it the ability to execute arbitrary code and one wrong step can do real, unrecoverable
+  damage. What's the smallest set of permissions that still lets it finish the job?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Toggle permissions with no task in mind at all. Each one has its own cost — "execute arbitrary code" is
+  weighted far higher than "read files" — and the bars simply add: granting more never makes the total
+  blast radius smaller.
+</Intuition>
+
+<Formalize>
+  Each permission $i$ carries a fixed risk weight $w_i$. A grant is a 0/1 indicator $g_i$ — off or on. The
+  **blast radius** of a grant set is just the sum of the weights actually switched on, and a task
+  **succeeds** only if every permission it genuinely requires is among them.
+
+  $$
+  \text{blast radius}(\mathbf{g}) = \sum_i g_i \, w_i, \qquad \text{succeeds}(\mathbf{g}) \iff R \subseteq \mathbf{g}
+  $$
+
+  <Variables>
+    <Variable>**$g_i$** — whether permission $i$ is granted (1) or not (0).</Variable>
+    <Variable>**$w_i$** — the fixed risk weight of permission $i$ (read: 1, write: 2, call an API: 3, execute code: 5).</Variable>
+    <Variable>**$R$** — the set of permissions the task actually requires.</Variable>
+    <Variable>**$\subseteq$** — every permission in $R$ must also be in $\mathbf{g}$; extra permissions in $\mathbf{g}$ beyond $R$ don't help.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="The task fixes R, not the agent's convenience">
+      "Fetch the latest price from an API and save it to a file" needs exactly `write` and `api` — nothing
+      about the task touches the filesystem's existing contents or requires running arbitrary code.
+    </Step>
+    <Step label="R = {write, api} sets a floor, not a target">
+      $\text{blast radius} = w_{\text{write}} + w_{\text{api}} = 2 + 3 = 5$ is the *minimum* achievable
+      while the task still succeeds — you cannot go lower without breaking it.
+    </Step>
+    <Step label="Granting more only raises the sum">
+      Adding `read` on top costs $+1$ for zero gain: the task doesn't use it, so blast radius rises to 6
+      while capability stays exactly the same.
+    </Step>
+    <Step label="Granting everything is the worst case, not the safe default">
+      $1 + 2 + 3 + 5 = 11$ — more than double the minimal 5 — for a task that only ever touches two of the
+      four permissions.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  With the task now stated explicitly, the readout tracks two things at once: whether it succeeds, and
+  whether the current grant set is minimal. Start from every permission granted and remove them one at a
+  time — the task keeps succeeding right up until you drop `write` or `api`.
+</Play>
+
+<WorkedExample>
+  Starting from all four permissions granted, remove permissions one at a time and watch both numbers:
+
+  <Steps>
+    <Step label="All four granted">
+      blast radius $= 1+2+3+5 = 11$. Task succeeds — `write` and `api` are both present, plus two unused
+      extras.
+    </Step>
+    <Step label="Remove execute">
+      blast radius $= 1+2+3 = 6$. Task still succeeds — `execute` was never in $R$, so removing it cost
+      nothing in capability.
+    </Step>
+    <Step label="Remove read">
+      blast radius $= 2+3 = 5$. Task still succeeds, and this is now the minimum — both remaining
+      permissions are in $R$ and neither can be dropped.
+    </Step>
+    <Step label="Remove api">
+      blast radius $= 2$. Task now fails — `api` was in $R$, so removing it breaks the task even though
+      the blast radius dropped further.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SandboxCheckpoint />
+
+<Summary>
+  $$
+  \text{blast radius}(\mathbf{g}) = \sum_i g_i \, w_i, \qquad \text{succeeds}(\mathbf{g}) \iff R \subseteq \mathbf{g}
+  $$
+
+  The right grant set is exactly $R$ — no less, or the task breaks; no more, or the blast radius grows for
+  nothing. In practice $R$ also isn't static: a well-sandboxed agent asks for permissions per step rather
+  than up front for the whole session, so a prompt injection that hijacks step 2 still can't reach the
+  permissions step 5 would have needed. The next chapter asks how you'd know, at scale, whether an agent
+  with a given permission set actually gets real tasks done — not toy ones like this one.
+</Summary>
