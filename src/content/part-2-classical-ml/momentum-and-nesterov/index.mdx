@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, NesterovCheckpoint } from "./Demos";
+
+<Hook>
+  Momentum reacts to the gradient right where it's standing, then carries that reaction forward as velocity.
+  What if, instead, it looked ahead to roughly where the velocity is about to carry it — and reacted to
+  *that* gradient instead?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same ravine, same starting point, same β. The accent trail is plain Momentum; the ink trail is Nesterov.
+  Step through it — the two are identical on step one, since velocity starts at zero either way, and then
+  they visibly split.
+</Intuition>
+
+<Formalize>
+  Momentum evaluates the gradient at the current point. **Nesterov accelerated gradient (NAG)** evaluates it
+  at a look-ahead point first:
+
+  $$
+  \tilde\theta = \theta - \eta\beta v, \qquad v' = \beta v + \nabla f(\tilde\theta), \qquad \theta' = \theta - \eta v'
+  $$
+
+  <Variables>
+    <Variable>**$\tilde\theta$** — the look-ahead point: where momentum alone would carry $\theta$ before this step's gradient is even computed.</Variable>
+    <Variable>**$v$** — the velocity carried over from the previous step.</Variable>
+    <Variable>**$v'$** — the new velocity, built from the gradient at $\tilde\theta$ instead of at $\theta$.</Variable>
+    <Variable>**$\theta, \theta'$** — the parameters before and after this step.</Variable>
+    <Variable>**$\eta, \beta$** — the learning rate and momentum coefficient, same roles as in plain Momentum.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Same bookkeeping, one different input">
+      Every quantity here — $v$, $\eta$, $\beta$ — means exactly what it meant in the Momentum chapter. The
+      only change is *where* the gradient is evaluated.
+    </Step>
+    <Step label="Step one is always identical to Momentum">
+      With $v=0$ at the start, $\tilde\theta=\theta$, so the first step's gradient is evaluated at the same
+      place either way — the two methods can only start splitting apart from step two onward.
+    </Step>
+    <Step label="Looking ahead corrects overshoot sooner">
+      If the velocity is about to carry the point past the minimum, the look-ahead gradient already points
+      back the other way — Nesterov reacts to that correction one step earlier than plain Momentum can.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Push β high on Momentum and watch it overshoot and oscillate. Switch to Nesterov at the same β — the
+  look-ahead gradient starts pulling back sooner, which is why NAG tends to tolerate higher β before it
+  starts bouncing.
+</Play>
+
+<WorkedExample>
+  Starting at $(4,1)$ on $f(x,y)=x^2+10y^2$, with $\eta=0.045$, $\beta=0.7$, velocity initially zero:
+
+  <Steps>
+    <Step label="Step 1 is identical to Momentum">
+      $\tilde\theta = (4,1) - 0.045(0.7)(0,0) = (4,1)$, so the gradient there is $(8,20)$, giving
+      $v'=(8,20)$ and $\theta' = (4,1)-0.045(8,20) = (3.64, 0.1)$ — exactly Momentum's first step.
+    </Step>
+    <Step label="Step 2's look-ahead point is new">
+      $\tilde\theta = (3.64,0.1) - 0.045(0.7)(8,20) = (3.64,0.1) - (0.252, 0.63) = (3.388, -0.53)$
+    </Step>
+    <Step label="Evaluate the gradient there, not at (3.64, 0.1)">
+      $$
+      \nabla f(3.388,-0.53) = (2 \times 3.388,\ 20\times(-0.53)) = (6.776,\ -10.6)
+      $$
+    </Step>
+    <Step label="Finish the update">
+      $v' = 0.7(8,20)+(6.776,-10.6) = (12.376, 3.4)$, so
+      $\theta' = (3.64,0.1) - 0.045(12.376,3.4) = (3.08308, -0.053)$ — already noticeably different from
+      Momentum's second step, $(3.0604, -0.62)$, purely from evaluating the gradient one point ahead.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<NesterovCheckpoint />
+
+<Summary>
+  $$
+  \tilde\theta=\theta-\eta\beta v,\qquad v'=\beta v+\nabla f(\tilde\theta),\qquad \theta'=\theta-\eta v'
+  $$
+
+  Nesterov keeps every piece of Momentum's machinery and changes exactly one thing: where the gradient gets
+  evaluated. That single change is enough to correct overshoot earlier, which is why Adam and most modern
+  optimizers offer a Nesterov-style variant as a near-free upgrade over plain momentum.
+</Summary>
