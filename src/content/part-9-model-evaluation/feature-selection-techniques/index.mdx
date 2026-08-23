@@ -1,0 +1,89 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, FeatureSelectionCheckpoint } from "./Demos";
+
+<Hook>
+  You've got five candidate columns to predict a student's test score. One is a perfect predictor, one never changes at all, and the rest are somewhere in between. Which ones do you actually feed the model — and how do you decide without just guessing?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Toggle features on and off. Each one has a fixed score of its own — a rough measure of "how much does this feature, alone, explain the target" — and the total is just whatever you've switched on. Notice that **classroom number** contributes nothing no matter how many times you toggle it: every student sits in the same room, so it can't possibly explain who scores higher.
+</Intuition>
+
+<Formalize>
+  Two filter-method ideas, applied before any model ever sees the data:
+
+  $$
+  \text{Var}(x_j) = 0 \implies \text{drop } x_j, \qquad \text{score}(x_j) = \text{corr}(x_j, y)^2
+  $$
+
+  <Variables>
+    <Variable>**$x_j$** — one candidate feature (a column).</Variable>
+    <Variable>**$\text{Var}(x_j)$** — the variance of that feature across all rows; zero means the column is constant.</Variable>
+    <Variable>**$y$** — the target being predicted.</Variable>
+    <Variable>**$\text{corr}(x_j, y)$** — the Pearson correlation between the feature and the target, a number between $-1$ and $1$.</Variable>
+    <Variable>**score$(x_j)$** — the squared correlation ($R^2$), a single-feature "how much does this explain" number that's always $\ge 0$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Variance threshold: the free first pass">
+      Before computing anything about the target, throw out any feature with zero (or near-zero)
+      variance. A column that never changes literally cannot correlate with anything — there's
+      nothing to compute.
+    </Step>
+    <Step label="Correlation score: rank what's left">
+      For every surviving feature, square its correlation with the target. Squaring does two things
+      at once: it makes the score comparable across features regardless of whether the relationship
+      is positive or negative, and it guarantees the score is never negative.
+    </Step>
+    <Step label="Wrapper and embedded methods go further">
+      Filter methods like these score each feature alone, one at a time. Wrapper methods (like
+      recursive feature elimination) instead retrain a real model on different subsets and measure
+      the subset's performance directly — slower, but it can catch redundancy that a per-feature
+      score misses entirely.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The formula is now doing the counting: `selectionScore` sums $R^2$ over whatever's toggled on. Switch **classroom number** off — its variance is $0$, so its score was always $0$ anyway, and the total doesn't move an inch. That's the variance-threshold filter paying for itself before you even look at the target.
+</Play>
+
+<WorkedExample>
+  Six students, target $y = (2,4,6,8,10,12)$ — deliberately exactly $2\times$ `hoursStudied`:
+
+  <Steps>
+    <Step label="A perfect predictor scores 1.0">
+      `hoursStudied` $=(1,2,3,4,5,6)$ tracks $y$ exactly, so $\text{corr}=1$ and $\text{score}=1^2=1.0$ — the
+      maximum possible.
+    </Step>
+    <Step label="A useless feature scores 0, by definition">
+      `classroomNumber` is the constant $(7,7,7,7,7,7)$. Its variance is $0$, so correlation is undefined by
+      the usual formula — defined here as $0$ rather than left as an error, since a feature with no variance
+      carries no information to score in the first place.
+    </Step>
+    <Step label="Everything else lands in between">
+      `shoeSize` correlates weakly ($r=0.2$, score $0.04$). `sleepHours` correlates moderately ($r=0.6$, score
+      $0.36$). `luckyNumber` happens to correlate *negatively* ($r\approx-0.371$) — but squaring turns that
+      into a positive score ($\approx 0.138$) anyway, since a strong negative relationship is just as useful
+      to a model as a strong positive one.
+    </Step>
+    <Step label="Summing every real feature gives the ceiling">
+      Add up every feature except the useless one: $1 + 0.04 + 0.36 + 0.138 \approx 1.538$. That's the highest
+      total this toy score can reach — and it's exactly what the checkpoint below asks you to find.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<FeatureSelectionCheckpoint />
+
+<Summary>
+  $$
+  \text{keep } x_j \iff \text{Var}(x_j) > 0 \ \text{and}\ \text{corr}(x_j, y)^2 \ \text{is worth its cost}
+  $$
+
+  Feature selection starts with the free wins — drop anything that never varies — then ranks what's left by how much it actually explains the target. This additive toy score ignores one real complication: two features that duplicate each other's information don't each deserve full credit, which is exactly what wrapper and embedded methods (recursive feature elimination, tree-based importance) are built to catch. The next chapter turns from *which* features to keep to *how* to search a model's own settings for the best configuration.
+</Summary>
