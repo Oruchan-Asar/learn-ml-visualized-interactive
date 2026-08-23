@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, AutogradCheckpoint } from "./Demos";
+
+<Hook>
+  You've applied the chain rule to one function composed with another. Every framework you'll use from here
+  on applies it automatically, to graphs with thousands of nodes. What does that automation actually have to
+  do, node by node?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is the entire computational graph for $f(a,b)=a\cdot b + a$: two inputs, one multiply node, one add
+  node. Tune $a$ and $b$ and watch every node's value update — that's the **forward pass**, nothing more than
+  evaluating the graph in order.
+</Intuition>
+
+<Formalize>
+  The **backward pass** seeds the output's gradient at 1, then walks the graph in reverse, applying one local
+  rule at each node:
+
+  $$
+  \frac{\partial L}{\partial u} \mathrel{+}= \frac{\partial L}{\partial v}\cdot\frac{\partial v}{\partial u}
+  $$
+
+  <Variables>
+    <Variable>**$v$** — a node, already visited, whose incoming gradient $\partial L/\partial v$ is known.</Variable>
+    <Variable>**$u$** — one of $v$'s inputs, receiving a contribution to its own gradient.</Variable>
+    <Variable>**$\partial v/\partial u$** — $v$'s *local* derivative with respect to that one input: $1$ for a sum, the *other* input's value for a product.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="This is the chain rule, applied one node at a time">
+      Nothing here is new — it's the same chain rule from Chapter 3, just applied locally at every node
+      instead of algebraically for the whole expression at once.
+    </Step>
+    <Step label="+= matters: a node used twice accumulates">
+      If a value feeds two different downstream nodes, its total gradient is the *sum* of what flows back
+      from each path — never just one of them.
+    </Step>
+    <Step label="A product node's local rule swaps its inputs">
+      For $v=u_1\cdot u_2$, $\partial v/\partial u_1 = u_2$ and $\partial v/\partial u_2=u_1$ — each input's
+      local derivative is literally the forward-pass value of the *other* one.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Toggle to "Backward pass" and watch the same graph now display gradients instead of values — and notice
+  the readout cross-checks every one of them against a plain numerical (finite-difference) gradient, which
+  never even looks at the graph.
+</Play>
+
+<WorkedExample>
+  Run both passes on $f(a,b)=a\cdot b+a$ at $a=3, b=4$, using the graph $n_1=a\cdot b$, $n_2=n_1+a$ (the output):
+
+  <Steps>
+    <Step label="Forward pass">
+      $$
+      n_1 = 3\times4=12, \qquad n_2 = 12+3=15
+      $$
+    </Step>
+    <Step label="Seed the output gradient and cross the add node">
+      $\partial f/\partial n_2 = 1$. The add node $n_2=n_1+a$ passes its incoming gradient through unchanged
+      to *both* inputs: gradient into $n_1$ is $1$, and $a$ already receives a direct contribution of $1$.
+    </Step>
+    <Step label="Cross the multiply node">
+      $n_1=a\cdot b$: the gradient arriving at $n_1$ (which is $1$) distributes as $1\times b=4$ to $a$, and
+      $1\times a=3$ to $b$.
+    </Step>
+    <Step label="Sum every path into a">
+      $a$ received $1$ from the direct add-path and $4$ from the multiply-path: $\partial f/\partial
+      a=1+4=5$. And $\partial f/\partial b=3$, with no second path to add. Both match the closed-form
+      derivative, $\partial f/\partial a = b+1=5$ and $\partial f/\partial b=a=3$, exactly.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<AutogradCheckpoint />
+
+<Summary>
+  $$
+  \frac{\partial L}{\partial u} \mathrel{+}= \frac{\partial L}{\partial v}\cdot\frac{\partial v}{\partial u}
+  $$
+
+  That's the whole engine: a forward pass that evaluates every node once, and a backward pass that applies
+  one local multiply-and-accumulate rule per node, in reverse. Real autograd systems — PyTorch, and every
+  framework since — do exactly this at far larger scale, on graphs with millions of nodes instead of two.
+  There's no more machinery to add; there's only more graph.
+</Summary>
