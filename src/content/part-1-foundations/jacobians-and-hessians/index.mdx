@@ -1,0 +1,100 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, JacobianCheckpoint } from "./Demos";
+
+<Hook>
+  A gradient is a vector of partial derivatives for a function with *one* output. What replaces it when a
+  function has several outputs at once — and what replaces the second derivative, which told you whether a
+  1D curve was bending up or down?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the point around the bowl. Below it sits a small grid — the **Jacobian** of a *different*, vector-valued
+  function evaluated at that same spot. Watch its four numbers shift as you move; unlike the single gradient
+  arrow, this matrix has one row per output.
+</Intuition>
+
+<Formalize>
+  For a function $F:\mathbb{R}^2\to\mathbb{R}^2$, the **Jacobian** stacks the gradient of each output as a row:
+
+  $$
+  J_F(x,y) = \begin{bmatrix} \dfrac{\partial F_1}{\partial x} & \dfrac{\partial F_1}{\partial y} \\[4pt] \dfrac{\partial F_2}{\partial x} & \dfrac{\partial F_2}{\partial y} \end{bmatrix}
+  $$
+
+  <Variables>
+    <Variable>**$F_1, F_2$** — the two output components of $F$.</Variable>
+    <Variable>**$J_F(x,y)$** — the Jacobian: every first partial derivative of every output, evaluated at $(x,y)$.</Variable>
+  </Variables>
+
+  For a single scalar function $f:\mathbb{R}^2\to\mathbb{R}$, the **Hessian** plays the analogous role for
+  *second* derivatives — the matrix of every way of differentiating twice:
+
+  $$
+  H_f(x,y) = \begin{bmatrix} \dfrac{\partial^2 f}{\partial x^2} & \dfrac{\partial^2 f}{\partial x\partial y} \\[4pt] \dfrac{\partial^2 f}{\partial y\partial x} & \dfrac{\partial^2 f}{\partial y^2} \end{bmatrix}
+  $$
+
+  <Variables>
+    <Variable>**$H_f(x,y)$** — the Hessian of the scalar function $f$ at $(x,y)$: its matrix of second partials.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="The Jacobian generalizes the gradient">
+      For a scalar function ($F$ has one output), the Jacobian *is* the gradient, just written as a row instead
+      of a vector — nothing new, only more rows once there's more than one output.
+    </Step>
+    <Step label="The Hessian generalizes the second derivative">
+      Just as $f''(x)>0$ meant "curving upward" in one dimension, the Hessian's sign pattern says the same
+      thing in two: a **positive definite** Hessian (both the top-left entry and the determinant positive)
+      means $f$ curves upward in *every* direction — a genuine bowl.
+    </Step>
+    <Step label="The Jacobian's determinant measures local stretching">
+      Where $\det J_F \neq 0$, $F$ is locally invertible — near that point, $F$ doesn't collapse two different
+      inputs onto the same output. Where $\det J_F = 0$, that guarantee breaks down.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The Hessian of $f$ here never changes — $f$ is a fixed quadratic bowl, so its curvature is the same
+  everywhere. The Jacobian of $F$ genuinely depends on where you are, which is exactly why it needs to be
+  recomputed at every point instead of stated once.
+</Play>
+
+<WorkedExample>
+  Let $F(x,y) = (x^2+y,\ x+y^2)$ and $f(x,y) = x^2+xy+y^2$.
+
+  <Steps>
+    <Step label="Evaluate F and its Jacobian at (2, 3)">
+      $$
+      F(2,3) = (4+3,\ 2+9) = (7, 11), \qquad J_F(2,3) = \begin{bmatrix}2(2) & 1 \\ 1 & 2(3)\end{bmatrix} = \begin{bmatrix}4 & 1 \\ 1 & 6\end{bmatrix}
+      $$
+    </Step>
+    <Step label="Its determinant">
+      $$
+      \det J_F(2,3) = (4)(6) - (1)(1) = 23
+      $$
+    </Step>
+    <Step label="The Hessian of f is constant">
+      $\partial f/\partial x = 2x+y$, $\partial f/\partial y = x+2y$, so
+      $H_f = \begin{bmatrix}2 & 1\\1 & 2\end{bmatrix}$ everywhere — its determinant is $4-1=3>0$ and its
+      top-left entry is $2>0$, so $f$ is positive definite: a true bowl with one minimum, at the origin.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<JacobianCheckpoint />
+
+<Summary>
+  $$
+  J_F(x,y) = \begin{bmatrix} \partial F_1/\partial x & \partial F_1/\partial y \\ \partial F_2/\partial x & \partial F_2/\partial y \end{bmatrix}, \qquad H_f(x,y) = \begin{bmatrix} \partial^2 f/\partial x^2 & \partial^2 f/\partial x\partial y \\ \partial^2 f/\partial y\partial x & \partial^2 f/\partial y^2 \end{bmatrix}
+  $$
+
+  The Jacobian and Hessian are both just organized bookkeeping — a matrix instead of a vector or scalar —
+  for derivatives you already know how to take. The Jacobian will resurface the moment backpropagation has
+  to push gradients through a layer with more than one output; the Hessian will resurface the moment an
+  optimizer wants to reason about curvature instead of just slope, which is exactly where the next chapter,
+  Taylor series, picks up.
+</Summary>
