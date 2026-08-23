@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, JointCheckpoint } from "./Demos";
+
+<Hook>
+  Two variables share one probability table. Read across a row and you get one story; read down a column
+  and you get another; ignore the table's structure entirely and you get a third. Which one answers your
+  actual question?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click a row header ($A$) or a column header ($B$). The cells you picked light up, and the readout below
+  shows what's left once you renormalize just that slice — the conditional distribution living inside the
+  joint table all along.
+</Intuition>
+
+<Formalize>
+  A **joint** distribution $P(A,B)$ assigns a probability to every combination of outcomes at once. Summing
+  a whole row or column **marginalizes out** the other variable:
+
+  $$
+  P(A=a) = \sum_b P(A=a,\,B=b)
+  $$
+
+  <Variables>
+    <Variable>**$P(A,B)$** — the joint probability table: one number per (row, column) combination.</Variable>
+    <Variable>**$P(A=a)$** — the marginal probability of $A=a$, found by summing across every value of $B$.</Variable>
+  </Variables>
+
+  A **conditional** distribution slices out one row or column and renormalizes it so it sums to 1 again:
+
+  $$
+  P(B\mid A=a) = \frac{P(A=a,\,B)}{P(A=a)}
+  $$
+
+  <Variables>
+    <Variable>**$P(B\mid A=a)$** — the distribution over $B$, restricted to the world where $A=a$ is already known.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Marginals are just row and column sums">
+      No new arithmetic — marginalizing is exactly the sum you'd take to check a row or column adds up.
+    </Step>
+    <Step label="Conditioning is slicing, then renormalizing">
+      Fix one variable's value, take the sub-table that survives, and divide every entry by whatever that
+      sub-table currently sums to. That division is the entire difference between a joint slice and a
+      conditional distribution.
+    </Step>
+    <Step label="Conditioning on a row and conditioning on a column don't rhyme">
+      $P(B\mid A{=}a)$ divides by a row sum; $P(A\mid B{=}b)$ divides by a column sum. Nothing forces these
+      two conditionals to look alike, even though they come from the same table.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Pick any cell: the joint value is just that one entry, but the two conditionals built from it divide by
+  completely different denominators — a row sum for $P(B\mid A)$, a column sum for $P(A\mid B)$ — which is
+  exactly why $P(B\mid A) \ne P(A\mid B)$ in general.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Read off the joint row for a1">
+      $P(a_1, b_1)=0.2$, $P(a_1,b_2)=0.1$, $P(a_1,b_3)=0.2$ — this row sums to $P(a_1)=0.5$.
+    </Step>
+    <Step label="Marginalize to get P(b3)">
+      Sum column $b_3$ down both rows: $P(b_3) = 0.2 + 0.1 = 0.3$.
+    </Step>
+    <Step label="Condition on b3 to get P(a2 | b3)">
+      $$
+      P(a_2 \mid b_3) = \frac{P(a_2, b_3)}{P(b_3)} = \frac{0.1}{0.3} = \frac{1}{3} \approx 0.333
+      $$
+      Notice this is *not* the same as $P(a_2)=0.5$ — seeing $B=b_3$ actually shifted the belief about $A$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<JointCheckpoint />
+
+<Summary>
+  $$
+  P(A=a) = \sum_b P(A=a,B=b) \qquad P(B\mid A=a) = \frac{P(A=a,B)}{P(A=a)}
+  $$
+
+  A joint table quietly contains every marginal and every conditional distribution over its variables — sum
+  a direction to marginalize, slice-and-renormalize to condition. Nearly every "what does the model actually
+  believe, given what it just observed" question in probabilistic ML reduces to one of these two operations.
+</Summary>
