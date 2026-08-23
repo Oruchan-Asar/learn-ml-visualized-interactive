@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MleCheckpoint } from "./Demos";
+
+<Hook>
+  You flip a coin a handful of times and see mostly heads. What single value of "probability of heads"
+  makes the data you actually saw the *least surprising*?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the candidate $p$ across the curve. Every point on it is the log-likelihood of these exact five
+  flips under that one value of $p$ — and the curve has a single, unambiguous high point.
+</Intuition>
+
+<Formalize>
+  For $n$ independent Bernoulli trials with $k$ heads, the likelihood of the data under parameter $p$ is
+
+  $$
+  L(p) = p^k (1-p)^{n-k}
+  $$
+
+  <Variables>
+    <Variable>**$L(p)$** — the likelihood: how probable the observed data is, as a function of $p$.</Variable>
+    <Variable>**$k$** — the number of heads actually observed.</Variable>
+    <Variable>**$n$** — the total number of flips.</Variable>
+  </Variables>
+
+  Products of small numbers underflow fast, so in practice everyone maximizes the **log-likelihood** instead
+  — same maximizer, better numerics:
+
+  $$
+  \ell(p) = \log L(p) = k\log p + (n-k)\log(1-p)
+  $$
+
+  <Steps>
+    <Step label="The log is monotonic, so the peak doesn't move">
+      $\log$ is strictly increasing, so whatever $p$ maximizes $L(p)$ also maximizes $\ell(p)$ — taking the
+      log never changes *where* the maximum sits.
+    </Step>
+    <Step label="Setting the derivative to zero gives a closed form">
+      $\frac{d\ell}{dp} = \frac{k}{p} - \frac{n-k}{1-p} = 0$ solves to $\hat{p} = k/n$ — the maximum
+      likelihood estimate is exactly the observed proportion of heads, no search required.
+    </Step>
+    <Step label="This is the general MLE recipe">
+      Write the likelihood of the data under a parameter, take its log, and find where the derivative
+      vanishes — the same three steps work for far more complex models than a coin.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The curve's exact peak sits at $p=0.8$, matching $\hat{p}=k/n$ exactly — drag away in either direction and
+  the log-likelihood only gets worse, confirming this closed form really is the unique maximizer.
+</Play>
+
+<WorkedExample>
+  Five flips: H, H, T, H, H — so $k=4$ heads out of $n=5$.
+
+  <Steps>
+    <Step label="Apply the closed-form MLE">
+      $$
+      \hat{p} = \frac{k}{n} = \frac{4}{5} = 0.8
+      $$
+    </Step>
+    <Step label="Confirm it by evaluating the log-likelihood at the estimate">
+      $$
+      \ell(0.8) = 4\log(0.8) + 1\log(0.2) \approx 4(-0.2231) + (-1.6094) \approx -2.502
+      $$
+    </Step>
+    <Step label="Check a nearby value scores worse">
+      $$
+      \ell(0.6) = 4\log(0.6) + 1\log(0.4) \approx 4(-0.5108) + (-0.9163) \approx -2.960
+      $$
+      Worse (more negative) than $-2.502$ — exactly what "$0.8$ is the maximizer" predicts.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MleCheckpoint />
+
+<Summary>
+  $$
+  \hat{p} = \frac{k}{n} = \arg\max_p \big[k\log p + (n-k)\log(1-p)\big]
+  $$
+
+  Maximum likelihood estimation is this same idea at any scale: write down how probable your data is under a
+  parameter, then find the parameter that makes that probability as large as possible. Logistic regression,
+  neural network training via cross-entropy, and Gaussian curve-fitting are all MLE in disguise.
+</Summary>

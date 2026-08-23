@@ -1,0 +1,29 @@
+.flips {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.heads,
+.tails {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.heads {
+  background: var(--accent);
+  color: var(--paper-raised);
+}
+
+.tails {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  color: var(--ink-soft);
+}
