@@ -1,0 +1,87 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ImageCompressorCheckpoint } from "./Demos";
+
+<Hook>
+  An image is just a matrix of numbers. Everything this part has built — eigenvalues, PSD-ness,
+  low-rank truncation — was leading here: compress a real image by keeping only its matrix's biggest
+  singular values, and watch the picture reappear almost perfectly from a fraction of the numbers.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A 4x4 toy "image," reconstructed from 0, 1, or 2 of its singular components. Rank 0 is blank; rank 1
+  is already a recognizable (if blurred) sketch; rank 2 is the original back exactly.
+</Intuition>
+
+<Formalize>
+  Every image matrix $I$ (real or toy) has a singular value decomposition, and its best rank-$k$
+  reconstruction is the same truncated-SVD formula from the previous chapter:
+
+  $$
+  I_k = \sum_{i=1}^{k} \sigma_i u_i v_i^\top
+  $$
+
+  <Variables>
+    <Variable>**$I$** — the image, treated as a plain matrix of pixel intensities.</Variable>
+    <Variable>**$\sigma_i, u_i, v_i$** — the $i$-th singular value and left/right singular vectors of $I$.</Variable>
+    <Variable>**$I_k$** — the rank-$k$ compressed reconstruction of the image.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="What compression actually means here">
+      Storing $I_k$ only requires $k$ singular values plus $k$ vectors of each length — for a large
+      image, $k$ singular components can cost far fewer numbers than the raw pixel grid.
+    </Step>
+    <Step label="Where 'eigenfaces' comes from">
+      Applied to a collection of face images stacked into one matrix, the same $u_i$ patterns become
+      **eigenfaces**: reusable visual building blocks that any face in the set can be approximated from.
+    </Step>
+    <Step label="The tradeoff is exact, not fuzzy">
+      Exactly as in the previous chapter, $\|I - I_k\|_F = \sqrt{\sum_{i>k}\sigma_i^2}$ — you can compute
+      precisely how much reconstruction error a given compression ratio costs, before storing anything.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Pattern 1 (uniform across every row) alone captures 80% of the image's total energy — a single rank-1
+  term already does most of the work.
+</Play>
+
+<WorkedExample>
+  The toy image is built from two clean row-patterns: $u_1=(0.5,0.5,0.5,0.5)$ with $\sigma_1=8$, and
+  $u_2=(0.5,0.5,-0.5,-0.5)$ with $\sigma_2=4$ (each pattern used as both its own left and right singular
+  vector, since the image is symmetric):
+
+  <Steps>
+    <Step label="Rank-1 reconstruction">
+      $I_1 = 8 \cdot u_1u_1^\top$: every entry of $u_1u_1^\top$ is $0.5\times0.5=0.25$, so $I_1$ is a flat
+      image with every pixel equal to $8\times0.25=2$.
+    </Step>
+    <Step label="The error, by direct subtraction">
+      $I - I_1$ has entries $\pm1$ in all 16 cells (each of the original's 1's and 3's is exactly 1 away
+      from 2). $\|I-I_1\|_F=\sqrt{16\times1^2}=4$.
+    </Step>
+    <Step label="Confirm it matches Eckart-Young">
+      The formula predicts $\|I-I_1\|_F=\sqrt{\sigma_2^2}=\sigma_2=4$ — exactly what direct subtraction
+      gave. Energy retained: $8^2/(8^2+4^2)=64/80=80\%$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ImageCompressorCheckpoint />
+
+<Summary>
+  $$
+  I_k = \sum_{i=1}^{k} \sigma_i u_i v_i^\top \qquad \|I-I_k\|_F = \sqrt{\sum_{i>k}\sigma_i^2}
+  $$
+
+  Image compression, latent feature extraction, and eigenfaces are the same operation wearing different
+  names: truncate a matrix's SVD and keep only the directions carrying the most energy. This closes out
+  Part II — every idea here (projections, determinants, eigenvalues, PSD-ness, low-rank truncation)
+  was building toward this single, reusable move, which reappears throughout the rest of this course
+  wherever a large matrix needs to be summarized by a small one.
+</Summary>
