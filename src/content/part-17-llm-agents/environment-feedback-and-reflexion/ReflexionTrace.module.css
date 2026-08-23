@@ -1,0 +1,65 @@
+.trace {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.tag {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin: 0 0 4px;
+}
+
+.detail {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+}
+
+.stepNav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.stepCount {
+  color: var(--ink-faint);
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+}
+
+.readout {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+.trapRow {
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.trapPass {
+  composes: trapRow;
+  border-color: var(--accent2);
+}
+
+.trapFail {
+  composes: trapRow;
+}

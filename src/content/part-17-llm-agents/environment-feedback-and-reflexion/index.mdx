@@ -1,0 +1,97 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ReflexionCheckpoint } from "./Demos";
+
+<Hook>
+  An agent's first attempt at a task is wrong. It gets told exactly why — a real error message from
+  actually running the code. What should it do with that error message before trying again?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through it. Attempt 1 isn't described as wrong in the abstract — the environment actually ran it
+  and reported back an exact number. Step 3 isn't the agent retrying blind: it's a short note that names
+  the specific mistake, written *from* that exact feedback, and step 4 only makes sense because step 3
+  came before it.
+</Intuition>
+
+<Formalize>
+  **Reflexion** adds one step to the retry loop: instead of feeding the raw environment feedback straight
+  back into another attempt, the agent first writes a verbal self-critique from it, then retries
+  conditioned on all three.
+
+  $$
+  a_1 \to e_1 \to r_1 \to a_2
+  $$
+
+  <Variables>
+    <Variable>**$a_1$** — the first attempt: code the agent writes and actually runs.</Variable>
+    <Variable>**$e_1$** — environment feedback: the real, ground-truth result of running $a_1$ (a test result, an error message, stdout) — not the agent's own guess at whether it worked.</Variable>
+    <Variable>**$r_1$** — the reflexion: a short verbal self-critique the agent generates from $(a_1, e_1)$, naming the specific mistake.</Variable>
+    <Variable>**$a_2$** — the second attempt, conditioned on $a_1$, $e_1$, *and* $r_1$ — not just retried from $e_1$ alone.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Attempt 1 is fully committed, not hedged">
+      `average([2, 4, 6])` returns `sum(nums)` — the whole sum, `12` — because the divide-by-length line
+      was simply never written. Nothing in the code itself flags this as tentative.
+    </Step>
+    <Step label="Feedback e₁ is exact because the code actually ran">
+      The test suite compares `12` against the true average `4` and reports
+      `AssertionError: expected 4, got 12`. This is not the agent's opinion — it's what the interpreter
+      returned.
+    </Step>
+    <Step label="Reflexion r₁ names the mechanism, not just the symptom">
+      "My function returned 12, which is the sum of the 3 numbers, not their average… I should divide the
+      sum by 3." That sentence is the thing carried forward — the next attempt sees it as context, the
+      same way an earlier action's observation is fed back in ReAct's loop.
+    </Step>
+    <Step label="Attempt 2 fixes exactly what r₁ pointed at">
+      `average([2, 4, 6])` now returns `sum(nums) / len(nums)` = `4`, matching the test. The fix is precise
+      because the reflexion was precise — a vaguer note like "something's wrong" wouldn't have pinned down
+      *what* to change.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch tasks. The bug is identical in all three — forgetting to divide by the count — but the exact
+  numbers in $e_1$ and $r_1$ change with the task, because both are computed from the real sum and length,
+  not templated text.
+</Play>
+
+<WorkedExample>
+  The full trace for `average([10, 20, 30, 40])`:
+
+  <Steps>
+    <Step label="Attempt 1 → feedback">
+      `sum([10, 20, 30, 40])` = `100`. True average = `100 / 4` = `25`. The buggy function returns `100`,
+      so the test reports `AssertionError: expected 25, got 100`.
+    </Step>
+    <Step label="Reflexion">
+      "My function returned 100, which is the sum of the 4 numbers, not their average… I should divide the
+      sum by 4." The number 4 in that sentence is the list's actual length — this reflexion is unusable on
+      a list of a different length.
+    </Step>
+    <Step label="Attempt 2">
+      `100 / 4` = `25`, matching the true average exactly. Test passes.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ReflexionCheckpoint />
+
+<Summary>
+  $$
+  a_1 \to e_1 \to r_1 \to a_2
+  $$
+
+  The loop only works because $e_1$ is real, ground-truth feedback from actually running $a_1$ — a model
+  guessing whether it succeeded has nothing genuine to reflect on. And feedback only catches what it
+  happens to test: on a single-element list, `sum(nums)` and `sum(nums) / len(nums)` are numerically
+  identical, so the exact same bug produces a passing test and no reflexion is ever triggered. The next
+  chapter asks what happens once that agent's actions stop being "run a pure function on a list" and start
+  being "execute arbitrary code" — what should be allowed to go wrong.
+</Summary>
