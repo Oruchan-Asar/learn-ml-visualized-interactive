@@ -1,0 +1,90 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, FlashAttentionCheckpoint } from "./Demos";
+
+<Hook>
+  The quadratic bottleneck chapter counted *compute*: n² dot products, unavoidable if every query has to
+  see every key. But GPUs don't run out of compute first — they run out of fast memory. What if the
+  bottleneck isn't the n² multiplications at all, but the n² numbers you were about to write down?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A 4×4 attention matrix has 16 scores. Step through the tiles and only ever 4 are on screen at once — the
+  rest are never computed and stored simultaneously as a full grid. Attention still gets built, tile by
+  tile; it's just never all present at the same moment.
+</Intuition>
+
+<Formalize>
+  FlashAttention keeps a *running* max and sum per query row instead of a finished one, correcting past
+  work whenever a new block changes the max:
+
+  $$
+  m_{\text{new}} = \max(m, \max(\text{block scores})), \qquad l \leftarrow l\cdot e^{m-m_{\text{new}}} + \sum e^{s_j - m_{\text{new}}}
+  $$
+
+  <Variables>
+    <Variable>**$m$** — the largest score seen for this query so far, across all blocks processed.</Variable>
+    <Variable>**$l$** — the running sum of $e^{s_j - m}$, i.e. the softmax denominator built up so far.</Variable>
+    <Variable>**$s_j$** — one raw attention score in the current block being processed.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Softmax only needs a max and a sum — not the whole row up front">
+      $\text{softmax}(s)_j = e^{s_j-m}/\sum_k e^{s_k-m}$. Any constant $m$ works as long as it's subtracted
+      everywhere consistently — it doesn't have to be the *true* row max known in advance.
+    </Step>
+    <Step label="Raising the max means rescaling what's already been accumulated">
+      If a new block's scores beat the old max, every term computed under the old max is systematically too
+      large relative to the new one. Multiplying the running sum and the running weighted-value total by
+      $e^{m_{\text{old}}-m_{\text{new}}}$ exactly corrects for that, no re-visiting of old blocks required.
+    </Step>
+    <Step label="One block's scores are all that's ever needed at once">
+      Each block contributes its scores, updates $m$ and $l$, then can be discarded. The final output,
+      after every block, is *exactly* the same number naive softmax would have produced.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Naive attention's peak memory is the whole n×n matrix — it grows quadratically as the sequence gets
+  longer. Tiled attention's peak memory is one block×block tile — fixed, flat, and the same at n = 128 as
+  at n = 4. That gap between the bars is the entire reason FlashAttention scales to sequences naive
+  attention can't fit in memory at all.
+</Play>
+
+<WorkedExample>
+  Query $q=(1,1)$ against four keys with scores $(1,\,1,\,1,\,1)$ (all tied), processed in two blocks of 2:
+
+  <Steps>
+    <Step label="Block 1: scores (1, 1)">
+      $m=-\infty \to 1$. Since there's no previous accumulation, the rescale factor is 0. Running sum:
+      $l = e^{1-1}+e^{1-1} = 1+1 = 2$.
+    </Step>
+    <Step label="Block 2: scores (1, 1) — the max doesn't change">
+      $m$ stays 1, so the rescale factor is $e^{1-1}=1$ — nothing to correct. New terms add
+      $e^{1-1}+e^{1-1}=2$ more, so $l = 2+2 = 4$.
+    </Step>
+    <Step label="Divide by the final sum — matches the naive computation exactly">
+      Every score tied at 1 means every weight is $1/4$ exactly, whether computed all at once or in two
+      passes: the output is the plain average of the four value vectors either way.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<FlashAttentionCheckpoint />
+
+<Summary>
+  $$
+  l \leftarrow l\cdot e^{m-m_{\text{new}}} + \sum e^{s_j - m_{\text{new}}}
+  $$
+
+  FlashAttention computes *exactly* the same attention output as the naive softmax formula — nothing is
+  approximated — by keeping a running max and sum per query and rescaling past work whenever the max
+  changes, instead of requiring the whole row of scores up front. That collapses peak memory from the full
+  n×n matrix down to one block at a time, flat regardless of sequence length. It's an algorithmic and
+  memory-hierarchy trick, not a change to what attention computes — the next chapter looks at architectures
+  that change the computation itself, mixing in layers that never touch an n×n matrix in the first place.
+</Summary>
