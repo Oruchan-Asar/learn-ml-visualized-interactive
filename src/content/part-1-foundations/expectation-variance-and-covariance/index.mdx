@@ -1,0 +1,103 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MomentsCheckpoint } from "./Demos";
+
+<Hook>
+  A distribution has a center and a spread, and two distributions can move together or apart. Three numbers
+  capture all of that — but only if you actually accumulate them term by term instead of eyeballing the table.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Each row of the table is one outcome; each bar is that outcome's own contribution $p_i \cdot x_i$ (or
+  $p_i \cdot y_i$) to the mean. Toggle between $X$ and $Y$ — the bars change, but they always add up to
+  exactly the number printed underneath.
+</Intuition>
+
+<Formalize>
+  The **expectation** (mean) of a discrete random variable weights every outcome by how likely it is:
+
+  $$
+  \mathbb{E}[X] = \sum_i p_i\, x_i
+  $$
+
+  <Variables>
+    <Variable>**$\mathbb{E}[X]$** — the expected value of $X$: its probability-weighted average.</Variable>
+    <Variable>**$p_i$** — the probability of outcome $i$.</Variable>
+    <Variable>**$x_i$** — the value $X$ takes on outcome $i$.</Variable>
+  </Variables>
+
+  **Variance** measures spread around that mean, and **covariance** measures whether two variables move
+  together:
+
+  $$
+  \mathrm{Var}(X) = \sum_i p_i\,(x_i - \mathbb{E}[X])^2 \qquad
+  \mathrm{Cov}(X,Y) = \sum_i p_i\,(x_i - \mathbb{E}[X])(y_i - \mathbb{E}[Y])
+  $$
+
+  <Variables>
+    <Variable>**$\mathrm{Var}(X)$** — the expected squared deviation of $X$ from its own mean.</Variable>
+    <Variable>**$\mathrm{Cov}(X,Y)$** — the expected product of $X$'s and $Y$'s deviations from their own means.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Variance is a special case of covariance">
+      $\mathrm{Var}(X) = \mathrm{Cov}(X,X)$ — pairing a variable with itself just squares the deviation.
+    </Step>
+    <Step label="The sign of covariance is the whole story">
+      A positive $\mathrm{Cov}(X,Y)$ means $X$ and $Y$ tend to sit on the same side of their means together;
+      negative means they tend to sit on opposite sides. The magnitude alone is hard to read without
+      normalizing by spread (which is what correlation does).
+    </Step>
+    <Step label="Every outcome pulls in one direction or another">
+      An outcome where both $X$ and $Y$ are above their means, or both below, contributes positively to the
+      covariance sum; an outcome where one is above and the other below contributes negatively.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch between $\mathrm{Var}(X)$, $\mathrm{Var}(Y)$, and $\mathrm{Cov}(X,Y)$: the bars are the exact terms
+  being summed, and outcome 3 — where $x=3$ sits right at $\mathbb{E}[X]$ — contributes nothing to either
+  variance or covariance, because its deviation is zero.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Find E[X] and E[Y]">
+      $$
+      \mathbb{E}[X] = 0.1(1) + 0.3(2) + 0.2(3) + 0.3(4) + 0.1(5) = 3.0
+      $$
+      $$
+      \mathbb{E}[Y] = 0.1(2) + 0.3(1) + 0.2(4) + 0.3(3) + 0.1(5) = 2.7
+      $$
+    </Step>
+    <Step label="Find Var(X)">
+      $$
+      \mathrm{Var}(X) = 0.1(1{-}3)^2 + 0.3(2{-}3)^2 + 0.2(0)^2 + 0.3(1)^2 + 0.1(2)^2 = 0.4+0.3+0+0.3+0.4 = 1.4
+      $$
+    </Step>
+    <Step label="Find Cov(X, Y)">
+      Pairing each outcome's deviations $(x_i - 3)(y_i - 2.7)$ and weighting by $p_i$:
+      $$
+      \mathrm{Cov}(X,Y) = 0.1(1.4) + 0.3(1.7) + 0.2(0) + 0.3(0.3) + 0.1(4.6) = 1.2
+      $$
+      Positive — when $X$ swings away from its mean, $Y$ tends to swing the same direction.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MomentsCheckpoint />
+
+<Summary>
+  $$
+  \mathbb{E}[X] = \sum_i p_i x_i \qquad \mathrm{Var}(X) = \sum_i p_i (x_i-\mathbb{E}[X])^2 \qquad
+  \mathrm{Cov}(X,Y) = \sum_i p_i (x_i-\mathbb{E}[X])(y_i-\mathbb{E}[Y])
+  $$
+
+  These three sums are the entire vocabulary for "where a distribution sits," "how spread out it is," and
+  "whether two variables move together" — every model that reports a mean, a variance, or a correlation is
+  just this arithmetic in disguise.
+</Summary>
