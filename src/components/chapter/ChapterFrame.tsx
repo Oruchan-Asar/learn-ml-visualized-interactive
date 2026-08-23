@@ -32,7 +32,7 @@ export function ChapterFrame({ slug, children }: ChapterFrameProps) {
   // on every navigation so the sidebar always opens already focused on where you actually are.
   const currentLinkRef = useRef<HTMLAnchorElement>(null);
   useEffect(() => {
-    currentLinkRef.current?.scrollIntoView({ block: "center" });
+    currentLinkRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" });
   }, [slug]);
 
   return (

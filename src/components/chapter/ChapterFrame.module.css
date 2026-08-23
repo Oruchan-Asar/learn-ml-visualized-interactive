@@ -8,16 +8,21 @@
  */
 .layout {
   width: 100%;
-  padding: 48px 24px 100px calc(50% - 624px);
+  padding: 48px 24px 100px max(24px, calc(50% - 654px));
   display: flex;
   gap: 44px;
+  box-sizing: border-box;
 }
 
 .sidebar {
-  flex: 0 0 230px;
+  flex: 0 0 260px;
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
   position: sticky;
   top: 28px;
   align-self: flex-start;
+  box-sizing: border-box;
 }
 
 .main {
@@ -36,7 +41,10 @@
   }
   .sidebar {
     position: static;
-    flex-basis: auto;
+    flex: 1 1 auto;
+    width: 100%;
+    min-width: 0;
+    max-width: none;
   }
   .main {
     flex: 1 1 auto;
@@ -94,9 +102,11 @@
 }
 
 .overview {
+  width: 100%;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   background: var(--paper-raised);
+  box-sizing: border-box;
 }
 
 .overview summary {
@@ -111,6 +121,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--ink-soft);
+  user-select: none;
 }
 .overview summary::-webkit-details-marker {
   display: none;
@@ -129,13 +140,14 @@
 }
 
 .overviewBody {
-  padding: 6px 10px 10px;
+  padding: 6px 8px 10px;
   border-top: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   gap: 2px;
   max-height: 60vh;
   overflow-y: auto;
+  scrollbar-gutter: stable;
 }
 
 .overviewPart {
@@ -150,22 +162,24 @@
   list-style: none;
   display: flex;
   align-items: baseline;
-  gap: 8px;
+  gap: 6px;
   padding: 8px 2px;
   font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
   font-size: 10.5px;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--ink-faint);
+  user-select: none;
 }
 .overviewPartSummary::-webkit-details-marker {
   display: none;
 }
 .overviewPartSummary::before {
   content: "▸";
-  margin-right: 6px;
+  margin-right: 4px;
   display: inline-block;
   transition: transform 0.15s ease;
+  flex-shrink: 0;
 }
 .overviewPart[open] > .overviewPartSummary::before {
   transform: rotate(90deg);
@@ -174,9 +188,16 @@
   color: var(--ink-soft);
 }
 
+.overviewPartSummary > span:first-of-type {
+  flex: 1 1 auto;
+  min-width: 0;
+  line-height: 1.4;
+}
+
 .overviewPartCount {
   flex-shrink: 0;
   margin-left: auto;
+  padding-left: 4px;
 }
 
 .overviewPartList {
@@ -193,8 +214,16 @@
   gap: 6px;
   padding: 7px 8px;
   border-radius: 6px;
-  font-size: 13.5px;
+  font-size: 13px;
   line-height: 1.35;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.overviewLink > span:first-child,
+.overviewLinkCurrent > span:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .overviewLink {
