@@ -1,0 +1,98 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ApprovalCheckpoint } from "./Demos";
+
+<Hook>
+  An agent chains five actions in a row without ever asking permission. Four of them are utterly routine.
+  One of them, buried in the middle, refunds \$10,000 to a customer's account. Where do you put the
+  tripwire that catches the one and lets the other four run themselves?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the threshold up from zero. At 0, every action — even listing files in `/tmp` — gets flagged for a
+  human, which defeats the point of having an autonomous agent at all. Somewhere in the middle, the flags
+  thin out to exactly the one action that actually deserves attention.
+</Intuition>
+
+<Formalize>
+  Each action in a trajectory carries a fixed **risk score**. A gate flags an action for approval exactly
+  when its risk clears a chosen **threshold** $\tau$ — everything else runs on its own, no human involved.
+
+  $$
+  \text{needsApproval}(a, \tau) = \mathbb{1}[\text{risk}(a) \ge \tau]
+  $$
+
+  <Variables>
+    <Variable>**$a$** — one action in the agent's trajectory.</Variable>
+    <Variable>**risk($a$)** — a fixed 0–10 score for that action (here: 1, 2, 3, 9, 1 across the 5 steps).</Variable>
+    <Variable>**$\tau$** — the approval threshold: the one knob a human operator actually sets.</Variable>
+    <Variable>**needsApproval** — 1 (flagged, wait for a human) or 0 (safe, runs immediately).</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="τ too low floods every action to a human">
+      At $\tau = 0$, risk $\ge 0$ holds for all five actions — even "list files in /tmp" waits on approval.
+      Autonomy is gone.
+    </Step>
+    <Step label="τ too high lets the dangerous action through unreviewed">
+      At $\tau = 10$, nothing clears the bar — not even the risk-9 refund. The gate exists and catches
+      nothing.
+    </Step>
+    <Step label="The four safe actions top out at risk 3">
+      Steps 1, 2, 3, 5 have risk 1, 2, 3, 1. The highest of those four is 3 — that's the ceiling any
+      correct threshold has to clear.
+    </Step>
+    <Step label="Any τ strictly above 3 and at most 9 isolates exactly step 4">
+      $\tau \in \{4, 5, 6, 7, 8, 9\}$ flags risk $\ge \tau$ only for the refund's risk of 9, and nothing
+      with risk $\le 3$.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the flagged-steps readout as you drag $\tau$ up from 0. It starts at "[1, 2, 3, 4, 5]", thins
+  through intermediate mixes, locks onto "[4]" alone for a wide band of thresholds, then finally empties
+  out to "[]" once $\tau$ passes 9.
+</Play>
+
+<WorkedExample>
+  Walk five threshold choices against the fixed trajectory:
+
+  <Steps>
+    <Step label="τ = 0 flags everything">
+      All five risks (1, 2, 3, 9, 1) are $\ge 0$. Flagged = [1, 2, 3, 4, 5]. Not a clean split.
+    </Step>
+    <Step label="τ = 3 still catches an innocent action">
+      Risk 3 (step 3, "post a status update") is $\ge 3$, so it gets flagged right alongside step 4.
+      Flagged = [3, 4]. Still not clean — the threshold sits exactly on a safe action's own score, not
+      above it.
+    </Step>
+    <Step label="τ = 4 is the smallest threshold that isolates step 4">
+      Now only risk $\ge 4$ qualifies, and only step 4's risk of 9 clears it. Flagged = [4]. Clean.
+    </Step>
+    <Step label="τ = 9 is the largest threshold that still catches it">
+      Risk $\ge 9$ still includes step 4, exactly at its own score. Flagged = [4]. Still clean.
+    </Step>
+    <Step label="τ = 10 misses it entirely">
+      No action has risk $\ge 10$. Flagged = []. The refund now runs with no human in the loop at all.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ApprovalCheckpoint />
+
+<Summary>
+  $$
+  \text{needsApproval}(a, \tau) = \mathbb{1}[\text{risk}(a) \ge \tau]
+  $$
+
+  The usable range for $\tau$ here is $(3, 9]$ — six integer thresholds that all thread the needle between
+  the highest safe score and the one truly risky one. In a real system, assigning the risk scores
+  themselves is the hard part; this chapter fixed them by hand to isolate just the threshold decision.
+  Misjudge the refund's risk as a 2 instead of a 9, and no choice of $\tau$ saves you — the gate is only as
+  good as the score it's gating on. The next chapter puts the pieces from this part together into one
+  working tool-using agent, sandboxed and gated exactly the way these last few chapters described.
+</Summary>

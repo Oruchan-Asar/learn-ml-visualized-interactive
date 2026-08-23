@@ -1,0 +1,65 @@
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+}
+
+.rowFlagged {
+  composes: row;
+  border-color: var(--accent);
+}
+
+.rowSafe {
+  composes: row;
+  color: var(--ink-soft);
+}
+
+.step {
+  color: var(--ink-faint);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.description {
+  flex: 1;
+}
+
+.risk {
+  color: var(--ink-faint);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+.tag {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  flex-shrink: 0;
+}
+
+.rowFlagged .tag {
+  color: var(--accent-ink);
+}
+
+.rowSafe .tag {
+  color: var(--ink-faint);
+}
+
+.readout {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 0;
+}
