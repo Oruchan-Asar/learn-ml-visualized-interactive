@@ -1,0 +1,100 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PositionalEncodingsCheckpoint } from "./Demos";
+
+<Hook>
+  A dot product $q\cdot k$ doesn't know where $q$ or $k$ sat in the sentence — it's the same number
+  regardless. If attention is built entirely out of dot products, how does it ever learn that "dog bites
+  man" and "man bites dog" aren't the same sentence?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Swap which token comes first. The score computed from content alone never budges — it can't, since
+  nothing about it mentions position at all. The moment position gets added in, the swap changes the
+  number.
+</Intuition>
+
+<Formalize>
+  Sinusoidal positional encoding builds a vector out of sines and cosines at geometrically spaced
+  frequencies, one pair of dimensions per frequency, and adds it directly to the token's content
+  embedding before anything else happens:
+
+  $$
+  PE_{(pos,\,2i)} = \sin\!\left(\frac{pos}{10000^{2i/d}}\right), \qquad
+  PE_{(pos,\,2i+1)} = \cos\!\left(\frac{pos}{10000^{2i/d}}\right)
+  $$
+
+  <Variables>
+    <Variable>**$pos$** — the token's position in the sequence: $0, 1, 2, \dots$</Variable>
+    <Variable>**$i$** — which frequency pair of dimensions this is, out of $d/2$ total pairs.</Variable>
+    <Variable>**$d$** — the embedding dimension: how many numbers make up the encoding vector.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Every dimension pair spins at its own rate">
+      Pair $i=0$ has a rate of $10000^0=1$, so it completes a full rotation roughly every $2\pi\approx6.3$
+      positions — fast. Pair $i=1$ divides $pos$ by $10000^{2/d}$ first, so for the same $pos$ it's barely
+      turned at all. Stacking fast and slow pairs together lets nearby positions look different in the
+      fast dimensions while far-apart positions still differ in the slow ones.
+    </Step>
+    <Step label="Added, not appended">
+      $PE_{pos}$ is added elementwise to the content embedding, so a query·key dot product afterward mixes
+      content and position inseparably — exactly what the intuition demo just showed happening to the
+      score.
+    </Step>
+    <Step label="A relative scheme skips the embedding entirely">
+      Instead of writing *where* a token is into its vector, a relative scheme (used by T5 and
+      Transformer-XL) adds a bias term straight onto the attention score, looked up by the **distance**
+      $j-i$ between the query and key positions. Slide the whole sequence over and every distance stays
+      the same, so the bias — and the score — doesn't move at all.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The bold curve is the sinusoidal score for a query and key that are always exactly one position apart,
+  as the pair's starting offset slides from 0 to 20 — it wanders, because it reads each token's *absolute*
+  position. The dashed line is the relative-bias score for that same distance of 1: flat, because distance
+  is all it ever looks at.
+</Play>
+
+<WorkedExample>
+  Tokens $A=(1,0,0.5,-0.5)$ and $B=(0,1,-0.5,0.5)$, content score $A\cdot B = -0.5$, with $d=4$ (one fast
+  frequency pair, one slow one):
+
+  <Steps>
+    <Step label="Position 0 is the trivial case">
+      $\sin(0)=0$ and $\cos(0)=1$ at every frequency, so $PE_0 = (0,1,0,1)$ exactly, regardless of $d$.
+    </Step>
+    <Step label="Position 10, then 11 — the sinusoidal score">
+      $PE_{10}\approx(-0.544,\,-0.839,\,0.0998,\,0.995)$ and $PE_{11}\approx(-1.0,\,0.0044,\,0.110,\,0.994)$
+      (rounded). Adding these to $A$ and $B$ respectively and taking the dot product gives
+      $\approx-0.793$ — close to, but not equal to, the relative score below.
+    </Step>
+    <Step label="The relative score for the same pair, distance 1">
+      $A\cdot B + \text{bias}(1) = -0.5 + (-0.3) = -0.8$. This number doesn't depend on *which* two
+      positions were 1 apart — only that they were.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PositionalEncodingsCheckpoint />
+
+<Summary>
+  $$
+  PE_{(pos,\,2i)} = \sin\!\left(\frac{pos}{10000^{2i/d}}\right), \qquad
+  PE_{(pos,\,2i+1)} = \cos\!\left(\frac{pos}{10000^{2i/d}}\right)
+  $$
+
+  Both schemes exist to break the symmetry a plain dot product can't break on its own. Sinusoidal
+  encoding bakes absolute position into the content itself, at a range of frequencies chosen so nearby and
+  far-apart positions both stay distinguishable. Relative encoding skips the embedding and biases the
+  score by distance directly, which is what makes it naturally *shift-invariant* — a property that turns
+  out to matter enormously once a model needs to handle sequences longer than the ones it was trained on.
+  The next two chapters build on that absolute/relative split directly: first rotating query and key
+  vectors so relative position falls out of the dot product for free, then stretching that rotation scheme
+  to contexts far beyond what it ever saw during training.
+</Summary>
