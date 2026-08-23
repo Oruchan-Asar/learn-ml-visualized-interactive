@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RopeCheckpoint } from "./Demos";
+
+<Hook>
+  The last chapter ended on a shift-invariant relative bias — a lookup table keyed by distance, bolted
+  onto the score after the fact. What if position could fall out of the dot product itself, with no
+  separate bias term and no embedding ever added to the content? Rotate the query and key instead of
+  translating them, and it does.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The key sits fixed at position 0. Step the query's position up and its arrow spins around the origin —
+  the vector's *length* never changes, only its *angle*. Watch the dot product: it isn't tracking where the
+  query "is" in any absolute sense, it's tracking how far its angle has swung away from the key's.
+</Intuition>
+
+<Formalize>
+  RoPE rotates a 2D pair of coordinates by an angle proportional to position, before the dot product is
+  ever taken:
+
+  $$
+  R(pos)\begin{pmatrix}x\\y\end{pmatrix} = \begin{pmatrix}\cos(pos\cdot\theta) & -\sin(pos\cdot\theta)\\ \sin(pos\cdot\theta) & \cos(pos\cdot\theta)\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix}
+  $$
+
+  <Variables>
+    <Variable>**$pos$** — the token's position in the sequence.</Variable>
+    <Variable>**$\theta$** — the fixed angular rate: how many radians the pair rotates per position step.</Variable>
+    <Variable>**$R(pos)$** — the rotation matrix applied to that coordinate pair before the dot product.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Rotation preserves length, and preserves relative angle">
+      $R$ is orthogonal: it never stretches a vector, only turns it. Turning two vectors by the *same*
+      angle leaves the angle between them — and so their dot product — completely unchanged.
+    </Step>
+    <Step label="Turning them by different amounts is the same as turning one by the difference">
+      $R(a)q \cdot R(b)k = q \cdot R(b-a)k$. The rotated dot product between a query at position $a$ and a
+      key at position $b$ is identical to rotating the key alone by $b-a$ and leaving the query untouched.
+      Only the *difference* of the two positions ever enters the calculation.
+    </Step>
+    <Step label="A real model repeats this across many frequency pairs">
+      Full RoPE splits the embedding into $d/2$ coordinate pairs, each with its own $\theta$ — exactly the
+      geometric spacing of frequencies from the sinusoidal scheme, just used to rotate instead of to add.
+      This demo uses one pair to keep every angle exact and checkable by hand.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Slide the query's position continuously. The key stays anchored at position 0, so the angle swept by the
+  slider *is* the relative distance — and the dot product it produces depends on nothing else. At $\theta =
+  \pi/2$, four steps is a full turn: the vector — and the dot product — returns exactly to where it started
+  every four positions.
+</Play>
+
+<WorkedExample>
+  $Q_0=(1,\,0.5)$, $K_0=(0.5,\,1)$, $\theta = \pi/2$ (a quarter turn per position step):
+
+  <Steps>
+    <Step label="Distance 0: the plain dot product">
+      $Q_0\cdot K_0 = 1(0.5) + 0.5(1) = 1.0$. With no rotation at all, this is just the ordinary dot
+      product.
+    </Step>
+    <Step label="Distance 2: rotate the key by a half turn">
+      $R(\pi)K_0 = (-0.5,\,-1)$. Then $Q_0\cdot R(\pi)K_0 = 1(-0.5)+0.5(-1) = -1.0$.
+    </Step>
+    <Step label="Same distance, different absolute positions — identical answer">
+      Query at position 1, key at position 3 (still 2 apart): $R(\pi/2)Q_0=(-0.5,\,1)$,
+      $R(3\pi/2)K_0=(1,\,-0.5)$. Their dot product: $(-0.5)(1)+(1)(-0.5) = -1.0$ — exactly matching the
+      distance-2 score computed from positions 0 and 2.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RopeCheckpoint />
+
+<Summary>
+  $$
+  R(a)q \cdot R(b)k = q \cdot R(b-a)k
+  $$
+
+  Rotating a query and key by an angle proportional to position makes their dot product depend only on
+  the *difference* of the two angles — the relative distance between them — never on either position by
+  itself. That's relative position falling directly out of the geometry, with no added embedding and no
+  separate bias table to look up. It's also exactly why RoPE runs into trouble past the sequence lengths
+  it was trained on: push $pos\cdot\theta$ far enough and the model is rotating into angles it never saw
+  during training. The next chapter is about stretching that trained range without retraining at all.
+</Summary>
