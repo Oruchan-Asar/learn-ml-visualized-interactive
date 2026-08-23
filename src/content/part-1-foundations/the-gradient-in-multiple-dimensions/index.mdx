@@ -1,0 +1,71 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GradientCheckpoint } from "./Demos";
+
+<Hook>
+  You know how to find downhill when there's one direction to move in. What does "downhill" even mean once there's an $x$ *and* a $y$?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is a bowl-shaped landscape seen from above — brighter means lower. Drag the point around. There's no single tangent line anymore, but there's still an arrow pointing the steepest way out.
+</Intuition>
+
+<Formalize>
+  That arrow is the **gradient** — now a vector, one component per input:
+
+  $$
+  \nabla f(x,y) = \left(\frac{\partial f}{\partial x},\ \frac{\partial f}{\partial y}\right)
+  $$
+
+  <Variables>
+    <Variable>**$\nabla f(x,y)$** — the gradient vector at the point $(x,y)$.</Variable>
+    <Variable>**$(x,y)$** — the point in the plane where the gradient is evaluated.</Variable>
+    <Variable>**$\partial f/\partial x$** — the partial derivative of $f$ with respect to $x$, holding $y$ fixed.</Variable>
+    <Variable>**$\partial f/\partial y$** — the partial derivative of $f$ with respect to $y$, holding $x$ fixed.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Hold the other variable fixed">
+      Each partial derivative is computed exactly like Chapter 1's derivative — just holding the *other*
+      variable fixed.
+    </Step>
+    <Step label="Work it out for f(x,y) = x² + y²">
+      Treating $y$ as a constant, $\partial f/\partial x = 2x$; treating $x$ as a constant,
+      $\partial f/\partial y = 2y$.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the point and watch both components change together, and the arrow's length track the gradient's magnitude — longer means steeper.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Compute each partial derivative at (3, 4)">
+      $$
+      \nabla f = (2 \times 3,\ 2 \times 4) = (6, 8)
+      $$
+    </Step>
+    <Step label="Compute the gradient's magnitude">
+      $$
+      |\nabla f| = \sqrt{6^2+8^2} = \sqrt{100} = 10
+      $$
+
+      The same 3:4:5 triangle from the vectors chapter, showing up again.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GradientCheckpoint />
+
+<Summary>
+  $$
+  \nabla f(x,y) = \left(\frac{\partial f}{\partial x},\ \frac{\partial f}{\partial y}\right)
+  $$
+
+  In multiple dimensions, the gradient is a vector of partial derivatives — one per input — and it still points in the direction of steepest increase, zeroing out exactly at a flat spot like a minimum.
+</Summary>
