@@ -1,0 +1,98 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DeterminantCheckpoint } from "./Demos";
+
+<Hook>
+  A matrix maps the unit square to some parallelogram. Sometimes that parallelogram has plenty of area;
+  sometimes it flattens into a line with none at all. That one number — the area, signed — turns out to
+  answer a completely different-sounding question: does $Ax=b$ have a unique solution?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the sliders. The dashed square is the input; the solid shape is where the matrix sends it. Push
+  any slider until the solid shape collapses into a line — that's a singular matrix, and its determinant
+  drops to exactly 0.
+</Intuition>
+
+<Formalize>
+  For a $2\times2$ matrix, the determinant is:
+
+  $$
+  \det(A) = ad - bc
+  $$
+
+  <Variables>
+    <Variable>**$A$** — the $2\times2$ matrix, with entries $a, b, c, d$ (rows top-to-bottom, columns left-to-right).</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="It's a signed area">
+      $|\det(A)|$ is the area of the parallelogram the unit square maps to. The sign flips exactly when
+      the mapping reverses orientation (flips the plane over).
+    </Step>
+    <Step label="Zero means singular">
+      $\det(A)=0$ exactly when $A$'s two columns point along the same line — the mapped square collapses
+      to zero area, and $A$ is **singular**: not invertible.
+    </Step>
+    <Step label="It gates invertibility">
+      $A^{-1}$ exists if and only if $\det(A)\neq0$, since the inverse formula below divides by it.
+    </Step>
+  </Steps>
+
+  The inverse itself, when it exists:
+
+  $$
+  A^{-1} = \frac{1}{\det(A)}\begin{pmatrix} d & -b \\ -c & a \end{pmatrix}
+  $$
+
+  <Steps>
+    <Step label="Why this undoes A">
+      $A^{-1}$ is defined precisely so that $A^{-1}A = AA^{-1} = I$ — applying $A$ then $A^{-1}$ (or vice
+      versa) leaves every vector exactly where it started.
+    </Step>
+    <Step label="Singular means no undo">
+      If $\det(A)=0$, $A$ has already thrown away a dimension (collapsed the plane to a line) — there's
+      no way to recover the lost information, so no inverse can exist.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Jump between the invertible preset and the singular one. Watch the inverse readout switch from a
+  clean set of numbers to "no inverse" the instant the parallelogram flattens.
+</Play>
+
+<WorkedExample>
+  For $A = \begin{pmatrix}3&1\\2&2\end{pmatrix}$:
+
+  <Steps>
+    <Step label="Compute the determinant">
+      $\det(A) = (3)(2) - (1)(2) = 6 - 2 = 4$.
+    </Step>
+    <Step label="Compute the inverse">
+      $A^{-1} = \frac{1}{4}\begin{pmatrix}2&-1\\-2&3\end{pmatrix} = \begin{pmatrix}0.5&-0.25\\-0.5&0.75\end{pmatrix}$.
+    </Step>
+    <Step label="Check it">
+      $A A^{-1} = \begin{pmatrix}3&1\\2&2\end{pmatrix}\begin{pmatrix}0.5&-0.25\\-0.5&0.75\end{pmatrix}$.
+      Top-left entry: $3(0.5)+1(-0.5)=1.5-0.5=1$. Working through the rest gives exactly
+      $\begin{pmatrix}1&0\\0&1\end{pmatrix}$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DeterminantCheckpoint />
+
+<Summary>
+  $$
+  \det(A) = ad-bc \qquad\qquad A^{-1} = \frac{1}{\det(A)}\begin{pmatrix} d & -b \\ -c & a \end{pmatrix}
+  $$
+
+  The determinant is a single number that tells you whether a linear system has a unique solution
+  before you do any further work — zero means the matrix has destroyed a dimension, and no amount of
+  algebra will get it back. Every later decomposition in this part (eigenvalues, SVD, PSD-ness) leans on
+  this same idea: a matrix's determinant is the product of its eigenvalues, so a zero eigenvalue is
+  exactly what makes a matrix singular.
+</Summary>
