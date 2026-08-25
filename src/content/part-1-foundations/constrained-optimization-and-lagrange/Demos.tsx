@@ -22,15 +22,18 @@ const CONCEPT_ID = "constrained-optimization-and-lagrange";
 function XSlider({ value, onChange }: { value: number; onChange: (x: number) => void }) {
   const id = useId();
   return (
-    <div className={styles.sliderRow}>
-      <label htmlFor={id}>x = {value.toFixed(2)} (y = {(4 - value).toFixed(2)})</label>
+    <div className={styles.sliderRow} style={{ width: "100%", maxWidth: 440, justifyContent: "space-between" }}>
+      <label htmlFor={id} style={{ minWidth: 160 }}>
+        x = {value.toFixed(2)} (y = {(4 - value).toFixed(2)})
+      </label>
       <input
         id={id}
         type="range"
         min={DOMAIN[0]}
         max={DOMAIN[1]}
-        step={0.05}
+        step={0.01}
         value={value}
+        style={{ flex: 1, minWidth: 180 }}
         onChange={(e) => onChange(Number(e.target.value))}
       />
     </div>

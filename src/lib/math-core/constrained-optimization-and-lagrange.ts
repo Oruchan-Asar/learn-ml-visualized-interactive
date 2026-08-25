@@ -48,5 +48,5 @@ export const CONSTRAINED_OPTIMUM: Vec2 = { x: 2, y: 2 };
 export const CONSTRAINED_OPTIMUM_VALUE = 8;
 export const CONSTRAINED_OPTIMUM_LAMBDA = 4;
 
-export const DOMAIN: [number, number] = [-1, 6];
+export const DOMAIN: [number, number] = [-0.2, 4.2];
 export const ALIGNMENT_TOLERANCE = 0.3;

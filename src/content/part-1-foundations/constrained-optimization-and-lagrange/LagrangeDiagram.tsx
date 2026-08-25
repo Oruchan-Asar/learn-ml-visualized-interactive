@@ -8,8 +8,8 @@ export interface LagrangeDiagramProps {
   domain?: [number, number];
 }
 
-const REFERENCE_RADII = [2, 4, 6];
-const ARROW_LENGTH = 42;
+const REFERENCE_RADII = [1.5, Math.SQRT2 * 2, 4];
+const ARROW_LENGTH = 38;
 
 /**
  * A bespoke diagram for the Lagrange chapter: level circles of f(x,y)=x²+y² centered on the
@@ -18,8 +18,8 @@ const ARROW_LENGTH = 42;
  * They point the same way exactly at the constrained optimum, where the level circle is tangent
  * to the line.
  */
-export function LagrangeDiagram({ x, y, passed = false, size = 300, domain = [-1, 6] }: LagrangeDiagramProps) {
-  const margin = 24;
+export function LagrangeDiagram({ x, y, passed = false, size = 320, domain = [-0.5, 4.5] }: LagrangeDiagramProps) {
+  const margin = 26;
   const [dMin, dMax] = domain;
   const span = dMax - dMin;
   const inner = size - 2 * margin;
@@ -30,8 +30,8 @@ export function LagrangeDiagram({ x, y, passed = false, size = 300, domain = [-1
   const px = scaleX(x);
   const py = scaleY(y);
 
-  const lineP1 = { cx: scaleX(dMin), cy: scaleY(4 - dMin) };
-  const lineP2 = { cx: scaleX(dMax), cy: scaleY(4 - dMax) };
+  const lineP1 = { cx: scaleX(-0.25), cy: scaleY(4.25) };
+  const lineP2 = { cx: scaleX(4.25), cy: scaleY(-0.25) };
 
   const activeRadius = Math.sqrt(x * x + y * y);
 
@@ -63,14 +63,14 @@ export function LagrangeDiagram({ x, y, passed = false, size = 300, domain = [-1
         <circle cx={scaleX(0)} cy={scaleY(0)} r={scaleLen(activeRadius)} className={styles.levelCircleActive} />
 
         <line x1={lineP1.cx} y1={lineP1.cy} x2={lineP2.cx} y2={lineP2.cy} className={styles.constraintLine} />
-        <text x={lineP2.cx - 60} y={lineP2.cy - 8} className={styles.label}>
+        <text x={scaleX(2.6)} y={scaleY(1.6)} className={styles.label}>
           x + y = 4
         </text>
 
         <line x1={px} y1={py} x2={gTipX} y2={gTipY} className={styles.constraintArrow} />
         <line x1={px} y1={py} x2={fTipX} y2={fTipY} className={styles.gradArrow} />
 
-        <circle cx={px} cy={py} r={7} className={passed ? styles.pointPassed : styles.point} />
+        <circle cx={px} cy={py} r={6.5} className={passed ? styles.pointPassed : styles.point} />
       </svg>
     </div>
   );
