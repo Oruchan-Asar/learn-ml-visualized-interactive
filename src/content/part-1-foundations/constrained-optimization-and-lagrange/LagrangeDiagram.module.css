@@ -5,7 +5,7 @@
   box-shadow: var(--shadow);
   padding: 10px 10px 6px;
   max-width: 440px;
-  margin: 0 auto;
+  margin: 0;
 }
 
 .svg {
