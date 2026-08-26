@@ -18,10 +18,10 @@ export interface GraphNode {
  * autodiff interesting: its gradient accumulates contributions from both paths.
  */
 export const GRAPH: GraphNode[] = [
-  { id: "a", op: "input", inputs: [], x: 40, y: 190 },
-  { id: "b", op: "input", inputs: [], x: 40, y: 50 },
-  { id: "n1", op: "mul", inputs: ["a", "b"], x: 190, y: 120 },
-  { id: "n2", op: "add", inputs: ["n1", "a"], x: 340, y: 120 },
+  { id: "a", op: "input", inputs: [], x: 50, y: 175 },
+  { id: "b", op: "input", inputs: [], x: 50, y: 65 },
+  { id: "n1", op: "mul", inputs: ["a", "b"], x: 160, y: 120 },
+  { id: "n2", op: "add", inputs: ["n1", "a"], x: 270, y: 120 },
 ];
 
 export const OUTPUT_ID = "n2";
