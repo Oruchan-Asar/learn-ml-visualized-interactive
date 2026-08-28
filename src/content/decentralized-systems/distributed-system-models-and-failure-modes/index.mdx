@@ -1,0 +1,88 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DistributedSystemModelsCheckpoint } from "./Demos";
+
+<Hook>
+  How long should a node wait for a reply before giving up — and once it gives up, what should it assume actually
+  happened: did the peer stop, drop one message, or start lying?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Six messages, all sent at slightly different times, all arriving with genuinely different delays. Drag Δ down
+  and watch some of them start to "exceed the bound" — the same six messages, but now they no longer fit any
+  single promise about how long you might have to wait.
+</Intuition>
+
+<Formalize>
+  A **system model** is an assumption about message delay, not a fact about the network. The **synchronous
+  model** assumes a known bound $\Delta$ on every message's delay; the **asynchronous model** assumes no such
+  bound exists at all.
+
+  $$
+  \text{synchronous under } \Delta \iff \forall m: \text{delay}(m) \le \Delta
+  $$
+
+  <Variables>
+    <Variable>**$m$** — a single message, with a known send time and delivery time.</Variable>
+    <Variable>**$\text{delay}(m)$** — how long $m$ took to arrive: delivered time minus sent time.</Variable>
+    <Variable>**$\Delta$** — the bound the synchronous model promises no message will exceed.</Variable>
+  </Variables>
+
+  A **node failure** is a separate axis entirely — not about timing, but about what a node does when it's
+  supposed to speak:
+
+  <Steps>
+    <Step label="Crash">The node sends nothing further to anyone — total silence, forever.</Step>
+    <Step label="Omission">The node sends the correct value to some peers, but silently drops it for others.</Step>
+    <Step label="Byzantine">
+      The node sends different peers conflicting values (or lies to everyone consistently) — behavior that can't
+      be explained by silence or a dropped packet alone.
+    </Step>
+    <Step label="Correct">Anything reachable that isn't one of the above: every peer got exactly what was expected.</Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The top readout tracks $\Delta_{\min} = \max_m \text{delay}(m)$ — the smallest bound that actually makes this
+  round synchronous. Below it, step through each node's round log and watch `classifyFailure` name exactly what
+  went wrong, straight from what it was expected to send versus what it actually sent.
+</Play>
+
+<WorkedExample>
+  The six messages have delays 2, 9, 3, 3, 5, 3 (in `MESSAGES` order).
+
+  <Steps>
+    <Step label="Find the bottleneck">
+      The largest delay is 9 (A → C). No bound smaller than 9 can call this round synchronous — one message
+      alone would violate it.
+    </Step>
+    <Step label="Confirm the minimum bound">
+      $$
+      \Delta_{\min} = \max(2, 9, 3, 3, 5, 3) = 9
+      $$
+      At $\Delta = 9$, every message qualifies. At $\Delta = 8$, A → C alone breaks the promise.
+    </Step>
+    <Step label="Now the four round logs">
+      A sent every peer exactly what was expected → <strong>correct</strong>. B sent nothing at all →{" "}
+      <strong>crash</strong>. C sent the right value to A and B but never reached D → <strong>omission</strong>.
+      D told B a different value (5) than it told A and C (4) → <strong>byzantine</strong>, even though D never
+      went silent.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DistributedSystemModelsCheckpoint />
+
+<Summary>
+  $$
+  \text{synchronous under } \Delta \iff \forall m: \text{delay}(m) \le \Delta
+  $$
+
+  Synchrony is a promise about *time* — every message arrives within a known bound, or it doesn't. Failure is a
+  promise about *honesty* — a node stays silent (crash), goes selectively silent (omission), or actively lies
+  (Byzantine). Every protocol in this course has to pick assumptions on both axes before it can promise anything
+  at all.
+</Summary>
