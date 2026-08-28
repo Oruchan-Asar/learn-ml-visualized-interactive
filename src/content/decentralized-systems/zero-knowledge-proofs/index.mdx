@@ -1,0 +1,96 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ZeroKnowledgeCheckpoint } from "./Demos";
+
+<Hook>
+  You need to prove you know the password to an account, or the private key behind a signature, or that
+  you're over 21 — without ever handing over the password, the key, or your birth date. Is it actually
+  possible to convince someone a secret exists and that you have it, while giving them zero information
+  about what the secret actually is?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The prover commits to a random number first, before knowing which question the verifier will ask.
+  Whichever branch gets challenged, the prover can answer honestly — but each answer alone (just r, or
+  just r·x mod n) looks like a random number to the verifier. Neither branch, on its own, reveals x.
+</Intuition>
+
+<Formalize>
+  This is a simplified Fiat-Shamir identification scheme. Public knowledge: a modulus $n$ and a value
+  $y = x^2 \bmod n$. The prover claims to know a square root $x$ of $y$, without revealing it.
+
+  $$
+  b=0:\ \ r^2 \bmod n = c \qquad\qquad b=1:\ \ z^2 \bmod n = c\cdot y \bmod n
+  $$
+
+  <Variables>
+    <Variable>**$n$, $y$** — public: the modulus, and $y=x^2 \bmod n$, the value whose root is being proven known.</Variable>
+    <Variable>**$r$** — a fresh random number the prover picks each round; never revealed directly unless $b=0$.</Variable>
+    <Variable>**$c$** — the commitment, $c = r^2 \bmod n$, sent before the challenge is known.</Variable>
+    <Variable>**$b$** — the verifier's random challenge bit, $0$ or $1$, chosen after $c$ is committed.</Variable>
+    <Variable>**$z$** — the response when $b=1$: $z = r\cdot x \bmod n$, which mixes in $x$ but never exposes it alone.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="A cheater can prepare for at most one branch">
+      Without knowing $x$, an impostor can fake a valid-looking commitment for one branch (say, honestly
+      revealing some $r$ for $b=0$) — but has no way to produce a $z$ with $z^2 \bmod n = c\cdot y \bmod n$
+      for $b=1$, since that requires actually knowing $x$.
+    </Step>
+    <Step label="One round only catches a cheater half the time">
+      The verifier's challenge is random, so an impostor who guessed which branch to prepare for gets
+      away with it whenever the verifier happens to ask that same branch — a coin flip, 50/50.
+    </Step>
+    <Step label="Independent rounds multiply — probability of cheating shrinks fast">
+      Repeating with a fresh random $r$ and a fresh random challenge each round, the rounds are
+      independent: the chance a cheater survives all of them is $(1/2)^{\text{rounds}}$, collapsing toward
+      zero very quickly.
+    </Step>
+    <Step label="Yet the verifier never learns x">
+      Each round leaks only $r$ or $r\cdot x \bmod n$ — one masked value, chosen fresh every round — never
+      enough, across any number of rounds, to isolate $x$ itself.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the rounds slider and watch $(1/2)^{\text{rounds}}$ collapse: by round 5 an impostor's odds are
+  already under 1 in 30, and it keeps falling from there — all while the verifier still never learns $x$.
+</Play>
+
+<WorkedExample>
+  Public setup: $n = 91$, secret $x = 5$, public $y = x^2 \bmod 91 = 25$. The prover picks $r=4$ for this round.
+
+  <Steps>
+    <Step label="Commit">
+      $c = r^2 \bmod 91 = 16 \bmod 91 = 16$. The prover sends 16 and waits for the challenge.
+    </Step>
+    <Step label="Branch b=0: reveal r">
+      Response $= r = 4$. Verifier checks $4^2 \bmod 91 = 16$, which matches $c=16$. ✓ Passes — and the
+      verifier has learned only that some $r$ with $r^2\bmod 91=16$ exists, nothing about $x$.
+    </Step>
+    <Step label="Branch b=1: reveal r·x mod n instead">
+      Response $= (4)(5) \bmod 91 = 20$. Verifier checks $20^2 \bmod 91 = 400 \bmod 91 = 36$, and separately
+      $c \cdot y \bmod 91 = 16 \times 25 \bmod 91 = 400 \bmod 91 = 36$. Both sides equal 36. ✓ Passes.
+    </Step>
+    <Step label="Rounds needed for under 5% cheating odds">
+      $(1/2)^4 = 0.0625$ is still above 5%. $(1/2)^5 = 0.03125$ clears it — so **5 rounds** is the smallest
+      number that pushes a cheater's odds below 5%.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ZeroKnowledgeCheckpoint />
+
+<Summary>
+  $$
+  r^2 \bmod n = c, \qquad z^2 \bmod n = c\cdot y \bmod n, \qquad P(\text{cheat}) = (1/2)^{\text{rounds}}
+  $$
+
+  A zero-knowledge proof convinces a verifier that a secret exists — by making a cheater's odds of
+  bluffing through every round vanish — while each round leaks only one masked value that, alone, carries
+  no information about the secret at all.
+</Summary>
