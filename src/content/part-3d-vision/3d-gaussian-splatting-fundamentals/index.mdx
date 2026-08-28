@@ -1,0 +1,98 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GaussianSplattingCheckpoint } from "./Demos";
+
+<Hook>
+  Instant-NGP made NeRF's MLP faster to query, but it's still an MLP — one dense function you have to
+  evaluate at every sample along every ray. What if a scene were made of pieces simple enough to skip the
+  network querying almost entirely: a pile of soft, colored blobs you can just draw?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Two overlapping "Gaussians" — soft ellipses that fade out from their center, red one nearer the camera,
+  blue one behind it. Drag the blue one's center around. Right on top of the query pixel, its color is a
+  purple-ish blend of both; slide it away and the pixel settles back to solid red, because the far
+  Gaussian's fading tail no longer reaches that point at all.
+</Intuition>
+
+<Formalize>
+  Every Gaussian is a small bundle of parameters: a center $\mu$, a per-axis spread $\sigma$, an opacity,
+  and a color. Its opacity at any query point falls off from its center with squared, sigma-scaled
+  distance — the same bell curve as a 1D Gaussian, just axis-aligned in 2D:
+
+  $$
+  \text{weight}(p) = \exp\!\left(-\tfrac{1}{2}\left(\left(\tfrac{dx}{\sigma_x}\right)^2 + \left(\tfrac{dy}{\sigma_y}\right)^2\right)\right), \qquad
+  \alpha(p) = \text{opacity} \cdot \text{weight}(p)
+  $$
+
+  Multiple Gaussians composite front-to-back — nearer ones painted first, each later one only allowed to
+  paint whatever fraction of the pixel is still transparent:
+
+  $$
+  C = \sum_i T_i \cdot \alpha_i \cdot c_i, \qquad T_i = \prod_{j < i} (1 - \alpha_j)
+  $$
+
+  <Variables>
+    <Variable>**$\mu, \sigma$** — a Gaussian's center and per-axis spread, both in the same 2D units as the query point.</Variable>
+    <Variable>**$dx, dy$** — the query point's offset from $\mu$, before scaling by $\sigma$.</Variable>
+    <Variable>**$\alpha_i$** — Gaussian $i$'s own opacity at this point: its opacity parameter times its falloff weight.</Variable>
+    <Variable>**$T_i$** — transmittance: how much of the pixel survives every *nearer* Gaussian, before Gaussian $i$ gets its turn.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Gaussian A (red, near): mu=(0,0), sigma=(2,2), opacity=0.6">
+      Query pixel is at $(1, 0)$, so $dx/\sigma_x = 0.5$, $dy = 0$. Weight $= e^{-0.125} \approx 0.8825$, so
+      $\alpha_A = 0.6 \times 0.8825 \approx 0.5295$.
+    </Step>
+    <Step label="Gaussian B (blue, far): mu=(2,0), sigma=(2,2), opacity=0.8">
+      The query pixel is exactly as far (in sigma units) from B's center as from A's: $dx/\sigma_x = -0.5$,
+      same weight $\approx 0.8825$, so $\alpha_B = 0.8 \times 0.8825 \approx 0.7060$.
+    </Step>
+    <Step label="Composite front-to-back: A first, then B through what A left transparent">
+      $T_A = 1$, contribution $= 1 \times 0.5295 = 0.5295$ (all red). Then $T_B = 1 - 0.5295 = 0.4705$,
+      contribution $= 0.4705 \times 0.7060 \approx 0.3322$ (all blue). Total alpha $\approx 1 - 0.4705(1 -
+      0.7060) \approx 0.8617$ — the pixel is mostly opaque, blended red-over-blue.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Turn up B's opacity and watch its bar (and its share of the composited color) grow — but never past what
+  A's transmittance leaves behind. Widen B's spread instead: the *shape* of its falloff changes even though
+  its center never moves, which is exactly why "covariance" is a real, separate parameter from position.
+</Play>
+
+<WorkedExample>
+  Two variations on the same scene:
+
+  <Steps>
+    <Step label="B's opacity pushed to 1.0 (fully opaque where it reaches)">
+      $\alpha_B = 1.0 \times 0.8825 \approx 0.8825$. B's contribution becomes $0.4705 \times 0.8825 \approx
+      0.4153$ — nearly as much of the pixel as A itself, even though A is nearer and gets first pick.
+    </Step>
+    <Step label="B's spread shrunk to sigma=0.5 (a tight, small blob)">
+      The raw offset $dx = -1$ is unchanged, but now $dx/\sigma_x = -1/0.5 = -2$, weight $= e^{-2} \approx
+      0.1353$, so $\alpha_B \approx 0.8 \times 0.1353 \approx 0.1083$ — a *much smaller* alpha than the
+      original sigma=2 case, even at the same opacity, because shrinking sigma makes the same raw distance
+      count for far more standard deviations out into the tail.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GaussianSplattingCheckpoint />
+
+<Summary>
+  $$
+  \alpha(p) = \text{opacity} \cdot \exp\!\left(-\tfrac{1}{2}\left(\left(\tfrac{dx}{\sigma_x}\right)^2 + \left(\tfrac{dy}{\sigma_y}\right)^2\right)\right), \qquad
+  C = \sum_i T_i \alpha_i c_i
+  $$
+
+  A Gaussian splat scene trades a neural network for a pile of simple, explicit blobs — each one's opacity
+  at a point is just a scaled bell curve, and rendering is the same front-to-back alpha compositing NeRF
+  uses for ray samples, with "distance from a Gaussian's center" standing in for "distance along a ray."
+  The next chapter adds the two pieces still missing: how a 3D Gaussian's world-space spread projects onto
+  the image plane, and how its parameters get optimized directly by gradient descent.
+</Summary>
