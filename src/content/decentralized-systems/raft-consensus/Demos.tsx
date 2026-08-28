@@ -55,7 +55,16 @@ export function IntuitionDemo() {
     ? `${voter.id}: last entry (term ${voter.lastLog.term}, index ${voter.lastLog.index}) vs N1's (term ${CANDIDATE_REQUEST.lastLog.term}, index ${CANDIDATE_REQUEST.lastLog.index}) — ${TRACE.grants[voter.id] ? "grants" : "rejects"}`
     : "Click a voter to see how it decides";
 
-  return <GraphPlayground nodes={nodeSpecs(revealed)} edges={EDGES} focusNodeId="N1" onSelectNode={onSelect} readout={explanation} />;
+  return (
+    <GraphPlayground
+      nodes={nodeSpecs(revealed)}
+      edges={EDGES}
+      focusNodeId="N1"
+      onSelectNode={onSelect}
+      readout={explanation}
+      height={240}
+    />
+  );
 }
 
 /** Play beat: reveal every voter's decision at once and read off the resulting tally. */
@@ -73,6 +82,7 @@ export function PlayDemo() {
             ? `Total votes for N1: ${TRACE.totalVotes} of 5 — winner: ${TRACE.winner ?? "none (split)"}`
             : "Click below to run the election"
         }
+        height={240}
       />
       <div className={styles.buttons}>
         <button type="button" className={styles.buttonPrimary} onClick={() => setRevealed(true)}>
@@ -136,6 +146,7 @@ export function RaftCheckpoint() {
         onSelectNode={toggle}
         passed={passed}
         readout={`Selected: ${[...selected].join(", ") || "none"}`}
+        height={240}
       />
     </CheckpointFrame>
   );
