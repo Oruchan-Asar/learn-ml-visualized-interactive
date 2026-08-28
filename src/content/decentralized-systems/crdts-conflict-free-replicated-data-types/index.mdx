@@ -1,0 +1,90 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CrdtCheckpoint } from "./Demos";
+
+<Hook>
+  Two replicas of the same counter each accept writes while offline, then reconnect in some
+  unpredictable order — no coordinator, no locking, maybe not even in the same order twice. Is
+  there a data structure where "just apply whatever you both have" is *guaranteed* to produce the
+  same answer, no matter the order?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click P and Q's buttons in whatever order and however many times you like — they never talk to
+  each other while doing it. Then hit "Merge": both boxes turn out exactly the same, holding the
+  full total of everything either one ever did.
+</Intuition>
+
+<Formalize>
+  A **G-Counter** (grow-only counter) CRDT gives every replica its own slot that only *that*
+  replica may increment. Merging two replicas' states takes the pointwise max of every slot:
+
+  $$
+  \text{merge}(A, B)_i = \max(A_i,\, B_i)
+  $$
+
+  <Variables>
+    <Variable>**$A_i$**, **$B_i$** — replica $i$'s slot count as last seen by state $A$ or $B$.</Variable>
+    <Variable>**$\text{merge}(A,B)_i$** — the merged state's slot $i$: whichever of $A$ or $B$ has seen more of replica $i$'s increments.</Variable>
+    <Variable>**value(state)** — the counter's logical total: the sum of every slot.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Merge is commutative and idempotent">
+      $\max(A_i,B_i) = \max(B_i,A_i)$ for every slot, so it never matters who initiates a merge —
+      and merging a state with itself changes nothing, so re-merging the same update twice is
+      harmless.
+    </Step>
+    <Step label="Merge is associative">
+      $\max$ over three or more values doesn't depend on how they're grouped, so merging replicas
+      two at a time, in any order or pairing, reaches the exact same final state as merging them
+      all at once.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Increment P and Q in any pattern — three P's then one Q, alternating, whatever. The panel always
+  computes merge(P, Q) *and* merge(Q, P) side by side: they never disagree, at any point, no
+  matter what either replica has done up to that moment.
+</Play>
+
+<WorkedExample>
+  Three replicas, each incrementing only their own slot, entirely independently:
+
+  <Steps>
+    <Step label="Independent local states">
+      P increments 3 times: $\{P{:}3, Q{:}0, R{:}0\}$. Q increments 2 times: $\{P{:}0, Q{:}2,
+      R{:}0\}$. R increments once: $\{P{:}0, Q{:}0, R{:}1\}$ — none of them has seen either of the
+      others' updates.
+    </Step>
+    <Step label="Merging P and Q, either direction">
+      $\text{merge}(P,Q) = \{P{:}\max(3,0), Q{:}\max(0,2), R{:}\max(0,0)\} = \{3, 2, 0\}$. Merging
+      the other way, $\text{merge}(Q,P)$, produces the exact same $\{3, 2, 0\}$.
+    </Step>
+    <Step label="Bringing in R, in either grouping">
+      $\text{merge}(\text{merge}(P,Q), R) = \{3,2,1\}$, and $\text{merge}(P, \text{merge}(Q,R))$
+      also comes out to $\{3,2,1\}$ — total value $6$, regardless of which two replicas happened
+      to sync with each other first.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CrdtCheckpoint />
+
+<Summary>
+  $$
+  \text{merge}(A,B)_i = \max(A_i, B_i)
+  $$
+
+  A CRDT's merge rule is built so that commutativity, associativity, and idempotence hold by
+  construction — not by careful protocol design, but because $\max$ (or union, for other CRDTs)
+  simply has those properties. That's what "no coordination" really buys: replicas can accept
+  writes and sync with whichever peers happen to be reachable, in whatever order, and still be
+  mathematically guaranteed to converge to one shared state. The next chapter's Dynamo-style store
+  reaches for a different tool — vector clocks — for exactly the writes a CRDT's merge rule
+  *can't* silently resolve on its own.
+</Summary>
