@@ -1,0 +1,100 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GpuMemoryCheckpoint } from "./Demos";
+
+<Hook>
+  A GPU kernel can be blazingly fast on paper — millions of FLOPs available every microsecond — and still
+  run slowly, because those FLOPs have to wait on data that hasn't arrived from memory yet. Whether that
+  wait actually matters, and how much, is not a vague intuition. For a given kernel, it's an exact number.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A toy kernel: an N×N matrix multiply. Slide N and watch two clocks race — one for moving the matrices
+  through HBM (High Bandwidth Memory, the GPU's main memory), one for the arithmetic itself. Whichever is
+  longer is the kernel's actual runtime; the other one is free, because it overlaps.
+</Intuition>
+
+<Formalize>
+  An N×N matmul reads two N×N operands and writes one N×N result — 3 arrays of $N^2$ numbers, 4 bytes each —
+  and performs the standard $2N^3$ floating-point operations (one multiply and one add per output element,
+  summed over N):
+
+  $$
+  \text{bytes}(N) = 3 \cdot 4 N^2 \qquad \text{flops}(N) = 2N^3
+  $$
+
+  <Variables>
+    <Variable>**$N$** — the matrix size: an N×N by N×N matmul.</Variable>
+    <Variable>**$\text{bytes}(N)$** — total bytes moved through memory for this kernel.</Variable>
+    <Variable>**$\text{flops}(N)$** — total floating-point operations this kernel performs.</Variable>
+  </Variables>
+
+  Each quantity turns into a *time* by dividing by the rate at which it can happen — bandwidth for bytes,
+  throughput for FLOPs — and the kernel's actual runtime is whichever time is larger, since a well-written
+  kernel overlaps the two:
+
+  $$
+  T_{\text{transfer}}(N) = \frac{\text{bytes}(N)}{B} \qquad T_{\text{compute}}(N) = \frac{\text{flops}(N)}{R} \qquad T(N) = \max\bigl(T_{\text{transfer}}(N),\, T_{\text{compute}}(N)\bigr)
+  $$
+
+  <Variables>
+    <Variable>**$B$** — HBM bandwidth, in bytes per unit time.</Variable>
+    <Variable>**$R$** — compute throughput, in FLOPs per unit time.</Variable>
+    <Variable>**$T(N)$** — the kernel's actual runtime, the roofline model's prediction.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Bytes grow as N², FLOPs grow as N³">
+      Every extra unit of N adds proportionally less memory traffic than compute. That single fact is the
+      whole story: it guarantees the two curves cross exactly once.
+    </Step>
+    <Step label="Below the crossover: memory-bound">
+      Small N means little arithmetic relative to how much data has to move — the GPU sits idle waiting on
+      HBM. This is where flash-attention-style tiling and kernel fusion earn their keep.
+    </Step>
+    <Step label="Above the crossover: compute-bound">
+      Large N means the arithmetic dominates — moving the data was cheap by comparison. Here, the number
+      that matters is how many FLOPs/sec the hardware can sustain, not how fast memory is.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The same two curves, now on a fixed scale so their crossing point is visible directly: transfer time
+  climbing gently as $N^2$, compute time climbing steeply as $N^3$, meeting at exactly one N along the way.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="At N = 8: bytes and FLOPs">
+      $\text{bytes}(8) = 3 \cdot 4 \cdot 64 = 768$. $\text{flops}(8) = 2 \cdot 512 = 1024$.
+    </Step>
+    <Step label="Two times, exactly equal">
+      With $B = 3$ and $R = 4$: $T_{\text{transfer}}(8) = 768 / 3 = 256$. $T_{\text{compute}}(8) = 1024 / 4 = 256$.
+      Same number — N = 8 is exactly the crossover for these constants.
+    </Step>
+    <Step label="One step either side">
+      At N = 3: transfer time 36 versus compute time 13.5 — memory-bound, transfer dominates. At N = 10:
+      transfer time 400 versus compute time 500 — compute-bound, the arithmetic now dominates instead.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GpuMemoryCheckpoint />
+
+<Summary>
+  $$
+  T(N) = \max\!\left(\frac{3 \cdot 4N^2}{B},\; \frac{2N^3}{R}\right)
+  $$
+
+  "Optimize the kernel" only means something once you know which side of this max you're on. A memory-bound
+  kernel gets faster from moving less data — tiling, fusing operations, staying in SRAM (the small, fast
+  on-chip memory) instead of round-tripping to HBM — while more FLOPs/sec on the hardware wouldn't help it
+  at all. A compute-bound kernel is the reverse. Profiling a real kernel is exactly this diagnosis: measure
+  its arithmetic intensity, compare it to the hardware's own crossover point, and know before optimizing
+  which resource is actually the bottleneck. The next chapter uses that same memory budget from the other
+  direction — shrinking the model itself, so there's less to move in the first place.
+</Summary>
