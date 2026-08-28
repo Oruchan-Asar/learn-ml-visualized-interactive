@@ -24,7 +24,10 @@ function slotsLabel(state: GCounterState) {
 
 /** Intuition beat: two replicas increment independently, then an explicit "merge" makes them converge. */
 export function IntuitionDemo() {
-  const [pState, setPState] = useState<GCounterState>(zeroState(["P", "Q"]));
+  // Seeded already-diverged (P has incremented itself once, Q hasn't heard about it) so the two
+  // boxes visibly disagree from the very first render — "converged" only ever appears after a
+  // real merge, never for free.
+  const [pState, setPState] = useState<GCounterState>(increment(zeroState(["P", "Q"]), "P"));
   const [qState, setQState] = useState<GCounterState>(zeroState(["P", "Q"]));
   const converged = statesEqual(pState, qState);
 
