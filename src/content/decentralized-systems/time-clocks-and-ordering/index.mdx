@@ -1,0 +1,85 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, TimeClocksCheckpoint } from "./Demos";
+
+<Hook>
+  Three processes, no shared clock, no synchronized watches. Given two events — one on P0, one on P2 — can you
+  even say which happened first?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through nine events across three processes. Every process keeps a counter of its own — bumped by one for
+  every event — except a **receive**, which first jumps up to catch the sender's counter before continuing.
+  Watch each process's three-number vector grow as messages cross between them.
+</Intuition>
+
+<Formalize>
+  A **Lamport clock** gives every event a single number: bump your own counter, and on a receive, jump to
+  $\max(\text{own}, \text{sender's})$ first.
+
+  $$
+  L(e) = \begin{cases} L_p + 1 & e \text{ is internal or a send} \\ \max(L_p, L_{msg}) + 1 & e \text{ is a receive} \end{cases}
+  $$
+
+  A **vector clock** keeps one counter *per process* instead of one shared number: bump only your own component,
+  but on receive take the componentwise max with the sender's stamped vector first.
+
+  <Variables>
+    <Variable>**$L_p$** — process $p$'s own Lamport counter, just before this event.</Variable>
+    <Variable>**$L_{msg}$** — the Lamport timestamp attached to the message being received.</Variable>
+    <Variable>**$a \le b$** — every component of vector $a$ is $\le$ the matching component of $b$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Comparing two vector clocks">
+      $a$ happened-before $b$ exactly when $a \le b$ componentwise and $a \neq b$. If neither vector dominates the
+      other, the events are <strong>concurrent</strong> — no message chain links them in either direction.
+    </Step>
+    <Step label="Why a vector, not just a number">
+      A single Lamport number can always be compared to any other — but that comparison doesn't mean one event
+      caused the other. A vector clock's componentwise structure is what actually distinguishes "definitely
+      before" from "no relation at all."
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Pick any two of the nine events. `compareVectorClocks` reads their vectors directly and reports **before**,
+  **after**, **concurrent**, or **equal** — the same rule, applied to whichever pair you choose.
+</Play>
+
+<WorkedExample>
+  Trace the first four events by hand: e1 (P0, internal), e2 (P0, sends m1), e3 (P0, internal), e4 (P1, receives m1).
+
+  <Steps>
+    <Step label="e1 — P0's first event">
+      P0 bumps its own counter: Lamport = 1, vector = [1, 0, 0].
+    </Step>
+    <Step label="e2 — P0 sends m1">
+      Another internal bump on P0: Lamport = 2, vector = [2, 0, 0]. This vector rides along inside m1.
+    </Step>
+    <Step label="e3 — P0 does more local work">
+      Bump again: Lamport = 3, vector = [3, 0, 0].
+    </Step>
+    <Step label="e4 — P1 receives m1">
+      P1 first takes the componentwise max of its own [0,0,0] and m1's stamped [2,0,0] → [2,0,0], then bumps its
+      own component: vector = [2, 1, 0]. Lamport jumps to $\max(0, 2) + 1 = 3$ — coincidentally equal to e3's
+      Lamport number, even though e3 and e4 are on different processes entirely.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<TimeClocksCheckpoint />
+
+<Summary>
+  $$
+  a \to b \iff a \le b \text{ componentwise}, \quad a \neq b
+  $$
+
+  A Lamport clock hands every event a single, always-comparable number. A vector clock hands every event a
+  per-process vector — and only *that* structure can tell "happened-before" apart from "no relation at all." The
+  next chapter makes that gap precise.
+</Summary>
