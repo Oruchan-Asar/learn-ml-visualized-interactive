@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GenerativeCheckpoint } from "./Demos";
+
+<Hook>
+  Every representation so far — voxels, NeRF's MLP, a pile of Gaussians — assumed a real 3D scan or a set
+  of camera photos already existed. What if you only have a text prompt, or one photograph, and the "scene"
+  has to be conjured out of nothing?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A generative model's first guess is rarely good. Here every point starts collapsed onto the same spot —
+  the shape's centroid — and gets refined step by step. Step through it: the point cloud fans back out
+  toward the 4 corners it's supposed to represent, and the fidelity bar climbs as it goes.
+</Intuition>
+
+<Formalize>
+  "Good enough" needs a metric. Chamfer distance scores how well a predicted point set $A$ matches a target
+  $B$, symmetrically — it penalizes both a predicted point sitting far from *any* real surface point, and a
+  real surface point that nothing predicted is near:
+
+  $$
+  \text{chamfer}(A, B) = \frac{1}{|A|}\sum_{a \in A} \min_{b \in B} \|a-b\| \;+\; \frac{1}{|B|}\sum_{b \in B} \min_{a \in A} \|b-a\|
+  $$
+
+  Once a shape is refined enough, turning it (or a continuous density field) into an actual mesh means
+  finding where the field crosses zero — the surface. On a 1D slice, that's linear interpolation between
+  two samples of opposite sign:
+
+  $$
+  x_{\text{surface}} = x_0 + \frac{-d_0}{d_1 - d_0}(x_1 - x_0)
+  $$
+
+  <Variables>
+    <Variable>**$A, B$** — the predicted point set and the target (or vice versa); the two terms make the metric symmetric.</Variable>
+    <Variable>**$d_0, d_1$** — a sampled field's value at two adjacent points $x_0, x_1$ (negative = outside, positive = inside).</Variable>
+    <Variable>**$x_{\text{surface}}$** — where the field crosses zero between those two samples — marching cubes' core 1D building block.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Coarse guess: all 4 points collapsed onto the centroid (1,1)">
+      Every point is $\sqrt{2}$ from every one of the target square's 4 corners in both directions:
+      chamfer $= \sqrt{2} + \sqrt{2} = 2\sqrt{2} \approx 2.828$.
+    </Step>
+    <Step label="Halfway refined">
+      Each point has moved halfway to its corner: chamfer drops to exactly $\sqrt{2} \approx 1.414$ — half
+      the coarse score.
+    </Step>
+    <Step label="Fully refined: points exactly on the corners">
+      chamfer $= 0$ — every predicted point sits exactly on a real surface point, and vice versa.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag $t$ continuously instead of jumping between 3 fixed steps. Chamfer distance falls off perfectly
+  linearly here — $2(1-t)\sqrt{2}$ — because every point is moving in a straight line toward its own
+  target corner at the same rate.
+</Play>
+
+<WorkedExample>
+  Locating a surface crossing in a 1D density profile sampled at $x = 0, 1, 2, 3$ with values $-1, -0.2,
+  0.6, 1.5$ (negative = outside, positive = inside):
+
+  <Steps>
+    <Step label="Between x=1 (d=-0.2) and x=2 (d=0.6): opposite signs, a real crossing">
+      $x_{\text{surface}} = 1 + \frac{0.2}{0.6-(-0.2)}(2-1) = 1 + 0.25 = 1.25$ — the surface passes a
+      quarter of the way from $x=1$ to $x=2$.
+    </Step>
+    <Step label="Between x=0 (d=-1) and x=1 (d=-0.2): same sign, no real crossing">
+      The formula still returns a number ($1.25$ again, by coincidence of these particular values), but
+      it falls *outside* the segment $[0, 1]$ — the tell that there's nothing to mesh here, since both
+      samples agree they're outside the shape.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GenerativeCheckpoint />
+
+<Summary>
+  $$
+  \text{chamfer}(A, B) = \tfrac{1}{|A|}\textstyle\sum_a \min_b \|a-b\| + \tfrac{1}{|B|}\sum_b \min_a \|b-a\|, \qquad x_{\text{surface}} = x_0 - d_0\frac{x_1-x_0}{d_1-d_0}
+  $$
+
+  Generative 3D pipelines close the loop this whole Part has been building toward: refine a rough guess
+  against a symmetric distance metric until it's faithful enough, then walk its zero level set to extract
+  an actual mesh. The capstone puts every piece from this Part together — camera projection, Gaussian
+  fundamentals, and depth-ordered rasterization — into one working renderer.
+</Summary>
