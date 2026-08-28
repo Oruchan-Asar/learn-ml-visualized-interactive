@@ -1,0 +1,88 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ConsistencyModelsCheckpoint } from "./Demos";
+
+<Hook>
+  Every replicated system promises *some* kind of consistency. But "consistent" isn't one thing — it's a whole
+  spectrum, from "acts exactly like a single copy" down to "will eventually agree, someday, somehow."
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Five operations, one key, three clients. Step through them — right up until the last read, which returns a
+  value that's already been overwritten by the time it starts. Every "consistency model" in this chapter is
+  really just a different answer to: how much does that bother you?
+</Intuition>
+
+<Formalize>
+  Four models, each dropping one more requirement than the last:
+
+  <Steps>
+    <Step label="Linearizability">
+      There must exist a total order of all operations that (a) respects real time — if $a$ finishes before $b$
+      starts, $a$ comes first — and (b) is valid: every read returns the most recent preceding write.
+    </Step>
+    <Step label="Sequential consistency">
+      Drop the real-time requirement entirely. Only require *some* total order that respects each client's own
+      program order and is still valid. Different clients' real-time overlaps no longer matter.
+    </Step>
+    <Step label="Causal consistency">
+      Drop the total-order requirement too. Only require that a write appears after every write it causally
+      depends on. Concurrent writes may be seen in different relative orders by different replicas — and that's
+      allowed.
+    </Step>
+    <Step label="Eventual consistency">
+      Drop ordering entirely. The only promise: given the same set of writes, every replica converges to the same
+      final value — typically via a deterministic rule like last-writer-wins.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**real-time order** — the order operations' wall-clock intervals actually happened in.</Variable>
+    <Variable>**program order** — the order a single client issued its own operations in.</Variable>
+    <Variable>**causal order** — the order implied by actual dependencies (a write based on a read of another write).</Variable>
+  </Variables>
+
+  Each model is strictly weaker than the one before it: every linearizable history is sequentially consistent,
+  every sequentially consistent history is causally consistent, and so on — but not the other way around.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch models and watch each one's own checker run: linearizability and sequential consistency both run against
+  the same 5-op HISTORY; causal consistency compares two replicas that disagree on concurrent writes' order (both
+  still valid); eventual consistency reshuffles delivery order and always converges to the same value.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="HISTORY fails linearizability">
+      op3 finishes writing x=2 at t=7. op5 starts at t=10 — strictly after — yet returns x=1. No total order can
+      respect real time here, so `isLinearizable(HISTORY)` is false, and `findViolatingOp` names op5.
+    </Step>
+    <Step label="HISTORY passes sequential consistency">
+      Replay the ops as op1, op2, op5, op3, op4 instead: op5 now runs *before* op3's write, so returning x=1 is
+      valid, and every client's own program order is still respected. `isSequentiallyConsistent(HISTORY)` is true
+      — real time was the only thing violated.
+    </Step>
+    <Step label="Causal consistency tolerates disagreement">
+      w2 depends on w1; w3 is concurrent with both. View R1 = [w1, w3, w2] and view R2 = [w3, w1, w2] disagree on
+      w1-vs-w3's order — and both are valid, because neither ordering puts w2 before its dependency w1. View
+      [w2, w1, w3] is not: w2 appears before the write it depends on.
+    </Step>
+    <Step label="Eventual consistency just needs convergence">
+      Three writes at timestamps 2, 1, 3 with last-writer-wins: no matter what order they're delivered in, the
+      highest-timestamp write (ts=3, value=7) always ends up as the final value.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ConsistencyModelsCheckpoint />
+
+<Summary>
+  Linearizable ⟹ sequentially consistent ⟹ causally consistent ⟹ eventually consistent — each arrow drops one
+  more requirement. HISTORY is a case study in exactly one gap: it fails linearizability's real-time promise
+  while still satisfying every weaker model down the chain. The next chapter turns this exact history into a
+  diagnosis exercise.
+</Summary>
