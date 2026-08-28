@@ -82,7 +82,7 @@ export function PlayDemo() {
   );
 }
 
-const CANDIDATES = [2, 8, -2, 14];
+const CANDIDATES = [2, 4, -2, 0];
 
 /** Checkpoint: pick the correct determinant of a fixed matrix from four plausible candidates. */
 export function DeterminantCheckpoint() {

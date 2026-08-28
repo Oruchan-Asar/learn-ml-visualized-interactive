@@ -52,5 +52,5 @@ export const MATRIX_A: Mat2 = { a: 3, b: 1, c: 2, d: 2 };
 /** Singular: columns (2,1) and (4,2) are parallel — the second is exactly 2x the first, so det = 0. */
 export const SINGULAR_MATRIX: Mat2 = { a: 2, b: 4, c: 1, d: 2 };
 
-/** For the checkpoint: det = 4*2 - 3*2 = 2, chosen so common shortcut mistakes land on other candidates. */
-export const CHECKPOINT_MATRIX: Mat2 = { a: 4, b: 3, c: 2, d: 2 };
+/** For the checkpoint: det = 1*1 - (-1)*1 = 2. Columns are perpendicular (a 45°-rotated square of area 2), so the parallelogram renders clearly instead of collapsing into a near-parallel sliver. */
+export const CHECKPOINT_MATRIX: Mat2 = { a: 1, b: -1, c: 1, d: 1 };
