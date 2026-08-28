@@ -1,0 +1,85 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, QuorumCheckpoint } from "./Demos";
+
+<Hook>
+  You've got 5 replicas. How many do a read and a write each need to touch so that a read can never miss the
+  latest write — without waiting for all 5 every time?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag R and W. Notice: some combinations guarantee that *any* read quorum and *any* write quorum you could pick
+  are forced to share at least one node. Others leave a gap — a read could land entirely on nodes the write never
+  reached.
+</Intuition>
+
+<Formalize>
+  A **quorum system** replicates to $N$ nodes and requires a write to succeed on $W$ of them, a read to be
+  answered by $R$ of them. Reads and writes are safe together exactly when:
+
+  $$
+  R + W > N
+  $$
+
+  <Variables>
+    <Variable>**$N$** — total number of replicas.</Variable>
+    <Variable>**$W$** — how many replicas a write must reach before it's considered done.</Variable>
+    <Variable>**$R$** — how many replicas a read must query before it returns an answer.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Why the inequality works">
+      Out of $N$ nodes, a write quorum covers $W$ of them and a read quorum covers $R$ of them. If $R + W > N$,
+      there simply aren't enough "empty" slots left for the two quorums to avoid each other — by the pigeonhole
+      principle they must share at least one node.
+    </Step>
+    <Step label="That shared node is the guarantee">
+      Whatever node sits in the overlap has the latest write, because the write quorum included it. So any read
+      quorum is guaranteed to see it too.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Watch the readout compute $R + W - N$ directly — the **overlap margin**. Positive means safe, zero or negative
+  means a read and a write could pick disjoint sets of nodes and a stale read slips through.
+</Play>
+
+<WorkedExample>
+  $N = 5$, and you choose $R = 3$, $W = 3$:
+
+  <Steps>
+    <Step label="Pick concrete quorums">
+      Label the replicas 1–5. Say the write quorum is $\{1, 2, 3\}$ and the read quorum is $\{3, 4, 5\}$.
+    </Step>
+    <Step label="Find the overlap">
+      They share node $3$ — whatever the write left there, the read sees it.
+    </Step>
+    <Step label="Check the margin">
+      $$
+      R + W - N = 3 + 3 - 5 = 1
+      $$
+      A margin of exactly 1 means every possible pair of a 3-node read quorum and a 3-node write quorum out of 5
+      shares at least one node — not just this particular pair.
+    </Step>
+    <Step label="Contrast with an unsafe choice">
+      $R = 2, W = 2$ gives a margin of $2 + 2 - 5 = -1$: a read quorum like $\{4, 5\}$ and a write quorum like
+      $\{1, 2\}$ share nothing, so the read could miss the write entirely.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<QuorumCheckpoint />
+
+<Summary>
+  $$
+  R + W > N
+  $$
+
+  A quorum system replaces "wait for the one primary" with "wait for enough replicas to overlap." Any $R$ and
+  $W$ satisfying $R + W > N$ guarantee a read always sees the latest committed write — and the smallest safe
+  choice, $R + W = N + 1$, gets that guarantee while touching the fewest nodes possible.
+</Summary>
