@@ -1,0 +1,90 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CrossShardCheckpoint } from "./Demos";
+
+<Hook>
+  Every validator checking every transaction is safe, but it caps throughput at whatever one validator
+  can process. What if the network split into groups, each handling only its own slice of accounts —
+  and what breaks the moment a transaction touches two slices at once?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Accounts are grouped into shards by hashing their id — the same deterministic assignment every node
+  computes independently, no coordination needed. Most transactions, like alice → carol, never leave
+  their shard. The interesting case is alice → bob: two different shards each hold half the picture, and
+  neither one alone can tell if the whole transaction is valid.
+</Intuition>
+
+<Formalize>
+  <Steps>
+    <Step label="Every account is deterministically assigned to a shard">
+      $\text{shard}(\text{id}) = \text{toyHash}(\text{id}) \bmod N$ for $N$ shards — the same rule run
+      independently by every node, so nobody has to broadcast "which shard is this account in."
+    </Step>
+    <Step label="Most transactions stay inside one shard">
+      A transaction from account $a$ to account $b$ is **same-shard** if
+      $\text{shard}(a) = \text{shard}(b)$, and **cross-shard** otherwise. Same-shard transactions are
+      cheap: one shard has both balances and can validate the whole thing alone.
+    </Step>
+    <Step label="Throughput scales with shard count">
+      $\text{throughput}(N) = N \times \text{tps}_{\text{per shard}}$ — this is sharding's entire payoff:
+      shards process their own transactions in parallel, so total capacity grows with $N$ instead of
+      staying fixed.
+    </Step>
+    <Step label="Cross-shard transactions need a relay">
+      A cross-shard transaction can't be validated by either shard alone — it needs a receipt relayed
+      from the source shard to the destination shard (and typically an acknowledgment back), costing
+      extra messages that a same-shard transaction never pays.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**$N$** — the number of shards; more shards means more parallelism, but also more transactions that cross a boundary.</Variable>
+    <Variable>**relayHops** — the extra messages a cross-shard transaction needs beyond a single shard's own validation.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Click any two accounts to build a transaction between them and watch whether it settles in one message
+  or needs a relay. The accounts don't move — sharding is a property of *where an account already lives*,
+  not something a transaction can opt out of.
+</Play>
+
+<WorkedExample>
+  6 accounts, 3 shards: shard(alice)=1, shard(bob)=0, shard(carol)=1, shard(dave)=1, shard(erin)=0,
+  shard(frank)=2.
+
+  <Steps>
+    <Step label="Group the accounts by shard">
+      Shard 0: $\{\texttt{bob}, \texttt{erin}\}$. Shard 1: $\{\texttt{alice}, \texttt{carol}, \texttt{dave}\}$.
+      Shard 2: $\{\texttt{frank}\}$.
+    </Step>
+    <Step label="A same-shard transaction: alice → carol">
+      Both land in shard 1, so $\text{isCrossShard} = \text{false}$ — one message settles it.
+    </Step>
+    <Step label="A cross-shard transaction: alice → bob">
+      Shard 1 vs shard 0 — $\text{isCrossShard} = \text{true}$. With 2 relay hops, the total message cost
+      is $1 + 2 = 3$, versus 1 for the same-shard case.
+    </Step>
+    <Step label="Throughput at 10 tx/s per shard">
+      $\text{throughput}(3) = 3 \times 10 = 30$ tx/s total — triple a single validator group's capacity,
+      as long as most transactions stay inside their own shard.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CrossShardCheckpoint />
+
+<Summary>
+  $$
+  \text{shard}(\text{id}) = \text{toyHash}(\text{id}) \bmod N, \qquad \text{throughput}(N) = N \times \text{tps}_{\text{per shard}}
+  $$
+
+  Sharding trades a single, easy-to-reason-about ledger for $N$ parallel ones — multiplying throughput,
+  but introducing transactions that no single shard can validate alone. The next chapter steps back from
+  scaling to security: what stops someone from just creating a flood of fake identities to control a
+  fraction of the network for free?
+</Summary>
