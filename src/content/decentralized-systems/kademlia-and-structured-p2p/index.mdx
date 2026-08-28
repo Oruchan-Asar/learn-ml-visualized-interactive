@@ -1,0 +1,91 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, KademliaCheckpoint } from "./Demos";
+
+<Hook>
+  BitTorrent's DHT and IPFS both route lookups across millions of peers with no ring, no
+  clockwise successor, no central index — just a way to measure "distance" between two ids that
+  has nothing to do with where either one sits on a number line. What could "distance" even mean
+  if not that?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click through the three targets. The two "closest" nodes are a completely different pair each
+  time — not because the nodes moved, but because XOR distance depends only on which *bits*
+  differ, not on how far apart the numbers look.
+</Intuition>
+
+<Formalize>
+  Kademlia measures distance between two ids by **XOR**-ing them together and reading the result
+  as a number:
+
+  $$
+  d(a, b) = a \oplus b
+  $$
+
+  Every node keeps its known peers in **k-buckets**: bucket $i$ holds peers at distance
+  $[2^i,\, 2^{i+1})$ from itself. A lookup for target $t$ simply asks whichever known peers are
+  currently closest to $t$, who in turn know peers even closer — narrowing in each round.
+
+  <Variables>
+    <Variable>**$a \oplus b$** — bitwise XOR: a 1 in a bit position exactly where $a$ and $b$ differ there.</Variable>
+    <Variable>**bucket $i$** — holds peers at distance $2^i$ to $2^{i+1}-1$ from self; low $i$ means "very close."</Variable>
+    <Variable>**closest-$k$** — the $k$ known ids with the smallest $d(\cdot, t)$ to a target $t$; the contact list a lookup uses.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="XOR ignores magnitude entirely">
+      $d(a,b)$ depends only on which bits differ, never on which number is "bigger" — ids $0$ and
+      $15$ can be just as close as ids $6$ and $7$, if the right bits happen to match.
+    </Step>
+    <Step label="Distance is symmetric and zero only for identical ids">
+      $a \oplus b = b \oplus a$, and $a \oplus b = 0$ exactly when $a = b$ — so XOR behaves like a
+      genuine distance, just not a familiar numeric one.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the target id across the whole range and switch $k$ between 1, 2, and 3. The bars resort
+  completely with every move — there's no "nearby" region of the number line the way there was on
+  Chord's ring; closeness is purely bitwise.
+</Play>
+
+<WorkedExample>
+  Self is node $6$ (binary $0110$); other known nodes are $\{7, 4, 3, 0, 9, 13\}$:
+
+  <Steps>
+    <Step label="Every node's k-bucket, by hand">
+      $d(6,7){=}1$ (bucket 0), $d(6,4){=}2$ (bucket 1), $d(6,3){=}5$ and $d(6,0){=}6$ (both bucket
+      2, since $4 \le 5,6 < 8$), $d(6,9){=}15$ and $d(6,13){=}11$ (both bucket 3, since
+      $8 \le 11,15 < 16$).
+    </Step>
+    <Step label="Closest 3 to target 10">
+      $d(9,10){=}3$, $d(13,10){=}7$, $d(3,10){=}9$, $d(0,10){=}10$, $d(7,10){=}13$, $d(4,10){=}14$.
+      Sorted ascending, the 3 nearest are $\{9, 13, 3\}$ — none of them is even in the same bucket
+      as another.
+    </Step>
+    <Step label="Closest 2 to target 1">
+      $d(0,1){=}1$, $d(3,1){=}2$, $d(4,1){=}5$, $d(7,1){=}6$, $d(9,1){=}8$, $d(13,1){=}12$. The 2
+      nearest are $\{0, 3\}$ — the same pair that shares bucket 2 relative to self, because both
+      happen to share their two lowest bits with target $1$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<KademliaCheckpoint />
+
+<Summary>
+  $$
+  d(a,b) = a \oplus b, \qquad \text{closest-}k(t) = \text{the } k \text{ ids minimizing } d(\cdot, t)
+  $$
+
+  Kademlia replaces Chord's ring-and-successor routing with a metric that needs no ordering at
+  all: XOR distance, plus k-buckets that keep detailed knowledge of nearby ids and coarse
+  knowledge of far ones. It's the same "narrow in toward the target, one hop at a time" idea as
+  Chord's finger tables, just built on a different notion of "close" — and it's the routing scheme
+  underneath BitTorrent's mainline DHT and IPFS's peer discovery today.
+</Summary>

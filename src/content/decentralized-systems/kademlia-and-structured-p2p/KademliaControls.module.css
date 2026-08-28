@@ -1,0 +1,55 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sliderValue {
+  min-width: 1.6em;
+  text-align: center;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.button {
+  font: inherit;
+  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 14px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.button:hover {
+  border-color: var(--accent);
+}
+
+.buttonPrimary {
+  composes: button;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper-raised);
+}
+.buttonPrimary:hover {
+  border-color: var(--accent);
+  filter: brightness(1.05);
+}
