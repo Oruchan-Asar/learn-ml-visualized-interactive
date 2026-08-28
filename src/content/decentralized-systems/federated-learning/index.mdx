@@ -1,0 +1,99 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, FederatedLearningCheckpoint } from "./Demos";
+
+<Hook>
+  A keyboard app wants to learn from millions of phones' typing habits to get better at suggesting the
+  next word. Uploading everyone's actual keystrokes to one server would train a great model — and would
+  also be a privacy catastrophe. Can a shared model still learn from data that never leaves the device it
+  lives on?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Each device computes a gradient using only its own local data — Phone A never sees Phone B's numbers,
+  and neither ever sees a raw data point from the other. Move θ and watch every device's bar move
+  independently, purely from its own local view, while a "Global (averaged)" bar tracks what happens when
+  those local gradients — not the underlying data — get combined.
+</Intuition>
+
+<Formalize>
+  Fitting a shared parameter θ normally means minimizing squared error over every data point at once. In
+  federated averaging (FedSGD), each device $k$ instead computes its own local gradient using only its own
+  data:
+
+  $$
+  g_k(\theta) = \frac{2}{n_k}\sum_{i=1}^{n_k}(\theta - x_i^{(k)})
+  $$
+
+  and only $g_k(\theta)$ — one number per device, per round — ever leaves the device. The server combines
+  them into one global update, weighted by how many points each device holds:
+
+  $$
+  g(\theta) = \frac{\sum_k n_k \, g_k(\theta)}{\sum_k n_k}, \qquad \theta' = \theta - \eta\, g(\theta)
+  $$
+
+  <Variables>
+    <Variable>**$g_k(\theta)$** — device $k$'s local gradient, computed entirely from its own $n_k$ points.</Variable>
+    <Variable>**$n_k$** — how many data points device $k$ holds locally; used only as an averaging weight.</Variable>
+    <Variable>**$g(\theta)$** — the aggregated global gradient, built only from local gradients, never raw data.</Variable>
+    <Variable>**$\eta$** — the learning rate applied to the global update.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Weighting by n_k isn't incidental — it's what makes this exact">
+      A device with more points contributes proportionally more to the global gradient, exactly the
+      influence its points would have if they'd been pooled into one dataset and fit centrally.
+    </Step>
+    <Step label="This weighted average IS the centralized gradient">
+      Expand the weighted sum and it telescopes into precisely the gradient a single model would compute
+      over all the devices' data pooled together — federated averaging isn't an approximation of the
+      centralized answer here, it's mathematically identical to it, without ever pooling the raw points.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Each click runs one federated round: every device computes its own gradient at the current θ, the
+  server averages them (weighted by sample count), and θ takes one step. Watch θ walk toward the pooled
+  mean of all 8 points across all 4 devices — 5.875 — even though no device's raw points were ever pooled
+  anywhere.
+</Play>
+
+<WorkedExample>
+  Four devices hold toy datasets: Phone A = [2, 3], Phone B = [8, 9, 10], Phone C = [4], Phone D = [6, 5].
+  Start at θ = 0.
+
+  <Steps>
+    <Step label="Each device computes its own local gradient">
+      Phone A: $g_A = \frac{2}{2}((0{-}2)+(0{-}3)) = -5$. Phone B: $g_B = \frac{2}{3}(-27) = -18$.
+      Phone C: $g_C = 2(0{-}4) = -8$. Phone D: $g_D = \frac{2}{2}(-11) = -11$.
+    </Step>
+    <Step label="The server averages them, weighted by sample count">
+      Weighted sum $= (-5)(2) + (-18)(3) + (-8)(1) + (-11)(2) = -94$, over a total of $2{+}3{+}1{+}2=8$
+      points: $g(\theta) = -94/8 = -11.75$.
+    </Step>
+    <Step label="Compare to pooling all 8 raw points directly">
+      Pooling [2,3,8,9,10,4,6,5] and computing one centralized gradient at θ=0 gives
+      $\frac{2}{8}(0{-}47) = -11.75$ — the identical number, with no raw point ever leaving its device.
+    </Step>
+    <Step label="One step, with learning rate 0.1">
+      $\theta' = 0 - 0.1 \times (-11.75) = 1.175$. Repeating this for enough rounds walks θ all the way to
+      5.875 — the pooled mean of all 8 points.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<FederatedLearningCheckpoint />
+
+<Summary>
+  $$
+  g(\theta) = \frac{\sum_k n_k\, g_k(\theta)}{\sum_k n_k}, \qquad \theta' = \theta - \eta\, g(\theta)
+  $$
+
+  Federated averaging trains one shared model by having every device compute a gradient from its own data
+  and shipping only that gradient — never the data itself. Weighted properly by sample count, the result
+  is mathematically identical to training on all the data pooled in one place, just without ever pooling it.
+</Summary>
