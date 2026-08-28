@@ -1,0 +1,122 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneDesignCheckpoint } from "./Demos";
+
+<Hook>
+  A ride-sharing company needs a service that ingests a GPS ping from every driver every few seconds —
+  thousands of writes a second — and answers "which drivers are near me?" fast enough to render a map.
+  A location that's a couple of seconds stale is completely fine. Every server is operated by the same
+  company, so no participant is lying about its own state. And a driver's ping must never be flatly
+  rejected just because their region's datacenter got cut off from the rest of the network. Given everything
+  this course has covered — consistency models, replication, consensus, gossip, even blockchain-style
+  trustlessness — which pieces actually belong in *this* system, and which are expensive overkill?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Replication and consensus are held fixed here; only the consistency model swings. Watch the
+  consistency bar flip from strongly negative (linearizability) to strongly positive (eventual) — because
+  this scenario's own constraints, not taste, decide which one fits. Linearizability requires refusing
+  writes on the minority side of a partition (the CAP theorem's tradeoff, Part I), and this scenario
+  explicitly rules that refusal out.
+</Intuition>
+
+<Formalize>
+  Designing a system from scratch means picking one option on each of (at least) three independent axes
+  covered across this course — a **consistency model** (Part I), a **replication strategy** (Part II /
+  Part IV), and a **consensus protocol** (Part II / Part V). Each axis is scored independently against
+  this scenario's four stated constraints, and the scores simply add:
+
+  $$
+  \text{score}(\text{design}) = \text{score}_{\text{consistency}} + \text{score}_{\text{replication}} + \text{score}_{\text{consensus}}
+  $$
+
+  <Variables>
+    <Variable>**consistency** — linearizability, causal, or eventual (Part I: consistency models & the CAP theorem).</Variable>
+    <Variable>**replication** — primary-backup (Part II), quorum (Part II), or gossip (Part IV).</Variable>
+    <Variable>**consensus** — Raft (Part II), PBFT (Part II/V), or none at all.</Variable>
+    <Variable>**score** — a hand-addable point total; 70 or more counts as a coherent fit for this scenario.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Consistency: staleness is cheap, so eventual wins">
+      "Show nearby drivers a few seconds stale" is explicitly tolerable, so eventual consistency scores
+      highest. Linearizability scores negative here specifically because of the CAP theorem: it forces
+      rejecting writes from the minority side of a partition, and this scenario forbids exactly that.
+    </Step>
+    <Step label="Replication: gossip scales writes and survives partitions">
+      Gossip protocols (Part IV) replicate by having each node forward updates to a few random peers each
+      round — no single node is a write bottleneck, and every node keeps accepting local writes straight
+      through a partition. A primary-backup scheme (Part II) funnels every write through one primary: a
+      bottleneck under this volume, and a hazard the moment that primary lands on the wrong side of a split.
+    </Step>
+    <Step label="Consensus: raw pings need no agreed single value">
+      Consensus protocols like Raft or PBFT exist to agree on one authoritative value or ordering — useful
+      for a replicated log or a leader election, but overkill for a GPS ping nobody needs a global order
+      over. PBFT's Byzantine tolerance (3f+1 replicas, Part II/V) is built for participants who might lie;
+      here, one company operates every server, so there's no Byzantine threat to defend against.
+    </Step>
+    <Step label="The axes are independent, so the score is just a sum">
+      Because each axis was scored only against the scenario's own constraints, with no interaction terms
+      between axes, the total is just three table lookups added together — every score in this capstone
+      can be checked by hand from the three per-axis numbers alone.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Now vary all three axes freely. Notice they don't trade off against each other here — each axis's
+  contribution depends only on that axis's own fit to the scenario, so hunting for a high score is just
+  independently picking the best-scoring option on each of the three bars.
+</Play>
+
+<WorkedExample>
+  Three candidate designs for the same driver-location scenario.
+
+  <Steps>
+    <Step label="The maximal design: eventual + gossip + none">
+      Consistency: eventual (+40) — staleness is fine. Replication: gossip (+40) — scales with write
+      volume, survives partitions. Consensus: none (+20) — no single value needs agreeing on. Total:
+      $40+40+20=100$. A clean, coherent fit for every stated constraint.
+    </Step>
+    <Step label="A reasonable-sounding but insufficient design: causal + quorum + raft">
+      This looks careful, not reckless — causal consistency (+20), quorum replication (+15), and Raft for
+      leader-backed writes (+0). Total: $20+15+0=35$, well under the 70-point threshold. Nothing here is
+      wrong exactly, but each axis reaches for more machinery than this scenario's constraints call for,
+      leaving points on the table across all three.
+    </Step>
+    <Step label="An over-engineered, partition-intolerant design: linearizability + primary-backup + raft">
+      Linearizability (−30) — actively forbidden by the "never reject a ping during a partition"
+      constraint. Primary-backup (−20) — a bottleneck under this write volume, and a hazard when the
+      primary is on the wrong side of a split. Raft (0) — still unnecessary overhead. Total:
+      $-30-20+0=-50$, deeply negative — every axis works against the scenario at once.
+    </Step>
+    <Step label="Why the gap is so large">
+      The maximal and worst designs differ by $100-(-50)=150$ points across only three binary-ish choices
+      — because two of the three axes here aren't matters of degree, they're matters of whether a design
+      violates a stated constraint outright (CAP-forced write rejection, a single-primary bottleneck) or
+      respects it.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapstoneDesignCheckpoint />
+
+<Summary>
+  $$
+  \text{score}(\text{design}) = \text{score}_{\text{consistency}} + \text{score}_{\text{replication}} + \text{score}_{\text{consensus}} \ \ge\ 70
+  $$
+
+  Designing a decentralized system from scratch is choosing a point in a small space this whole course
+  has been mapping out, one axis at a time: **Part I**'s consistency models and the CAP theorem tell you
+  what a partition forces you to give up; **Part II**'s replication and consensus protocols (primary-backup,
+  quorum, Paxos, Raft, PBFT) are the mechanisms available to enforce a chosen consistency level; **Part
+  III**'s coordination patterns matter the moment a "system" becomes multiple services with a transaction
+  spanning them; **Part IV**'s gossip, consistent hashing, and CRDTs are what "decentralized" looks like at
+  P2P scale; and **Part V**'s Byzantine-tolerant consensus is the extra machinery you pay for only when
+  participants might actively lie. None of these tools is unconditionally "best" — each earns its place
+  only against a specific scenario's actual constraints, and the right design is the one where every axis
+  was chosen for a reason you can point to, not out of habit.
+</Summary>
