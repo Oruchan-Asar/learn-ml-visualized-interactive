@@ -1,0 +1,97 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ChandyLamportSnapshotsCheckpoint } from "./Demos";
+
+<Hook>
+  Three nodes are running, money is moving between them mid-transfer, and you want a photograph of
+  "the state of the whole system" — every node's balance, at once. You can't pause the network to
+  take it. And even if you could ask every node "what's your balance right now?" one after another,
+  a message that's in flight between two of them would either get counted twice or not at all.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through the trace. N0 starts the snapshot by recording its own balance and sending a MARKER
+  down each outgoing channel. Watch what a marker means to whoever receives it: the *first* marker
+  a node sees is the signal "record your own state right now" — every later marker just tells that
+  node "this particular channel is done, stop logging it."
+</Intuition>
+
+<Formalize>
+  $$
+  \text{channel state} = \{\, m : m \text{ received after the recorder's own state, before the marker on that channel} \,\}
+  $$
+
+  <Variables>
+    <Variable>**Initiator** — the node that starts the snapshot: records its own state first, with no incoming marker to trigger it.</Variable>
+    <Variable>**Marker** — a control message with no payload, sent down every outgoing channel the instant a node records its state.</Variable>
+    <Variable>**First marker rule** — the first marker a node receives (on any channel) makes it record its own state now, and that particular channel is recorded as empty.</Variable>
+    <Variable>**Later marker rule** — a marker on a channel a node is already recording (i.e. not its first) closes that channel: whatever was logged since the node's own recording is that channel's final state.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Why the first channel is always empty">
+      Channels are FIFO. The marker is the very first thing sent on that channel after the sender
+      recorded its own state — so nothing that channel carries can arrive before the marker. There's
+      nothing to log.
+    </Step>
+    <Step label="Why every OTHER channel needs active logging">
+      A node's other incoming channels might carry ordinary messages sent before their sender even
+      knew a snapshot was happening. Those messages can arrive after this node has already recorded
+      its own state — they're "in flight" relative to the cut, and get logged until that channel's
+      own marker arrives.
+    </Step>
+    <Step label="The snapshot is done when every channel is closed">
+      Once a node has recorded its own state and seen a marker on every incoming channel, it's
+      finished. The whole snapshot is complete once every node reaches that point.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Step to the end of the trace and toggle "Count channel state" off. Watch the total drop from 35
+  to 30 — the $5 that N2 sent to N0 didn't vanish, it's just no longer being counted anywhere. Turn
+  channel counting back on and the $5 reappears, safely logged against channel N2 → N0, and the
+  total matches the true starting total again.
+</Play>
+
+<WorkedExample>
+  N0 = 10, N1 = 10, N2 = 15 (total 35). Before the snapshot starts, N2 sends $5 to N0.
+
+  <Steps>
+    <Step label="N0 initiates">
+      N0 records its own balance (10) and sends a MARKER to N1 and to N2. It starts logging both
+      of its incoming channels, N1→N0 and N2→N0.
+    </Step>
+    <Step label="The in-flight $5 gets logged, not lost">
+      N0 receives the $5 from N2 before N2's marker arrives on that same channel — channel N2→N0
+      is still open, so this message is logged into its channel state.
+    </Step>
+    <Step label="N1 and N2 record on their first marker">
+      Each records its own balance (10 and 10 — N2's balance already reflects having sent the $5)
+      and starts logging its one remaining incoming channel.
+    </Step>
+    <Step label="Every channel closes">
+      As each node's remaining marker arrives, that channel closes. Five of the six channels close
+      empty. Channel N2→N0 closes holding the $5. Recorded states sum to 30; channel state adds the
+      missing 5, for a snapshot total of 35 — exactly the true starting total.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ChandyLamportSnapshotsCheckpoint />
+
+<Summary>
+  $$
+  \sum_{\text{nodes}} \text{recorded state} + \sum_{\text{channels}} \text{recorded messages} = \text{true total}
+  $$
+
+  A consistent global snapshot doesn't require stopping the system — it requires marker messages
+  that tell every node exactly when to freeze its own state and exactly which incoming messages
+  belong to the "before" picture versus the "after." Any message the cut splits in half — sent
+  before, received after — gets counted once, in the channel it was crossing, never in a node's
+  frozen state and never dropped. The next chapter hands you a fresh 3-node trace and asks you to
+  reconstruct that same consistent cut yourself, channel by channel.
+</Summary>
