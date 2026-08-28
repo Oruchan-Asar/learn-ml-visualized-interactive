@@ -1,0 +1,89 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ThreePCCheckpoint } from "./Demos";
+
+<Hook>
+  2PC's fatal flaw: a participant that voted yes and then hears nothing has no safe move. It can't
+  commit (someone else might have voted no) and can't abort (everyone else might commit). It's
+  simply stuck. What single piece of extra information would let it decide for itself?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through this trace and notice the middle phase: PRE-COMMIT. It's sent only after *every*
+  participant has voted yes — so by the time a participant receives it, that fact alone tells it
+  something the coordinator's silence never could.
+</Intuition>
+
+<Formalize>
+  A stuck participant's safe default depends entirely on what it has already heard:
+
+  $$
+  \text{default} = \begin{cases} \text{commit} & \text{if PRE-COMMIT was received} \\ \text{abort} & \text{otherwise} \end{cases}
+  $$
+
+  <Variables>
+    <Variable>**Uncertain** — voted, but no PRE-COMMIT has arrived yet.</Variable>
+    <Variable>**Prepared** — PRE-COMMIT has arrived and been acked.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Why 'uncertain' can safely default to abort">
+      PRE-COMMIT is the coordinator's signal that *every* vote came back yes. If a participant is
+      still uncertain, that broadcast hasn't gone out yet — which means no participant anywhere
+      could have committed. Aborting is always safe.
+    </Step>
+    <Step label="Why 'prepared' can safely default to commit">
+      PRE-COMMIT only ever goes out after a unanimous yes. If one participant received it, every
+      participant voted yes — so every other participant is at least as far along as "prepared,"
+      never stuck back at "voted no." Committing is always safe.
+    </Step>
+    <Step label="The trade">
+      That extra fact costs an extra round trip: the coordinator must now wait for PRE-COMMIT-ACKs
+      before it can even send the final commit.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Switch between the two branches. On the abort path, 3PC costs exactly what 2PC costs — there was
+  never anything to pre-commit. Only the commit path pays the extra round trip, and in exchange, no
+  participant on that path can ever get permanently stuck.
+</Play>
+
+<WorkedExample>
+  All three participants vote yes.
+
+  <Steps>
+    <Step label="Phase 1 — vote">
+      Coordinator asks P1, P2, P3; all three vote YES. Decision so far: pending, but headed to
+      commit.
+    </Step>
+    <Step label="Phase 2 — pre-commit">
+      Coordinator sends PRE-COMMIT to all three. Each acks. Every participant is now "prepared" —
+      if the coordinator vanished at this exact moment, all three would independently default to
+      commit and reach the same answer.
+    </Step>
+    <Step label="Phase 3 — commit">
+      Coordinator sends GLOBAL-COMMIT; all three ack. Total: 3 (vote request) + 3 (vote) + 3
+      (pre-commit) + 3 (pre-commit-ack) + 3 (commit) + 3 (ack) = 18 messages, versus 2PC's 12 for
+      the same outcome.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ThreePCCheckpoint />
+
+<Summary>
+  $$
+  \text{default} = \begin{cases} \text{commit} & \text{if PRE-COMMIT received} \\ \text{abort} & \text{otherwise} \end{cases}
+  $$
+
+  3PC removes 2PC's single blocking point by inserting one more phase: PRE-COMMIT tells a
+  participant that unanimous agreement already happened, which is exactly the fact it needs to
+  safely default on its own if the coordinator disappears. It costs one extra round trip on the
+  commit path — a fair trade for never blocking indefinitely (so long as the network itself
+  eventually delivers messages; a true network partition is a harder case 3PC does not solve).
+</Summary>
