@@ -1,4 +1,5 @@
 import { markActiveToday } from "./streak";
+import { getCourseForChapter } from "@/lib/courses";
 
 export interface CheckpointResult {
   passed: boolean;
@@ -34,7 +35,10 @@ export function recordCheckpointAttempt(conceptId: string, passed: boolean): Che
   if (typeof window !== "undefined") {
     window.localStorage.setItem(key(conceptId), JSON.stringify(result));
   }
-  if (result.passed) markActiveToday();
+  if (result.passed) {
+    const course = getCourseForChapter(conceptId);
+    if (course) markActiveToday(course.slug);
+  }
   listeners.forEach((listener) => listener());
   return result;
 }

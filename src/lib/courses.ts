@@ -41,3 +41,8 @@ export function getCourse(slug: string): CourseInfo {
   if (!course) throw new Error(`Unknown course slug: ${slug}`);
   return course;
 }
+
+/** Which course a chapter slug belongs to — used to scope streak/mastery updates to the right course. */
+export function getCourseForChapter(chapterSlug: string): CourseInfo | null {
+  return COURSES.find((c) => c.curriculum.some((ch) => ch.slug === chapterSlug)) ?? null;
+}

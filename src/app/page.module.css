@@ -81,6 +81,24 @@
   color: var(--ink-faint);
 }
 
+.courseStreak {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.courseFlame {
+  font-size: 13px;
+  filter: grayscale(1);
+  opacity: 0.5;
+}
+
+.courseFlameActive {
+  font-size: 13px;
+}
+
 .courseProgress {
   flex: 1;
   max-width: 200px;

@@ -4,7 +4,7 @@ export interface StreakState {
   lastActiveDay: string;
 }
 
-const KEY = "gradient:streak";
+const key = (courseSlug: string) => `gradient:streak:${courseSlug}`;
 const EMPTY: StreakState = { currentStreak: 0, longestStreak: 0, lastActiveDay: "" };
 
 type Listener = () => void;
@@ -46,20 +46,21 @@ export function computeNextStreak(prev: StreakState, today: string): StreakState
   };
 }
 
-export function getStreak(): StreakState {
+/** Each course tracks its own streak — passing a checkpoint in one course never extends another's. */
+export function getStreak(courseSlug: string): StreakState {
   if (typeof window === "undefined") return EMPTY;
-  const raw = window.localStorage.getItem(KEY);
+  const raw = window.localStorage.getItem(key(courseSlug));
   return raw ? (JSON.parse(raw) as StreakState) : EMPTY;
 }
 
-/** Marks today as an active learning day. Call whenever a checkpoint passes. */
-export function markActiveToday(): StreakState {
-  const prev = getStreak();
+/** Marks today as an active learning day for the given course. Call whenever one of its checkpoints passes. */
+export function markActiveToday(courseSlug: string): StreakState {
+  const prev = getStreak(courseSlug);
   const next = computeNextStreak(prev, todayKey());
   if (next === prev) return prev;
 
   if (typeof window !== "undefined") {
-    window.localStorage.setItem(KEY, JSON.stringify(next));
+    window.localStorage.setItem(key(courseSlug), JSON.stringify(next));
   }
   listeners.forEach((listener) => listener());
   return next;

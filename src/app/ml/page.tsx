@@ -25,7 +25,7 @@ export default function MlCoursePage() {
         </p>
       </header>
 
-      <StreakBar slugs={COURSE.curriculum.map((c) => c.slug)} />
+      <StreakBar courseSlug={COURSE.slug} slugs={COURSE.curriculum.map((c) => c.slug)} />
 
       <HomeSearch curriculum={COURSE.curriculum} chapterBasePath={COURSE.chapterBasePath} />
     </div>
