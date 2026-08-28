@@ -1,0 +1,91 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MiningCheckpoint } from "./Demos";
+
+<Hook>
+  Anyone can claim to be "the next block." With no central authority to pick a winner, how does a network
+  of strangers agree on whose claim actually counts — in a way that's cheap to check but expensive to fake?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Slide the nonce and watch the hash bounce around with no pattern at all — there's no way to guess which
+  nonce will land under the target line except by trying it. That randomness is the entire point: finding
+  a winning nonce takes real, unavoidable work, but once found, anyone can verify it in one hash.
+</Intuition>
+
+<Formalize>
+  <Steps>
+    <Step label="A block hashes its own contents plus a nonce">
+      $\text{blockHash}(\text{prevHash}, \text{data}, \text{nonce}) = \text{toyHash}(\text{prevHash} \mathbin\Vert \text{data} \mathbin\Vert \text{nonce})$
+      — the same hash from the last chapter, now folding in a free variable: the **nonce**.
+    </Step>
+    <Step label="Proof-of-work is a threshold on that hash">
+      A nonce "wins" if $\text{blockHash}(\ldots) < T$ for a **difficulty target** $T$. Lower $T$ means
+      fewer winning nonces out of every 1000 possible hash values — harder to find, but the check itself
+      (one hash, one comparison) stays instant either way.
+    </Step>
+    <Step label="Mining is brute-force search, nothing cleverer">
+      There's no shortcut: try $\text{nonce}=0,1,2,\ldots$ and hash each one until $\text{blockHash} < T$.
+      With hashes landing uniformly across $[0,1000)$, a fraction $T/1000$ of nonces succeed, so the
+      **expected number of attempts** before the first success is $1000/T$.
+    </Step>
+    <Step label="This is Nakamoto consensus's actual mechanism">
+      Whoever finds a winning nonce first gets to propose the next block. Because that costs real,
+      unfakeable computational work, the network agrees on *whoever paid the most to get there* — no vote,
+      no central authority, just a race everyone can independently verify the winner of.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**prevHash** — the previous block's hash, chaining this block to everything before it.</Variable>
+    <Variable>**nonce** — the only value miners are free to change; searched from 0 up to 999 here.</Variable>
+    <Variable>**$T$** — the difficulty target; a hash below it counts as a valid block.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Step through nonces one at a time on the genesis block. Every single attempt costs the same one hash —
+  there's no way to skip ahead, and no way to tell in advance how many attempts it'll take. That's the
+  "cost" in proof-of-*work*: real energy spent per attempt, with no guarantee of when it pays off.
+</Play>
+
+<WorkedExample>
+  Mining the genesis block: `prevHash = 0`, `data = "block-one"`, target $T=50$.
+
+  <Steps>
+    <Step label="Try the first few nonces">
+      $\text{blockHash}(0,\texttt{"block-one"},0)=934$, then $935, 936, \ldots$ for nonces $1$ through $9$
+      — every one of them lands in the 930s, nowhere near under $50$.
+    </Step>
+    <Step label="Nonce 10 finally succeeds">
+      $\text{blockHash}(0,\texttt{"block-one"},10)=33$. Since $33 < 50$, this block is now mined — it took
+      $11$ attempts (nonces $0$ through $10$).
+    </Step>
+    <Step label="Chain a second block onto it">
+      With `prevHash = 33` (the genesis block's hash) and `data = "checkpoint-block"`, the first winning
+      nonce is $90$, giving hash $7$ — a completely different search, because prevHash changed the entire
+      input.
+    </Step>
+    <Step label="Compare to the expected attempt count">
+      $1000/T = 1000/50 = 20$ expected attempts on average. The genesis block happened to need only $11$;
+      the second needed $91$ — mining is a race against probability, not a guarantee.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MiningCheckpoint />
+
+<Summary>
+  $$
+  \text{blockHash}(\text{prevHash}, \text{data}, \text{nonce}) < T
+  $$
+
+  Proof-of-work turns "who proposes the next block" into a race that costs real computation to win but
+  costs almost nothing to verify — the asymmetry that lets a network of mutually distrusting nodes agree
+  without a referee. The next chapters look at what happens when two miners find a valid block at nearly
+  the same time (forks), and at an entirely different way to make block proposal expensive: staking money
+  instead of burning electricity.
+</Summary>
