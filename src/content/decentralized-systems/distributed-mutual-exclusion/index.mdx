@@ -1,0 +1,88 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DistributedMutualExclusionCheckpoint } from "./Demos";
+
+<Hook>
+  Three nodes all want the same critical section right now. There's no shared lock, no central arbiter — just
+  messages. Who goes first, and how do the other two know to wait?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag each side's timestamp. Whichever request has the lower timestamp wins — and if they're ever tied, the
+  lower node id breaks the tie. That's the entire ordering rule, before any protocol is built on top of it.
+</Intuition>
+
+<Formalize>
+  Every request carries a Lamport timestamp. One request has **priority** over another by comparing them
+  lexicographically:
+
+  $$
+  (\text{ts}_a, \text{id}_a) < (\text{ts}_b, \text{id}_b)
+  $$
+
+  <Variables>
+    <Variable>**$\text{ts}$** — the requester's Lamport timestamp when it asked for the critical section.</Variable>
+    <Variable>**$\text{id}$** — the requesting node's id, used only to break exact timestamp ties.</Variable>
+  </Variables>
+
+  **Ricart-Agrawala** turns that ordering into a protocol: broadcast a request stamped with your timestamp, then
+  enter the critical section only once every other node has replied.
+
+  <Steps>
+    <Step label="When to reply immediately">
+      If you're not in the critical section, and either you're not requesting it yourself or the incoming
+      request has priority over your own, reply right away — you have no claim to go first.
+    </Step>
+    <Step label="When to defer">
+      If you're already in the critical section, or you're requesting it and your own request has priority,
+      hold the reply until you're done. The requester simply waits.
+    </Step>
+    <Step label="An alternative: pass a token">
+      A **token ring** sidesteps voting entirely — a single token circulates node to node in a fixed cycle, and
+      only whoever holds it may enter. Mutual exclusion falls out for free: there's only ever one token.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Three simultaneous requests — P (ts 5), Q (ts 3), R (ts 3, tied with Q). The reply matrix shows exactly who
+  defers to whom, and `determineEntryOrder` reports the single global order that falls out of it. Below, pass the
+  token around the ring by hand.
+</Play>
+
+<WorkedExample>
+  P requests at timestamp 5, Q at 3, R at 3 (tied with Q).
+
+  <Steps>
+    <Step label="Break the Q/R tie">
+      Q and R both requested at timestamp 3, so node id decides: "Q" sorts before "R", so Q has priority over R.
+    </Step>
+    <Step label="Full entry order">
+      Sorting all three by (timestamp, id): Q (3, Q), then R (3, R), then P (5, P) — matching
+      `determineEntryOrder`'s output exactly.
+    </Step>
+    <Step label="Why Q defers to everyone">
+      Q has priority over both P and R, so by the reply rule, Q *defers* replying to either of them until Q has
+      finished — Q is the one who should go first, so nobody should be told to proceed ahead of it.
+    </Step>
+    <Step label="Why P replies to everyone">
+      P has priority over no one (5 loses to both 3's), so P has nothing to gain by holding up its replies — it
+      answers Q and R immediately.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DistributedMutualExclusionCheckpoint />
+
+<Summary>
+  $$
+  (\text{ts}_a, \text{id}_a) < (\text{ts}_b, \text{id}_b)
+  $$
+
+  Without a shared lock, a node still needs a rule for "who goes first" that every other node will agree with —
+  Ricart-Agrawala gets there by comparing (timestamp, id) pairs and deferring replies accordingly; a token ring
+  gets there by making "who's allowed in" a physical fact about who's currently holding a single token.
+</Summary>
