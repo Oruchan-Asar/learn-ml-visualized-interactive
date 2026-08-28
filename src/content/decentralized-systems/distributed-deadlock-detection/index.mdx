@@ -1,0 +1,93 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DistributedDeadlockDetectionCheckpoint } from "./Demos";
+
+<Hook>
+  Three sites each manage their own resources. Site A sees P1 waiting on P2. Site B sees P2 waiting
+  on P3. Site C sees P3 waiting on P1 — a cycle, and a deadlock. But no single site sees more than
+  one of those three edges. Every site, looking only at its own logs, would swear nothing is wrong.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through what each site sees on its own, then what happens once you merge all three. Site A
+  alone: no cycle. Adding Site B: still no cycle, just a chain. Only once Site C's edge closes the
+  loop does a cycle appear — and it was there the whole time, just split across machines that never
+  compared notes.
+</Intuition>
+
+<Formalize>
+  $$
+  \text{deadlock exists} \iff \exists\, (p_1, p_2, \ldots, p_k) : p_1 \to p_2 \to \cdots \to p_k \to p_1 \text{ in the merged wait-for graph}
+  $$
+
+  <Variables>
+    <Variable>**Wait-for edge** $p \to q$ — process $p$ is blocked, waiting for a resource held by $q$.</Variable>
+    <Variable>**Local view** — one site's own slice of the global wait-for graph: only the edges touching resources it manages.</Variable>
+    <Variable>**Merged graph** — the union of every site's local view, with duplicate edges collapsed.</Variable>
+    <Variable>**Deadlock** — a directed cycle in the merged graph. No cycle, no deadlock — a long wait-for chain (like P4 → P5) is just an ordinary, resolvable wait.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="A cycle can be invisible locally and still be real">
+      Nothing requires a cycle to live inside one site's edges. It only has to exist once every
+      site's edges are combined — which is exactly why a distributed detector can't just ask "does
+      any one node have a cycle?" and stop there.
+    </Step>
+    <Step label="Merging is a union, not a vote">
+      Combining local views isn't about resolving disagreement — every site's reported edges are
+      simply true, from its own vantage point. The merge is a plain union; duplicates (the same
+      edge reported by two sites) are removed, not double-counted.
+    </Step>
+    <Step label="Not every merged edge belongs to a cycle">
+      P4 → P5 stays a straight-line wait no matter how many sites you merge in — P5 never waits on
+      anyone, so that edge can never close into a loop. Detecting deadlock means finding a cycle,
+      not just finding edges.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Toggle sites on and off freely. Try any two at once — Site A + Site B, or Site A + Site C. Watch
+  the readout: no pair ever produces a cycle. Only when all three are switched on does the loop
+  close and the cycle light up.
+</Play>
+
+<WorkedExample>
+  Three sites, five processes, edges reported as: Site A → (P1, P2), Site B → (P2, P3),
+  Site C → (P3, P1) and (P4, P5).
+
+  <Steps>
+    <Step label="Check each site alone">
+      Site A's one edge, P1 → P2, can't be a cycle by itself. Same for Site B's P2 → P3, and for
+      Site C's two edges: P3 → P1 alone isn't a cycle, and P4 → P5 never will be — P5 has no
+      outgoing wait-for edge in this scenario.
+    </Step>
+    <Step label="Merge all local views">
+      Union of all edges: P1 → P2, P2 → P3, P3 → P1, P4 → P5. Four edges, no duplicates to collapse
+      here (no two sites reported the same pair).
+    </Step>
+    <Step label="Search the merged graph for a cycle">
+      Starting a depth-first search from P1: P1 → P2 → P3 → P1 closes a loop back to a node already
+      on the current search path. That's the cycle: P1, P2, P3. Separately, P4 → P5 is a dead end —
+      P5 has no outgoing edge, so no search starting there can ever cycle back.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DistributedDeadlockDetectionCheckpoint />
+
+<Summary>
+  $$
+  \text{deadlock exists} \iff \exists\, (p_1, \ldots, p_k) : p_1 \to p_2 \to \cdots \to p_k \to p_1
+  $$
+
+  A distributed deadlock detector can't rely on any single node's view — the cycle can be split
+  across machines so that every local view looks perfectly acyclic. Detection means collecting
+  every site's wait-for edges into one merged graph and searching that merged graph for a cycle.
+  The next two chapters look at a related but different problem: not "is there a cycle right now,"
+  but "what did the whole distributed system's state look like at one consistent instant" — which
+  needs its own protocol, since there's no single site to just ask.
+</Summary>
