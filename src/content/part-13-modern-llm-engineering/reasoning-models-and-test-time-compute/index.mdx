@@ -1,0 +1,90 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ReasoningTestTimeComputeCheckpoint } from "./Demos";
+
+<Hook>
+  RLVR and GRPO both spend compute at TRAINING time — sampling groups, verifying them, updating
+  weights. But a model that has already finished training can still trade accuracy for compute at
+  the moment you actually ask it something: think longer before answering, at zero cost to the
+  weights themselves.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the chain-of-thought length and watch accuracy climb along the curve — steeply at first,
+  then flattening out. Every extra reasoning step still helps, but each one recovers a shrinking
+  slice of the remaining gap to a perfect score.
+</Intuition>
+
+<Formalize>
+  Accuracy approaches, but never reaches, a ceiling as the chain of thought gets longer — a
+  geometric decay toward $1$:
+
+  $$
+  \text{accuracy}(L) = 1 - (1 - a_0)\,d^{\,L}
+  $$
+
+  <Variables>
+    <Variable>**$L$** — chain-of-thought length, in reasoning steps, spent before committing to an answer.</Variable>
+    <Variable>**$a_0$** — the single-shot accuracy at $L=0$, with no reasoning steps at all.</Variable>
+    <Variable>**$d$** — the decay factor: the fraction of the remaining gap to perfect accuracy left AFTER one more step. $d < 1$ means each step still helps, but by a shrinking amount.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Diminishing, not disappearing, returns">
+      $d^L \to 0$ as $L$ grows, so accuracy keeps climbing forever — but $d^L$ shrinks
+      geometrically, so each additional step buys less than the one before it.
+    </Step>
+    <Step label="Compute cost is a different shape entirely">
+      Accuracy is concave in $L$ (bending downward), but the compute spent generating that chain of
+      thought is linear in $L$ — a straight line, no diminishing anything.
+    </Step>
+    <Step label="A concave gain against a linear cost has an optimal stopping point">
+      Net utility (accuracy gained minus compute spent) rises while the marginal accuracy gain
+      still exceeds the constant marginal cost, then falls once it doesn't — that crossing point is
+      the compute-optimal chain-of-thought length.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag again, but now watch three numbers at once: accuracy climbing, compute cost climbing right
+  alongside it in a straight line, and net utility rising, peaking, then falling. Past the peak,
+  every extra reasoning step is spending more compute than the accuracy it buys is worth.
+</Play>
+
+<WorkedExample>
+  Base accuracy $a_0 = 0.2$, decay $d = 0.8$, cost $0.02$ compute units per reasoning step:
+
+  <Steps>
+    <Step label="Accuracy at a few chain-of-thought lengths">
+      $L=0$: $1 - 0.8 \times 0.8^0 = 0.2$. $L=1$: $1 - 0.8 \times 0.8 = 0.36$. $L=4$: $1 - 0.8 \times
+      0.8^4 \approx 0.672$. Each step's gain is smaller than the last.
+    </Step>
+    <Step label="Compute cost grows linearly">
+      $L=5$ costs $0.02 \times 5 = 0.10$ units. $L=10$ costs exactly twice that, $0.20$ units — no
+      discount for going further.
+    </Step>
+    <Step label="Net utility peaks at L=10">
+      Utility $= \text{accuracy}(L) - 0.02L$ is higher at $L=10$ than at either $L=9$ or $L=11$ — the
+      compute-optimal chain-of-thought length for this cost weight, found by the same search a
+      real inference-time compute budget would run.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ReasoningTestTimeComputeCheckpoint />
+
+<Summary>
+  $$
+  \text{accuracy}(L) = 1 - (1 - a_0)\,d^{\,L}
+  $$
+
+  Test-time compute is a second knob, entirely separate from training: the same trained policy can
+  spend more or less inference-time compute per query and trade latency for accuracy on the fly,
+  with no gradient step involved. Diminishing returns mean there's always a compute-optimal chain
+  length past which more reasoning steps cost more than they're worth — exactly the tradeoff a
+  deployed reasoning model has to navigate for every single request.
+</Summary>
