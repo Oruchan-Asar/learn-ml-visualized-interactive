@@ -1,0 +1,85 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CausalityCheckpoint } from "./Demos";
+
+<Hook>
+  Two events on different processes, no message ever passed between them. Did one of them "happen before" the
+  other in any meaningful sense — or is asking the question itself the mistake?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click any two of the same nine events from last chapter. Some pairs are linked by an actual chain of messages —
+  one genuinely could have influenced the other. Others have no such chain at all: neither could possibly know
+  the other happened.
+</Intuition>
+
+<Formalize>
+  Two events are related by **happened-before** exactly when one vector clock dominates the other:
+
+  $$
+  a \to b \iff a \le b \text{ componentwise}, \quad a \neq b
+  $$
+
+  If neither $a \le b$ nor $b \le a$ holds, the events are **concurrent** — genuinely unordered, not just
+  unordered-so-far.
+
+  <Variables>
+    <Variable>**$a, b$** — two events' vector clocks.</Variable>
+    <Variable>**$a \to b$** — "$a$ happened-before $b$": a real chain of messages (or shared-process order) links them.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Why vector clocks get this exactly right">
+      A vector clock's $i$-th component counts how many of process $i$'s events the current event's process has
+      *learned about*, through some chain of messages. Domination in every component means "everything $a$ knew
+      about, $b$ also knew about, and then some" — the definition of a causal chain.
+    </Step>
+    <Step label="Why a Lamport number can't do the same job">
+      A Lamport timestamp collapses that whole vector into one number. Two genuinely concurrent events can still
+      end up with different numbers, because the collapsing throws away exactly the structure that distinguished
+      "definitely before" from "no relation."
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Pick two events and watch both readouts at once: the causal relation (from vector clocks) and whether Lamport's
+  numbers would have implied an order that the causal relation doesn't actually support —
+  `lamportFalselyOrders`.
+</Play>
+
+<WorkedExample>
+  Compare e3 (P0's third event) against e6 (P2's first event), then contrast with a genuinely causal pair.
+
+  <Steps>
+    <Step label="e3 and e6's vectors">
+      e3 = [3, 0, 0], e6 = [0, 0, 1]. Neither dominates the other — the third component of e3 is 0 but e6's is 1;
+      the first component of e6 is 0 but e3's is 3. Concurrent.
+    </Step>
+    <Step label="Yet Lamport disagrees">
+      LAMPORT(e3) = 3, LAMPORT(e6) = 1 — different numbers, for a pair with no causal relationship at all. That's
+      the "false order": Lamport's scalar clock can't represent "unrelated," so it just picks *some* order.
+    </Step>
+    <Step label="Contrast: e2 and e7">
+      e2 = [2, 0, 0], e7 = [2, 2, 2]. Every component of e2 is $\le$ the matching component of e7, and they're not
+      equal — a real causal chain: e2 sends m1, P1 receives it and sends m2, P2 receives m2 at e7. Lamport's
+      numbers (2 and 5) happen to agree with this order too — but that agreement isn't guaranteed the way it is
+      for a concurrent pair.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CausalityCheckpoint />
+
+<Summary>
+  $$
+  a \to b \iff a \le b \text{ componentwise}, \quad a \neq b
+  $$
+
+  Concurrency isn't "we haven't figured out the order yet" — it's a real, checkable fact: no chain of messages
+  connects the two events in either direction. Vector clocks capture that fact exactly; a Lamport clock, having
+  thrown away the per-process structure, cannot.
+</Summary>
