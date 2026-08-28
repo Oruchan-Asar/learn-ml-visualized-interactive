@@ -57,19 +57,19 @@ import { IntuitionDemo, PlayDemo, AttackCostCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="A Sybil attack, priced">
-      1,000 fake identities in a naive P2P network: $\text{sybilCost}(1000) = 1000 \times 0 = \$0$.
+      1,000 fake identities in a naive P2P network: `sybilCost(1000) = 1000 × 0`, which is \$0.
     </Step>
     <Step label="A 51% proof-of-work attack">
-      $\text{attackCost}(0.51, \$1,000,000) = \$510,000$.
+      `attackCost(0.51, 1000000)` against the \$1,000,000 proof-of-work total is \$510,000.
     </Step>
     <Step label="A 51% proof-of-stake attack">
-      $\text{attackCost}(0.51, \$2,000,000) = \$1,020,000$ — twice as expensive here, simply
-      because this scenario's total staked value is twice the proof-of-work total.
+      `attackCost(0.51, 2000000)` against the \$2,000,000 staked total is \$1,020,000 — twice as
+      expensive here, simply because this scenario's total staked value is twice the proof-of-work total.
     </Step>
     <Step label="Against a $500,000 security budget">
-      $\$510,000 > \$500,000$: the proof-of-work attack is priced out. So is the (even pricier)
-      proof-of-stake one. The free Sybil attack, on the other hand, is never priced out by any budget —
-      which is exactly why identity alone was never the thing worth defending.
+      \$510,000 is more than \$500,000: the proof-of-work attack is priced out. So is the (even
+      pricier) proof-of-stake one. The free Sybil attack, on the other hand, is never priced out by
+      any budget — which is exactly why identity alone was never the thing worth defending.
     </Step>
   </Steps>
 </WorkedExample>
