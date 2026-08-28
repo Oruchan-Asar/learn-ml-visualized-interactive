@@ -1,0 +1,93 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, QuantizationCheckpoint } from "./Demos";
+
+<Hook>
+  A weight matrix stored as 32-bit floats moves through memory as 32-bit floats, every time it's used. Store
+  it in 4 bits instead and there's four times less to move — but 4 bits only has 16 distinct values, so most
+  weights can no longer be represented exactly. The question is how much that costs, and whether it's worth
+  paying.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Eight FP32 weights, one shared scale. Pick each one and watch it divide by the scale, round to the nearest
+  integer level, and multiply back — sometimes landing exactly where it started, sometimes a little off.
+</Intuition>
+
+<Formalize>
+  Post-training quantization (the family AWQ, GPTQ, and GGUF all belong to) picks one **scale** per group of
+  weights, then stores each weight as a small signed integer **level**:
+
+  $$
+  \text{level}(w) = \text{round}\!\left(\frac{w}{s}\right) \qquad \hat{w} = \text{level}(w) \cdot s
+  $$
+
+  <Variables>
+    <Variable>**$w$** — the original FP32 weight.</Variable>
+    <Variable>**$s$** — the shared scale for this group of weights.</Variable>
+    <Variable>**$\text{level}(w)$** — the weight's rounded 4-bit integer level, one shared FP32 scale away from being a real number again.</Variable>
+    <Variable>**$\hat{w}$** — the dequantized weight actually used at inference time.</Variable>
+  </Variables>
+
+  A weight only survives round-tripping exactly when it was already a multiple of $s$ — everything else
+  rounds to the nearest representable level and keeps the difference as error:
+
+  $$
+  \text{error}(w) = w - \hat{w}
+  $$
+
+  <Steps>
+    <Step label="The scale sets what's exact">
+      Levels only cover $s \cdot \{-8, \dots, 7\}$ for 4-bit — 16 evenly spaced values. Any weight in between
+      rounds to whichever is closer.
+    </Step>
+    <Step label="Compression comes from bit width, not from the scale">
+      Sixteen weights at 4 bits packed two-per-byte, plus one shared 32-bit scale for the whole group, is
+      close to a flat 8× smaller than the same sixteen weights at 32 bits each — the smaller the group, the
+      more that one shared scale's overhead matters.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The same eight weights, both ways: four bytes each as FP32, versus packed 4-bit levels plus one shared
+  scale. The compression is exact and predictable; the error is the price, and it's exactly as large as the
+  rounding above made it — no more, no less.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="The scale">
+      Largest-magnitude weight is $-2.8$; the top 4-bit level is 7. Scale $s = 2.8 / 7 = 0.4$.
+    </Step>
+    <Step label="Most weights round exactly">
+      $-1.6 / 0.4 = -4$ exactly — level $-4$, dequantized back to $-1.6$, zero error. Same story for
+      $-2.8 \to -7$ and $2.0 \to 5$.
+    </Step>
+    <Step label="Two weights don't">
+      $1.3 / 0.4 = 3.25$, rounds to level 3, dequantizes to $1.2$ — off by $0.1$. $-0.4/0.4=-1$ is actually
+      exact; it's $0.8$ and $1.3$ that land off-grid, each by exactly $0.1$, giving a mean squared error of
+      $0.0025$ across all eight.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<QuantizationCheckpoint />
+
+<Summary>
+  $$
+  \hat{w} = \text{round}(w/s)\cdot s
+  $$
+
+  AWQ, GPTQ, and GGUF all sit on top of this same round-trip — they differ in *which* weights they protect
+  from rounding error. AWQ picks the scale per group to protect the small fraction of "salient" weights
+  activations actually depend on most; GPTQ solves for the rounding order that minimizes the accumulated
+  error layer by layer; GGUF is a storage format for these same integer-plus-scale representations, tuned
+  for fast CPU and mixed-precision inference. All of them are managing the exact trade this chapter's
+  formula makes visible: memory saved is proportional to bits saved, and error is exactly what's left after
+  rounding to the nearest representable level. The next chapter puts a quantized model into an actual
+  serving loop, where the KV-cache — not the weights — becomes the memory bottleneck.
+</Summary>
