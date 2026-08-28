@@ -1,0 +1,93 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, ChordCheckpoint } from "./Demos";
+
+<Hook>
+  Consistent hashing tells you *which* node owns a key. But on a ring of a million nodes, how does
+  the node you happen to be standing on actually *find* that owner — without asking all million of
+  them, one by one?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click through the three lookups. Some resolve in 0 hops — node A already knows the answer from its
+  own successor pointer. Others take 1 or 2 jumps. Nobody ever walks the ring node by node; each hop
+  leaps as far around the ring as it can without overshooting.
+</Intuition>
+
+<Formalize>
+  Every node keeps a **finger table**: $m$ pointers, where finger $i$ points to the successor of a
+  position exponentially further around the ring than finger $i-1$.
+
+  $$
+  \text{finger}_i(n) = \text{successor}(n + 2^i), \qquad i = 0, 1, \dots, m-1
+  $$
+
+  A lookup for key $k$ starting at node $n$ jumps to the furthest finger that still lies strictly
+  between $n$ and $k$ — never past it — repeating until $k$ falls inside the current node's own
+  successor arc, at which point that successor is the owner.
+
+  <Variables>
+    <Variable>**$m$** — bits in the address space; $4$ here, so $16$ ring positions and $4$ fingers per node.</Variable>
+    <Variable>**$\text{finger}_i(n)$** — node $n$'s $i$-th finger: the successor of $n + 2^i$.</Variable>
+    <Variable>**$\text{successor}(x)$** — the same clockwise-successor rule as consistent hashing: the first node at or after position $x$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Fingers double in reach">
+      Finger $0$ reaches $1$ step ahead, finger $1$ reaches $2$ steps ahead, finger $2$ reaches $4$
+      steps ahead, and so on — each finger roughly doubles how far around the ring it can see.
+    </Step>
+    <Step label="At most m hops">
+      Because each hop at least halves the remaining clockwise distance to the target, no lookup on
+      an $m$-bit ring ever takes more than $m$ hops — $O(\log N)$ instead of walking every node.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Start from any of the 4 nodes and drag the target key all the way around the ring. Watch the path
+  column: it never lists more than a couple of intermediate nodes, no matter how far the key sits
+  from the start — each hop is a big leap, not a small step.
+</Play>
+
+<WorkedExample>
+  Ring size $16$ ($m=4$); nodes A@2, B@6, C@9, D@13 — the same ring the consistent-hashing chapter
+  used:
+
+  <Steps>
+    <Step label="Node A's finger table">
+      $\text{finger}_0(2)=\text{successor}(3)=6$, $\text{finger}_1(2)=\text{successor}(4)=6$,
+      $\text{finger}_2(2)=\text{successor}(6)=6$, $\text{finger}_3(2)=\text{successor}(10)=13$. So
+      A's fingers are $[6, 6, 6, 13]$.
+    </Step>
+    <Step label="Lookup key@5 from A — 0 hops">
+      Key position $5$ falls in $(2, 6]$ — exactly the arc A's own finger $0$ already covers. A
+      answers immediately: owner is B (pos 6), no other node contacted.
+    </Step>
+    <Step label="Lookup key@12 from A — 2 hops">
+      $12$ is past B's arc, so A jumps to its furthest finger that doesn't overshoot: $6$ (node B).
+      B's fingers are $[9, 9, 13, 2]$; $12$ is still past B's own successor (9), so B jumps to its
+      furthest qualifying finger, $9$ (node C). C's fingers are $[13, 13, 13, 2]$; now $12$ falls in
+      $(9, 13]$, C's own successor arc — so C answers directly: owner is D (pos 13). Path: A → B → C,
+      2 hops.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<ChordCheckpoint />
+
+<Summary>
+  $$
+  \text{finger}_i(n) = \text{successor}(n + 2^i), \qquad \text{hops} \le m = \log_2(\text{ring size})
+  $$
+
+  Chord layers a routing structure on top of the exact same ring consistent hashing already gave
+  every node: instead of blindly asking neighbor after neighbor, each hop uses a finger table to
+  leap as far as possible without passing the target, resolving any lookup in at most $\log_2 N$
+  hops. The next chapter looks at Kademlia, which routes with the same "jump toward the target"
+  spirit but replaces the ring and its clockwise successor with a different distance metric
+  entirely: XOR.
+</Summary>
