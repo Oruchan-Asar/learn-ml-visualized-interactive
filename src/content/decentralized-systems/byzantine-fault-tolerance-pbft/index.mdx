@@ -1,0 +1,91 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PbftCheckpoint } from "./Demos";
+
+<Hook>
+  Raft assumes a crashed node just goes quiet. What if a node doesn't crash — it keeps running, but sends
+  *different* answers to different peers, or votes for two conflicting values at once? A simple majority no
+  longer protects you.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click each backup to reveal its PREPARE vote. Three replicas honestly agree on the primary's proposal; one —
+  R3 — reports something else entirely. Notice the honest three still form a quorum on their own.
+</Intuition>
+
+<Formalize>
+  **PBFT** tolerates $f$ simultaneously Byzantine replicas — ones that can lie, equivocate, or stay silent —
+  out of a cluster of $N$, as long as:
+
+  $$
+  N \geq 3f + 1
+  $$
+
+  Every request then goes through three phases, each requiring a replica to collect a **quorum of $2f+1$
+  matching votes** before it moves on:
+
+  <Steps>
+    <Step label="Phase 1 — Pre-prepare">
+      The primary proposes a value to every backup: `PRE-PREPARE(value)`.
+    </Step>
+    <Step label="Phase 2 — Prepare">
+      Every replica that accepts the proposal broadcasts `PREPARE(value)` to every other replica. A replica is
+      **prepared** once $2f+1$ replicas (including itself) report the same value.
+    </Step>
+    <Step label="Phase 3 — Commit">
+      Once prepared, a replica broadcasts `COMMIT(value)`. It **commits** once $2f+1$ replicas report the same
+      value here too.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**$f$** — the number of Byzantine replicas the cluster must survive.</Variable>
+    <Variable>**$N = 3f+1$** — the minimum cluster size that guarantees safety against $f$ liars.</Variable>
+    <Variable>**quorum $= 2f+1$** — matching votes a replica needs each phase before advancing.</Variable>
+  </Variables>
+
+  The $3f+1$ bound isn't arbitrary: any two quorums of size $2f+1$ out of $N$ overlap in at least $2(2f+1) - N$
+  replicas. With $N = 3f+1$, that overlap is $f+1$ — one more than the number of liars — so no matter which $f$
+  replicas are Byzantine, at least one *honest* replica is forced to sit in every pair of quorums. Drop below
+  $3f+1$ and that guarantee disappears.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Step through the full trace for the fixed scenario: primary R0 proposes `op-42`, then watch R1–R3 broadcast
+  PREPARE, then COMMIT. R3 sends a mismatched PREPARE and then goes silent for COMMIT — read the descriptions to
+  see exactly where its behavior diverges from the honest majority.
+</Play>
+
+<WorkedExample>
+  4 replicas — R0 (primary), R1, R2, R3 — tolerating $f=1$. R3 is Byzantine.
+
+  <Steps>
+    <Step label="Pre-prepare">
+      R0 sends `PRE-PREPARE(op-42)` to R1, R2, R3.
+    </Step>
+    <Step label="Prepare votes come in">
+      R0, R1, and R2 all broadcast `PREPARE(op-42)` — three matching votes. R3 broadcasts `PREPARE(op-fake)`
+      instead, equivocating.
+    </Step>
+    <Step label="Check the PREPARE quorum">
+      `countMatchingVotes` counts 3 replicas reporting `op-42`. `quorumSize(1) = 2(1)+1 = 3`. Three matches meets
+      quorum — R3's mismatched vote simply doesn't count, and doesn't need to.
+    </Step>
+    <Step label="Commit votes, and the final check">
+      R0, R1, R2 broadcast `COMMIT(op-42)`; R3 sends nothing at all this round. That's still 3 matching commits —
+      quorum again — so `runPbftRound` reports `committed: true`. One lying replica changed nothing.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PbftCheckpoint />
+
+<Summary>
+  Byzantine fault tolerance costs more than crash tolerance: $3f+1$ replicas instead of $2f+1$, and a $2f+1$
+  quorum every phase instead of a plain majority. What you buy with that cost is a guarantee that survives active
+  lying, not just silence — any $f$ Byzantine replicas can never stop an honest quorum from agreeing, and can
+  never trick two honest replicas into committing different values.
+</Summary>
