@@ -1,0 +1,115 @@
+/*
+ * Shared styling for Part II (Replication & Consensus) chapter demos:
+ * protocol-trace steppers, sliders, and small button rows. Kept under a
+ * Part-II-specific name to avoid colliding with any other part's shared
+ * CSS module of a similar shape.
+ */
+
+.wrap {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.script {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13.5px;
+  color: var(--ink);
+  line-height: 1.55;
+  white-space: pre-wrap;
+  min-height: 3.2em;
+}
+
+.stepRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.counter {
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+}
+
+.readout {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+  text-align: center;
+  padding-top: 4px;
+  border-top: 1px solid var(--line);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sliderRow input[type="range"] {
+  accent-color: var(--accent);
+  width: 130px;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.button {
+  font: inherit;
+  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 14px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.button:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.buttonPrimary {
+  composes: button;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper-raised);
+}
+
+.buttonSelected {
+  composes: button;
+  background: var(--accent2);
+  border-color: var(--accent2);
+  color: var(--paper-raised);
+}
+
+.stepCount {
+  color: var(--ink-faint);
+  font-variant-numeric: tabular-nums;
+}

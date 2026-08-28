@@ -1,0 +1,69 @@
+.buttons {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.button {
+  font: inherit;
+  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 14px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.button:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+.button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.buttonPrimary {
+  composes: button;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper-raised);
+}
+.buttonPrimary:disabled {
+  opacity: 0.4;
+}
+
+.stepCount {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12.5px;
+  color: var(--ink-faint);
+}
+
+.script {
+  margin-top: 10px;
+  padding: 12px 14px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+  min-height: 3.2em;
+}
+
+.phaseTag {
+  display: inline-block;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--accent-ink, var(--accent));
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-right: 8px;
+}
