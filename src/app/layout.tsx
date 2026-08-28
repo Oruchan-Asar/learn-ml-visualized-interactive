@@ -23,9 +23,9 @@ const plexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Gradient — learn ML, DL, and XAI from zero to hero",
+  title: "Gradient — a visual, interactive path through every course you're taking",
   description:
-    "An interactive, visual, book-structured path through machine learning, deep learning, explainable AI, and multimodal AI.",
+    "A personal learning platform: machine learning, deep learning, and explainable AI, plus every other course on the syllabus — each chapter visualized, tested, and interactive.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

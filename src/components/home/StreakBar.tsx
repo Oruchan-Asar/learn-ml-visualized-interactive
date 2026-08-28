@@ -1,17 +1,20 @@
 "use client";
 
-import { CURRICULUM } from "@/lib/curriculum";
 import { useCurrentStreak } from "@/lib/mastery/useCurrentStreak";
 import { useMasteredCount } from "@/lib/mastery/useMasteredCount";
 import styles from "./StreakBar.module.css";
 
-const ALL_SLUGS = CURRICULUM.map((c) => c.slug);
-const TOTAL = CURRICULUM.length;
+export interface StreakBarProps {
+  /** Chapter slugs whose mastery counts toward this bar's progress — pass one course's slugs, or all of them. */
+  slugs: string[];
+}
 
-export function StreakBar() {
+/** The daily streak itself is global (any checkpoint, any course, keeps it alive); only the progress count is scoped to `slugs`. */
+export function StreakBar({ slugs }: StreakBarProps) {
   const streak = useCurrentStreak();
-  const mastered = useMasteredCount(ALL_SLUGS);
-  const pct = Math.round((mastered / TOTAL) * 100);
+  const mastered = useMasteredCount(slugs);
+  const total = slugs.length;
+  const pct = total > 0 ? Math.round((mastered / total) * 100) : 0;
 
   return (
     <div className={styles.bar}>
@@ -21,12 +24,12 @@ export function StreakBar() {
         </span>
         <span className={styles.streakCount}>{streak > 0 ? `${streak}-day streak` : "Pass a checkpoint to start a streak"}</span>
       </div>
-      <div className={styles.progress} role="img" aria-label={`${mastered} of ${TOTAL} chapters mastered`}>
+      <div className={styles.progress} role="img" aria-label={`${mastered} of ${total} chapters mastered`}>
         <div className={styles.progressTrack}>
           <div className={styles.progressFill} style={{ width: `${pct}%` }} />
         </div>
         <span className={styles.progressLabel}>
-          {mastered} / {TOTAL} mastered
+          {mastered} / {total} mastered
         </span>
       </div>
     </div>

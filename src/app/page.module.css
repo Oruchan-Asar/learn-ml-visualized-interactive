@@ -32,147 +32,67 @@
   margin: 0;
 }
 
-.glossaryLink {
-  display: inline-block;
-  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12.5px;
-  color: var(--accent-ink);
-  margin-top: 14px;
-}
-.glossaryLink:hover {
-  color: var(--accent2-ink);
-}
-
-.searchRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.searchInput {
-  flex: 1;
-  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, sans-serif;
-  font-size: 15px;
-  color: var(--ink);
-  background: var(--paper-raised);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 11px 14px;
-}
-.searchInput:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-.searchInput::placeholder {
-  color: var(--ink-faint);
-}
-
-.noResults {
-  color: var(--ink-faint);
-  font-size: 14px;
-  padding: 20px 0;
-  text-align: center;
-}
-
-.partSection {
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-  background: var(--paper-raised);
-  box-shadow: var(--shadow);
-}
-
-.partSection + .partSection {
-  margin-top: 20px;
-}
-
-.partSummary {
-  cursor: pointer;
-  list-style: none;
-  padding: 16px 20px;
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-.partSummary::-webkit-details-marker {
-  display: none;
-}
-.partSummary::before {
-  content: "▾";
-  color: var(--accent-ink);
-  margin-right: 10px;
-  display: inline-block;
-  transition: transform 0.15s ease;
-}
-.partSection:not([open]) .partSummary::before {
-  transform: rotate(-90deg);
-}
-
-.partTitle {
-  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 12px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.partCount {
-  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
-  font-size: 11.5px;
-  color: var(--ink-faint);
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.cardList {
+.courseList {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 4px 16px 16px;
-  border-top: 1px solid var(--line);
+  gap: 16px;
 }
 
-.card {
+.courseCard {
   display: block;
-  background: var(--paper);
+  background: var(--paper-raised);
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  padding: 16px 18px;
+  box-shadow: var(--shadow);
+  padding: 22px 24px;
   transition: border-color 0.15s ease;
 }
-.card:hover {
+.courseCard:hover {
   border-color: var(--accent);
 }
 
-.cardHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.cardNumber {
+.courseEyebrow {
   font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--accent-ink);
   font-weight: 600;
-  font-size: 13px;
 }
 
-.masteryCheck {
-  flex-shrink: 0;
-  color: var(--accent2-ink);
-  font-weight: 700;
+.courseTitle {
+  font-size: 1.3rem;
+  margin: 8px 0 8px;
 }
 
-.cardTitle {
-  font-size: 1.1rem;
-  margin: 4px 0 6px;
-}
-
-.cardBlurb {
+.courseBlurb {
   color: var(--ink-soft);
-  font-size: 14px;
-  margin: 0;
+  font-size: 14.5px;
+  margin: 0 0 14px;
+  max-width: 62ch;
+}
+
+.courseFooter {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-faint);
+}
+
+.courseProgress {
+  flex: 1;
+  max-width: 200px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.courseProgressFill {
+  height: 100%;
+  background: var(--accent2);
+  border-radius: 999px;
 }
