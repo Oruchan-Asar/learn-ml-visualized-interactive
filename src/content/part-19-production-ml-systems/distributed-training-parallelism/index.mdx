@@ -1,0 +1,104 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DistributedTrainingCheckpoint } from "./Demos";
+
+<Hook>
+  One GPU can't hold a modern model, let alone train it. So the model and its data get split across many
+  GPUs — but "split" is not one operation. Split the batch, split the weight matrices, or split the layers,
+  and you get three different training runs with three very different amounts of chatter between machines.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The same tiny 2-layer model, the same 4 GPUs. Switch strategies and watch what actually gets sent over the
+  network change — not just how much of it, but what kind of thing it even is.
+</Intuition>
+
+<Formalize>
+  All three strategies eventually bottom out in a **ring all-reduce**: $P$ GPUs arranged in a ring, each
+  sending and receiving $(P-1)/P$ of a payload during a reduce-scatter pass, then again during an all-gather
+  pass, to end with every GPU holding the same combined result:
+
+  $$
+  V_{\text{ring}}(s, P) = \frac{2(P-1)}{P}\,s
+  $$
+
+  <Variables>
+    <Variable>**$s$** — the size of the payload being combined across GPUs.</Variable>
+    <Variable>**$P$** — the number of GPUs.</Variable>
+    <Variable>**$V_{\text{ring}}$** — total communication volume for one ring all-reduce of that payload.</Variable>
+  </Variables>
+
+  The three strategies differ only in *what* payload goes through this operation, and *how often*:
+
+  $$
+  V_{\text{data}} = V_{\text{ring}}(\text{params}, P) \qquad V_{\text{tensor}} = 2L \cdot V_{\text{ring}}(H, P) \qquad V_{\text{pipeline}} = 2H(L-1)
+  $$
+
+  <Variables>
+    <Variable>**$\text{params}$** — the model's total parameter count (every GPU holds a full copy).</Variable>
+    <Variable>**$H$** — the hidden dimension of one layer's activation.</Variable>
+    <Variable>**$L$** — the number of layers.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Data parallel: sync the whole gradient">
+      Every GPU holds the entire model and computes on its own slice of the batch, so what has to sync is
+      the full gradient — one ring all-reduce over all `params`, every single step.
+    </Step>
+    <Step label="Tensor parallel: sync one activation, at every layer">
+      Weights are sharded across GPUs (no gradient sync needed at all), but each layer boundary needs its
+      partial activations combined — a much smaller payload ($H$, not `params`), paid $2L$ times per step
+      (forward and backward, at every layer).
+    </Step>
+    <Step label="Pipeline parallel: no collective, ever">
+      Layers are assigned whole to different GPUs. Only the boundary between adjacent stages needs an
+      activation handed across — point-to-point, not a ring all-reduce — so it never pays the $2(P-1)/P$
+      collective overhead at all.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Grow the cluster and data-parallel volume grows with it, since $2(P-1)/P \to 2$ as $P$ climbs — more GPUs
+  means more ring hops. Tensor-parallel volume grows the same way, just against a much smaller payload.
+  Pipeline-parallel volume doesn't move at all: it was never a function of $P$ in the first place.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="The model: 2 layers, 4×4 each, 32 parameters total, 4 GPUs">
+      $\text{params} = 4 \times 4 \times 2 = 32$. Ring all-reduce factor at $P=4$: $2(4-1)/4 = 1.5$.
+    </Step>
+    <Step label="Data parallel">
+      $V_{\text{data}} = 1.5 \times 32 = 48$ — the entire gradient, moved once.
+    </Step>
+    <Step label="Tensor parallel">
+      Per boundary: $1.5 \times 4 = 6$. Two boundaries per layer (forward + backward) × 2 layers: $6 \times 2 \times 2 = 24$.
+    </Step>
+    <Step label="Pipeline parallel">
+      Only $L - 1 = 1$ inter-layer boundary, forward and backward: $4 \times 1 \times 2 = 8$ — the least of
+      the three, because it never pays the ring all-reduce factor at all.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DistributedTrainingCheckpoint />
+
+<Summary>
+  $$
+  V_{\text{data}} = \frac{2(P-1)}{P}\cdot\text{params}
+  $$
+
+  None of the three strategies is "the" way to distribute training — they're different trades. Data
+  parallelism is simple and scales the batch, but every GPU needs the whole model to fit in memory and the
+  gradient sync grows with parameter count. Tensor parallelism shrinks the per-GPU memory footprint but pays
+  a communication tax at every single layer. Pipeline parallelism communicates the least, but idles GPUs
+  during the fill-and-drain of its pipeline unless the batch is sliced into enough microbatches to keep it
+  full. Real large-model training (Megatron-LM, DeepSpeed, GPT-NeoX) combines all three at once, tuned to
+  the cluster's actual network topology. Having built and trained something, the next chapter turns to
+  serving it: finding the nearest match to a query among millions of stored vectors, without comparing
+  against every one.
+</Summary>
