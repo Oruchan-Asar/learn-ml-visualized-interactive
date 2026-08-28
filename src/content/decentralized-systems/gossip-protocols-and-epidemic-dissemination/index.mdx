@@ -1,0 +1,89 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GossipCheckpoint } from "./Demos";
+
+<Hook>
+  One node in a network of 8 learns something new. There's no server, no broadcast channel — just
+  peers who occasionally talk to a few other peers. How does the whole network find out?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click "gossip one round" a few times. Node 0 tells a couple of neighbors, then *those* nodes each
+  tell a couple more — the highlighted ring shows exactly who just heard the news this round. Nobody
+  ever had to contact all 8 nodes directly; the rumor spreads through the network itself.
+</Intuition>
+
+<Formalize>
+  In an **anti-entropy / push gossip protocol**, every node that knows a piece of information (is
+  "infected") contacts a small, bounded number of peers — its **fanout** — each round. Any peer it
+  contacts becomes infected too, and joins in spreading next round:
+
+  $$
+  I_{t+1} \;=\; I_t \,\cup\, \bigcup_{v \,\in\, I_t} \text{gossip}(v, t, k)
+  $$
+
+  <Variables>
+    <Variable>**$I_t$** — the set of nodes that have heard the rumor after round $t$ (round 0 is just the one starting node).</Variable>
+    <Variable>**$\text{gossip}(v, t, k)$** — the up-to-$k$ peers node $v$ contacts during round $t$, drawn from its fixed neighbor list.</Variable>
+    <Variable>**$k$** — the fanout: how many peers each infected node contacts per round.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Growth compounds, it doesn't add">
+      Because *every* currently-infected node gossips simultaneously each round — not just the
+      original source — the infected set can multiply round over round instead of only growing by a
+      fixed amount, the way epidemics spread through a population.
+    </Step>
+    <Step label="Fanout trades speed for chatter">
+      A larger fanout reaches full coverage faster, at the cost of more messages sent per round. A
+      fanout of 1 is the cheapest per round but the slowest to converge; a fanout equal to a node's
+      full degree (flooding) is fastest but sends the most messages.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the fanout slider down to 1, gossip forward, and watch how much longer it takes to reach every
+  node — and how it can even *stall* for a round with nothing new happening, simply because this
+  round's rotation of peers hasn't reached the last holdout yet. Push fanout up to 3 and the same
+  8-node network gets fully infected in half the rounds.
+</Play>
+
+<WorkedExample>
+  Same fixed 8-node network (each node has exactly 3 neighbors — a ring plus one long "shortcut" to
+  the node directly opposite it), starting from node 0:
+
+  <Steps>
+    <Step label="Fanout 2, round by round">
+      Round 1: node 0 gossips to 2 of its 3 neighbors → infected $=\{0,1,4\}$. Round 2: those three
+      nodes each gossip further → infected grows to $\{0,1,2,3,4,5,7\}$ — seven of eight. Round 3: the
+      last holdout, node 6, finally gets reached → all 8 nodes infected.
+    </Step>
+    <Step label="Fanout 1 takes noticeably longer">
+      With only one peer contacted per round, the same network needs **5** rounds to fully cover —
+      and round 4 adds *nothing new* at all, because that round's rotation of peers happens to miss
+      the one remaining uninfected node (node 3).
+    </Step>
+    <Step label="Fanout 3 (flooding) is fastest">
+      Contacting every neighbor every round reaches all 8 nodes in just **2** rounds — the fastest
+      possible for this graph, at triple the per-round message cost of fanout 1.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GossipCheckpoint />
+
+<Summary>
+  $$
+  I_{t+1} = I_t \cup \bigcup_{v \in I_t} \text{gossip}(v, t, k)
+  $$
+
+  Gossip protocols get information everywhere without anyone needing a full membership list or a
+  central broadcaster — every node just needs to know a few peers. The fanout $k$ is the one knob
+  that trades speed (fewer rounds to full coverage) against chatter (more messages per round), and
+  the same rule underlies both "rumor spreading" and, later in this part, keeping cluster membership
+  itself up to date.
+</Summary>
