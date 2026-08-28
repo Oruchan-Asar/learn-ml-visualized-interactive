@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  Three replicas, five operations, one key. Somewhere in this trace, a read returns a value it had no business
+  returning. Can you find the exact operation — using nothing but the tools from the last three chapters?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through five operations across three clients (c0, c1, c2), each carrying its own vector clock — built
+  exactly the way time-clocks-and-ordering built one: bump your own component, and on a "read-from" a write, take
+  the componentwise max with that write's vector. Watch the three components grow unevenly, client by client.
+</Intuition>
+
+<Formalize>
+  This trace reuses three ideas directly:
+
+  <Steps>
+    <Step label="From consistency-models: linearizability">
+      A history is linearizable iff some total order respects both real time and program semantics —
+      `isTraceLinearizable` runs the exact same check this capstone's TRACE.
+    </Step>
+    <Step label="From time-clocks-and-ordering: vector clocks">
+      Each op's `vc` is a 3-component vector, one slot per client, built with the same rule: your own component
+      increments; a "read-from" link takes the componentwise max with the write's vector, the same way a message
+      receive does.
+    </Step>
+    <Step label="From causality-and-happened-before: happened-before vs. concurrent">
+      $a \to b \iff a \le b$ componentwise, $a \neq b$; otherwise, if neither dominates, $a$ and $b$ are
+      concurrent. Both checks are imported and reused directly here, unchanged.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**real-time prior write** — the write with the latest end-time that finished before an op started.</Variable>
+    <Variable>**causal prior write** — the most recent write an op's vector clock actually dominates.</Variable>
+  </Variables>
+
+  The insight this capstone is built to demonstrate: these two "prior writes" don't have to be the same write —
+  and when they aren't, you get a linearizability violation that a causal-consistency checker would wave right
+  through.
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Pick any operation and compare it against op3 (the write of x=2) using the exact `happenedBefore` /
+  `isConcurrent` functions from causality-and-happened-before. Notice which operations are concurrent with op3 —
+  meaning no message chain ever told them about it.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Confirm the violation exists">
+      `isTraceLinearizable(TRACE)` is false — and removing exactly one operation restores it, so there's a single
+      culprit.
+    </Step>
+    <Step label="Find the culprit">
+      `diagnoseViolation(TRACE)` names op5: a read by client c1, returning x=1, starting at t=10.
+    </Step>
+    <Step label="What real time demanded">
+      `findRealTimePriorWrite(TRACE, op5)` returns op3 — the write of x=2, finished at t=7, well before op5 starts
+      at t=10. Linearizability's real-time rule says op5 must reflect it.
+    </Step>
+    <Step label="What op5 actually knew about">
+      `findCausallyPriorWrite(TRACE, op5)` returns op1, not op3 — op5's vector clock is [1, 2, 0], and op3's is
+      [2, 0, 0]. Neither dominates the other: `isViolationMerelyConcurrent(op5, op3)` is true. op5 only ever
+      read-from op1; no chain of messages ever told client c1 about op3's write.
+    </Step>
+    <Step label="The gap">
+      A causal-consistency checker only asks "did you violate something you actually knew about?" — and by that
+      standard, op5 did nothing wrong, since it was never causally informed of op3. Linearizability asks a
+      stricter question: "did you violate something that had *already happened in real time*?" — and by that
+      standard, op5 is the violation. A linearizability violation doesn't have to be a causality violation too.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapstoneCheckpoint />
+
+<Summary>
+  $$
+  a \to b \iff a \le b \text{ componentwise}, \quad a \neq b
+  $$
+
+  op5 is concurrent with op3 by every message-passing measure available to it — yet real time had already moved
+  on. Vector clocks (ch. 2) gave the structure, happened-before/concurrent (ch. 4) gave the causal verdict, and
+  linearizability's real-time rule (ch. 5) is what actually catches the violation that causality alone would
+  have missed.
+</Summary>
