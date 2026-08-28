@@ -1,0 +1,84 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RingCheckpoint } from "./Demos";
+
+<Hook>
+  A cache cluster grows from 4 machines to 5. With a plain `hash(key) % N`, changing $N$ changes
+  almost *every* key's owner overnight. Is there a hashing scheme where adding one machine only
+  moves the keys that machine actually needs?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Add node E to the ring and watch the key list: only **k4** changes owner, from D to the new node
+  E. Every other key — five out of six — stays exactly where it was.
+</Intuition>
+
+<Formalize>
+  **Consistent hashing** places both nodes and keys on the same circular ring (positions $0$ to
+  $M-1$). A key belongs to its **ring successor**: the first node reached walking clockwise from
+  the key's position, wrapping around if none is found before returning to position 0:
+
+  $$
+  \text{owner}(k) = \min_{n \,\in\, \text{Nodes},\; \text{pos}(n) \,\ge\, \text{pos}(k)} \text{pos}(n) \quad\text{(wrapping to the smallest node if none qualifies)}
+  $$
+
+  <Variables>
+    <Variable>**$M$** — the ring size, e.g. $16$ in this chapter's examples.</Variable>
+    <Variable>**pos($k$)**, **pos($n$)** — a key's or node's fixed position on the ring, from hashing its id.</Variable>
+    <Variable>**owner($k$)** — the node responsible for key $k$: its nearest node clockwise.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Only one arc changes">
+      Inserting a new node $E$ only affects keys in the arc between $E$ and the node clockwise-before
+      it — every key elsewhere on the ring still finds the exact same successor it always did.
+    </Step>
+    <Step label="Removing works the same way in reverse">
+      Removing a node only reassigns the keys *it* used to own, to whichever node is now the next one
+      clockwise — nothing else on the ring is touched.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Slide E all the way around the ring. Notice the reassigned-keys list never grows past one or two
+  entries at a time, no matter where you drop it — and it's always the keys immediately
+  counter-clockwise of E that move, never keys on the far side of the ring.
+</Play>
+
+<WorkedExample>
+  Ring size $16$; nodes A@2, B@6, C@9, D@13; keys k1@0, k2@4, k3@7, k4@10, k5@12, k6@15:
+
+  <Steps>
+    <Step label="Base assignment">
+      Walking clockwise from each key: k1(0)→A, k2(4)→B, k3(7)→C, k4(10)→D, k5(12)→D, k6(15) finds no
+      node $\ge 15$, so it wraps to the smallest, A.
+    </Step>
+    <Step label="Adding node E at position 11">
+      E sits strictly between C(9) and D(13). Only k4(10), which falls in the arc $(9, 11]$, now
+      belongs to E instead of D. k5(12) is past position 11, so it's untouched — still D's.
+    </Step>
+    <Step label="Removing node C instead">
+      With C gone, the remaining nodes are $\{$A2, B6, D13$\}$. k3(7) now walks clockwise to the
+      smallest remaining node position $\ge 7$, which is D(13) — so k3 moves from C to D. Every other
+      key's clockwise search was never affected by C in the first place, so nothing else changes.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RingCheckpoint />
+
+<Summary>
+  $$
+  \text{owner}(k) = \text{the first node clockwise of pos}(k),\ \text{wrapping at } M
+  $$
+
+  Putting nodes and keys on the same ring turns "which node owns this key" into a purely local
+  question — a node's arrival or departure only ever disturbs its own immediate neighborhood, never
+  the whole ring. That $O(1/N)$ reshuffle guarantee is exactly what the next few chapters build on:
+  Chord layers a lookup structure on top of this same ring, and the capstone reuses this ring
+  directly for placing data in a real key-value store.
+</Summary>
