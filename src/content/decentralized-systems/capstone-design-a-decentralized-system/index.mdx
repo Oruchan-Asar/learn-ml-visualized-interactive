@@ -115,8 +115,9 @@ import { IntuitionDemo, PlayDemo, CapstoneDesignCheckpoint } from "./Demos";
   quorum, Paxos, Raft, PBFT) are the mechanisms available to enforce a chosen consistency level; **Part
   III**'s coordination patterns matter the moment a "system" becomes multiple services with a transaction
   spanning them; **Part IV**'s gossip, consistent hashing, and CRDTs are what "decentralized" looks like at
-  P2P scale; and **Part V**'s Byzantine-tolerant consensus is the extra machinery you pay for only when
-  participants might actively lie. None of these tools is unconditionally "best" — each earns its place
+  P2P scale; and **Part V**'s trustless, economically-secured consensus (building on Part II's Byzantine
+  fault tolerance) is the extra machinery you pay for only when participants are anonymous and might
+  actively lie. None of these tools is unconditionally "best" — each earns its place
   only against a specific scenario's actual constraints, and the right design is the one where every axis
   was chosen for a reason you can point to, not out of habit.
 </Summary>
