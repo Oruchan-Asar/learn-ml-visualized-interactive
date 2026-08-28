@@ -1,0 +1,93 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, FinalityCheckpoint } from "./Demos";
+
+<Hook>
+  Two miners find a valid block at nearly the same instant. Half the network sees one first, half sees
+  the other — for a moment, there are two "true" histories. How does the network converge back to one,
+  and when can you actually trust a block won't be undone?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Extend either chain and watch the "canonical" tag jump to whichever fork is longer. There's no vote, no
+  authority deciding — the rule is mechanical: more blocks wins, full stop. A fork that falls behind
+  doesn't get argued away; it just stops being extended, because no rational miner keeps building on the
+  losing side.
+</Intuition>
+
+<Formalize>
+  <Steps>
+    <Step label="A fork is just two chains sharing a prefix">
+      Both Chain A and Chain B in this chapter start from the same genesis block, then diverge —
+      each new block hashes in the previous block's hash, so a fork is nothing more than two different
+      sequences of blocks after the split point.
+    </Step>
+    <Step label="The longest chain is canonical">
+      $\text{longestChain}(\{\text{chains}\}) = \arg\max_c \; \text{length}(c)$ (ties have no winner yet).
+      Real chains compare cumulative proof-of-work, not raw block count, but with one difficulty target
+      shared by everyone, the two are the same thing.
+    </Step>
+    <Step label="Finality is a probability, not a guarantee">
+      A block already has $z$ **confirmations** once $z$ further blocks are built on top of it. An
+      attacker controlling a fraction $q$ of the network's power can still try to grow a secret,
+      longer fork in secret and replace it — but the odds fall off fast as $z$ grows.
+    </Step>
+    <Step label="The reversal probability shrinks exponentially in confirmations">
+      $P_{\text{reverse}}(z) = \left(\dfrac{q}{1-q}\right)^{z}$ — every additional confirmation multiplies
+      the attacker's chances by the same ratio $q/(1-q)$, which is less than 1 whenever the attacker
+      controls a minority ($q < 0.5$) of the network.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**$z$** — confirmations: how many blocks are stacked on top of the one in question.</Variable>
+    <Variable>**$q$** — the attacker's share of total mining power; $q/(1-q)$ is the ratio the probability shrinks by per confirmation.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag along the curve to add confirmations and watch the reversal probability collapse. This is why
+  "wait for N confirmations" is a real, if informal, security parameter: N isn't chosen because reversal
+  becomes impossible, but because it becomes vanishingly, practically impossible.
+</Play>
+
+<WorkedExample>
+  Chain A: 3 blocks (`a1`→216, `a2`→14, `a3`→883). Chain B: 2 blocks (`b1`→247, `b2`→399). Attacker share
+  $q=0.2$.
+
+  <Steps>
+    <Step label="Which chain is canonical right now">
+      $\text{length}(A)=3 > \text{length}(B)=2$, so Chain A is canonical — even though Chain B's blocks
+      are individually just as validly hashed.
+    </Step>
+    <Step label="Chain B catches up and passes">
+      If Chain B mines two more blocks (length 4), the rule flips: $4 > 3$ means Chain B is now
+      canonical, and every honest node that was building on Chain A discards those blocks and switches.
+    </Step>
+    <Step label="Reversal probability at z = 2 confirmations">
+      $\left(\dfrac{0.2}{0.8}\right)^{2} = 0.25^{2} = 0.0625$ — a 1-in-16 chance the attacker still
+      catches up, still too risky to treat as final.
+    </Step>
+    <Step label="Reversal probability at z = 3 confirmations">
+      $0.25^{3} = 0.015625$ — this is the first depth where the probability drops under this chapter's
+      finality threshold of $0.02$. Two confirmations weren't enough; three are.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<FinalityCheckpoint />
+
+<Summary>
+  $$
+  P_{\text{reverse}}(z) = \left(\frac{q}{1-q}\right)^{z}
+  $$
+
+  A fork resolves the moment one side pulls ahead in length — no vote required, just miners rationally
+  building on whichever chain is winning. "Finality" is the point where reversing a block has become so
+  improbable that treating it as permanent is a safe bet, not a mathematical certainty. Everything so far
+  has assumed honest majority mining; the next chapters look at what a network built entirely out of code
+  — smart contracts — does once that consensus object is settled.
+</Summary>

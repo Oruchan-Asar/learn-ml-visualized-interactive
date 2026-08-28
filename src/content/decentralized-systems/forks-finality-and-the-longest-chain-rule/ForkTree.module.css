@@ -1,0 +1,85 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.genesis {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--paper-raised);
+  min-width: 84px;
+  box-shadow: var(--shadow);
+}
+
+.forks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.fork {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  border: 1px dashed var(--line);
+}
+
+.forkCanonical {
+  composes: fork;
+  border: 1px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+
+.forkLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--ink-faint);
+}
+
+.forkCanonical .forkLabel {
+  color: var(--accent-ink, var(--accent));
+}
+
+.blocks {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--paper-raised);
+  min-width: 68px;
+  box-shadow: var(--shadow);
+}
+
+.blockLabel {
+  font-size: 11px;
+  color: var(--ink-faint);
+  text-align: center;
+}
+
+.blockHash {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
