@@ -1,0 +1,82 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  Chapter 1's election had one candidate and a clean majority. Real clusters aren't always that polite — two
+  nodes can time out and start campaigning in the very same term. Trace it by hand: who wins when N1 and N3
+  both ask for votes at once?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click N2, N4, or N5. Each voter grants exactly one candidate — whichever RequestVote reaches it first — and
+  refuses the other, even if the other's log is just as good. That's the mechanism behind a split vote.
+</Intuition>
+
+<Formalize>
+  Nothing new to define here — this capstone runs the exact same `decideVote` rule from chapter 1 (via
+  `runElection`) against a harder scenario: two simultaneous candidates in term 6, then a single retry in term 7.
+
+  <Steps>
+    <Step label="Same rule, two candidates">
+      N1 and N3 both send `RequestVote` for term 6. Each voter applies the identical term-freshness and
+      log-up-to-dateness checks to whichever request arrives first — and once it grants that one, it refuses the
+      other by the `votedFor` rule.
+    </Step>
+    <Step label="A split vote is just two failed majorities">
+      If neither candidate's total (self plus grants) clears `hasMajority(total, 5)`, the term ends with no
+      leader — `electionOutcome` returns `null` for both.
+    </Step>
+    <Step label="The cluster tries again next term">
+      Election timeouts fire again; `currentTerm` bumps to 7 and every voter's `votedFor` resets. Whoever
+      campaigns this time is judged fresh, with no memory of who it voted for last term.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**term 6** — two candidates, N1 and N3, split the vote three ways (2 grants, 2 grants, 1 double reject).</Variable>
+    <Variable>**term 7** — only N1 campaigns; no conflicting `votedFor` blocks anyone.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Step through all three RequestVote rounds. The first two show the same three voters splitting their votes
+  between N1 and N3 — neither reaches 3 of 5. The third shows N1 retrying alone in term 7 and winning cleanly.
+</Play>
+
+<WorkedExample>
+  Five nodes, N1–N5. N1 and N3 both time out for term 6.
+
+  <Steps>
+    <Step label="N1's request reaches N2 first, N3's reaches N4 first">
+      N2 (log: term 5, index 20) grants N1 — equal log, no prior vote. N4 (log: term 5, index 17) grants N3 —
+      N3's log (index 19) is ahead of N4's. N5 (log: term 5, index 21) is ahead of *both* candidates' logs, so it
+      rejects both outright.
+    </Step>
+    <Step label="Now the other request arrives at each">
+      N2 already voted for N1, so it rejects N3's request regardless of log. N4 already voted for N3, so it
+      rejects N1's. Neither late-arriving request can change a vote already cast this term.
+    </Step>
+    <Step label="Tally both candidates">
+      N1: self + N2 = 2 of 5. N3: self + N4 = 2 of 5. `hasMajority(2, 5)` is false for both —
+      `isSplitVote([traceN1, traceN3])` is `true`. Term 6 ends with no leader.
+    </Step>
+    <Step label="Term 7: N1 tries again alone">
+      Every voter's term bumped to 6 and `votedFor` reset. N1 requests votes again with the *same* log (no
+      leader existed in term 6 to replicate anything new). N2, N3, and N4 all grant — their logs are behind or
+      equal to N1's. Only N5, still ahead at index 21, rejects. N1 collects 4 of 5 and wins.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapstoneCheckpoint />
+
+<Summary>
+  A split vote isn't a special case bolted onto Raft — it falls straight out of the same `decideVote` rule from
+  chapter 1, applied independently by each voter to whichever request happens to arrive first. No new mechanism
+  was needed to resolve it either: a fresh term with reset votes was enough. This is what "designed to be
+  understandable" buys you — every step here is exactly chapter 1's math, just run twice.
+</Summary>
