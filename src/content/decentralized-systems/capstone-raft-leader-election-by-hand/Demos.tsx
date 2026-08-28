@@ -155,7 +155,7 @@ export function CapstoneCheckpoint() {
       <GraphPlayground
         nodes={["N2", "N3", "N4", "N5"].map((id) => ({
           id,
-          x: POSITIONS[id].x - 20,
+          x: POSITIONS[id].x,
           y: POSITIONS[id].y,
           value: 0,
           label: id,
@@ -165,6 +165,8 @@ export function CapstoneCheckpoint() {
         onSelectNode={toggle}
         passed={passed}
         readout={`Selected: ${[...selected].join(", ") || "none"} — split vote resolved: ${isSplitVote([TERM_6_N1_TRACE, TERM_6_N3_TRACE])}`}
+        width={340}
+        height={230}
       />
     </CheckpointFrame>
   );
