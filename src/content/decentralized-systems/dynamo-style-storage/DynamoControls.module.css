@@ -1,0 +1,111 @@
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.sliderRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sliderValue {
+  min-width: 1.6em;
+  text-align: center;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.button {
+  font: inherit;
+  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 6px 14px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.button:hover {
+  border-color: var(--accent);
+}
+
+.buttonPrimary {
+  composes: button;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--paper-raised);
+}
+.buttonPrimary:hover {
+  border-color: var(--accent);
+  filter: brightness(1.05);
+}
+
+.clockPanel {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 16px;
+}
+
+.clockColumn {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.clockTitle {
+  font-family: var(--font-body), "Source Sans 3", ui-sans-serif, sans-serif;
+  font-weight: 700;
+  font-size: 13.5px;
+  color: var(--ink);
+}
+
+.clockSlots {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.verdict {
+  align-self: center;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: center;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+.verdictConcurrent {
+  composes: verdict;
+  border-color: var(--accent2);
+  color: var(--accent2);
+}
+
+.verdictResolved {
+  composes: verdict;
+  border-color: var(--success, #2e8b57);
+  color: var(--success, #2e8b57);
+}

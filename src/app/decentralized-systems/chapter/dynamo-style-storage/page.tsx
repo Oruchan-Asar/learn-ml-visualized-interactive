@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { ChapterFrame } from "@/components/chapter/ChapterFrame";
-import { CoursePlaceholderContent } from "@/components/chapter/CoursePlaceholderContent";
 import { getCourse } from "@/lib/courses";
+import ChapterContent from "@/content/decentralized-systems/dynamo-style-storage/ClientContent";
 
 const COURSE = getCourse("decentralized-systems");
 const SLUG = "dynamo-style-storage";
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 export default function Page() {
   return (
     <ChapterFrame slug={SLUG} course={COURSE}>
-      <CoursePlaceholderContent meta={META} />
+      <ChapterContent />
     </ChapterFrame>
   );
 }

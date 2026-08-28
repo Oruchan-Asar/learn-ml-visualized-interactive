@@ -1,0 +1,106 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DynamoCheckpoint } from "./Demos";
+
+<Hook>
+  Amazon's shopping cart must accept a write even when part of the network is unreachable — a
+  customer adding an item should never be told "no." But if two datacenters each accept a
+  concurrent write to the same cart while cut off from each other, how does the store even know
+  they conflict, let alone reconcile them later?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click "A writes" once, then "B writes" once, without ever syncing — the verdict reads
+  **concurrent**: neither clock has seen the other's update, so neither can claim to be newer.
+  Now hit "Sync" and write on A again: the verdict flips to a clean **after**, because A's new
+  clock has now seen everything B had.
+</Intuition>
+
+<Formalize>
+  A **vector clock** gives every replica its own counter, incremented only on that replica's own
+  writes. Comparing two clocks $a$ and $b$ coordinate-by-coordinate tells you their causal
+  relationship:
+
+  $$
+  a \prec b \iff \forall i,\ a_i \le b_i \ \text{ and } \ \exists i,\ a_i < b_i
+  $$
+
+  If neither $a \prec b$ nor $b \prec a$ holds, the two writes are **concurrent** — a genuine
+  conflict, not just a stale read. Separately, Dynamo's **sloppy quorum** guarantees any read
+  quorum of size $R$ and write quorum of size $W$, out of $N$ replicas, must share at least one
+  node:
+
+  $$
+  R + W > N
+  $$
+
+  <Variables>
+    <Variable>**$a_i$** — replica $i$'s counter as recorded in vector clock $a$.</Variable>
+    <Variable>**$a \prec b$** — "$a$ happened-before $b$": every counter in $a$ is $\le$ the matching one in $b$, with at least one strictly less.</Variable>
+    <Variable>**$R$, $W$, $N$** — read quorum size, write quorum size, and total replicas in the preference list.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Pigeonhole guarantees the overlap">
+      If a size-$R$ read set and a size-$W$ write set were completely disjoint, together they'd
+      only need $R+W$ distinct nodes. The moment $R+W>N$, there aren't enough distinct nodes left
+      for that — some node has to be in both.
+    </Step>
+    <Step label="Hinted handoff keeps writes flowing around a down node">
+      When a node in the write quorum is unreachable, the write goes to the next healthy node in
+      the preference list instead, which holds a **hint**: "forward this to the down node once
+      it's back." The write still succeeds; nothing is silently dropped.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Slide R from 1 up to 5 and watch the overlap column: below R=3 it can hit zero, at R=3 and above
+  it always includes at least N3. Then flip N2 to "down" and watch the W=3 write targets skip
+  straight past it to N4, with N3 now shown holding a hint for N2 — the write never blocks on the
+  down node.
+</Play>
+
+<WorkedExample>
+  A 5-node preference list N1..N5, write quorum $W=3=\{$N1, N2, N3$\}$:
+
+  <Steps>
+    <Step label="Two concurrent writes, then a causal one">
+      Node A writes with an empty clock: $\{A{:}1\}$. Node B writes independently: $\{B{:}1\}$ —
+      concurrent, since neither clock dominates the other. After a sync, A writes again:
+      $\{A{:}2, B{:}1\}$, which is now strictly *after* B's $\{B{:}1\}$, since every one of B's
+      counters is matched or exceeded.
+    </Step>
+    <Step label="R=2 is not enough">
+      Read set $\{$N4, N5$\}$ against write set $\{$N1, N2, N3$\}$: no overlap at all.
+      $R+W=2+3=5$, which is not strictly greater than $N=5$ — exactly the boundary case where a gap
+      is still possible.
+    </Step>
+    <Step label="R=3 closes the gap">
+      Read set $\{$N3, N4, N5$\}$ against the same write set: they share N3. $R+W=3+3=6>5$, so this
+      overlap isn't a coincidence — *every* size-3 read set must hit the size-3 write set.
+    </Step>
+    <Step label="Hinted handoff around N2">
+      With N2 down and $W=3$, walking the list skips N2 and picks N1, N3, N4 instead — and N3, the
+      node that stepped in right after the gap, is recorded as holding N2's hint.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DynamoCheckpoint />
+
+<Summary>
+  $$
+  R + W > N \quad\text{guarantees overlap}, \qquad a \prec b \iff \forall i,\ a_i \le b_i \ (\exists i,\ a_i < b_i)
+  $$
+
+  Dynamo's whole design is "never refuse a write": sloppy quorums keep writes and reads
+  overlapping often enough to stay useful without demanding every replica be reachable, hinted
+  handoff keeps a write succeeding around a temporarily down node, and vector clocks are the only
+  honest way to tell a genuine conflict apart from a stale copy once those concurrent writes need
+  reconciling. The capstone puts these same vector clocks to work again, this time reconciling a
+  write made mid-flight through a gossip-based membership change.
+</Summary>
