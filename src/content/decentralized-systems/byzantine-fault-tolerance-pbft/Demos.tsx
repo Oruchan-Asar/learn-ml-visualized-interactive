@@ -54,6 +54,7 @@ export function IntuitionDemo() {
       highlightedNodeIds={PREPARE_VOTES.filter((v) => v.reportedValue === REQUEST_VALUE).map((v) => v.replicaId)}
       onSelectNode={onSelect}
       readout={`Click each backup to reveal its PREPARE vote — ${matches} of 4 replicas agree on ${REQUEST_VALUE}`}
+      height={240}
     />
   );
 }
