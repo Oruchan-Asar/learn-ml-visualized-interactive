@@ -1,0 +1,91 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, LeaderSelectionCheckpoint } from "./Demos";
+
+<Hook>
+  Proof-of-work makes block proposal expensive by burning electricity. Could the same expensive-to-win,
+  cheap-to-verify race be run without a single watt of wasted computation — just money already staked
+  in the system?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Slide the round number and watch a different validator win each time. There's no computation to race —
+  just a deterministic lottery where each validator's ticket size is exactly its stake. A's 40-stake ticket
+  wins 4 times as often as D's 10-stake ticket, on average.
+</Intuition>
+
+<Formalize>
+  <Steps>
+    <Step label="Lay every validator's stake out on a line">
+      Validators A, B, C, D hold stakes 40, 30, 20, 10 (total 100). Laid end to end on $[0, 100)$: A
+      occupies $[0,40)$, B occupies $[40,70)$, C occupies $[70,90)$, D occupies $[90,100)$.
+    </Step>
+    <Step label="Hash the round number into a ticket on that line">
+      $\text{ticket}(\text{round}) = \text{toyHash}(\texttt{"epoch-}\text{round}\texttt{-x"}) \bmod 100$ —
+      a pseudo-random position, uniform over $[0,100)$, standing in for a real chain's verifiable random
+      function (VRF).
+    </Step>
+    <Step label="Whoever's range the ticket lands in proposes the block">
+      Because each validator's slice of the line is exactly proportional to its stake, the probability
+      validator $v$ is selected is $P(v) = \text{stake}(v) / \sum_i \text{stake}(i)$ — no computation
+      race, just weighted chance.
+    </Step>
+    <Step label="Nothing-at-stake: voting costs nothing without a penalty">
+      In proof-of-work, hash power spent mining one fork can't also be spent mining a competing fork —
+      it's a physical resource. Stake isn't consumed by voting, so without a rule against it, a validator
+      can support every competing fork at once for free. <strong>Slashing</strong> closes this gap: forfeit
+      your entire stake if you're caught supporting more than one fork.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**stake(v)** — validator $v$'s stake; determines both its slice of the line and its slashing exposure.</Variable>
+    <Variable>**ticket** — the round's hashed lottery draw, uniform over $[0, \text{totalStake})$.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Run rounds one at a time and watch the tally bars grow. Over many rounds, D (10% of stake) wins roughly
+  a tenth as often as A (40% of stake) — the same proportional guarantee as the formula, just visible as
+  frequency instead of probability.
+</Play>
+
+<WorkedExample>
+  Six rounds, validators A(40) B(30) C(20) D(10), stake ranges A:[0,40) B:[40,70) C:[70,90) D:[90,100).
+
+  <Steps>
+    <Step label="Round 1">
+      $\text{toyHash}(\texttt{"epoch-1-x"}) = 896$, so $\text{ticket} = 896 \bmod 100 = 96$. That falls in
+      D's range $[90,100)$ — **D** wins, despite holding only 10% of the stake.
+    </Step>
+    <Step label="Round 2">
+      $\text{toyHash}(\texttt{"epoch-2-x"}) = 857 \Rightarrow \text{ticket}=57$, inside B's $[40,70)$ —
+      **B** wins.
+    </Step>
+    <Step label="Rounds 3–6">
+      Ticket 18 (round 3) falls in A's $[0,40)$ → **A**. Ticket 79 (round 4) falls in C's $[70,90)$ →
+      **C**. Ticket 40 (round 5) falls exactly at B's lower bound → **B**. Ticket 1 (round 6) falls in
+      A's $[0,40)$ → **A**.
+    </Step>
+    <Step label="Six rounds: D, B, A, C, B, A">
+      Two wins for A (stake 40%), two for B (stake 30%), one each for C and D (stakes 20% and 10%) — a
+      small sample, but already leaning the way the stakes predict.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<LeaderSelectionCheckpoint />
+
+<Summary>
+  $$
+  P(v \text{ selected}) = \frac{\text{stake}(v)}{\sum_i \text{stake}(i)}
+  $$
+
+  Proof-of-stake replaces "spend energy to win the right to propose" with "risk capital to win the right
+  to propose" — cheaper for the planet, but it opens a new failure mode that proof-of-work structurally
+  can't have: voting for every fork at once costs nothing unless slashing makes it costly. The next
+  chapter looks at what happens when forks appear at all, under either consensus rule.
+</Summary>
