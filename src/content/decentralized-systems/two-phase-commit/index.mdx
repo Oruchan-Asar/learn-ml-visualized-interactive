@@ -1,0 +1,86 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, TwoPCCheckpoint } from "./Demos";
+
+<Hook>
+  A bank transfer touches two databases at once — debit one account, credit another. Either both
+  happen or neither does. But the two databases live on different machines, and either one might
+  say no. How do you make "all or nothing" hold across a network?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through the trace. A coordinator first asks every participant to vote — nobody commits
+  anything yet, they only promise they *could*. Only after all three votes are in does the
+  coordinator tell everyone what actually happened.
+</Intuition>
+
+<Formalize>
+  $$
+  \text{decision} = \begin{cases} \text{commit} & \text{if every participant voted yes} \\ \text{abort} & \text{otherwise} \end{cases}
+  $$
+
+  <Variables>
+    <Variable>**Coordinator** — the single node that collects votes and announces the decision.</Variable>
+    <Variable>**Participant** — a node holding one piece of the transaction, able to vote yes or no.</Variable>
+    <Variable>**Phase 1 (voting)** — coordinator asks, each participant votes yes or no.</Variable>
+    <Variable>**Phase 2 (commit)** — coordinator broadcasts the decision; participants ack.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="One no outvotes any number of yeses">
+      The rule is a logical AND across all votes, not a majority — a single "no" from any one
+      participant forces every other participant, even ones that voted yes, to abort.
+    </Step>
+    <Step label="A yes vote is a promise, not an action">
+      Voting yes means "I could commit if told to" — the participant holds its locks and waits. It
+      cannot act until phase 2 tells it what the group decided.
+    </Step>
+    <Step label="The blocking problem">
+      If the coordinator crashes after collecting all-yes votes but before broadcasting the
+      decision, a yes-voting participant is stuck: it cannot guess commit (some other participant
+      might have voted no) or guess abort (everyone else might commit) — it can only wait.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Flip P2 to NO. Watch the phase-2 messages: the coordinator now sends GLOBAL-ABORT to *every*
+  participant, including P1 and P3, who both voted yes. Their yes vote bought them nothing — the
+  group decision overrides it. Now set all three back to YES and crash the coordinator — every
+  participant is holding its locks with no way to know what to do next.
+</Play>
+
+<WorkedExample>
+  Three participants, P1 and P3 vote yes, P2 votes no.
+
+  <Steps>
+    <Step label="Phase 1 — collect votes">
+      Coordinator sends VOTE-REQUEST to P1, P2, P3. Votes come back: P1 = YES, P2 = NO, P3 = YES.
+    </Step>
+    <Step label="Apply the decision rule">
+      Not every vote was yes ($P2 = \text{no}$), so the AND fails: decision = abort.
+    </Step>
+    <Step label="Phase 2 — broadcast and ack">
+      Coordinator sends GLOBAL-ABORT to all three, including P1 and P3. All three ack. Total
+      messages: 3 requests + 3 votes + 3 decisions + 3 acks = 12, exactly as many as the all-yes
+      case — the number of messages never depends on the outcome.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<TwoPCCheckpoint />
+
+<Summary>
+  $$
+  \text{decision} = \bigwedge_{i} (v_i = \text{yes})
+  $$
+
+  2PC guarantees atomicity — commit or abort happens everywhere, never a mix — by making every
+  participant wait for the coordinator's single, final word. That same waiting is its weakness: if
+  the coordinator disappears after collecting all-yes votes, every participant is blocked holding
+  its locks until it comes back. The next chapter adds a phase specifically to remove that single
+  point of blocking.
+</Summary>
