@@ -1,0 +1,99 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneTraceADistributedSnapshotCheckpoint } from "./Demos";
+
+<Hook>
+  Same 3 nodes, same 6 channels, same `runSnapshot` algorithm from the last chapter — but this time
+  N1 starts the snapshot instead of N0, and there isn't just one message crossing the network when
+  it does, there are two. Can you follow the markers and reconstruct which channels end up holding
+  something, without peeking at the answer first?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through this trace the same way you did last chapter. N1 initiates now, which changes
+  something structural: since N1 has no incoming marker to trigger its recording, BOTH of its
+  incoming channels — from N0 and from N2 — start "recording" at the very first step, long before
+  N0 or N2 have recorded anything of their own.
+</Intuition>
+
+<Formalize>
+  $$
+  \text{channel state} = \{\, m : m \text{ received after the recorder's own state, before the marker on that channel} \,\}
+  $$
+
+  The rule is exactly the one from the previous chapter — reused here unchanged, via
+  `runSnapshot` — applied to a new initiator and a new pair of in-flight messages.
+
+  <Variables>
+    <Variable>**N1, the initiator this time** — records its own state first, with both incoming channels open from the start.</Variable>
+    <Variable>**m1** — N2 → N0, $4, sent before the snapshot begins.</Variable>
+    <Variable>**m2** — N0 → N1, $6, sent after N1 has already started recording that very channel.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Two messages, two channels to watch">
+      Nothing about the algorithm changes with a second in-flight message — each channel is
+      recorded independently. The only new work is tracking two channels' logs at once instead of
+      one.
+    </Step>
+    <Step label="The initiator's early start matters">
+      Because N1 initiates, channel N0 → N1 opens for logging immediately — well before N0 has even
+      recorded its own state. m2 only needs to arrive at N1 before N0's marker does on that same
+      channel, and FIFO ordering guarantees that as long as N0 sent m2 before sending its marker.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Scrub through the full trace and watch all 6 channels at once. Two of them — N2 → N0 and N0 → N1
+  — pick up a logged message before they close; the other four close empty. Watch the running total
+  climb from the recorded-states-only number up to the true total of 30 only once both messages are
+  accounted for.
+</Play>
+
+<WorkedExample>
+  N0 = 10, N1 = 5, N2 = 15 (total 30). N2 → N0 sends $4 before the snapshot; N0 → N1 sends $6 while
+  N1 is already recording that channel.
+
+  <Steps>
+    <Step label="N1 initiates">
+      Records its own balance (5). Starts recording both incoming channels, N0→N1 and N2→N1,
+      immediately — it has no triggering marker to exclude one of them.
+    </Step>
+    <Step label="N0 records on its first marker, after already sending m2">
+      N0 receives N1's marker and records its own balance. By this point it has already sent the $6
+      to N1 — so N0's recorded balance already reflects that send.
+    </Step>
+    <Step label="N2 records on its first marker">
+      N2 receives N1's marker and records its own balance, which already reflects having sent the
+      $4 to N0 earlier.
+    </Step>
+    <Step label="Both messages land in open channels">
+      The $6 arrives at N1 before N0's marker closes channel N0→N1 — logged. The $4 arrives at N0
+      before N2's marker closes channel N2→N0 — logged. Every other channel closes with nothing
+      in it.
+    </Step>
+    <Step label="The totals check out">
+      Recorded states: $4 + 5 + 11 = 20$. Channel state: $6 + 4 = 10$. Together: $30$ — exactly the
+      true starting total, split correctly between "already reflected in a node's balance" and
+      "still crossing a channel."
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapstoneTraceADistributedSnapshotCheckpoint />
+
+<Summary>
+  $$
+  \sum_{\text{nodes}} \text{recorded state} + \sum_{\text{channels}} \text{recorded messages} = \text{true total}
+  $$
+
+  Nothing about the Chandy-Lamport algorithm changed between the last chapter and this one — same
+  marker rule, same `runSnapshot` function, reused directly rather than reimplemented. What changed
+  is only the trace: a different initiator, and two in-flight messages instead of one, landing on
+  two different channels. That's the real payoff of a marker-based snapshot: it scales to any
+  number of in-flight messages, on any number of channels, without ever needing the system to pause.
+</Summary>
