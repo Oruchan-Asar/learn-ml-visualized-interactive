@@ -1,0 +1,104 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RasterizationCheckpoint } from "./Demos";
+
+<Hook>
+  A Gaussian's spread lives in world units — meters, say. A screen is measured in pixels. Before any of the
+  alpha-compositing from the last chapter can run, every Gaussian has to be projected onto the image plane
+  first, in the right order.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Drag the depth slider. The Gaussian's world-space spread never changes, but its footprint on screen
+  shrinks the farther away it gets pushed — the same perspective shrink a camera applies to a point's
+  *position*, just applied to a blob's *size* instead.
+</Intuition>
+
+<Formalize>
+  Approximating the camera as looking straight at each Gaussian, its projected screen-space spread is world
+  spread scaled by focal length over depth — the exact same ratio that turns a 3D point's position into a
+  pixel:
+
+  $$
+  \sigma_{\text{2D}} = \sigma_{\text{world}} \cdot \frac{f}{\text{depth}}
+  $$
+
+  Gaussians must then be alpha-composited nearest-first, exactly like NeRF's ray samples. Once rendered,
+  3DGS drops the neural network entirely: every Gaussian's own parameters — opacity, position, color,
+  covariance — get updated directly by gradient descent against a rendering loss:
+
+  $$
+  L = \|\,\text{rendered} - \text{target}\,\|^2, \qquad \theta \leftarrow \theta - \eta \cdot \frac{\partial L}{\partial \theta}
+  $$
+
+  <Variables>
+    <Variable>**$\sigma_{\text{world}}, \sigma_{\text{2D}}$** — a Gaussian's spread before and after projection.</Variable>
+    <Variable>**$f$**, **depth** — focal length and the Gaussian's distance from the camera.</Variable>
+    <Variable>**$\theta$** — any one of a Gaussian's own parameters (here, opacity); **$\eta$** — the learning rate.</Variable>
+    <Variable>**$L$** — squared-error loss between the rendered pixel and its target color.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Two Gaussians, same screen position, different depths">
+      A near, half-opaque red Gaussian (depth 5) and a far, mostly-opaque blue one (depth 10), both
+      centered exactly on the query pixel with the same projected spread. Composited *nearest-first*: red
+      claims $0.5$ of the pixel, blue claims $0.5 \times 0.9 = 0.45$ of what's left — result $(0.5, 0, 0.45)$.
+    </Step>
+    <Step label="The same two Gaussians, composited in the wrong order">
+      Farthest first instead: blue claims $0.9$ of the pixel outright, red only gets $0.1 \times 0.5 =
+      0.05$ of the leftover — result $(0.05, 0, 0.9)$. Same scene, same Gaussians, a completely different
+      pixel — because "nearest first" isn't a stylistic choice, it's what makes occlusion correct.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Step through a single Gaussian's opacity being optimized by gradient descent, starting far from the
+  target color. No MLP, no ray march — just this one parameter (and, in a real scene, thousands like it)
+  nudged directly against the rendering loss until the rendered pixel matches the photograph it's being
+  fit to.
+</Play>
+
+<WorkedExample>
+  Two more depths for the same world spread ($\sigma_{\text{world}} = 0.5$, $f = 100$):
+
+  <Steps>
+    <Step label="depth = 10">
+      $\sigma_{\text{2D}} = 0.5 \times 100 / 10 = 5$.
+    </Step>
+    <Step label="depth = 20 — twice as far">
+      $\sigma_{\text{2D}} = 0.5 \times 100 / 20 = 2.5$ — exactly half the previous spread. Doubling depth
+      always halves projected spread, for any Gaussian.
+    </Step>
+  </Steps>
+
+  And the first gradient step on opacity, starting at $0.5$ (color red, target $(1, 0.2, 0.2)$, learning
+  rate $0.1$):
+
+  <Steps>
+    <Step label="Loss at the start">
+      Rendered $= (1, 0.5, 0.5)$. Loss $= (0.5-0.2)^2 + (0.5-0.2)^2 = 0.18$ (red channel matches exactly, so
+      it contributes nothing).
+    </Step>
+    <Step label="Gradient and one step">
+      $\partial L/\partial\text{opacity} = -1.2$ exactly. One step: $0.5 - 0.1 \times (-1.2) = 0.62$ — closer
+      to the target, and the loss at $0.62$ is lower than at $0.5$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RasterizationCheckpoint />
+
+<Summary>
+  $$
+  \sigma_{\text{2D}} = \sigma_{\text{world}} \cdot \frac{f}{\text{depth}}, \qquad \theta \leftarrow \theta - \eta \frac{\partial L}{\partial \theta}
+  $$
+
+  Rendering a 3DGS scene is projection (world spread shrinks with depth) plus depth-ordered compositing
+  (the same math as the last chapter); training it is nothing more exotic than gradient descent on each
+  Gaussian's own parameters. Neither of those Gaussians has to come from a real 3D scan, though — the next
+  chapter looks at generating one from scratch, out of nothing but a text prompt or a single photo.
+</Summary>
