@@ -22,7 +22,7 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
   Nothing here is new math — it's three earlier results, composed:
 
   $$
-  \text{owner}(k) \ \text{(consistent hashing)}, \qquad I_{t+1} = I_t \cup \bigcup_{v \in I_t} \text{gossip}(v,t,k) \ \text{(gossip)}, \qquad a \prec b \iff \forall i,\ a_i \le b_i \ \text{(vector clocks)}
+  \text{owner}(k) \ \text{(consistent hashing)}, \qquad I_{t+1} = I_t \cup \bigcup_{v \in I_t} \text{gossip}(v,t,k) \ \text{(gossip)}, \qquad a \prec b \iff \forall i,\ a_i \le b_i \ (\exists i,\ a_i < b_i) \ \text{(vector clocks)}
   $$
 
   A node's answer to "who owns this key" is just `owner(k)` evaluated against *that node's own,
@@ -52,7 +52,7 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
   <PlayDemo />
 
   Push the fanout up and convergence visibly speeds up, exactly as it did in the gossip chapter.
-  Below the graph, node 0 (already informed) and node 3 (still stale) each accept a write to the
+  Below the graph, node 0 (already informed) and node 6 (still stale) each accept a write to the
   same key while they disagree about who even owns it — their vector clocks come back
   **concurrent**. Click "merge" and watch the two histories combine into one, using the identical
   `mergeClocks` function from the Dynamo-style-storage chapter.
@@ -74,13 +74,13 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
       through by hand.
     </Step>
     <Step label="A concurrent write lands mid-convergence">
-      At round 2, node 0 (informed) accepts a write, recording $\{0{:}1\}$. Node 3, the one
-      holdout, also accepts a write, recording $\{3{:}1\}$ — concurrent, because neither node's
+      At round 2, node 0 (informed) accepts a write, recording $\{0{:}1\}$. Node 6, the one
+      holdout, also accepts a write, recording $\{6{:}1\}$ — concurrent, because neither node's
       view agreed on the key's owner yet, let alone on each other's write.
     </Step>
     <Step label="Round 3 and a merge resolve everything at once">
       Once round 3 finishes, every node's local `assignKey` call agrees the owner is node 8. And
-      merging the two pending writes gives $\{0{:}1, 3{:}1\}$ — a single reconciled history, with
+      merging the two pending writes gives $\{0{:}1, 6{:}1\}$ — a single reconciled history, with
       nothing lost from either side.
     </Step>
   </Steps>

@@ -91,7 +91,7 @@ export function IntuitionDemo() {
 }
 
 const CLIENT_A: VectorClock = incrementClock({}, "0"); // node 0 (already informed) accepts a write locally
-const CLIENT_B: VectorClock = incrementClock({}, "3"); // node 3 (not yet informed) accepts a write locally, concurrently
+const CLIENT_B: VectorClock = incrementClock({}, "6"); // node 6 — the true last holdout at round 2 (fanout 2) — accepts a write locally, concurrently
 
 /** Play beat: tune the fanout, watch full convergence happen faster, and reconcile a concurrent write made mid-flight. */
 export function PlayDemo() {
@@ -142,7 +142,7 @@ export function PlayDemo() {
         </div>
         <div className={merged ? styles.verdictResolved : styles.verdictConcurrent}>{merged ? "equal" : verdict}</div>
         <div className={styles.clockColumn}>
-          <span className={styles.clockTitle}>Node 3&apos;s write (stale)</span>
+          <span className={styles.clockTitle}>Node 6&apos;s write (stale)</span>
           <span className={styles.clockSlots}>{clockLabel(CLIENT_B)}</span>
         </div>
       </div>
