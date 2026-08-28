@@ -1,0 +1,89 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, EscrowCheckpoint } from "./Demos";
+
+<Hook>
+  A blockchain agrees on blocks. But what if the thing worth agreeing on isn't just "who sent what" —
+  it's the outcome of actual logic, like an escrow that only pays out if a condition holds? Who runs that
+  logic, and how does everyone trust the result without trusting whoever ran it?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through a deposit-then-release script. Every action is a pure function of the current state — no
+  hidden variables, no server making a judgment call. Anyone who replays these same 3 actions against the
+  same starting state lands on the exact same numbers, every time.
+</Intuition>
+
+<Formalize>
+  <Steps>
+    <Step label="A contract's state is just data">
+      This escrow's state is `{ phase, balance, buyer, seller }` — nothing more than that. It starts
+      `"created"` with balance 0.
+    </Step>
+    <Step label="Actions transition state deterministically">
+      $\text{applyAction}(\text{state}, \text{action}) \to \text{state}'$ is a pure function: deposit
+      moves `created → funded`, then release or refund moves `funded → released` or `funded → refunded`.
+      Same state, same action, same result — always.
+    </Step>
+    <Step label="The state hash is what nodes actually agree on">
+      $\text{stateHash}(\text{state}) = \text{toyHash}(\text{phase} \mathbin\Vert \text{balance} \mathbin\Vert \text{buyer} \mathbin\Vert \text{seller})$.
+      Two nodes that replay the same actions independently compute the same hash without ever talking to
+      each other — the *determinism of the code* is the consensus mechanism, not a vote about it.
+    </Step>
+    <Step label="This is what 'code is law' means operationally">
+      There's no customer-support line to appeal to. Whatever `applyAction` computes from the actions
+      actually submitted is final — which is exactly why the code has to be gotten right before it runs,
+      not fixed after.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**phase** — `created`, `funded`, `released`, or `refunded`; the contract's only source of "what's happened so far."</Variable>
+    <Variable>**action** — one of deposit, release, refund; the only way the state is allowed to change.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Fund the contract, then pick which way it resolves. Both branches run through the exact same
+  `applyAction` function — nothing about the code changes based on who's watching or what they'd prefer
+  the outcome to be.
+</Play>
+
+<WorkedExample>
+  Alice deposits 50 into escrow with Bob as the seller.
+
+  <Steps>
+    <Step label="Created">
+      $\text{stateHash}(\texttt{created}, 0, \texttt{alice}, \texttt{bob}) = 905$.
+    </Step>
+    <Step label="Funded">
+      Alice deposits 50: phase becomes `funded`, balance becomes 50.
+      $\text{stateHash}(\texttt{funded}, 50, \texttt{alice}, \texttt{bob}) = 400$ — a completely
+      different hash, because the state actually changed.
+    </Step>
+    <Step label="Branch: released">
+      If the condition holds, `release` fires: $\text{stateHash}(\texttt{released}, 50, \ldots) = 367$.
+    </Step>
+    <Step label="Branch: refunded">
+      If it doesn't, `refund` fires instead: $\text{stateHash}(\texttt{refunded}, 50, \ldots) = 485$. Same
+      starting state, same deposit — a completely different final hash, because the action taken from
+      there was different.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<EscrowCheckpoint />
+
+<Summary>
+  $$
+  \text{stateHash}(\text{state}) = \text{toyHash}(\text{phase} \mathbin\Vert \text{balance} \mathbin\Vert \text{buyer} \mathbin\Vert \text{seller})
+  $$
+
+  A smart contract turns "what happened" into a deterministic state machine that every node computes
+  identically — the code itself becomes the thing the network is reaching consensus on, block by block.
+  The next chapters look at what happens when that computation has to scale across many machines at once
+  (sharding), and at how identity and cost interact to keep the whole system honest (Sybil resistance).
+</Summary>
