@@ -70,6 +70,7 @@ export function IntuitionDemo() {
         edges={EDGES}
         highlightedNodeIds={justInfected}
         readout={`round ${round}  —  ${infected.size} of ${NUM_NODES} nodes have heard the rumor`}
+        height={300}
       />
       <div className={styles.controls}>
         <div className={styles.buttons}>
@@ -98,6 +99,7 @@ export function PlayDemo() {
         edges={EDGES}
         highlightedNodeIds={justInfected}
         readout={`round ${round}  —  ${infected.size} of ${NUM_NODES} infected  —  fanout ${fanout} reaches everyone in ${full} rounds`}
+        height={300}
       />
       <div className={styles.controls}>
         <label className={styles.sliderRow}>
@@ -161,6 +163,7 @@ export function GossipCheckpoint() {
         highlightedNodeIds={justInfected}
         readout={`round ${round}  —  ${infected.size} of ${NUM_NODES} infected  —  full coverage at round ${full}`}
         passed={passed}
+        height={300}
       />
       <div className={styles.controls}>
         <label className={styles.sliderRow}>
