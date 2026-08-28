@@ -17,17 +17,28 @@ import styles from "../../part-2-classical-ml/gradient-descent-variants/DescentC
 
 const CONCEPT_ID = "sharding-in-blockchains";
 
+// Tall enough for 3 stacked nodes (the biggest shard) at SPACING apart without their id/value
+// labels colliding with a neighbor's — GraphPlayground's default 220px height packed them too
+// tightly and the labels visibly overlapped. Widened past the default 320 too, since the
+// rightmost column's longest label ("frank") otherwise clips against the right edge.
+const GRAPH_HEIGHT = 250;
+const GRAPH_WIDTH = 340;
+const TOP = 40;
+const SPACING = 80;
+
 /** Lays the 6 accounts out in 3 horizontal clusters, one column per shard, y-spread within each cluster. */
 function buildNodes(): GraphNodeSpec[] {
-  const columnX = [70, 190, 310];
+  const columnX = [70, 190, 300];
   const byShard: Record<number, string[]> = { 0: [], 1: [], 2: [] };
   for (const acct of ACCOUNTS) byShard[assignShard(acct)].push(acct);
 
+  const maxMembers = Math.max(...Object.values(byShard).map((members) => members.length));
   const nodes: GraphNodeSpec[] = [];
   for (let shard = 0; shard < NUM_SHARDS; shard++) {
     const members = byShard[shard];
+    const offset = ((maxMembers - members.length) * SPACING) / 2;
     members.forEach((acct, i) => {
-      const y = 50 + i * 60 + (3 - members.length) * 15;
+      const y = TOP + offset + i * SPACING;
       nodes.push({ id: acct, x: columnX[shard], y, value: shard, label: acct });
     });
   }
@@ -46,6 +57,8 @@ export function IntuitionDemo() {
     <>
       <GraphPlayground
         nodes={NODES}
+        height={GRAPH_HEIGHT}
+        width={GRAPH_WIDTH}
         edges={edges}
         focusNodeId="alice"
         highlightedNodeIds={["bob", "carol"]}
@@ -90,6 +103,8 @@ export function PlayDemo() {
     <>
       <GraphPlayground
         nodes={NODES}
+        height={GRAPH_HEIGHT}
+        width={GRAPH_WIDTH}
         edges={edges}
         focusNodeId={from}
         highlightedNodeIds={to ? [to] : []}
@@ -161,6 +176,8 @@ export function CrossShardCheckpoint() {
     >
       <GraphPlayground
         nodes={NODES}
+        height={GRAPH_HEIGHT}
+        width={GRAPH_WIDTH}
         edges={edges}
         focusNodeId={from}
         highlightedNodeIds={to ? [to] : []}
