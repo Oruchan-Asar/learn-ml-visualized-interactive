@@ -1,0 +1,71 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SagaCheckpoint } from "./Demos";
+
+<Hook>
+  A trip booking touches four separate services — a payments service, an airline, a hotel, a card
+  network. 2PC would hold locks across all four for the whole trip. What if one of them is a
+  third-party API that has never heard of your coordinator and never will?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through it: three steps succeed, the fourth fails — and instead of leaving the first three
+  half-done forever, each one gets explicitly undone, starting from the *most recent* and working
+  backward.
+</Intuition>
+
+<Formalize>
+  There's no vote and no coordinator holding locks. Instead, each local step $i$ is paired with its
+  own compensating action $C_i$, and one rule governs recovery:
+
+  <Steps>
+    <Step label="Run steps forward, one at a time">
+      Each step is its own local transaction — it commits immediately, on its own service, with no
+      cross-service lock held.
+    </Step>
+    <Step label="On failure, undo everything already completed">
+      If step $k$ fails, every step $0, 1, \dots, k-1$ already committed and must be compensated.
+    </Step>
+    <Step label="Undo in strict reverse order — LIFO">
+      Compensations run as a stack: the *last* thing that succeeded is the *first* thing undone.
+      This matters whenever compensations depend on each other's side effects being reversed in the
+      right order (e.g. you can't safely release funds before an in-flight charge against them is
+      cancelled).
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Try "Fail at: Charge card" — 3 compensations run, hotel first, then flight, then funds, exactly
+  reversed. Try "Fail at: Reserve funds" — the very first step — and nothing needs undoing at all,
+  because nothing had completed yet.
+</Play>
+
+<WorkedExample>
+  Booking hotel fails (index 2), after funds were reserved and the flight was booked.
+
+  <Steps>
+    <Step label="What completed before the failure">
+      Step 0 (Reserve funds) and step 1 (Book flight) both succeeded. Step 2 (Book hotel) fails.
+    </Step>
+    <Step label="Reverse the completed list">
+      Completed order was $[0, 1]$; compensation order is the reverse, $[1, 0]$.
+    </Step>
+    <Step label="Run the compensations">
+      First undo step 1's action: "Cancel flight." Then undo step 0's: "Release funds." Charge card
+      (step 3) never ran, so it needs no compensation at all.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SagaCheckpoint />
+
+<Summary>
+  A saga trades distributed locking for explicit, per-step undo actions run in strict reverse order
+  on failure — trading atomicity's clean guarantee ("all or nothing, instantly") for something
+  weaker but far more workable across independent services: "all steps complete, or every completed
+  step gets explicitly, eventually, undone."
+</Summary>
