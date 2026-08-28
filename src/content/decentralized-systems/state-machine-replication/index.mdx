@@ -1,0 +1,80 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SmrCheckpoint } from "./Demos";
+
+<Hook>
+  Raft and Paxos both end with the same output: an agreed-upon, ordered list of commands. Neither one says
+  anything about *what those commands do*. So how does "everyone agrees on a log" turn into "everyone agrees
+  on the state of a running service"?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step the Follower forward one command at a time. It started behind the Leader, applying nothing — but each
+  click applies the exact next command from the same log. Watch it converge to the Leader's exact value once
+  it's caught up.
+</Intuition>
+
+<Formalize>
+  **State machine replication** is consensus plus one extra ingredient: every replica runs the same
+  **deterministic state machine** over the same ordered log.
+
+  <Steps>
+    <Step label="Consensus produces the log">
+      Raft, Paxos, or PBFT agree on the *order* of commands — not on what they mean or do.
+    </Step>
+    <Step label="Every replica applies the same function">
+      Each replica feeds that log, entry by entry, into an `applyCommand(state, cmd)` function that is a pure,
+      deterministic function of its two inputs — no clocks, no randomness, no reading anything outside the log.
+    </Step>
+    <Step label="Same log + same function = same state">
+      Because the function is deterministic, any two replicas that have applied the same *prefix* of the log —
+      regardless of when — are guaranteed to be in exactly the same state.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**log** — the ordered list of commands consensus agreed on.</Variable>
+    <Variable>**applyCommand(state, cmd)** — a pure function: same inputs always produce the same output.</Variable>
+    <Variable>**state** — the replica's local copy of whatever's being replicated, built entirely from the log.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Slide the same number of commands into two different *orderings* of the identical five-command set. Determinism
+  guarantees agreement *given the same order* — it says nothing about two different orders of the same commands,
+  and the diverging bars show exactly why the order itself has to be agreed on, not just the set of commands.
+</Play>
+
+<WorkedExample>
+  A single-key register, starting empty. The agreed log:
+
+  <Steps>
+    <Step label="Apply each command in order">
+      `SET x=10` → x=10. `ADD x+=5` → x=15. `ADD x+=-3` → x=12. `SET x=100` → x=100. `ADD x+=1` → x=101.
+    </Step>
+    <Step label="A replica lagging at command 3">
+      Suppose a replica only applied the first three commands: it's sitting at x=12 — exactly what
+      `appliedPrefix(LOG, 3)` returns.
+    </Step>
+    <Step label="It catches up, not restarts">
+      Applying the remaining two commands (`SET x=100`, `ADD x+=1`) from x=12 lands on x=101 — identical to a
+      replica that applied all five commands from the start. Determinism doesn't care how you got to a prefix,
+      only that you apply the same suffix afterward.
+    </Step>
+    <Step label="Now reorder the same five commands">
+      Swap the first and fourth entries: `SET x=100` now runs *before* `SET x=10`. Same five commands, same
+      final `ADD x+=1` — but `set` isn't commutative with `add`, so the final value is x=11, not x=101.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SmrCheckpoint />
+
+<Summary>
+  Consensus's job ends at producing an agreed, ordered log. State machine replication is the other half: apply
+  that log through a deterministic function, and agreement on the log becomes agreement on an entire service's
+  state — no matter how many replicas, or how far behind any one of them started.
+</Summary>
