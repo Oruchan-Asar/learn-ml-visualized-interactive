@@ -1,0 +1,86 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, SpeculativeDecodingCheckpoint } from "./Demos";
+
+<Hook>
+  Autoregressive decoding generates one token, then feeds it back in to generate the next — one full
+  forward pass through a huge model, per token. What if a much smaller, much cheaper model could guess
+  several tokens ahead, and the big model only had to check whether it agreed?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through one speculative-decoding session, round by round. A small draft model proposes a few tokens;
+  the big model verifies all of them in a single forward pass, accepting a matching prefix and always
+  contributing one more correct token for free.
+</Intuition>
+
+<Formalize>
+  Given the tokens still remaining and the draft model's guesses for this round, the big model accepts the
+  longest matching prefix, then adds one **bonus token** — its own correct next prediction, which came out
+  of the same verification pass regardless of whether every guess was right:
+
+  $$
+  \text{accepted} = \max\{k : \text{guess}_i = \text{target}_i \;\forall i < k\}
+  $$
+
+  <Variables>
+    <Variable>**$\text{guess}_i$** — the draft model's $i$-th proposed token this round.</Variable>
+    <Variable>**$\text{target}_i$** — the token the big model would actually generate at that position.</Variable>
+    <Variable>**$\text{accepted}$** — how many leading guesses matched, before the first mismatch (or the end of the guesses).</Variable>
+  </Variables>
+
+  $$
+  \text{tokens emitted} = \text{accepted} + \mathbb{1}[\text{target continues past the accepted prefix}]
+  $$
+
+  <Steps>
+    <Step label="One big-model call verifies the whole round">
+      Checking whether several guesses match doesn't cost more big-model calls than checking whether one
+      does — the whole draft sequence is scored in one parallel forward pass.
+    </Step>
+    <Step label="Throughput is tokens emitted per call, not per token">
+      Standard decoding is exactly 1 token/call — that's the floor. Any round that accepts even one guess,
+      plus its bonus, already beats it.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Across the whole session, tokens emitted divided by big-model calls made — comfortably above the
+  autoregressive baseline of 1, purely because most rounds get more than zero guesses right.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Round 1: guesses [the, cat, dog] against [the, cat, sat, ...]">
+      "the" and "cat" match, "dog" doesn't match "sat" — accepted = 2. Target continues past that, so one
+      bonus token: emits [the, cat, sat], 3 tokens.
+    </Step>
+    <Step label="Round 2: guesses [on, the, moon] against [on, the, mat, ...]">
+      Same shape: 2 accepted, 1 bonus, 3 tokens emitted — [on, the, mat].
+    </Step>
+    <Step label="Round 3: guesses [and, slept, forever] against [and, slept] (target ends here)">
+      Both guesses match, but the target is exhausted after them — no bonus token available. 2 accepted, 2
+      emitted: [and, slept]. Session total: 8 tokens in 3 calls, $8/3 \approx 2.67$ tokens/call.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<SpeculativeDecodingCheckpoint />
+
+<Summary>
+  $$
+  \text{tokens emitted} = \text{accepted} + \mathbb{1}[\text{target continues}]
+  $$
+
+  Medusa pushes the same idea further by attaching several extra prediction heads directly onto the big
+  model itself, instead of running a whole separate draft model — each head guesses a different future
+  position, verified the same way, in the same single forward pass. Either way, the speedup is entirely a
+  bet: it's free when the draft agrees with the big model, and costs nothing extra when it doesn't, because
+  verification was always going to take one big-model call regardless of how many guesses survive. The
+  final production topic returns to training at scale — splitting one model and its data across many GPUs,
+  where "communication cost" becomes the thing worth optimizing next.
+</Summary>
