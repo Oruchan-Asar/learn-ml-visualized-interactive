@@ -52,13 +52,13 @@ import { IntuitionDemo, PlayDemo, ChandyLamportSnapshotsCheckpoint } from "./Dem
   <PlayDemo />
 
   Step to the end of the trace and toggle "Count channel state" off. Watch the total drop from 35
-  to 30 — the $5 that N2 sent to N0 didn't vanish, it's just no longer being counted anywhere. Turn
-  channel counting back on and the $5 reappears, safely logged against channel N2 → N0, and the
+  to 30 — the \$5 that N2 sent to N0 didn't vanish, it's just no longer being counted anywhere. Turn
+  channel counting back on and the \$5 reappears, safely logged against channel N2 → N0, and the
   total matches the true starting total again.
 </Play>
 
 <WorkedExample>
-  N0 = 10, N1 = 10, N2 = 15 (total 35). Before the snapshot starts, N2 sends $5 to N0.
+  N0 = 10, N1 = 10, N2 = 15 (total 35). Before the snapshot starts, N2 sends \$5 to N0.
 
   <Steps>
     <Step label="N0 initiates">
@@ -66,16 +66,16 @@ import { IntuitionDemo, PlayDemo, ChandyLamportSnapshotsCheckpoint } from "./Dem
       of its incoming channels, N1→N0 and N2→N0.
     </Step>
     <Step label="The in-flight $5 gets logged, not lost">
-      N0 receives the $5 from N2 before N2's marker arrives on that same channel — channel N2→N0
+      N0 receives the \$5 from N2 before N2's marker arrives on that same channel — channel N2→N0
       is still open, so this message is logged into its channel state.
     </Step>
     <Step label="N1 and N2 record on their first marker">
-      Each records its own balance (10 and 10 — N2's balance already reflects having sent the $5)
+      Each records its own balance (10 and 10 — N2's balance already reflects having sent the \$5)
       and starts logging its one remaining incoming channel.
     </Step>
     <Step label="Every channel closes">
       As each node's remaining marker arrives, that channel closes. Five of the six channels close
-      empty. Channel N2→N0 closes holding the $5. Recorded states sum to 30; channel state adds the
+      empty. Channel N2→N0 closes holding the \$5. Recorded states sum to 30; channel state adds the
       missing 5, for a snapshot total of 35 — exactly the true starting total.
     </Step>
   </Steps>
