@@ -1,0 +1,86 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, NerfCheckpoint } from "./Demos";
+
+<Hook>
+  A voxel grid or a mesh stores a scene's geometry explicitly — every cell, every vertex, sitting in memory
+  waiting to be read. What if a scene were instead stored as *weights*: a tiny function that, when you ask
+  it "what's here, and what does it look like from this direction?", answers on demand?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A camera ray passes through three samples: a half-transparent red, a half-transparent green, then a fully
+  opaque blue surface behind them. Drag the red sample's opacity. Push it toward 1 and it steals almost all
+  the color for itself — nothing behind it can show through an opaque sample. Drop it toward 0 and green,
+  then blue, get their turn.
+</Intuition>
+
+<Formalize>
+  A NeRF is a tiny MLP: feed it a 3D point and a viewing direction, it hands back a density $\sigma$ (how
+  "solid" that point is) and a color. Marching a ray through the scene takes samples along it, turns each
+  one's density into an opacity via the step size $\delta$ between samples, and composites them exactly
+  like alpha-blending layers in image editors — front-to-back:
+
+  $$
+  \alpha_i = 1 - e^{-\sigma_i \delta_i}, \qquad T_i = \prod_{j<i}(1 - \alpha_j), \qquad C = \sum_i T_i \alpha_i c_i
+  $$
+
+  <Variables>
+    <Variable>**$\sigma_i$** — the density the MLP predicts at sample $i$; **$\delta_i$** — the step size (world-space gap) to the next sample.</Variable>
+    <Variable>**$\alpha_i$** — sample $i$'s own opacity: denser samples, or longer steps through them, block more light.</Variable>
+    <Variable>**$T_i$** — transmittance: the fraction of light that survives every *nearer* sample before reaching sample $i$.</Variable>
+    <Variable>**$c_i$** — the RGB color the MLP predicts at sample $i$.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Sample 1 (red): alpha=0.5">
+      Full transmittance so far ($T_1 = 1$), so its contribution is $1 \times 0.5 = 0.5$ — half the pixel is
+      already claimed before any other sample is even considered.
+    </Step>
+    <Step label="Sample 2 (green): alpha=0.5">
+      Only $T_2 = 1 - 0.5 = 0.5$ of the pixel is left to compete for. Contribution $= 0.5 \times 0.5 =
+      0.25$.
+    </Step>
+    <Step label="Sample 3 (blue, fully opaque): alpha=1">
+      $T_3 = 0.5 \times (1-0.5) = 0.25$ remains. Contribution $= 0.25 \times 1 = 0.25$. Total: $0.5 + 0.25 +
+      0.25 = 1$ — the ray terminated on something fully opaque, so every bit of the pixel got assigned.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Now drag density $\sigma$, not raw opacity — the actual quantity a NeRF's MLP predicts. Watch how quickly
+  $\alpha = 1 - e^{-\sigma\delta}$ saturates toward 1: by $\sigma \approx 3$ the sample is already almost
+  fully opaque, which is why NeRF densities are usually shown on a log-ish scale in papers.
+</Play>
+
+<WorkedExample>
+  Two more density values for sample 1 (step size $\delta = 1$, samples 2-3 unchanged):
+
+  <Steps>
+    <Step label="sigma = 2 (moderately dense)">
+      $\alpha_1 = 1 - e^{-2} \approx 0.8647$. $T_2 = 1 - 0.8647 = 0.1353$, so sample 3's final weight drops
+      to $T_2 \times (1-0.5) \times 1 \approx 0.0677$ — a dense first sample starves everything behind it.
+    </Step>
+    <Step label="sigma = 0.1 (nearly transparent)">
+      $\alpha_1 = 1 - e^{-0.1} \approx 0.0952$. $T_2 \approx 0.9048$, sample 3's weight becomes $0.9048
+      \times 0.5 \times 1 \approx 0.4524$ — almost the same as if sample 1 weren't there at all.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<NerfCheckpoint />
+
+<Summary>
+  $$
+  \alpha_i = 1 - e^{-\sigma_i \delta_i}, \qquad C = \sum_i T_i \alpha_i c_i
+  $$
+
+  A NeRF replaces explicit geometry with a tiny neural function queried millions of times per image — every
+  pixel needs its own ray, and every ray needs dozens of MLP calls. That's exactly why it's slow: the next
+  chapter keeps the *idea* (query a point, get back a feature) but replaces the "tiny MLP, queried a lot"
+  with "tiny MLP, queried a lot less, backed by a fast lookup table."
+</Summary>
