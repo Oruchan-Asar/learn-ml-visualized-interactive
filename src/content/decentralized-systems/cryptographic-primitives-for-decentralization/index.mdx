@@ -1,0 +1,96 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MerkleCheckpoint } from "./Demos";
+
+<Hook>
+  Thousands of computers, none of them trusting each other, need to agree on one shared ledger — and
+  instantly notice if a single character in a single past transaction gets changed. No central server is
+  checking. What makes that even possible?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Every transaction gets hashed. Every pair of hashes gets combined into a new hash, one level up. Do that
+  until only one hash is left — the **root**. Nothing here is fixed in place; if any transaction below
+  changes, the specific hash sitting above it changes too, and so does everything above *that*.
+</Intuition>
+
+<Formalize>
+  This Part shares one concrete, deterministic hash function everywhere it's needed: `toyHash(input)`,
+  which returns a number in $[0, 1000)$, and `toyHashPair(left, right)`, which combines two child hashes
+  into a parent's. Real hash functions (SHA-256) return 256-bit numbers instead of one in $[0,1000)$, but
+  behave the same way qualitatively — deterministic, and a one-character change in the input scrambles the
+  output unpredictably (the *avalanche effect*).
+
+  <Steps>
+    <Step label="Hash every transaction">
+      Leaf $i$'s hash is $h_i = \text{toyHash}(\text{tx}_i)$ — one hash per transaction, independent of
+      every other transaction.
+    </Step>
+    <Step label="Combine pairs going up">
+      Each parent combines two children: $p_{i} = \text{toyHashPair}(h_{2i}, h_{2i+1})$. With 4
+      transactions that gives 2 parents.
+    </Step>
+    <Step label="Repeat until one hash remains — the root">
+      The root is the parents' parent: $\text{root} = \text{toyHashPair}(p_0, p_1)$. A block's entire set
+      of transactions is now represented by exactly one number.
+    </Step>
+    <Step label="A digital signature binds one signer to one message">
+      A signature is a value only the holder of a private key can produce for a given message, and anyone
+      who knows the corresponding public key can check. This chapter's toy version, $\text{toySign}(m, k)$,
+      is symmetric rather than truly asymmetric — but it demonstrates the operational property that
+      matters: change the key, or the message, and verification fails.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**$\text{tx}_i$** — the $i$-th transaction, as raw text.</Variable>
+    <Variable>**$h_i$** — that transaction's leaf hash, $\text{toyHash}(\text{tx}_i)$.</Variable>
+    <Variable>**$p_i$** — a parent hash, combining two children with $\text{toyHashPair}$.</Variable>
+    <Variable>**root** — the single hash at the top, standing in for every transaction below it at once.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Tamper with transaction 0 and watch two things break at once: the Merkle root changes (anyone recomputing
+  it from the transactions sees a mismatch instantly), and Alice's signature — computed over the *original*
+  wording — no longer verifies against the tampered one. Two independent tripwires over the same data.
+</Play>
+
+<WorkedExample>
+  Four fixed transactions: `alice pays bob 3`, `bob pays carol 1`, `carol pays dave 2`, `dave pays alice 1`.
+
+  <Steps>
+    <Step label="Hash each leaf">
+      $h_0=\text{toyHash}(\texttt{"alice pays bob 3"})=459$, $h_1=416$, $h_2=636$, $h_3=976$.
+    </Step>
+    <Step label="Combine into parents">
+      $p_0=\text{toyHashPair}(459,416)=741$ and $p_1=\text{toyHashPair}(636,976)=229$.
+    </Step>
+    <Step label="Combine into the root">
+      $\text{root}=\text{toyHashPair}(741,229)=577$.
+    </Step>
+    <Step label="Now tamper with transaction 0">
+      Change it to `alice pays bob 9`. Its leaf hash becomes $465$ instead of $459$ — a one-character
+      change, an unrelated-looking output. Parent 0 becomes $\text{toyHashPair}(465,416)=808$ instead of
+      $741$. Parent 1 is untouched, still $229$. The root becomes $\text{toyHashPair}(808,229)=301$ —
+      nowhere near the original $577$, even though only one transaction out of four changed.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MerkleCheckpoint />
+
+<Summary>
+  $$
+  h_i = \text{toyHash}(\text{tx}_i), \qquad p_i = \text{toyHashPair}(h_{2i}, h_{2i+1}), \qquad \text{root} = \text{toyHashPair}(p_0, p_1)
+  $$
+
+  A Merkle tree compresses any number of transactions into one root hash, and changing *any* transaction
+  anywhere in the tree changes the root — no central authority has to re-check every transaction by hand;
+  everyone just compares one number. Digital signatures add the other half: proof that a specific party
+  authorized a specific transaction in the first place. The next chapters build an entire consensus
+  mechanism — proof-of-work — on top of exactly this hash function.
+</Summary>
