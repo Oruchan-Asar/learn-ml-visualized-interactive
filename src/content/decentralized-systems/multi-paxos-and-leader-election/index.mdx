@@ -1,0 +1,78 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MultiPaxosCheckpoint } from "./Demos";
+
+<Hook>
+  Plain Paxos runs both its phases for every single decision. If the same node keeps winning the prepare phase
+  every time, why keep asking?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same 3 acceptors as before, but now deciding 5 log slots in a row. Plain Paxos pays for prepare/promise every
+  time; Multi-Paxos, with a stable leader, only pays once.
+</Intuition>
+
+<Formalize>
+  Once a leader has run Phase 1 (prepare/promise) successfully and no other proposer has interfered, every
+  acceptor has already promised to accept that leader's numbers. The leader can skip straight to Phase 2
+  (accept/accepted) for every subsequent decision — right up until something disrupts its leadership.
+
+  Counting message-hops per round trip (prepare, promise, accept, accepted = 4 for a full round; accept, accepted
+  = 2 for an accept-only round):
+
+  $$
+  M_{\text{plain}}(k) = 4k \qquad M_{\text{multi}}(k) = 4 + 2(k-1) = 2k+2
+  $$
+
+  <Variables>
+    <Variable>**$k$** — the number of log slots (decisions) being made.</Variable>
+    <Variable>**$M_{\text{plain}}(k)$** — total messages if every decision re-runs both phases.</Variable>
+    <Variable>**$M_{\text{multi}}(k)$** — total messages with one stable leader skipping Phase 1 after the first decision.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Only the first decision pays full price">
+      Decision 1 still needs a full round (4 messages) to establish the leader's numbers are trusted.
+    </Step>
+    <Step label="Every decision after that is cheaper">
+      Decisions 2 through $k$ only need the accept/accepted round trip — 2 messages each.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Slide $k$ up. The gap between the two bars is the savings — it grows by 2 messages for every extra decision,
+  because Multi-Paxos never repeats the prepare phase as long as the leader stays the same.
+</Play>
+
+<WorkedExample>
+  $k = 5$ decisions, one stable leader throughout:
+
+  <Steps>
+    <Step label="Plain Paxos">
+      $$M_{\text{plain}}(5) = 4 \times 5 = 20 \text{ messages}$$
+    </Step>
+    <Step label="Multi-Paxos">
+      $$M_{\text{multi}}(5) = 4 + 2(5-1) = 4 + 8 = 12 \text{ messages}$$
+    </Step>
+    <Step label="Savings">
+      $$20 - 12 = 8 \text{ messages saved}$$
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MultiPaxosCheckpoint />
+
+<Summary>
+  $$
+  M_{\text{multi}}(k) = 2k + 2, \qquad \text{savings} = 2(k-1)
+  $$
+
+  Multi-Paxos is just repeated Paxos with the prepare phase amortized across many decisions instead of paid for
+  every time — as long as the leader stays stable. When the leader changes, whoever takes over has to re-run
+  Phase 1 once before it can go back to skipping it, exactly the way Raft's leader election (next few chapters)
+  re-establishes trust after a crash.
+</Summary>
