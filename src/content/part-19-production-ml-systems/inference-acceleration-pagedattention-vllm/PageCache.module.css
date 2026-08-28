@@ -1,0 +1,113 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  width: 208px;
+  margin: 12px 0;
+}
+
+.cell {
+  aspect-ratio: 1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 11px;
+  font-weight: 600;
+  border: 1px solid var(--line);
+}
+
+.used {
+  background: var(--accent2);
+  color: var(--paper-raised);
+  border-color: var(--accent2);
+}
+
+.wasted {
+  background: repeating-linear-gradient(45deg, var(--accent), var(--accent) 4px, var(--paper-raised) 4px, var(--paper-raised) 8px);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.free {
+  background: var(--paper-raised);
+  border-style: dashed;
+  color: var(--ink-faint);
+}
+
+.legend {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  color: var(--ink-soft);
+  margin: 4px 0 12px;
+}
+
+.legendSwatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 5px;
+  vertical-align: -1px;
+  border: 1px solid var(--line);
+}
+
+.readout {
+  background: var(--paper-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 12px 16px;
+  font-size: 14px;
+}
+
+.readout p {
+  margin: 3px 0;
+}
+
+.grids {
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.gridColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.gridLabel {
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+
+.candidateList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0;
+}
+
+.candidate {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.candidateActive {
+  composes: candidate;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--paper-raised);
+}

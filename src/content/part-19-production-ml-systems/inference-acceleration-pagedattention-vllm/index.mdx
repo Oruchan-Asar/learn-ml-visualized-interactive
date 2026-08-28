@@ -1,0 +1,97 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PagedAttentionCheckpoint } from "./Demos";
+
+<Hook>
+  Every sequence a language model is generating needs its own KV-cache (the running memory of every token's
+  key and value vectors) — and nobody knows in advance how long a sequence will run. Reserve a block big
+  enough for the worst case, for every sequence, and most of what you reserved sits empty the whole time.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Three sequences, three very different lengths, sharing one small cache. Toggle between reserving a fixed
+  block per sequence and allocating page by page, and watch how much of the cache is actually doing
+  something.
+</Intuition>
+
+<Formalize>
+  The naive scheme reserves the same fixed block for every sequence, sized for the longest one it might
+  ever need to hold — so the reservation never depends on how long the sequence actually turns out to be:
+
+  $$
+  \text{naive}(\ell) = R
+  $$
+
+  PagedAttention instead manages the cache the way an OS manages memory: fixed-size **pages**, allocated to
+  a sequence only as it actually grows, one whole page at a time:
+
+  $$
+  \text{paged}(\ell) = \left\lceil \frac{\ell}{P} \right\rceil \cdot P
+  $$
+
+  <Variables>
+    <Variable>**$\ell$** — a sequence's actual length so far, in tokens.</Variable>
+    <Variable>**$R$** — the naive scheme's fixed per-sequence reservation.</Variable>
+    <Variable>**$P$** — the page size (tokens per page).</Variable>
+  </Variables>
+
+  Whatever's allocated but not holding a real token is wasted, and that fraction of the whole cache is its
+  **fragmentation**:
+
+  $$
+  \text{fragmentation} = \frac{\text{allocated} - \text{used}}{\text{allocated}}
+  $$
+
+  <Steps>
+    <Step label="Naive waste is unbounded by how the sequence actually turns out">
+      A sequence that stops after 1 token still holds its entire reservation — the gap between what's
+      reserved and what's used can be almost the whole block.
+    </Step>
+    <Step label="Paged waste is capped at less than one page">
+      The only place a paged sequence can waste anything is inside its own *last*, partially-filled page —
+      at most $P - 1$ tokens' worth, no matter how long the sequence ran before that.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  The exact same three sequences, laid out both ways at once. The naive grid reserves a full, fixed block
+  per sequence regardless of how much of it is ever touched; the paged grid only ever wastes inside each
+  sequence's own last page — everything else is either in use or still free for someone else.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Three sequences, lengths 1, 4, and 2 — 7 tokens total">
+      Naive: each reserves 4 slots regardless of length, so $3 \times 4 = 12$ slots allocated for 7 used —
+      5 wasted, fragmentation $5/12 \approx 0.417$.
+    </Step>
+    <Step label="The same three sequences, paged (page size 2)">
+      $\lceil 1/2 \rceil \cdot 2 = 2$, $\lceil 4/2 \rceil \cdot 2 = 4$, $\lceil 2/2 \rceil \cdot 2 = 2$ — total
+      $2+4+2=8$ slots for the same 7 used tokens.
+    </Step>
+    <Step label="Only 1 slot wasted">
+      $8 - 7 = 1$, fragmentation $1/8 = 0.125$ — the length-1 sequence's single half-empty page is the only
+      waste left in the entire cache.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PagedAttentionCheckpoint />
+
+<Summary>
+  $$
+  \text{paged}(\ell) = \left\lceil \ell/P \right\rceil P
+  $$
+
+  This is exactly the trick vLLM's PagedAttention is named for: treat KV-cache slots the way an operating
+  system treats physical memory pages, and let any sequence's logical cache be scattered across whatever
+  physical pages happen to be free. What used to be wasted reservation becomes cache available for *more
+  concurrent sequences* — which is where vLLM's throughput gains actually come from, not from a faster
+  attention kernel. The next chapter asks a different question about that same serving loop: instead of
+  generating one token per big-model call, can a cheap draft process guess several ahead and let the big
+  model verify them all in one pass?
+</Summary>
