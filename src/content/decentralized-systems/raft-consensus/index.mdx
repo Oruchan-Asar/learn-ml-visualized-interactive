@@ -1,0 +1,82 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, RaftCheckpoint } from "./Demos";
+
+<Hook>
+  Paxos is provably correct, and famously hard to hold in your head. Raft asks the same question — how does a
+  cluster agree on a value while nodes crash and restart — but starts from "can a new engineer trace this on a
+  whiteboard?"
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Click a voter. Each one runs the same two-question check against the candidate's request: is your term at
+  least as new as mine, and is your log at least as caught-up as mine? Only if both hold does it grant its vote.
+</Intuition>
+
+<Formalize>
+  Raft splits the problem into leader election (this chapter's focus), log replication, and safety — each one
+  understandable on its own. A **candidate** requests votes by sending its current **term** and the position of
+  its **last log entry**. A **voter** grants a vote only if both checks pass:
+
+  <Steps>
+    <Step label="Term freshness">
+      Reject any request from an older term than the voter's own. Once a voter has already granted a vote to
+      someone in the current term, it refuses everyone else until the next term.
+    </Step>
+    <Step label="Log up-to-dateness">
+      Compare the candidate's last log entry against the voter's own: the higher term wins outright; if terms
+      are tied, the longer log wins. A candidate whose log is behind can never win a vote, which is exactly what
+      keeps a committed entry from ever being overwritten.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**term** — a monotonically increasing election number; at most one leader per term.</Variable>
+    <Variable>**lastLog** — the (term, index) of a node's most recent log entry, used to compare freshness.</Variable>
+    <Variable>**votedFor** — who a voter has already committed its one vote to in the current term, if anyone.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Run the election: N1 becomes a candidate for term 5 and asks the other four nodes for their vote. Watch which
+  ones grant and which reject, and read off whether that's enough for a majority.
+</Play>
+
+<WorkedExample>
+  Five nodes, N1–N5. N1 becomes a candidate for term 5 with last log entry (term 4, index 10) and requests votes.
+
+  <Steps>
+    <Step label="N2 — equal log">
+      N2's last entry is (term 4, index 10) — identical to N1's. Equal terms, and the index tie-breaker is a
+      `>=` comparison, so N1's log counts as at least as up to date. N2 grants.
+    </Step>
+    <Step label="N3 — behind on term">
+      N3's last entry is (term 3, index 12) — a longer log, but from an older term. Term comparison happens
+      first: N1's term 4 beats N3's term 3 outright, regardless of index. N3 grants.
+    </Step>
+    <Step label="N4 — behind on index">
+      N4's last entry is (term 4, index 9), same term as N1 but a shorter log. N1's index 10 is at least as
+      current. N4 grants.
+    </Step>
+    <Step label="N5 — ahead on index">
+      N5's last entry is (term 4, index 11) — same term, but a *longer* log than N1's. N1 is not at least as
+      up to date, so N5 rejects.
+    </Step>
+    <Step label="Tally">
+      N1 collects grants from N2, N3, and N4, plus its own self-vote: 4 of 5. `hasMajority(4, 5)` is true, so N1
+      wins the term-5 election.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<RaftCheckpoint />
+
+<Summary>
+  Raft's leader election is two checks applied uniformly by every voter: reject stale terms, and never vote for
+  a candidate whose log could lose committed entries. Those two checks are exactly `isLogAtLeastAsUpToDate` and
+  the term guard inside `decideVote` — the same functions the capstone traces by hand across a harder,
+  multi-candidate scenario.
+</Summary>
