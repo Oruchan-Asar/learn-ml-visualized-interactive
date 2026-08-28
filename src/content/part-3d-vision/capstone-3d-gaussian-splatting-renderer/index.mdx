@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  Every piece is on the table: a camera that turns 3D points into pixels, a Gaussian's falloff-weighted
+  opacity, depth-ordered alpha compositing. Nothing left to introduce — just wire them together and render
+  an actual pixel, start to finish.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A small red Gaussian sits close to the camera, a bigger blue one sits farther back and slightly off to
+  the side. Drag the query pixel across the scene: right where the red one projects, the pixel is almost
+  pure red; drift toward the blue one's projected center and it shifts, tempered by however much red is
+  still bleeding through in front of it.
+</Intuition>
+
+<Formalize>
+  The full pipeline, chained: **project** (ch. 2's camera, applied to each Gaussian's center, plus ch. 5's
+  world-to-screen spread shrink), then **composite** (ch. 4's falloff-weighted opacity, ch. 5's
+  nearest-first ordering) —
+
+  $$
+  (x, y) = \text{intrinsics}(\text{perspective\_divide}(\text{world\_to\_camera}(\mu))), \qquad
+  \sigma_{\text{2D}} = \sigma_{\text{world}} \cdot \frac{f}{\text{depth}}
+  $$
+
+  $$
+  C = \sum_i T_i \cdot \text{opacity}_i \cdot \exp\!\left(-\tfrac{1}{2}\tfrac{\|p - (x_i,y_i)\|^2}{\sigma_{\text{2D},i}^2}\right) \cdot c_i \;+\; T_{\text{final}} \cdot \text{background}
+  $$
+
+  <Variables>
+    <Variable>**$\mu$** — a Gaussian's world-space center; $(x, y)$ — where it projects to on screen.</Variable>
+    <Variable>**$\sigma_{\text{world}}, \sigma_{\text{2D}}$** — a Gaussian's spread before and after projection.</Variable>
+    <Variable>**$T_i$** — transmittance remaining before Gaussian $i$; **$T_{\text{final}}$** — what's left after every Gaussian, painted with the background.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Project both Gaussians through the same pinhole camera as chapter 2">
+      The near, on-axis Gaussian ($\mu = (0,0,5)$) projects to the principal point $(50, 50)$ with
+      $\sigma_{\text{2D}} = 0.1 \times 100/5 = 2$. The farther, off-axis one ($\mu = (0.3, 0, 10)$) projects
+      to $(53, 50)$ with $\sigma_{\text{2D}} = 0.3 \times 100/10 = 3$.
+    </Step>
+    <Step label="Composite at the near Gaussian's own projected center, (50, 50)">
+      Weight is exactly 1 there, so the near Gaussian's contribution is just its opacity: $0.6$.
+      Transmittance remaining: $0.4$.
+    </Step>
+    <Step label="The far Gaussian and the background split what's left">
+      3 units away in a spread-3 blob, the far Gaussian's weight is $e^{-0.5} \approx 0.6065$, giving alpha
+      $\approx 0.5459$ and contribution $\approx 0.4 \times 0.5459 \approx 0.2183$. The remaining
+      transmittance $\approx 0.1816$ goes to the white background. Final pixel $\approx (0.782, 0.182,
+      0.400)$ — mostly red, tinted by blue, softened by background white.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Same scene, formula values spelled out live: watch $\sigma_{\text{2D}}$ shrink for the farther Gaussian
+  (it's already smaller on screen despite being the physically *larger* one, $\sigma_{\text{world}} = 0.3$
+  vs. $0.1$) and watch each Gaussian's contribution bar move as the query pixel crosses between them.
+</Play>
+
+<WorkedExample>
+  Two more query pixels through the same rendered scene:
+
+  <Steps>
+    <Step label="Query pixel (53, 50) — the far Gaussian's own projected center">
+      Now the *far* Gaussian's weight is 1 there instead: its raw alpha is $0.9$, but it composites
+      *second* (nearest-first), so its actual contribution depends on how much the near Gaussian (weaker
+      here, off its own center) left behind.
+    </Step>
+    <Step label="Query pixel (60, 50) — past both projected centers">
+      Both Gaussians' weights have decayed further from their falloffs; the background's white starts to
+      dominate the composited pixel, since neither Gaussian has much opacity left to contribute out there.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapstoneCheckpoint />
+
+<Summary>
+  This is the entire Part, chained into one function: a camera projects Gaussians from 3D to 2D (ch. 2, 5),
+  each Gaussian's opacity falls off from its projected center (ch. 4), depth order decides who paints first
+  (ch. 5), and the whole pipeline is differentiable end to end so every parameter — position, spread,
+  opacity, color — can be optimized directly against real photographs (ch. 5's gradient descent). Where the
+  starting Gaussians come from — a real 3D scan, or conjured from a text prompt (ch. 6) — is a separate
+  question from how, once you have them, you turn them into a pixel. That "how" is what this capstone just
+  rendered.
+</Summary>
