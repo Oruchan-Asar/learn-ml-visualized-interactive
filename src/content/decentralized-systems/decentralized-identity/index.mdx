@@ -1,0 +1,109 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, DecentralizedIdentityCheckpoint } from "./Demos";
+
+<Hook>
+  A bar wants to know you're over 21. A university wants to know an applicant really graduated. In the
+  physical world both checks go straight to the source — call the DMV, call the registrar. Now imagine
+  millions of these checks a day, all needing an answer instantly, with no issuer able to stay online for
+  every single one. Can "prove it" ever work without a live phone call to whoever vouches for you?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  A credential is just four fields: who issued it, who it's about, what it claims, and a signature that
+  ties the first three together. Verifying one is two completely local checks — recompute the signature
+  from the credential's own fields, and look the issuer up in a small list published once, in advance.
+  Switch the issuer above and watch the verdict flip without a single message leaving the browser.
+</Intuition>
+
+<Formalize>
+  A real system uses public-key signatures; this course's toy stand-in reuses the same `toyHash` /
+  `toyHashPair` from the blockchain chapters, so "sign" and "verify" mean one concrete, reproducible
+  computation throughout. A credential is the triple (issuer, subject, claim) plus a signature:
+
+  $$
+  \text{signature} = \text{toyHashPair}\big(\text{toyHash}(\text{issuer}),\ \text{toyHash}(\text{subject} \,|\, \text{claim})\big)
+  $$
+
+  Nobody who doesn't reproduce this exact computation over this exact triple can land on the same number
+  — change one character of the claim, or the subject, or the issuer, and the signature comes out
+  unrelated, with no partial credit. Verifying a credential is two independent checks, both done entirely
+  offline:
+
+  <Variables>
+    <Variable>**issuer, subject, claim** — the three fields the signature is computed over; presented alongside the credential.</Variable>
+    <Variable>**signature** — the number the issuer computed at issuance time; the verifier recomputes it and compares.</Variable>
+    <Variable>**trusted-issuer registry** — a small, fixed list of issuer names the verifier already holds locally, published once, long before verification time.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Recompute the signature">
+      The verifier reruns the same formula over the credential's own (issuer, subject, claim) fields and
+      checks the result against the signature on the credential. Tamper with any one field and this check
+      fails — there is no live channel back to the issuer that could catch this instead.
+    </Step>
+    <Step label="Check the issuer against a local registry">
+      Separately, the verifier looks the issuer's name up in its own trusted-issuer list. This list was
+      agreed on once, in advance — enrolling or revoking an issuer updates the list, not any individual
+      verification.
+    </Step>
+    <Step label="Both must pass">
+      A credential is valid only if the signature recomputes correctly *and* the issuer is on the trusted
+      list. A self-consistent signature from an untrusted issuer is still rejected — self-sovereign
+      identity means the *subject* holds and presents their own credential, not that *any* signer is
+      believed.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Edit the presented claim and watch the recomputed signature stop matching the one actually issued. The
+  credential itself never changes — only what's typed into the "presented claim" field — so this is
+  exactly the check a verifier runs on a claim a subject hands them, with no round trip to the issuer at all.
+</Play>
+
+<WorkedExample>
+  The State DMV issues Alice a credential for the claim "over-21". Working entirely from the course's
+  shared toy hash, this signs to <code>227</code>.
+
+  <Steps>
+    <Step label="An untampered presentation verifies">
+      Alice presents (issuer="State DMV", subject="Alice", claim="over-21", signature=227). Recomputing
+      the signature over those exact fields lands back on 227 — signature check passes. "State DMV" is on
+      the registry — issuer check passes. Both hold: **accepted**.
+    </Step>
+    <Step label="Tampering the claim breaks the signature check">
+      Suppose the claim is altered to "over-99" after issuance, keeping the same signature=227.
+      Recomputing over ("State DMV", "Alice", "over-99") gives 216, not 227 — signature check fails on its
+      own, before the issuer is even considered. **Rejected.**
+    </Step>
+    <Step label="A self-consistent signature from an untrusted issuer still fails">
+      Now suppose "Fake Issuer" signs the *same* claim for Alice from scratch: recomputing over ("Fake
+      Issuer", "Alice", "over-21") gives 277, and a credential carrying signature=277 recomputes correctly
+      — the signature check passes, because it was actually produced by that computation. But "Fake
+      Issuer" isn't in the two-entry trusted registry, so the issuer check fails. **Rejected** — a
+      technically-valid signature is not enough on its own.
+    </Step>
+    <Step label="Both checks passing is the only way through">
+      Out of the three cases, only the first clears both the signature check and the issuer check at
+      once. That conjunction — not either check alone — is what "valid credential" means.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<DecentralizedIdentityCheckpoint />
+
+<Summary>
+  $$
+  \text{signature} = \text{toyHashPair}\big(\text{toyHash}(\text{issuer}),\ \text{toyHash}(\text{subject}\,|\,\text{claim})\big)
+  $$
+
+  A verifiable credential lets a subject prove a claim by presenting a self-contained bundle a verifier
+  can check unilaterally: recompute the signature from the credential's own fields, and look the issuer up
+  in a registry agreed on long before this exact verification — no live call to the issuer, ever. That's
+  the whole trick behind self-sovereign identity: authority is checked against a list published in advance,
+  not phoned in on demand.
+</Summary>
