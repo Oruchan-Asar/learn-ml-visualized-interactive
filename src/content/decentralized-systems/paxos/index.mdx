@@ -1,0 +1,77 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PaxosCheckpoint } from "./Demos";
+
+<Hook>
+  Three nodes need to agree on one value, and any of them might crash mid-conversation. How do you make sure they
+  never end up agreeing on *two different* values?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Step through it. A proposer first asks acceptors to *promise* to consider its proposal number, before ever
+  telling them what value it wants. Only once a majority promises does it move to actually proposing a value.
+</Intuition>
+
+<Formalize>
+  **Paxos** reaches agreement on a single value across a set of acceptors, using proposal numbers that only ever
+  increase. Two phases, run by whichever node is currently proposing:
+
+  <Steps>
+    <Step label="Phase 1 — Prepare / Promise">
+      The proposer picks a number $n$ higher than any it's used before and sends `PREPARE(n)` to every acceptor.
+      Each acceptor promises not to accept anything numbered below $n$, and reports back whatever it had
+      *already* accepted, if anything.
+    </Step>
+    <Step label="Phase 2 — Accept / Accepted">
+      Once a majority has promised, the proposer sends `ACCEPT(n, value)`. If any acceptor's reply from Phase 1
+      reported a previously accepted value, the proposer <strong>must</strong> use the highest-numbered one of
+      those — never its own. Only if nothing was previously accepted does it get to use its own value.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**$n$** — the proposal number, unique and increasing per proposer.</Variable>
+    <Variable>**Promise** — an acceptor's commitment to reject any lower-numbered proposal.</Variable>
+    <Variable>**Accepted $(n, v)$** — the highest-numbered proposal an acceptor has accepted so far, and its value.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  This is the round that matters: a *second*, higher-numbered proposer runs Phase 1 without knowing a value was
+  already chosen. Watch how the promise from A1 — reporting its prior accepted value — forces the new proposer to
+  keep that value instead of its own. That's the whole safety argument in one trace.
+</Play>
+
+<WorkedExample>
+  Three acceptors, A1–A3.
+
+  <Steps>
+    <Step label="Round 1: nothing accepted yet">
+      P1 sends `PREPARE(1)`. All three promise with no prior accepted value, so P1 proposes its own value, `"X"`.
+      All three accept — 3 of 3 is a majority, so `"X"` is chosen.
+    </Step>
+    <Step label="Round 2: a conflicting proposer shows up">
+      P2 sends `PREPARE(2)`. A1 promises but reports `accepted: (1, "X")`; A2 and A3 report nothing.
+    </Step>
+    <Step label="Apply the safety rule">
+      Since at least one acceptor (A1) reported a previously accepted value, P2 must adopt it: `valueToPropose`
+      returns `"X"`, not P2's own value `"Y"`.
+    </Step>
+    <Step label="Read the result">
+      P2 sends `ACCEPT(2, "X")`. The chosen value is still `"X"` — only the proposal number changed. This is
+      exactly what stops two different values from ever both being chosen.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PaxosCheckpoint />
+
+<Summary>
+  Paxos separates "reserve the right to propose" (prepare/promise) from "actually propose" (accept/accepted). The
+  safety rule — always adopt the highest-numbered previously accepted value — is what guarantees a chosen value
+  can never be overwritten, no matter how many rounds run after it. The next chapter shows how to stop paying for
+  Phase 1 on every single decision.
+</Summary>
