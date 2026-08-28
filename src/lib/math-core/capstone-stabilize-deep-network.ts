@@ -50,10 +50,12 @@ export interface Toggles {
 }
 
 /**
- * Plain RMS magnitude, with no epsilon floor -- used only for *reporting* how small a gradient
- * really is. rmsnorm's own `rms` includes an epsilon meant to keep a normalization's denominator
- * away from zero; reusing it here would floor every reported magnitude at sqrt(EPS) ~ 0.003,
- * masking the very vanishing-gradient behavior this capstone exists to show.
+ * Plain RMS magnitude, with no epsilon floor -- this is how every gradient magnitude in this file
+ * gets measured. rmsnorm's own `rms` includes an epsilon meant to keep a normalization's
+ * denominator away from zero; using *that* here instead would floor every measured magnitude at
+ * sqrt(EPS) ~ 0.003, masking the very vanishing-gradient behavior this capstone exists to show.
+ * (`rms` is still used below, on purpose, inside the backward pass itself -- there it's playing
+ * its normal role as RMSNorm's own denominator, not as a magnitude report.)
  */
 function magnitude(v: number[]): number {
   return Math.sqrt(v.reduce((s, x) => s + x * x, 0) / v.length);
@@ -112,7 +114,7 @@ function runBackward(useNorm: boolean, trace: LayerTrace[]): number[][] {
 export function gradientMagnitudes(useNorm: boolean): number[] {
   const trace = runForward(useNorm);
   const grads = runBackward(useNorm, trace);
-  return grads.map(rms);
+  return grads.map(magnitude);
 }
 
 export const SAMPLE_LAYERS = [0, 5, 10, 15, 20];

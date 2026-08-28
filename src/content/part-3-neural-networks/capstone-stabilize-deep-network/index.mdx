@@ -1,0 +1,72 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, StabilizeCheckpoint } from "./Demos";
+
+<Hook>
+  A 20-layer network sits there, loss stuck, weights barely moving. Four chapters back you learned four separate fixes for four separate failure modes. Which one is actually broken here -- and does fixing just one of them turn out to be enough?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is the vanishing-gradients chapter's exact failure mode, just twenty layers deep instead of a handful: with weights initialized too small, the gradient reaching the input has almost nothing left of it. Flip on RMSNorm and watch every bar past the first few layers jump from invisible to a healthy, readable size -- the same rescue the RMSNorm chapter demonstrated on a single vector, now stacked twenty times in a row.
+</Intuition>
+
+<Formalize>
+  Four independent problems, four independent fixes -- each one exactly the function its own chapter built:
+
+  $$
+  h_l = \text{RMSNorm}(W_l\,h_{l-1}) \qquad \text{stored} = \text{fp16}(g\cdot s)/s \qquad \eta(t) = \frac{\eta_{\max}\cdot t}{t_{\text{warmup}}} \qquad w \mathrel{-}= \eta\lambda w
+  $$
+
+  <Variables>
+    <Variable>**$h_l$** -- layer $l$'s output; **RMSNorm** (previous chapter) renormalizes it after every layer, so its scale can't compound across depth.</Variable>
+    <Variable>**$g$**, **$s$** -- a raw gradient and the loss-scale factor; **dynamic loss scaling** (mixed-precision-training) multiplies by $s$ before casting to fp16, then divides back out, so a small $g$ survives storage instead of underflowing to exactly $0$.</Variable>
+    <Variable>**$\eta(t)$**, **$t_{\text{warmup}}$** -- the learning rate at step $t$ and the warmup length; **LR warmup** (learning-rate-schedules) ramps $\eta$ up from $0$ instead of applying the full rate to the very first, least-trustworthy gradient.</Variable>
+    <Variable>**$w$**, **$\lambda$** -- a weight and the decay strength; **decoupled weight decay** (weight-decay-vs-l2) shrinks $w$ by a fixed fraction every step, independent of any optimizer's per-parameter gradient history.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="These four failure modes don't cure each other">
+      Normalizing every layer fixes vanishing magnitude, but does nothing about a raw fp16 cast underflowing to zero, or an unbounded first update, or weights drifting upward over training. Each fix repairs exactly one mechanism.
+    </Step>
+    <Step label="Some of them only matter once another is in place">
+      Loss scaling rescues a vanishing gradient from becoming exactly $0$ in storage -- but a gradient that's merely tiny, not zero, is still too small to be useful. RMSNorm is what actually lifts the *magnitude*; loss scaling only stops that magnitude from being destroyed a second time on the way into fp16.
+    </Step>
+    <Step label="A healthy network needs all of its own separate fixes">
+      Below, toggling on only one or two of the four almost never clears every failure mode at once -- the demo's health check is a logical AND across gradient magnitude, first-update size, and weight growth, exactly like a real training run failing for any one of several unrelated reasons.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  With every fix off, the gradient reaching the input is stuck at essentially the same rounding-floor magnitude as the earlier vanishing-gradients chapter -- and the fp16 cast crushes it to exactly $0$ on top of that. Turn on RMSNorm and the gradient jumps to a healthy scale, but the very first update (still at the full base learning rate) blows past the safe threshold. Add warmup and that first step is safe -- but fifty steps in, an unchecked weight has drifted well past its bound. Only with all three of normalize, warmup, and weight decay on together does the readout turn green.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="Start from the broken network">
+      With every fix off, the gradient reaching the input is about $1.05\times10^{-7}$ in full precision -- already far below the $0.3$ healthy floor. Cast to the toy fp16 format with no loss scaling, it stores as exactly $0$: the update for that layer's weights is now not just tiny, but *identically zero*.
+    </Step>
+    <Step label="Loss scaling alone doesn't fix the magnitude">
+      Turn on loss scaling by itself: that same gradient now survives storage as $\approx1.05\times10^{-7}$ instead of $0$ -- rescued from total information loss, but still nowhere near the $0.3$ floor. RMSNorm, not loss scaling, is the fix for magnitude.
+    </Step>
+    <Step label="RMSNorm fixes the magnitude, but exposes the next problem">
+      Turn on RMSNorm instead: the gradient reaching the input jumps to $\approx0.738$, comfortably healthy. But at the base learning rate ($1.2$, unwarmed), step $0$'s update is $1.2\times0.738\approx0.886$ -- past the $0.5$ unsafe threshold before training has learned anything.
+    </Step>
+    <Step label="Warmup and decoupled decay close the other two gaps">
+      Warmup starts the learning rate at exactly $0$, so step $0$'s update is $0$ regardless of gradient size -- safe by construction. Meanwhile, fifty steps of unchecked $5\%$-per-step growth take a weight from $1$ to $\approx11.47$; decoupled decay's steady $0.05w$ shrink each step instead leaves it at $\approx0.88$, comfortably under the bound of $5$.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<StabilizeCheckpoint />
+
+<Summary>
+  $$
+  h_l = \text{RMSNorm}(W_l\,h_{l-1}), \qquad w \mathrel{-}= \eta\lambda w, \qquad \eta(0)=0 \text{ under warmup}
+  $$
+
+  A 20-layer network that won't train rarely has one problem -- it has several, layered on top of each other. RMSNorm keeps the forward *and* backward signal from vanishing across depth; dynamic loss scaling keeps that signal from being destroyed a second time by low-precision storage; LR warmup keeps the first, least-trustworthy update from overshooting; and decoupled weight decay keeps every weight bounded over the long run. None of the four substitutes for another -- stabilizing a deep network means running all of them together, exactly as this part built them, one chapter at a time.
+</Summary>
