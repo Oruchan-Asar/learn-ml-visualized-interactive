@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, InstantNgpCheckpoint } from "./Demos";
+
+<Hook>
+  NeRF's MLP has to be big to memorize fine detail, and a big MLP evaluated millions of times per image is
+  slow. What if the fine detail lived in a lookup table instead, and the MLP itself could stay tiny?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Same idea, two grids. The coarse grid is small enough that every vertex gets its own table slot — dense,
+  one color per chip, no repeats. The fine grid has 16 vertices but only 8 slots: three vertices, spread
+  all over the grid, are forced to share slot 6 (ringed, same color). Instant-NGP just accepts that — it
+  bets that gradient descent can still learn something useful per location, as long as *most* vertices
+  land somewhere of their own.
+</Intuition>
+
+<Formalize>
+  Several grids, coarse to fine, each cover the same space; each vertex owns a learned feature. A
+  resolution-$R$ grid has $R^2$ vertices — too many to store directly once $R$ gets large, so each level
+  keeps a *fixed-size* hash table of size $T$ instead, and a vertex's feature lives at:
+
+  $$
+  \text{slot}(ix, iy) = \begin{cases} iy \cdot R + ix & R^2 \le T \text{ (dense: one slot per vertex)} \\ (ix \oplus 7\,iy) \bmod T & R^2 > T \text{ (hashed: collisions possible)} \end{cases}
+  $$
+
+  Querying a point bilinearly interpolates the 4 surrounding vertices at each level, then concatenates
+  every level's result into one encoding:
+
+  $$
+  \text{value}(q) = \sum_{\text{corner } k} w_k \cdot \text{feature}(\text{corner}_k), \qquad w_k = (1 \pm f_x)(1 \pm f_y)
+  $$
+
+  <Variables>
+    <Variable>**$R$** — grid resolution (vertices per axis); **$T$** — the level's fixed hash table size.</Variable>
+    <Variable>**$(ix, iy)$** — a grid vertex's integer coordinates; $\oplus$ — bitwise XOR.</Variable>
+    <Variable>**$f_x, f_y$** — the query point's fractional position between its 4 surrounding vertices.</Variable>
+    <Variable>**$w_k$** — a corner's bilinear weight; all 4 weights always sum to exactly 1.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Coarse level: 2² = 4 vertices, table size 4 — dense">
+      Query point $(0.3, 0.7)$ sits $0.3$ of the way across, $0.7$ up: corner weights $0.21, 0.09, 0.49,
+      0.21$ against features $1, 2, 3, 4$. Value $= 0.21(1) + 0.09(2) + 0.49(3) + 0.21(4) = 2.70$.
+    </Step>
+    <Step label="Fine level: 4² = 16 vertices, table size 8 — hashed">
+      Same query point, now at $(0.9, 2.1)$ in grid units. Corner weights $0.09, 0.81, 0.01, 0.09$ against
+      hashed features $70, 80, 60, 50$. Value $= 0.09(70) + 0.81(80) + 0.01(60) + 0.09(50) = 76.2$.
+    </Step>
+    <Step label="Concatenate">
+      The full encoding at this point is $[2.70,\ 76.2]$ — one number per level, handed to the (now tiny)
+      MLP as input.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Drag the query point across the fine grid and watch exactly 4 vertices light up at a time — the bilinear
+  stencil never touches a 5th. Push the point right onto a vertex and one weight goes to 1 while the other
+  3 vanish: the "interpolation" collapses to a plain lookup.
+</Play>
+
+<WorkedExample>
+  Two more query points on the fine level:
+
+  <Steps>
+    <Step label="q = (0, 0) — exactly on a vertex">
+      All weight ($1.0$) lands on corner $(0,0)$, which hashes to slot $0$: value $= 10$ exactly, with zero
+      contribution from the other 3 corners.
+    </Step>
+    <Step label="q = (1, 1) — the opposite corner">
+      All weight lands on vertex $(3,3)$ — the same vertex this chapter's Intuition beat showed colliding
+      into slot 6 with two others. Value $= 70$, same as whatever else shares that slot.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<InstantNgpCheckpoint />
+
+<Summary>
+  $$
+  \text{slot} = (ix \oplus 7\,iy) \bmod T, \qquad \text{value}(q) = \sum_k w_k \cdot \text{feature}(\text{corner}_k)
+  $$
+
+  Instant-NGP trades exact per-vertex storage for a fixed memory budget: as resolution climbs, collisions
+  become unavoidable, but the MLP that consumes these features stays small and fast regardless. The next
+  chapter drops the neural network from the picture almost entirely — instead of *querying* a representation
+  at each ray sample, it stores the scene as an explicit pile of Gaussian blobs you can draw directly.
+</Summary>
