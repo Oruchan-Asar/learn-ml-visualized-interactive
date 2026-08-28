@@ -57,7 +57,7 @@ export function IntuitionDemo() {
 
   return (
     <>
-      <GraphPlayground nodes={toNodeSpecs(edges)} edges={edges} highlightedNodeIds={cycle ?? []} readout={text} />
+      <GraphPlayground nodes={toNodeSpecs(edges)} edges={edges} highlightedNodeIds={cycle ?? []} readout={text} height={230} />
       <div className={styles.buttons}>
         <button type="button" className={styles.button} onClick={() => setI((n) => Math.max(0, n - 1))} disabled={i === 0}>
           Previous
@@ -116,7 +116,7 @@ export function PlayDemo() {
   return (
     <>
       <SiteToggles selected={selected} onToggle={toggle} />
-      <GraphPlayground nodes={toNodeSpecs(edges)} edges={edges} highlightedNodeIds={cycle ?? []} readout={text} />
+      <GraphPlayground nodes={toNodeSpecs(edges)} edges={edges} highlightedNodeIds={cycle ?? []} readout={text} height={230} />
     </>
   );
 }
@@ -163,7 +163,7 @@ export function DistributedDeadlockDetectionCheckpoint() {
       idleLabel="Click a site to include its local view"
     >
       <SiteToggles selected={selected} onToggle={toggle} />
-      <GraphPlayground nodes={toNodeSpecs(edges)} edges={edges} highlightedNodeIds={cycle ?? []} passed={passed} readout={cycleReadout(edges, `${selected.size} site(s) merged`).text} />
+      <GraphPlayground nodes={toNodeSpecs(edges)} edges={edges} highlightedNodeIds={cycle ?? []} passed={passed} readout={cycleReadout(edges, `${selected.size} site(s) merged`).text} height={230} />
     </CheckpointFrame>
   );
 }
