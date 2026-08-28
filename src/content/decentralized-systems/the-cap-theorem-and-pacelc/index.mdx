@@ -1,0 +1,79 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapTheoremCheckpoint } from "./Demos";
+
+<Hook>
+  The network splits your cluster in two. A request lands on the side that's cut off from the newest write. Do
+  you answer anyway, or refuse to answer at all?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  R2 is stranded on the wrong side of the partition. Toggle between the two choices and watch: one refuses to
+  respond at all; the other answers immediately with whatever it has — even knowing it might be stale.
+</Intuition>
+
+<Formalize>
+  During a network **partition**, there is no third option:
+
+  <Steps>
+    <Step label="CP">
+      Refuse to answer unless you can prove you have the latest write. Cut off, you can't prove it — so you
+      block or error. Consistency is preserved; availability is not.
+    </Step>
+    <Step label="AP">
+      Always answer with whatever you have locally. Availability is preserved; the answer might be stale.
+    </Step>
+  </Steps>
+
+  **PACELC** extends this past the partition case: even with no partition (the "Else" branch), a system still
+  trades **Latency** against **Consistency** — confirming a write with every replica synchronously raises
+  consistency but costs latency, and vice versa.
+
+  $$
+  \text{label} = P\{C \mid A\} \,/\, E\{C \mid L\}
+  $$
+
+  <Variables>
+    <Variable>**P** — the partition-time choice: Consistency or Availability.</Variable>
+    <Variable>**E** — the normal-time ("Else") choice: Consistency or Latency.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Toggle both axes independently and watch `pacelcLabel` produce one of the four canonical two-letter-pair
+  labels — then see whether it matches any of the three example systems below.
+</Play>
+
+<WorkedExample>
+  <Steps>
+    <Step label="CP, applied to R2">
+      `resolveDuringPartition(STALE_PARTITION_SCENARIO, "CP")` returns responds = false, value = null, consistent =
+      true. No answer, but no risk either.
+    </Step>
+    <Step label="AP, applied to R2">
+      `resolveDuringPartition(STALE_PARTITION_SCENARIO, "AP")` returns responds = true, value = 1, consistent =
+      false. An answer, but a stale one — R2's local value hasn't caught up.
+    </Step>
+    <Step label="Classifying real systems">
+      Dynamo/Cassandra default to Availability during a partition and Latency otherwise: <strong>PA/EL</strong>.
+      A majority-write MongoDB chooses Consistency during a partition but Latency otherwise:{" "}
+      <strong>PC/EL</strong>. A fully-synchronous SQL cluster chooses Consistency both times:{" "}
+      <strong>PC/EC</strong>.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapTheoremCheckpoint />
+
+<Summary>
+  $$
+  \text{label} = P\{C \mid A\} \,/\, E\{C \mid L\}
+  $$
+
+  CAP says a partition forces a binary choice between Consistency and Availability — there's no way around it.
+  PACELC adds the other half of the story: even when nothing is broken, every system is still trading Latency
+  against Consistency, and that choice is exactly as real as the partition-time one.
+</Summary>
