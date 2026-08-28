@@ -1,0 +1,313 @@
+import type { ChapterMeta } from "./curriculum";
+
+/**
+ * Decentralized Systems — a graduate-course curriculum, structured exactly like the ML
+ * curriculum (Parts → numbered chapters, one capstone per part). Content starts as
+ * placeholders and gets built out chapter by chapter, same pipeline as the ML course.
+ */
+export const DS_CURRICULUM: ChapterMeta[] = [
+  // ---------- Part I — Foundations of Distributed Systems ----------
+  {
+    slug: "distributed-system-models-and-failure-modes",
+    part: "Part I — Foundations of Distributed Systems",
+    chapterNumber: 1,
+    title: "Distributed system models & failure modes",
+    blurb: "Synchronous vs. asynchronous models, and what it means for a node to fail — crash, omission, or Byzantine.",
+  },
+  {
+    slug: "time-clocks-and-ordering",
+    part: "Part I — Foundations of Distributed Systems",
+    chapterNumber: 2,
+    title: "Time, clocks & ordering",
+    blurb: "Lamport clocks and vector clocks — establishing a 'happened-before' relation without a shared clock.",
+  },
+  {
+    slug: "distributed-mutual-exclusion",
+    part: "Part I — Foundations of Distributed Systems",
+    chapterNumber: 3,
+    title: "Distributed mutual exclusion",
+    blurb: "Ricart-Agrawala and token-ring algorithms for a critical section when there's no shared memory to lock.",
+  },
+  {
+    slug: "causality-and-happened-before",
+    part: "Part I — Foundations of Distributed Systems",
+    chapterNumber: 4,
+    title: "Causality & the happened-before relation",
+    blurb: "Concurrent vs. causally-ordered events, and why vector clocks capture causality exactly while scalar clocks don't.",
+  },
+  {
+    slug: "consistency-models",
+    part: "Part I — Foundations of Distributed Systems",
+    chapterNumber: 5,
+    title: "Consistency models",
+    blurb: "Linearizability, sequential consistency, causal consistency, and eventual consistency — a strictness spectrum.",
+  },
+  {
+    slug: "the-cap-theorem-and-pacelc",
+    part: "Part I — Foundations of Distributed Systems",
+    chapterNumber: 6,
+    title: "The CAP theorem & PACELC",
+    blurb: "Why a network partition forces a choice between consistency and availability — and what PACELC adds beyond CAP.",
+  },
+  {
+    slug: "capstone-diagnose-a-consistency-violation",
+    part: "Part I — Foundations of Distributed Systems",
+    chapterNumber: 7,
+    title: "Diagnose a consistency violation in a toy replicated log",
+    blurb: "Given a trace of reads and writes across 3 replicas, find the exact operation that breaks linearizability.",
+    capstone: true,
+  },
+
+  // ---------- Part II — Replication & Consensus ----------
+  {
+    slug: "primary-backup-replication",
+    part: "Part II — Replication & Consensus",
+    chapterNumber: 1,
+    title: "Primary-backup replication",
+    blurb: "One node takes writes and ships a log to backups — simple, but the primary is a single point of failure.",
+  },
+  {
+    slug: "quorum-systems",
+    part: "Part II — Replication & Consensus",
+    chapterNumber: 2,
+    title: "Quorum systems",
+    blurb: "Read and write quorums that overlap guarantee you always see the latest write — the R + W > N rule.",
+  },
+  {
+    slug: "paxos",
+    part: "Part II — Replication & Consensus",
+    chapterNumber: 3,
+    title: "Paxos",
+    blurb: "Prepare/promise then accept/accepted — reaching agreement on one value even with node failures.",
+  },
+  {
+    slug: "multi-paxos-and-leader-election",
+    part: "Part II — Replication & Consensus",
+    chapterNumber: 4,
+    title: "Multi-Paxos & leader election",
+    blurb: "Skip Paxos's prepare phase across many decisions once a stable leader is elected.",
+  },
+  {
+    slug: "raft-consensus",
+    part: "Part II — Replication & Consensus",
+    chapterNumber: 5,
+    title: "Raft consensus",
+    blurb: "Leader election, log replication, and safety — the same guarantees as Paxos, designed to be understandable.",
+  },
+  {
+    slug: "byzantine-fault-tolerance-pbft",
+    part: "Part II — Replication & Consensus",
+    chapterNumber: 6,
+    title: "Byzantine fault tolerance (PBFT)",
+    blurb: "Tolerate nodes that lie, not just nodes that crash — and why you need 3f+1 replicas to survive f of them.",
+  },
+  {
+    slug: "state-machine-replication",
+    part: "Part II — Replication & Consensus",
+    chapterNumber: 7,
+    title: "State machine replication",
+    blurb: "Consensus on a log plus a deterministic state machine is enough to replicate any service.",
+  },
+  {
+    slug: "capstone-raft-leader-election-by-hand",
+    part: "Part II — Replication & Consensus",
+    chapterNumber: 8,
+    title: "Trace a Raft leader election by hand",
+    blurb: "Step through term numbers, vote requests, and split votes across a 5-node cluster.",
+    capstone: true,
+  },
+
+  // ---------- Part III — Distributed Transactions & Coordination ----------
+  {
+    slug: "two-phase-commit",
+    part: "Part III — Distributed Transactions & Coordination",
+    chapterNumber: 1,
+    title: "Two-phase commit (2PC)",
+    blurb: "A coordinator collects votes, then commits or aborts everywhere — atomic, but blocks on coordinator failure.",
+  },
+  {
+    slug: "three-phase-commit",
+    part: "Part III — Distributed Transactions & Coordination",
+    chapterNumber: 2,
+    title: "Three-phase commit (3PC)",
+    blurb: "An extra pre-commit phase removes 2PC's single blocking point — at the cost of an extra network round trip.",
+  },
+  {
+    slug: "sagas-and-compensating-transactions",
+    part: "Part III — Distributed Transactions & Coordination",
+    chapterNumber: 3,
+    title: "Sagas & compensating transactions",
+    blurb: "Break a long transaction into local steps, each with an explicit undo, instead of holding locks across services.",
+  },
+  {
+    slug: "distributed-deadlock-detection",
+    part: "Part III — Distributed Transactions & Coordination",
+    chapterNumber: 4,
+    title: "Distributed deadlock detection",
+    blurb: "Build a wait-for graph across nodes and detect a cycle that no single node can see on its own.",
+  },
+  {
+    slug: "chandy-lamport-snapshots",
+    part: "Part III — Distributed Transactions & Coordination",
+    chapterNumber: 5,
+    title: "The Chandy-Lamport snapshot algorithm",
+    blurb: "Capture a consistent global state of a distributed system using marker messages, without stopping the world.",
+  },
+  {
+    slug: "capstone-trace-a-distributed-snapshot",
+    part: "Part III — Distributed Transactions & Coordination",
+    chapterNumber: 6,
+    title: "Trace a distributed snapshot across 3 nodes",
+    blurb: "Follow marker messages and in-flight channel states to reconstruct one consistent cut.",
+    capstone: true,
+  },
+
+  // ---------- Part IV — Peer-to-Peer & Decentralized Data ----------
+  {
+    slug: "gossip-protocols-and-epidemic-dissemination",
+    part: "Part IV — Peer-to-Peer & Decentralized Data",
+    chapterNumber: 1,
+    title: "Gossip protocols & epidemic dissemination",
+    blurb: "Every node forwards to a few random peers each round — information spreads exponentially, no central broadcast needed.",
+  },
+  {
+    slug: "consistent-hashing",
+    part: "Part IV — Peer-to-Peer & Decentralized Data",
+    chapterNumber: 2,
+    title: "Consistent hashing",
+    blurb: "Place nodes and keys on the same ring so adding or removing a node only reshuffles a 1/N slice of keys.",
+  },
+  {
+    slug: "distributed-hash-tables-chord",
+    part: "Part IV — Peer-to-Peer & Decentralized Data",
+    chapterNumber: 3,
+    title: "Distributed hash tables: Chord",
+    blurb: "Route a lookup to the right node in O(log N) hops using finger tables over the hash ring.",
+  },
+  {
+    slug: "kademlia-and-structured-p2p",
+    part: "Part IV — Peer-to-Peer & Decentralized Data",
+    chapterNumber: 4,
+    title: "Kademlia & structured P2P overlays",
+    blurb: "XOR distance and k-buckets — the routing scheme behind BitTorrent's DHT and IPFS.",
+  },
+  {
+    slug: "crdts-conflict-free-replicated-data-types",
+    part: "Part IV — Peer-to-Peer & Decentralized Data",
+    chapterNumber: 5,
+    title: "CRDTs: conflict-free replicated data types",
+    blurb: "Data structures whose concurrent updates always merge to the same result, with no coordination at all.",
+  },
+  {
+    slug: "dynamo-style-storage",
+    part: "Part IV — Peer-to-Peer & Decentralized Data",
+    chapterNumber: 6,
+    title: "Dynamo-style storage",
+    blurb: "Vector clocks, sloppy quorums, and hinted handoff — Amazon Dynamo's recipe for an always-writable store.",
+  },
+  {
+    slug: "capstone-gossip-based-key-value-store",
+    part: "Part IV — Peer-to-Peer & Decentralized Data",
+    chapterNumber: 7,
+    title: "Build a gossip-based key-value store",
+    blurb: "Combine consistent hashing, gossip membership, and vector clocks into one small working store.",
+    capstone: true,
+  },
+
+  // ---------- Part V — Blockchain & Trustless Consensus ----------
+  {
+    slug: "cryptographic-primitives-for-decentralization",
+    part: "Part V — Blockchain & Trustless Consensus",
+    chapterNumber: 1,
+    title: "Cryptographic primitives for decentralization",
+    blurb: "Hash functions, digital signatures, and Merkle trees — the building blocks every blockchain is made of.",
+  },
+  {
+    slug: "nakamoto-consensus-and-proof-of-work",
+    part: "Part V — Blockchain & Trustless Consensus",
+    chapterNumber: 2,
+    title: "Nakamoto consensus & proof-of-work",
+    blurb: "Agreement by computational cost — why the longest valid chain wins, and what that costs in energy.",
+  },
+  {
+    slug: "proof-of-stake",
+    part: "Part V — Blockchain & Trustless Consensus",
+    chapterNumber: 3,
+    title: "Proof-of-stake",
+    blurb: "Replace computational cost with economic stake — and the new attack surface that comes with it (nothing-at-stake).",
+  },
+  {
+    slug: "forks-finality-and-the-longest-chain-rule",
+    part: "Part V — Blockchain & Trustless Consensus",
+    chapterNumber: 4,
+    title: "Forks, finality & the longest-chain rule",
+    blurb: "Temporary forks resolve themselves probabilistically — finality is a confidence level, not a guarantee.",
+  },
+  {
+    slug: "smart-contracts-and-decentralized-applications",
+    part: "Part V — Blockchain & Trustless Consensus",
+    chapterNumber: 5,
+    title: "Smart contracts & decentralized applications",
+    blurb: "Code that runs identically on every node and whose state transitions are themselves the consensus object.",
+  },
+  {
+    slug: "sharding-in-blockchains",
+    part: "Part V — Blockchain & Trustless Consensus",
+    chapterNumber: 6,
+    title: "Sharding in blockchains",
+    blurb: "Split validators and state across shards to scale throughput — and the cross-shard transaction problem it creates.",
+  },
+  {
+    slug: "sybil-attacks-and-economic-security",
+    part: "Part V — Blockchain & Trustless Consensus",
+    chapterNumber: 7,
+    title: "Sybil attacks, 51% attacks & economic security",
+    blurb: "Why identity is free in a P2P network, and how proof-of-work/stake make fake identities expensive instead.",
+  },
+  {
+    slug: "capstone-build-a-toy-blockchain",
+    part: "Part V — Blockchain & Trustless Consensus",
+    chapterNumber: 8,
+    title: "Build a toy blockchain with proof-of-work mining",
+    blurb: "Hash a block header against a difficulty target, chain it to the previous block, and validate the result.",
+    capstone: true,
+  },
+
+  // ---------- Part VI — Applied Decentralization ----------
+  {
+    slug: "ipfs-and-content-addressed-storage",
+    part: "Part VI — Applied Decentralization",
+    chapterNumber: 1,
+    title: "IPFS & content-addressed storage",
+    blurb: "Address data by its hash, not its location — so the same content is identical no matter which peer serves it.",
+  },
+  {
+    slug: "federated-learning",
+    part: "Part VI — Applied Decentralization",
+    chapterNumber: 2,
+    title: "Federated learning",
+    blurb: "Train a shared model across many devices' local data without any raw data ever leaving the device.",
+  },
+  {
+    slug: "zero-knowledge-proofs",
+    part: "Part VI — Applied Decentralization",
+    chapterNumber: 3,
+    title: "Zero-knowledge proofs",
+    blurb: "Prove a statement is true without revealing why it's true — the cryptography behind private, verifiable computation.",
+  },
+  {
+    slug: "decentralized-identity",
+    part: "Part VI — Applied Decentralization",
+    chapterNumber: 4,
+    title: "Decentralized identity & verifiable credentials",
+    blurb: "Self-sovereign identity: prove a claim about yourself without a central authority vouching for it in real time.",
+  },
+  {
+    slug: "capstone-design-a-decentralized-system",
+    part: "Part VI — Applied Decentralization",
+    chapterNumber: 5,
+    title: "Design a decentralized system for a real-world scenario",
+    blurb: "Pick the consistency model, replication strategy, and consensus protocol for a system you specify from scratch.",
+    capstone: true,
+  },
+];
