@@ -1,0 +1,92 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, GrpoReasoningCheckpoint } from "./Demos";
+
+<Hook>
+  Two chapters back, RLVR replaced a learned reward model with a verifier that just checks the
+  answer. One chapter back, GRPO replaced a learned critic with the group's own mean and standard
+  deviation. Training a reasoning model isn't a third idea on top of those two — it's just running
+  both, back to back, on one batch of sampled responses.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  Five responses, sampled from the same policy, to one arithmetic problem. Step through them —
+  each one gets checked against the true answer exactly, no reward model anywhere in the loop.
+</Intuition>
+
+<Formalize>
+  One training step, two formulas, no new machinery:
+
+  $$
+  r_i = \mathbb{1}[\,\text{verify}(y_i) = \text{correct}\,] \qquad\qquad A_i = \frac{r_i - \text{mean}(r_1,\dots,r_G)}{\text{std}(r_1,\dots,r_G)}
+  $$
+
+  <Variables>
+    <Variable>**$y_i$** — sampled response $i$ from the current policy, one of $G$ responses to the same prompt.</Variable>
+    <Variable>**$r_i$** — RLVR's reward for response $i$: exactly $1$ if the verifier accepts it, $0$ otherwise.</Variable>
+    <Variable>**$A_i$** — GRPO's advantage for response $i$: reward normalized against the group's own mean and standard deviation.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="Sample a group">
+      Draw $G$ responses to one prompt from the policy being trained — here, $G=5$ responses to one
+      arithmetic problem.
+    </Step>
+    <Step label="Verify each one (RLVR)">
+      Check every response against ground truth with an exact-match verifier. No reward model
+      fit on preference data, nothing to reward-hack.
+    </Step>
+    <Step label="Normalize within the group (GRPO)">
+      Turn those binary rewards into advantages using the group's own mean and standard
+      deviation as the baseline — no critic network trained anywhere.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Same 5 responses, two views. The reward bars are flat and binary — four $1$s, one $0$. The
+  advantage bars are not: the four correct responses each get a modest $+0.5$, but the one wrong
+  response gets $-2.0$ — four times the magnitude, purely because being wrong was rare in this
+  group. That reshaping is GRPO's entire contribution, applied directly to RLVR's output.
+</Play>
+
+<WorkedExample>
+  Five sampled responses to "What is 12 x 7?" (correct answer: $84$): four answer "$84$", one
+  answers "$91$".
+
+  <Steps>
+    <Step label="Verify (RLVR)">
+      "$84$" appears four times → reward $1$ each. "$91$" → wrong → reward $0$. Rewards:
+      $[1, 1, 1, 1, 0]$.
+    </Step>
+    <Step label="Group statistics">
+      Mean $= 4/5 = 0.8$. This is a Bernoulli group, so variance $= 0.8 \times 0.2 = 0.16$, and
+      $\text{std} = \sqrt{0.16} = 0.4$.
+    </Step>
+    <Step label="Advantage (GRPO)">
+      Each correct response: $A = (1-0.8)/0.4 = 0.5$. The one wrong response: $A =
+      (0-0.8)/0.4 = -2.0$.
+    </Step>
+    <Step label="Nothing else was trained">
+      No reward model, no value network — every number above came from a verifier and five
+      samples' own statistics.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<GrpoReasoningCheckpoint />
+
+<Summary>
+  $$
+  r_i = \mathbb{1}[\,\text{verify}(y_i) = \text{correct}\,] \qquad\qquad A_i = \frac{r_i - \text{mean}(r_1,\dots,r_G)}{\text{std}(r_1,\dots,r_G)}
+  $$
+
+  This is the whole recipe behind training a model like DeepSeek-R1 to reason: sample a group of
+  responses, verify each one exactly wherever a verifier exists, and normalize those rewards
+  against the group's own statistics instead of a trained critic's guess. Nothing here is new —
+  it's RLVR's verifier feeding GRPO's advantage, on one batch of samples, repeated across many
+  batches until the policy reliably produces verifiably correct reasoning.
+</Summary>
