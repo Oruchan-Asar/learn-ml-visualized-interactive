@@ -1,0 +1,96 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, IpfsCheckpoint } from "./Demos";
+
+<Hook>
+  Ask a normal file server for `/photos/cat.jpg` and you get whatever bytes happen to live at that path
+  *right now* — swap the file underneath and every link breaks silently, or worse, quietly starts serving
+  something else. What if a file's name was determined entirely by its own contents, so that asking for
+  "this exact data" and asking for "whatever's at this location" were never confused with each other?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  `cat.txt` and `your-file.txt` start out holding the identical bytes, &ldquo;meow&rdquo; — and sure enough
+  they get the identical address. Edit the second file's content by even one character and its address
+  jumps somewhere completely different, with nothing in common with the original. Two files, same content,
+  same address, from anywhere; two files, different content — even by one byte — different address,
+  guaranteed.
+</Intuition>
+
+<Formalize>
+  IPFS (the InterPlanetary File System) and similar systems replace "where is it" with "what is it": a
+  file's address, called a **content identifier (CID)**, is computed directly from a hash of the file's
+  own bytes. There is no separate naming step and no central authority handing out addresses — anyone,
+  anywhere, hashing the same bytes gets the same address, and nobody can hash different bytes into that
+  same address by mistake (or on purpose).
+
+  A large file doesn't get one giant hash — it's split into chunks, each chunk gets its own address, and
+  the chunk addresses are combined into a single root address, exactly the way a Merkle tree combines
+  child hashes into a parent hash (the same construction Part V used for validating blocks). Changing a
+  single chunk anywhere in the file changes that chunk's address, which changes the root — so tampering
+  with even one chunk of a huge file is instantly detectable from the root address alone, without
+  re-scanning the whole file.
+
+  Two direct consequences fall out of this for free:
+
+  <Steps>
+    <Step label="Deduplication is automatic">
+      If two files (or two chunks, from two totally different larger files) happen to hold identical
+      bytes, they get the identical address — storing one copy serves both, with no explicit dedup logic
+      required anywhere.
+    </Step>
+    <Step label="Tampering is self-evident">
+      Fetch data by its address, hash what you actually received, and compare. If a peer serves you
+      corrupted or substituted bytes, the recomputed address won't match the one you asked for — you find
+      out immediately, from the data alone, without trusting the peer that served it.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  A 2-chunk file's root address is built from both chunks' own addresses combined together. Edit either
+  chunk and the root changes completely — there's no way to predict which direction it moves, and no way
+  to edit one chunk while keeping the root the same. That's exactly the avalanche effect from Part V's
+  hash functions, now used to make a whole file's address a fingerprint of every one of its chunks.
+</Play>
+
+<WorkedExample>
+  Three files land on the network: `cat.txt` and `dog.txt`, plus `cat-copy.txt` — a second file, uploaded
+  separately, that happens to hold the exact same bytes as `cat.txt`.
+
+  <Steps>
+    <Step label="Hash each file's content to get its address">
+      `cat.txt` = &ldquo;meow&rdquo; hashes to address **840**. `dog.txt` = &ldquo;woof&rdquo; hashes to
+      address **343**. `cat-copy.txt` also holds &ldquo;meow&rdquo;, so it hashes to address **840** too —
+      identical to `cat.txt`, even though nobody told the system these two files were "the same."
+    </Step>
+    <Step label="Storage only needs 2 blocks, not 3">
+      Since `cat.txt` and `cat-copy.txt` share an address, the network stores one block for that content
+      and both filenames point at it. Only `dog.txt`'s content needs a second, separate block.
+    </Step>
+    <Step label="Combine two chunks into one root address">
+      Treat &ldquo;meow&rdquo; and &ldquo;woof&rdquo; as the two chunks of one larger file: their root
+      address is **754** — built from address 840 and address 343 together, the same way a Merkle parent
+      is built from two child hashes.
+    </Step>
+    <Step label="One tampered byte changes the root completely">
+      Change the first chunk from &ldquo;meow&rdquo; to &ldquo;meow!&rdquo; (address **73** instead of 840)
+      and the root address becomes **634** — nothing like 754. Anyone holding the original root address 754
+      would immediately know this new version is not the file they asked for.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<IpfsCheckpoint />
+
+<Summary>
+  address(content) = hash(content) — never a path, never a server, never a name assigned by anyone.
+
+  Content-addressed storage turns "fetch this data" into a self-checking operation: identical content
+  always gets the identical address (so duplicates collapse for free), and any tampering, anywhere in the
+  data, changes the address and gets caught instantly — the same avalanche effect that keeps a blockchain
+  honest, now put to work keeping storage honest instead.
+</Summary>
