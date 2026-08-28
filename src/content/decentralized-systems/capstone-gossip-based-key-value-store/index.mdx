@@ -1,0 +1,102 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
+
+<Hook>
+  A new machine joins your key-value cluster. There's no coordinator to announce it, no lock to
+  grab before serving traffic — just the same gossip that spread rumors two chapters ago, the same
+  ring that decided key ownership one chapter before that, and vector clocks to catch whatever a
+  client wrote in the meantime. Put all three together and you have an actual store.
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is the exact 8-node graph and the exact `runGossip` simulator from the gossip chapter —
+  nothing re-implemented, just placed at each node's real ring position. Click "gossip one round"
+  and watch node by node: each one flips from believing key@15 belongs to node 0 (the ring's
+  wraparound owner) to believing it belongs to the newly-joined node 8, exactly when gossip reaches
+  it — never before, never for a reason other than having heard the news.
+</Intuition>
+
+<Formalize>
+  Nothing here is new math — it's three earlier results, composed:
+
+  $$
+  \text{owner}(k) \ \text{(consistent hashing)}, \qquad I_{t+1} = I_t \cup \bigcup_{v \in I_t} \text{gossip}(v,t,k) \ \text{(gossip)}, \qquad a \prec b \iff \forall i,\ a_i \le b_i \ \text{(vector clocks)}
+  $$
+
+  A node's answer to "who owns this key" is just `owner(k)` evaluated against *that node's own,
+  possibly-stale* membership view — and gossip is exactly the mechanism that view catches up
+  through.
+
+  <Variables>
+    <Variable>**membership view** — the set of nodes a given node currently believes are part of the ring; gossip is what keeps it converging toward the truth.</Variable>
+    <Variable>**$I_t$** — which of the 8 original nodes have, by round $t$, heard that node 8 joined.</Variable>
+    <Variable>**concurrent write** — two writes to the same key whose vector clocks don't dominate each other, because they landed on nodes with different membership views.</Variable>
+  </Variables>
+
+  <Steps>
+    <Step label="A join is just a membership fact spreading by gossip">
+      "Node 8 exists" is no different from any other rumor: it starts at one node and spreads via
+      the same fanout-bounded gossip rounds as before — there's no separate join protocol to learn.
+    </Step>
+    <Step label="Disagreement during convergence is exactly a concurrent write">
+      While gossip is still spreading, different nodes have different membership views and so can
+      genuinely disagree about a key's owner — that's precisely the situation vector clocks exist
+      to detect and later reconcile, not a bug in either mechanism.
+    </Step>
+  </Steps>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Push the fanout up and convergence visibly speeds up, exactly as it did in the gossip chapter.
+  Below the graph, node 0 (already informed) and node 3 (still stale) each accept a write to the
+  same key while they disagree about who even owns it — their vector clocks come back
+  **concurrent**. Click "merge" and watch the two histories combine into one, using the identical
+  `mergeClocks` function from the Dynamo-style-storage chapter.
+</Play>
+
+<WorkedExample>
+  The same 8-node gossip graph, fanout 2, starting from node 0 — node 8 joins at ring position 15,
+  and key@15 is the one being tracked:
+
+  <Steps>
+    <Step label="Before anyone hears: owner is node 0">
+      With only the original 8 nodes in view, `assignKey(15, ...)` finds no node at or past
+      position 15, so it wraps around to the smallest position — node 0. This is consistent
+      hashing's rule, unchanged.
+    </Step>
+    <Step label="Gossip spreads the join exactly as before">
+      Fanout 2 from node 0: round 1 reaches $\{0,1,4\}$, round 2 reaches 7 of the 8 nodes, round 3
+      finally reaches the last holdout — the identical trace the gossip chapter already worked
+      through by hand.
+    </Step>
+    <Step label="A concurrent write lands mid-convergence">
+      At round 2, node 0 (informed) accepts a write, recording $\{0{:}1\}$. Node 3, the one
+      holdout, also accepts a write, recording $\{3{:}1\}$ — concurrent, because neither node's
+      view agreed on the key's owner yet, let alone on each other's write.
+    </Step>
+    <Step label="Round 3 and a merge resolve everything at once">
+      Once round 3 finishes, every node's local `assignKey` call agrees the owner is node 8. And
+      merging the two pending writes gives $\{0{:}1, 3{:}1\}$ — a single reconciled history, with
+      nothing lost from either side.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<CapstoneCheckpoint />
+
+<Summary>
+  $$
+  \text{owner}(k)\ \text{on a gossiped membership view, reconciled by vector clocks when views disagree}
+  $$
+
+  A gossip-based key-value store isn't a fourth new idea — it's consistent hashing's ownership
+  rule, evaluated against whatever membership view gossip has managed to spread to a given node so
+  far, with vector clocks standing by to reconcile the disagreements that gap in convergence
+  inevitably causes. Nothing here was reimplemented: the ring, the gossip simulator, and the vector
+  clock machinery are the exact same functions this Part built one chapter at a time, just wired
+  together into one small, working, always-writable store.
+</Summary>
