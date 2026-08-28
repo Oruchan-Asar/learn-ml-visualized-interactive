@@ -1,0 +1,77 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, PrimaryBackupCheckpoint } from "./Demos";
+
+<Hook>
+  One node in your cluster owns every write. It crashes at 3am. Which of your other nodes gets to take over — and what did you just lose?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  The primary (top) has written 7 entries. Each backup (bottom) has replicated some prefix of that log — click one
+  to see what promoting it right now would cost you. A backup that's behind doesn't have the missing writes
+  anywhere else to recover them from.
+</Intuition>
+
+<Formalize>
+  In **primary-backup replication**, one designated node — the primary — accepts every write, appends it to its
+  own log, and ships that log to a set of backups. The backups apply entries in the same order, so each one's
+  state is just an earlier prefix of the primary's.
+
+  The protocol rule for handling a primary failure:
+
+  <Steps>
+    <Step label="Find the most caught-up backup">
+      Compare every backup's `replicatedUpTo` — how many of the primary's log entries it has durably received.
+    </Step>
+    <Step label="Promote it">
+      The backup with the largest `replicatedUpTo` becomes the new primary.
+    </Step>
+    <Step label="Count the damage">
+      Any entry in the old primary's log beyond that backup's `replicatedUpTo` is permanently lost — there's no
+      third copy to recover it from.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**Primary log** — the full, authoritative sequence of writes, in order.</Variable>
+    <Variable>**`replicatedUpTo`** — how far a given backup has replicated into that log.</Variable>
+    <Variable>**Writes lost** — `primary log length − replicatedUpTo` of whichever backup gets promoted.</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Click a lagging backup a few times to replicate it forward. Watch the "best to promote" readout update — and
+  notice the writes-lost count shrink toward zero as a backup catches up. Replication lag isn't a bug; it's the
+  gap that determines how much a crash costs you.
+</Play>
+
+<WorkedExample>
+  The primary has written 7 entries: `w1 … w7`. At the moment it crashes, the three backups are at:
+
+  <Steps>
+    <Step label="Read off the replication state">
+      B1 has replicated 5 entries, B2 has replicated all 7, B3 has replicated only 3.
+    </Step>
+    <Step label="Pick the most up-to-date backup">
+      B2, at `replicatedUpTo = 7`, is furthest along — it becomes the new primary.
+    </Step>
+    <Step label="Count writes lost for the winner">
+      $7 - 7 = 0$. Promoting B2 loses nothing.
+    </Step>
+    <Step label="Compare to the alternatives">
+      Promoting B1 instead would have lost $7 - 5 = 2$ writes (`w6`, `w7`); promoting B3 would have lost
+      $7 - 3 = 4$ writes (`w4`–`w7`).
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<PrimaryBackupCheckpoint />
+
+<Summary>
+  Primary-backup replication is simple: one node takes writes, ships a log, backups replay it. But the primary is
+  a single point of failure, and a crash always costs you whatever the best-replicated backup hadn't yet received.
+  The next chapter's quorum systems are one way to bound that cost precisely instead of leaving it to chance.
+</Summary>
