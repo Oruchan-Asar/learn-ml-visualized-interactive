@@ -1,0 +1,46 @@
+.wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 14px 0;
+  font-family: var(--font-mono), "IBM Plex Mono", ui-monospace, monospace;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  background: var(--paper-raised);
+  min-width: 140px;
+  box-shadow: var(--shadow);
+}
+
+.blockInvalid {
+  composes: block;
+  border-color: var(--accent2);
+  background: color-mix(in srgb, var(--accent2) 10%, var(--paper-raised));
+}
+
+.blockTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+
+.blockInvalid .blockTitle {
+  color: var(--accent2);
+}
+
+.blockRow {
+  font-size: 12.5px;
+  color: var(--ink);
+}
+
+.arrow {
+  color: var(--ink-faint);
+  font-size: 16px;
+}

@@ -1,0 +1,93 @@
+import { Hook, Intuition, Formalize, Play, WorkedExample, Steps, Step, Variables, Variable, Summary } from "@/components/chapter/Beats";
+import { IntuitionDemo, PlayDemo, MiningCheckpoint } from "./Demos";
+
+<Hook>
+  Every piece is already built: a way to commit a batch of transactions to one hash, and a way to make
+  proposing a block expensive to compute but cheap to check. What does it look like to actually chain
+  real blocks together using both at once?
+</Hook>
+
+<Intuition>
+  <IntuitionDemo />
+
+  This is the same genesis hash from the proof-of-work chapter, and the same Merkle root from the
+  cryptographic-primitives chapter — nothing new is being invented here. Block 1 commits 4 transactions
+  to a root, mines a nonce against that root, and block 2 repeats the process chained onto block 1's hash.
+</Intuition>
+
+<Formalize>
+  <Steps>
+    <Step label="Commit transactions to a Merkle root — reused, not reimplemented">
+      $\text{merkleRoot}(\text{txs})$ is exactly the function from the cryptographic-primitives chapter.
+      Every block runs its own transaction set through it once.
+    </Step>
+    <Step label="A block's hash folds in the previous hash and this root">
+      $\text{blockHash}(\text{prevHash}, \text{root}, \text{nonce}) = \text{toyHash}(\text{prevHash} \mathbin\Vert \text{root} \mathbin\Vert \text{nonce})$
+      — the same shape as the mining chapter's `blockHash`, with the Merkle root standing in for the raw
+      data string.
+    </Step>
+    <Step label="Mining is the same brute-force nonce search">
+      Try $\text{nonce} = 0, 1, 2, \ldots$ until $\text{blockHash}(\ldots) < T$. Same difficulty target
+      $T=50$, same search, same asymmetry: expensive to find, one hash to check.
+    </Step>
+    <Step label="A chain is blocks whose prevHash fields actually link up">
+      Block $i$'s `prevHash` must equal block $i-1$'s mined `hash`. Change anything upstream — a
+      transaction, a root, a nonce — and every downstream `prevHash` reference stops matching, breaking
+      the chain from that point forward.
+    </Step>
+  </Steps>
+
+  <Variables>
+    <Variable>**root** — this block's Merkle root, committing all of its transactions to one hash.</Variable>
+    <Variable>**prevHash** — the previous block's mined hash; the literal link in "blockchain."</Variable>
+  </Variables>
+</Formalize>
+
+<Play>
+  <PlayDemo />
+
+  Tamper with block 1's first transaction and watch the damage cascade: a different Merkle root produces
+  a different block hash, that new hash no longer meets the difficulty target (it was only mined to work
+  for the *original* root), and block 2's stored `prevHash` no longer points at anything real. One
+  tampered transaction breaks two blocks.
+</Play>
+
+<WorkedExample>
+  Genesis hash 33 (mined in the proof-of-work chapter). Block 1 reuses the crypto-primitives chapter's
+  exact 4 transactions.
+
+  <Steps>
+    <Step label="Block 1's Merkle root">
+      $\text{merkleRoot}(\text{txs}) = 577$ — identical to the cryptographic-primitives chapter's worked
+      example, because it's the same 4 transactions.
+    </Step>
+    <Step label="Mining block 1">
+      Searching nonces against $(\text{prevHash}=33, \text{root}=577)$, nonce $600$ is the first to
+      succeed: $\text{blockHash}(33, 577, 600) = 43 < 50$.
+    </Step>
+    <Step label="Mining block 2">
+      A second batch of 4 transactions gives root $506$. Chained onto block 1's hash $43$, the first
+      winning nonce is $900$, giving hash $19$.
+    </Step>
+    <Step label="Tampering with block 1">
+      Change transaction 0 to `"alice pays bob 9"`: the Merkle root becomes $301$ instead of $577$, so
+      $\text{blockHash}(33, 301, 600) = 498$ — nowhere near under $50$. The nonce that worked for the
+      original root doesn't work for the tampered one; block 1 is no longer validly mined, and block 2's
+      `prevHash = 43` no longer matches block 1's real (recomputed) hash.
+    </Step>
+  </Steps>
+</WorkedExample>
+
+<MiningCheckpoint />
+
+<Summary>
+  $$
+  \text{blockHash}(\text{prevHash}, \text{merkleRoot}(\text{txs}), \text{nonce}) < T
+  $$
+
+  A blockchain is nothing more than these two ideas, chained: commit a batch of transactions to one hash
+  (Merkle root), then spend real, unfakeable work proving you found a nonce that makes the resulting
+  block hash small enough — with each block's proof depending on the exact hash of the one before it.
+  Every later chapter in this Part — stake instead of work, forks and finality, sharding, Sybil
+  resistance — is a variation on making that same chain harder to fake or cheaper to run.
+</Summary>
