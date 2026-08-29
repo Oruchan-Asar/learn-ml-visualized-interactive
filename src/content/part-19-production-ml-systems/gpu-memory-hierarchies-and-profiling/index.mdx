@@ -77,8 +77,11 @@ import { IntuitionDemo, PlayDemo, GpuMemoryCheckpoint } from "./Demos";
       Same number — N = 8 is exactly the crossover for these constants.
     </Step>
     <Step label="One step either side">
-      At N = 3: transfer time 36 versus compute time 13.5 — memory-bound, transfer dominates. At N = 10:
-      transfer time 400 versus compute time 500 — compute-bound, the arithmetic now dominates instead.
+      - At $N=3$: $\text{bytes}(3)=3\cdot4\cdot9=108$, $T_{\text{transfer}}=108/3=36$. $\text{flops}(3)=2\cdot27=54$,
+        $T_{\text{compute}}=54/4=13.5$ — memory-bound, transfer dominates.
+      - At $N=10$: $\text{bytes}(10)=3\cdot4\cdot100=1200$, $T_{\text{transfer}}=1200/3=400$.
+        $\text{flops}(10)=2\cdot1000=2000$, $T_{\text{compute}}=2000/4=500$ — compute-bound, the arithmetic
+        now dominates instead.
     </Step>
   </Steps>
 </WorkedExample>

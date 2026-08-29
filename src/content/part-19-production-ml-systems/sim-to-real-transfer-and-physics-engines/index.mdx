@@ -65,9 +65,11 @@ import { IntuitionDemo, PlayDemo, SimRealCheckpoint } from "./Demos";
       the exact same math, now fails the tolerance.
     </Step>
     <Step label="Compensating for the known friction closes the gap">
-      Solving $4|1-0.6K|^4 \le 0.5$ for $K$ shows any gain past roughly $K \approx 0.68$ brings the real
-      robot back under tolerance in the same four steps — the controller doesn't need a better simulator,
-      it needs a gain that assumes less friction than sim did.
+      Solving $4|1-0.6K|^4 \le 0.5$ for $K$: divide both sides by 4 to get $|1-0.6K|^4 \le 0.125$; take the
+      fourth root, $|1-0.6K| \le 0.125^{1/4} \approx 0.595$; so $1-0.6K \le 0.595$, giving
+      $K \ge (1-0.595)/0.6 \approx 0.676$. Any gain past roughly $K \approx 0.68$ brings the real robot back
+      under tolerance in the same four steps — the controller doesn't need a better simulator, it needs a
+      gain that assumes less friction than sim did.
     </Step>
   </Steps>
 </WorkedExample>

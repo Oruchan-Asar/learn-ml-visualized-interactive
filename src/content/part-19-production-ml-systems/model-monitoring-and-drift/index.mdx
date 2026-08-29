@@ -72,9 +72,16 @@ import { IntuitionDemo, PlayDemo, DriftCheckpoint } from "./Demos";
       hundredth.
     </Step>
     <Step label="The distributions are not identical">
-      $D_{KL}(P_{\text{train}} \| P_{\text{live}}) \approx 0.127$ bits — well past a 0.05-bit alert
-      threshold. The medium bin lost a third of its share; the high bin gained a third of its own. Accuracy
-      never had a chance to see it, because the per-bin accuracies happened to average out.
+      $D_{KL}(P_{\text{train}} \| P_{\text{live}}) = \sum_i P_{\text{train}}(i)\log_2\frac{P_{\text{train}}(i)}{P_{\text{live}}(i)}$:
+
+      - Low: $0.2\log_2(0.2/0.3) \approx 0.2(-0.585) \approx -0.117$
+      - Medium: $0.5\log_2(0.5/0.3) \approx 0.5(0.737) \approx 0.368$
+      - High: $0.3\log_2(0.3/0.4) \approx 0.3(-0.415) \approx -0.125$
+
+      Sum: $-0.117+0.368-0.125\approx0.127$ bits — well past a 0.05-bit alert threshold. The medium bin's
+      share fell from 50% to 30% (a 40% relative drop); the high bin's share rose from 30% to 40% (a
+      one-third relative gain). Accuracy never had a chance to see it, because the per-bin accuracies
+      happened to average out.
     </Step>
   </Steps>
 </WorkedExample>

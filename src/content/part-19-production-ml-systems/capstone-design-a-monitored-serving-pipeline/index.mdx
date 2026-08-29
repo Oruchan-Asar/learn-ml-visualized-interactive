@@ -57,19 +57,27 @@ import { IntuitionDemo, PlayDemo, PipelineCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Day 1: the baseline">
-      Distribution matches training exactly. Accuracy 0.800, drift 0.000 bits. Every check is green because
-      nothing has happened yet.
+      Distribution matches training exactly: $[0.3,0.4,0.3]$. Accuracy $=0.3(0.9)+0.4(0.8)+0.3(0.7)=0.27+0.32+0.21=0.800$.
+      Drift $=D_{KL}([0.3,0.4,0.3]\|[0.3,0.4,0.3])=0.000$ bits, since the two distributions are identical.
+      Every check is green because nothing has happened yet.
     </Step>
     <Step label="Day 3: the incident">
-      Distribution shifts from 40% medium-bin traffic down to 20%, with high-bin traffic doubling to 40%.
-      Accuracy: $0.4(0.9) + 0.2(0.8) + 0.4(0.7) = 0.36 + 0.16 + 0.28 = 0.80$ — unchanged, because the bins'
-      fixed accuracies happened to average out identically.
+      Distribution shifts from $[0.3,0.4,0.3]$ (train) to $[0.4,0.2,0.4]$ (live) — medium-bin traffic falls
+      from 40% to 20% (halved), while high-bin traffic rises from 30% to 40% (up by a third). Accuracy:
+      $0.4(0.9) + 0.2(0.8) + 0.4(0.7) = 0.36 + 0.16 + 0.28 = 0.80$ — unchanged, because the bins' fixed
+      accuracies happened to average out identically.
     </Step>
     <Step label="What actually caught it">
-      Drift score: $\approx 0.151$ bits, well past the 0.05 threshold. Not the static ingestion tests — they
-      check a join function against fixed labels, not live traffic. Not the accuracy dashboard — it produced
-      the same number as a day with no problem at all. Only the piece built specifically to compare
-      distributions caught anything.
+      $D_{KL}([0.3,0.4,0.3]\|[0.4,0.2,0.4])$:
+
+      - $0.3\log_2(0.3/0.4) \approx 0.3(-0.415) \approx -0.125$
+      - $0.4\log_2(0.4/0.2) = 0.4\log_2(2) = 0.4(1) = 0.4$
+      - $0.3\log_2(0.3/0.4) \approx -0.125$
+
+      Sum: $-0.125+0.4-0.125\approx0.151$ bits, well past the 0.05 threshold. Not the static ingestion
+      tests — they check a join function against fixed labels, not live traffic. Not the accuracy
+      dashboard — it produced the same number as a day with no problem at all. Only the piece built
+      specifically to compare distributions caught anything.
     </Step>
   </Steps>
 </WorkedExample>

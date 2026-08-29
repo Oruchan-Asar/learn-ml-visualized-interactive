@@ -73,8 +73,11 @@ import { IntuitionDemo, PlayDemo, VlaCheckpoint } from "./Demos";
       "move up right" → tokens `["move", "up", "right"]`.
     </Step>
     <Step label="Sum each token's fixed action vector">
-      `move` contributes $(0,0)$, `up` contributes $(0,1)$, `right` contributes $(1,0)$. Sum:
-      $a = (0,0) + (0,1) + (1,0) = (1,1)$.
+      - `move` contributes $(0,0)$
+      - `up` contributes $(0,1)$
+      - `right` contributes $(1,0)$
+
+      Sum: $a = (0,0) + (0,1) + (1,0) = (1,1)$.
     </Step>
     <Step label="Apply the action to the observed position">
       Starting at $p=(0,0)$: $p' = (0,0) + (1,1) = (1,1)$, well inside the workspace bound of 3, so no

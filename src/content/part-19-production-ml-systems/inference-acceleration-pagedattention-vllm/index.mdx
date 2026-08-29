@@ -70,8 +70,11 @@ import { IntuitionDemo, PlayDemo, PagedAttentionCheckpoint } from "./Demos";
       5 wasted, fragmentation $5/12 \approx 0.417$.
     </Step>
     <Step label="The same three sequences, paged (page size 2)">
-      $\lceil 1/2 \rceil \cdot 2 = 2$, $\lceil 4/2 \rceil \cdot 2 = 4$, $\lceil 2/2 \rceil \cdot 2 = 2$ — total
-      $2+4+2=8$ slots for the same 7 used tokens.
+      - Length $1$: $\lceil 1/2 \rceil \cdot 2 = 2$
+      - Length $4$: $\lceil 4/2 \rceil \cdot 2 = 4$
+      - Length $2$: $\lceil 2/2 \rceil \cdot 2 = 2$
+
+      Total $2+4+2=8$ slots for the same 7 used tokens.
     </Step>
     <Step label="Only 1 slot wasted">
       $8 - 7 = 1$, fragmentation $1/8 = 0.125$ — the length-1 sequence's single half-empty page is the only

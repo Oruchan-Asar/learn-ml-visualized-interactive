@@ -54,12 +54,14 @@ import { IntuitionDemo, PlayDemo, ReproCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Seed 1's noise sequence: -1, -2, 0">
-      Step 1: $10 - 1 \times (2 + (-1)) = 9$. Step 2: $9 - 1 \times (1 + (-2)) = 10$. Step 3:
-      $10 - 1 \times (3 + 0) = 7$.
+      1. $10 - 1 \times (2 + (-1)) = 9$
+      2. $9 - 1 \times (1 + (-2)) = 10$
+      3. $10 - 1 \times (3 + 0) = 7$
     </Step>
     <Step label="Seed 2's noise sequence: -1, 1, 2 — same lr, same gradients">
-      Step 1: $10 - 1 \times (2 + (-1)) = 9$ — identical so far. Step 2: $9 - 1 \times (1 + 1) = 7$ — already
-      diverged. Step 3: $7 - 1 \times (3 + 2) = 2$.
+      1. $10 - 1 \times (2 + (-1)) = 9$ — identical so far
+      2. $9 - 1 \times (1 + 1) = 7$ — already diverged
+      3. $7 - 1 \times (3 + 2) = 2$
     </Step>
     <Step label="Two final weights, one logged config">
       7 versus 2. A config file listing only lr=1 and the gradient schedule describes both runs equally well
