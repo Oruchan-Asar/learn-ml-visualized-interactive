@@ -48,9 +48,18 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
     </Step>
     <Step label="The far Gaussian and the background split what's left">
       3 units away in a spread-3 blob, the far Gaussian's weight is $e^{-0.5} \approx 0.6065$, giving alpha
-      $\approx 0.5459$ and contribution $\approx 0.4 \times 0.5459 \approx 0.2183$. The remaining
-      transmittance $\approx 0.1816$ goes to the white background. Final pixel $\approx (0.782, 0.182,
-      0.400)$ — mostly red, tinted by blue, softened by background white.
+      $\approx 0.9\times0.6065\approx0.5459$ and contribution $\approx 0.4 \times 0.5459 \approx 0.2183$
+      (all in blue, since the far Gaussian is pure blue). The remaining transmittance
+      $\approx 0.4\times(1-0.5459)\approx0.1816$ goes to the white background.
+
+      Summing each channel — near Gaussian's contribution, far Gaussian's contribution, background's
+      contribution:
+      - Red: $0.6 + 0 + 0.1816 \approx 0.782$
+      - Green: $0 + 0 + 0.1816 \approx 0.182$
+      - Blue: $0 + 0.2183 + 0.1816 \approx 0.400$
+
+      Final pixel $\approx (0.782, 0.182, 0.400)$ — mostly red, tinted by blue, softened by background
+      white.
     </Step>
   </Steps>
 </Formalize>

@@ -84,8 +84,15 @@ import { IntuitionDemo, PlayDemo, RasterizationCheckpoint } from "./Demos";
       it contributes nothing).
     </Step>
     <Step label="Gradient and one step">
-      $\partial L/\partial\text{opacity} = -1.2$ exactly. One step: $0.5 - 0.1 \times (-1.2) = 0.62$ — closer
-      to the target, and the loss at $0.62$ is lower than at $0.5$.
+      Since rendered $=\text{opacity}\cdot\text{color}+(1-\text{opacity})\cdot\text{background}$, the chain
+      rule gives $\partial L/\partial\text{opacity} = \sum_c 2(\text{rendered}_c-\text{target}_c)(\text{color}_c-\text{background}_c)$
+      per channel:
+      - Red: $2(1-1)(1-1) = 0$
+      - Green: $2(0.5-0.2)(0-1) = -0.6$
+      - Blue: $2(0.5-0.2)(0-1) = -0.6$
+
+      Summing: $0-0.6-0.6=-1.2$ exactly. One step: $0.5 - 0.1 \times (-1.2) = 0.62$ — closer to the target,
+      and the loss at $0.62$ is lower than at $0.5$.
     </Step>
   </Steps>
 </WorkedExample>

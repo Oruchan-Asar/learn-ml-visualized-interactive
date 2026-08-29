@@ -69,13 +69,17 @@ import { IntuitionDemo, PlayDemo, CameraProjectionCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="P = (2, -1, 4), camera at the origin">
-      $X/Z = 2/4 = 0.5$, $Y/Z = -1/4 = -0.25$. So $u = 100(0.5) + 50 = 100$ and
-      $v = 100(-0.25) + 50 = 25$ — pixel $(100, 25)$.
+      - Perspective divide: $X/Z = 2/4 = 0.5$, $Y/Z = -1/4 = -0.25$
+      - Scale and shift: $u = 100(0.5) + 50 = 100$, $v = 100(-0.25) + 50 = 25$
+
+      Pixel $(100, 25)$.
     </Step>
     <Step label="P = (3, 1, 5), camera moved to C = (1, 0, 0)">
-      Extrinsics first: $P_{\text{cam}} = (3, 1, 5) - (1, 0, 0) = (2, 1, 5)$. Then $X/Z = 2/5 = 0.4$,
-      $Y/Z = 1/5 = 0.2$, giving $u = 100(0.4) + 50 = 90$ and $v = 100(0.2) + 50 = 70$ — pixel $(90, 70)$.
-      Moving the camera changed the pixel even though the world point never moved.
+      1. Extrinsics: $P_{\text{cam}} = (3, 1, 5) - (1, 0, 0) = (2, 1, 5)$
+      2. Perspective divide: $X/Z = 2/5 = 0.4$, $Y/Z = 1/5 = 0.2$
+      3. Scale and shift: $u = 100(0.4) + 50 = 90$, $v = 100(0.2) + 50 = 70$
+
+      Pixel $(90, 70)$ — moving the camera changed the pixel even though the world point never moved.
     </Step>
   </Steps>
 </WorkedExample>

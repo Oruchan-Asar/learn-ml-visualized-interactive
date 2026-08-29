@@ -41,12 +41,24 @@ import { IntuitionDemo, PlayDemo, InstantNgpCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Coarse level: 2² = 4 vertices, table size 4 — dense">
-      Query point $(0.3, 0.7)$ sits $0.3$ of the way across, $0.7$ up: corner weights $0.21, 0.09, 0.49,
-      0.21$ against features $1, 2, 3, 4$. Value $= 0.21(1) + 0.09(2) + 0.49(3) + 0.21(4) = 2.70$.
+      Query point $(0.3, 0.7)$ sits $f_x=0.3$ of the way across, $f_y=0.7$ up. Each corner's bilinear
+      weight:
+      - $(1-f_x)(1-f_y) = (0.7)(0.3) = 0.21$
+      - $f_x(1-f_y) = (0.3)(0.3) = 0.09$
+      - $(1-f_x)f_y = (0.7)(0.7) = 0.49$
+      - $f_xf_y = (0.3)(0.7) = 0.21$
+
+      Against features $1, 2, 3, 4$: value $= 0.21(1) + 0.09(2) + 0.49(3) + 0.21(4) = 2.70$.
     </Step>
     <Step label="Fine level: 4² = 16 vertices, table size 8 — hashed">
-      Same query point, now at $(0.9, 2.1)$ in grid units. Corner weights $0.09, 0.81, 0.01, 0.09$ against
-      hashed features $70, 80, 60, 50$. Value $= 0.09(70) + 0.81(80) + 0.01(60) + 0.09(50) = 76.2$.
+      Same query point, now at $(0.9, 2.1)$ in grid units — that's $f_x=0.9$ across its cell and
+      $f_y=0.1$ up (the fractional part of $2.1$). Each corner's weight:
+      - $(1-f_x)(1-f_y) = (0.1)(0.9) = 0.09$
+      - $f_x(1-f_y) = (0.9)(0.9) = 0.81$
+      - $(1-f_x)f_y = (0.1)(0.1) = 0.01$
+      - $f_xf_y = (0.9)(0.1) = 0.09$
+
+      Against hashed features $70, 80, 60, 50$: value $= 0.09(70) + 0.81(80) + 0.01(60) + 0.09(50) = 76.2$.
     </Step>
     <Step label="Concatenate">
       The full encoding at this point is $[2.70,\ 76.2]$ — one number per level, handed to the (now tiny)
