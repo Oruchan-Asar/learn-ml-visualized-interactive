@@ -87,10 +87,8 @@ import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
       $u_2=-v_2=(-\tfrac{1}{\sqrt2},\tfrac{1}{\sqrt2})$.
 
       Each term is a rank-1 outer product, scaled by its singular value:
-
-      $$
-      \sigma_1 u_1v_1^\top = 3\begin{pmatrix}0.5&0.5\\0.5&0.5\end{pmatrix} = \begin{pmatrix}1.5&1.5\\1.5&1.5\end{pmatrix}, \qquad \sigma_2 u_2v_2^\top = 1\begin{pmatrix}-0.5&0.5\\0.5&-0.5\end{pmatrix}
-      $$
+      - $\sigma_1 u_1v_1^\top = 3\begin{pmatrix}0.5&0.5\\0.5&0.5\end{pmatrix} = \begin{pmatrix}1.5&1.5\\1.5&1.5\end{pmatrix}$
+      - $\sigma_2 u_2v_2^\top = 1\begin{pmatrix}-0.5&0.5\\0.5&-0.5\end{pmatrix}$
 
       Adding the two terms entrywise reconstructs $A$ exactly:
 

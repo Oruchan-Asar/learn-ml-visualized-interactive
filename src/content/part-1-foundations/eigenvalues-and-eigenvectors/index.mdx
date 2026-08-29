@@ -63,37 +63,46 @@ import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
       so $\lambda_1=5$ and $\lambda_2=2$.
     </Step>
     <Step label="Solve for the first eigenvector">
-      For $\lambda_1=5$, substitute into $A-\lambda I$:
+      These equations come from the matrix-vector multiplication in $(A-\lambda I)v=0$, where
+      $v=\begin{pmatrix}x\\y\end{pmatrix}$ and the right-hand side is the zero vector
+      $\begin{pmatrix}0\\0\end{pmatrix}$. For $\lambda_1=5$:
 
-      $$
-      A - 5I = \begin{pmatrix}4&1\\2&3\end{pmatrix} - \begin{pmatrix}5&0\\0&5\end{pmatrix} = \begin{pmatrix}-1&1\\2&-2\end{pmatrix}
-      $$
+      1. Set up the matrix $A-5I$:
 
-      That turns $(A-5I)v=0$ into an actual matrix-vector system, for $v=\begin{pmatrix}x\\y\end{pmatrix}$:
+         $$
+         A - 5I = \begin{pmatrix}4&1\\2&3\end{pmatrix} - \begin{pmatrix}5&0\\0&5\end{pmatrix} = \begin{pmatrix}-1&1\\2&-2\end{pmatrix}
+         $$
 
-      $$
-      \begin{pmatrix}-1&1\\2&-2\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix} = \begin{pmatrix}0\\0\end{pmatrix}
-      $$
+      2. Set up the system $(A-5I)v=0$:
 
-      Multiplying row by row: row 1 gives $(-1)(x)+(1)(y)=0$, i.e. $-x+y=0$. Row 2 gives
-      $(2)(x)+(-2)(y)=0$, which is exactly twice row 1 — no new information, exactly as guaranteed by
-      $\det(A-5I)=0$ (dependent rows are what a zero determinant means).
+         $$
+         \begin{pmatrix}-1&1\\2&-2\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix} = \begin{pmatrix}0\\0\end{pmatrix}
+         $$
+
+      3. Multiply row by row:
+         - Row 1: $(-1)(x)+(1)(y)=0 \implies -x+y=0$
+         - Row 2: $(2)(x)+(-2)(y)=0 \implies 2(-x+y)=0$ — the same relation, no new information (exactly what $\det(A-5I)=0$ guarantees)
 
       So $y=x$, giving direction $(1,1)$. Check: $A(1,1) = (4+1, 2+3) = (5,5) = 5(1,1)$. ✓
     </Step>
     <Step label="Solve for the second eigenvector">
-      For $\lambda_2=2$, substitute into $A-\lambda I$:
+      For $\lambda_2=2$:
 
-      $$
-      A - 2I = \begin{pmatrix}4&1\\2&3\end{pmatrix} - \begin{pmatrix}2&0\\0&2\end{pmatrix} = \begin{pmatrix}2&1\\2&1\end{pmatrix}
-      $$
+      1. Set up the matrix $A-2I$:
 
-      $$
-      \begin{pmatrix}2&1\\2&1\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix} = \begin{pmatrix}0\\0\end{pmatrix}
-      $$
+         $$
+         A - 2I = \begin{pmatrix}4&1\\2&3\end{pmatrix} - \begin{pmatrix}2&0\\0&2\end{pmatrix} = \begin{pmatrix}2&1\\2&1\end{pmatrix}
+         $$
 
-      Here both rows are identical, so multiplying row by row gives the same equation twice:
-      $(2)(x)+(1)(y)=0$, i.e. $2x+y=0$.
+      2. Set up the system $(A-2I)v=0$:
+
+         $$
+         \begin{pmatrix}2&1\\2&1\end{pmatrix}\begin{pmatrix}x\\y\end{pmatrix} = \begin{pmatrix}0\\0\end{pmatrix}
+         $$
+
+      3. Multiply row by row — both rows are identical here, so they give the same equation twice:
+         - Row 1: $(2)(x)+(1)(y)=0 \implies 2x+y=0$
+         - Row 2: $(2)(x)+(1)(y)=0 \implies 2x+y=0$ (identical to row 1)
 
       So $y=-2x$, giving direction $(1,-2)$. Check: $A(1,-2) = (4-2, 2-6) = (2,-4) = 2(1,-2)$. ✓
     </Step>

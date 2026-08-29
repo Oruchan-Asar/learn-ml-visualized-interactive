@@ -68,9 +68,13 @@ import { IntuitionDemo, PlayDemo, JacobianCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Evaluate F and its Jacobian at (2, 3)">
-      Differentiate each output with respect to each input: $\partial F_1/\partial x = 2x$,
-      $\partial F_1/\partial y = 1$, $\partial F_2/\partial x = 1$, $\partial F_2/\partial y = 2y$, giving the
-      general Jacobian
+      Differentiate each output with respect to each input:
+      - $\partial F_1/\partial x = 2x$
+      - $\partial F_1/\partial y = 1$
+      - $\partial F_2/\partial x = 1$
+      - $\partial F_2/\partial y = 2y$
+
+      That gives the general Jacobian
 
       $$
       J_F(x,y) = \begin{bmatrix}2x & 1 \\ 1 & 2y\end{bmatrix}
@@ -90,10 +94,13 @@ import { IntuitionDemo, PlayDemo, JacobianCheckpoint } from "./Demos";
     <Step label="The Hessian of f is constant">
       First partials: $\partial f/\partial x = 2x+y$, $\partial f/\partial y = x+2y$.
 
-      Differentiate each of those again: $\partial^2f/\partial x^2 = \partial/\partial x[2x+y] = 2$,
-      $\partial^2f/\partial x\partial y = \partial/\partial y[2x+y] = 1$,
-      $\partial^2f/\partial y\partial x = \partial/\partial x[x+2y] = 1$,
-      $\partial^2f/\partial y^2 = \partial/\partial y[x+2y] = 2$, giving
+      Differentiate each of those again:
+      - $\partial^2f/\partial x^2 = \partial/\partial x[2x+y] = 2$
+      - $\partial^2f/\partial x\partial y = \partial/\partial y[2x+y] = 1$
+      - $\partial^2f/\partial y\partial x = \partial/\partial x[x+2y] = 1$
+      - $\partial^2f/\partial y^2 = \partial/\partial y[x+2y] = 2$
+
+      giving
 
       $$
       H_f = \begin{bmatrix}2 & 1\\1 & 2\end{bmatrix}

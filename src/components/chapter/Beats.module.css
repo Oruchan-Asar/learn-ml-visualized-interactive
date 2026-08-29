@@ -102,6 +102,60 @@
   margin: 0;
 }
 
+/*
+ * Markdown lists inside a Step's derivation — e.g. a numbered sub-procedure
+ * ("set up the matrix", "set up the system", "multiply row by row") or a
+ * bulleted breakdown of parallel sub-computations ("row 1: ...", "row 2:
+ * ..."). Left unstyled these fall back to raw browser UA defaults (default
+ * markers, ~40px indent), which reads as unstyled next to the rest of the
+ * beat — so they get the same restrained treatment as .variables below.
+ */
+.stepContent ol,
+.stepContent ul,
+.prose ol,
+.prose ul {
+  margin: 0;
+  padding-left: 20px;
+}
+.stepContent ol,
+.prose ol {
+  list-style: decimal;
+}
+.stepContent ul,
+.prose ul {
+  list-style: none;
+}
+.stepContent li,
+.prose li {
+  padding-left: 2px;
+}
+.stepContent li + li,
+.prose li + li {
+  margin-top: 6px;
+}
+.stepContent ul li,
+.prose ul li {
+  position: relative;
+  padding-left: 14px;
+}
+.stepContent ul li::before,
+.prose ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.stepContent li > ol,
+.stepContent li > ul,
+.prose li > ol,
+.prose li > ul {
+  margin-top: 6px;
+}
+
 .variables {
   list-style: none;
   margin: 0;

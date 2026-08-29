@@ -43,9 +43,11 @@ import { IntuitionDemo, PlayDemo, MleCheckpoint } from "./Demos";
       \frac{d\ell}{dp} = \frac{k}{p} - \frac{n-k}{1-p} = 0
       $$
 
-      Move the second term across and cross-multiply: $\frac{k}{p} = \frac{n-k}{1-p} \implies k(1-p) =
-      p(n-k)$. Expand both sides: $k - kp = pn - pk$. The $-kp$ on the left and $-pk$ on the right are the
-      same term, so they cancel, leaving $k = pn$, so
+      1. Move the second term across and cross-multiply: $\frac{k}{p} = \frac{n-k}{1-p} \implies k(1-p) = p(n-k)$
+      2. Expand both sides: $k - kp = pn - pk$
+      3. The $-kp$ on the left and $-pk$ on the right are the same term, so they cancel, leaving $k = pn$
+
+      Dividing both sides by $n$ gives
 
       $$
       \hat{p} = \frac{k}{n}

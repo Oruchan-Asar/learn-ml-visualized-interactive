@@ -57,18 +57,24 @@ import { IntuitionDemo, PlayDemo, KLCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="KL divergence, one direction">
-      Compute each outcome's term separately: $0.5\log_2\frac{0.5}{0.4}=0.5\log_2(1.25)\approx0.5(0.3219)\approx0.1610$;
-      $0.3\log_2\frac{0.3}{0.4}=0.3\log_2(0.75)\approx0.3(-0.4150)\approx-0.1245$; the third term is exactly
-      $0$ since $P$ and $Q$ agree there ($\log_2(1)=0$). Summing:
+      Compute each outcome's term separately:
+      - $0.5\log_2\frac{0.5}{0.4}=0.5\log_2(1.25)\approx0.5(0.3219)\approx0.1610$
+      - $0.3\log_2\frac{0.3}{0.4}=0.3\log_2(0.75)\approx0.3(-0.4150)\approx-0.1245$
+      - The third term is exactly $0$ since $P$ and $Q$ agree there ($\log_2(1)=0$)
+
+      Summing:
 
       $$
       D_{KL}(P\Vert Q) \approx 0.1610 - 0.1245 + 0 \approx 0.0365 \text{ bits}
       $$
     </Step>
     <Step label="The reverse direction gives a different number">
-      Same process, swapped: $0.4\log_2\frac{0.4}{0.5}=0.4\log_2(0.8)\approx0.4(-0.3219)\approx-0.1288$;
-      $0.4\log_2\frac{0.4}{0.3}=0.4\log_2(1.333)\approx0.4(0.4150)\approx0.1660$; the third term is again
-      $0$. Summing:
+      Same process, swapped:
+      - $0.4\log_2\frac{0.4}{0.5}=0.4\log_2(0.8)\approx0.4(-0.3219)\approx-0.1288$
+      - $0.4\log_2\frac{0.4}{0.3}=0.4\log_2(1.333)\approx0.4(0.4150)\approx0.1660$
+      - The third term is again $0$
+
+      Summing:
 
       $$
       D_{KL}(Q\Vert P) \approx -0.1288+0.1660+0 \approx 0.0372 \text{ bits}
@@ -81,9 +87,9 @@ import { IntuitionDemo, PlayDemo, KLCheckpoint } from "./Demos";
       $P(X{=}0,Y{=}1){=}P(X{=}1,Y{=}0){=}0.1$ — $X$ and $Y$ agree far more than chance. Both marginals are
       uniform, $(0.5,0.5)$, so $H(X)=H(Y)=1$ bit.
 
-      The joint entropy sums the same $-p\log_2 p$ recipe over all four outcomes: $-0.4\log_2(0.4)\approx
-      0.5288$ (for each of the two $0.4$ outcomes) and $-0.1\log_2(0.1)\approx0.3322$ (for each of the two
-      $0.1$ outcomes):
+      The joint entropy sums the same $-p\log_2 p$ recipe over all four outcomes:
+      - $-0.4\log_2(0.4)\approx0.5288$, for each of the two $0.4$ outcomes
+      - $-0.1\log_2(0.1)\approx0.3322$, for each of the two $0.1$ outcomes
 
       $$
       H(X,Y) \approx 2(0.5288) + 2(0.3322) \approx 1.7219 \text{ bits}
