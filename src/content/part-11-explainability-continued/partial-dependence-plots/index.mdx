@@ -49,8 +49,13 @@ import { IntuitionDemo, PlayDemo, PDPCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Every row has a real, strong effect from x1">
-      At $x_1=2$: the four rows predict $4, 2, -2, -4$ — a spread of $8$. $x_1$ clearly matters, a lot, for every
-      single row.
+      At $x_1=2$, each row's prediction is $x_1\times x_2^{(i)}$:
+      - $x_2=2$: $2\times2=4$
+      - $x_2=1$: $2\times1=2$
+      - $x_2=-1$: $2\times(-1)=-2$
+      - $x_2=-2$: $2\times(-2)=-4$
+
+      A spread of $8$ — $x_1$ clearly matters, a lot, for every single row.
     </Step>
     <Step label="The average cancels it exactly">
       $(4 + 2 - 2 - 4)/4 = 0$. This holds at *every* grid value of $x_1$ from $-2$ to $2$: the PDP is $0, 0, 0,

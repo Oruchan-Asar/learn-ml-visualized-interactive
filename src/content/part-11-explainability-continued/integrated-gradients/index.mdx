@@ -52,17 +52,22 @@ import { IntuitionDemo, PlayDemo, IntegratedGradientsCheckpoint } from "./Demos"
 
   <Steps>
     <Step label="The true output change is large, the gradient at the input is tiny">
-      $f(0)=0.5$, $f(2)\approx0.99995$ — a change of nearly $0.5$. But $f'(2)\approx0.000227$: the input sits so
-      deep in saturation that its own gradient badly understates how much it mattered.
+      $f(0)=\sigma(0)=0.5$. $f(2)=\sigma(10)=1/(1+e^{-10})\approx0.99995$ — a change of nearly $0.5$. The
+      derivative $f'(x)=5\sigma(5x)(1-\sigma(5x))$ at $x=2$: $f'(2)=5\times0.99995\times(1-0.99995)
+      \approx5\times0.99995\times0.00005\approx0.000227$ — the input sits so deep in saturation that its
+      own gradient badly understates how much it mattered.
     </Step>
     <Step label="One step reduces to the same blind spot">
       With only 1 integration step, IG evaluates the gradient only at the input itself — identical to plain
       saliency. The result, $\approx0.00045$, misses over 99.9% of the true $\approx0.4999546$ output change.
     </Step>
     <Step label="More steps recover the missing attribution">
-      At 10 steps: $\approx0.375$ (gap $\approx0.125$). At 50 steps: $\approx0.475$ (gap $\approx0.025$). At 500
-      steps: $\approx0.497$ (gap $\approx0.0025$) — steadily converging toward the exact true change, because most
-      of that path crosses the steep, high-gradient middle that a single endpoint gradient never sees.
+      - At 10 steps: $\approx0.375$ (gap $\approx0.125$)
+      - At 50 steps: $\approx0.475$ (gap $\approx0.025$)
+      - At 500 steps: $\approx0.497$ (gap $\approx0.0025$)
+
+      Steadily converging toward the exact true change, because most of that path crosses the steep,
+      high-gradient middle that a single endpoint gradient never sees.
     </Step>
   </Steps>
 </WorkedExample>

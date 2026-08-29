@@ -43,19 +43,35 @@ import { IntuitionDemo, PlayDemo, AuditCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Shapley values: perfectly symmetric">
-      Coalition values: $v(\emptyset)=0$, $v(\{x_1\})=0$, $v(\{x_2\})=0$, $v(\{x_1,x_2\})=1$. Averaging marginal
-      contributions over both orderings gives $\phi_{x_1}=\phi_{x_2}=0.5$ — exactly equal, exactly summing to the
-      total change in value ($1-0=1$).
+      Coalition values:
+      - $v(\emptyset)=0$
+      - $v(\{x_1\})=0$
+      - $v(\{x_2\})=0$
+      - $v(\{x_1,x_2\})=1$
+
+      Two orderings, each feature's marginal contribution depending on whether it joins first or second:
+      - Order $(x_1,x_2)$: $x_1$ joins an empty coalition, contributing $v(\{x_1\})-v(\emptyset)=0-0=0$;
+        $x_2$ joins after $x_1$, contributing $v(\{x_1,x_2\})-v(\{x_1\})=1-0=1$
+      - Order $(x_2,x_1)$: $x_2$ joins first, contributing $v(\{x_2\})-v(\emptyset)=0-0=0$; $x_1$ joins
+        after $x_2$, contributing $v(\{x_1,x_2\})-v(\{x_2\})=1-0=1$
+
+      Averaging each feature's two contributions: $\phi_{x_1}=(0+1)/2=0.5$, $\phi_{x_2}=(1+0)/2=0.5$ —
+      exactly equal, exactly summing to the total change in value ($1-0=1$).
     </Step>
     <Step label="Integrated gradients: also symmetric, and nearly exact">
-      Integrating a smooth surrogate of the same boundary along the diagonal path from $(0,0)$ to $(5,5)$ gives
-      $\text{IG}_{x_1}\approx\text{IG}_{x_2}\approx0.482$, summing to $\approx0.965$ — within $0.0004$ of the
-      surrogate's true output change, just like the completeness check from earlier in this part.
+      The surrogate $\sigma(2(x_1-3))\cdot\sigma(2(x_2-3))$ is integrated along $\alpha:0\to1$ via a
+      500-step Riemann sum of $\partial(\text{surrogate})/\partial x_1$ at each $\alpha\cdot(5,5)$. At the
+      endpoint $\alpha=1$ — the point $(5,5)$ itself — $s_1=s_2=\sigma(2\times2)=\sigma(4)\approx0.982$,
+      giving one term of that sum, $2\times0.982\times(1-0.982)\times0.982\approx0.0347$: one of 500 such
+      terms that get averaged and scaled by $x_1=5$. Carrying that out for both features gives
+      $\text{IG}_{x_1}\approx\text{IG}_{x_2}\approx0.482$, summing to $\approx0.965$ — within $0.0004$ of
+      the surrogate's true output change, just like the completeness check from earlier in this part.
     </Step>
     <Step label="Tree importance: the tie-break at the root cascades">
-      Training a tree on this model's own grid gives $x_1$ the root split (a tie with $x_2$, broken arbitrarily)
-      with gain $\approx0.266$ weighted by all 49 samples. $x_2$'s only split happens one level deeper, on just
-      21 samples — but at a far higher gain, $\approx0.985$. Net importance: $x_2\approx0.422$ actually edges out
+      Training a tree on this model's own grid gives $x_1$ the root split (a tie with $x_2$, broken
+      arbitrarily) with gain $\approx0.266$, weighted by all 49 samples: $49/49\times0.266\approx0.266$.
+      $x_2$'s only split happens one level deeper, on just 21 samples, at a far higher gain $\approx0.985$:
+      $21/49\times0.985\approx0.422$. Net importance: $x_2\approx0.422$ actually edges out
       $x_1\approx0.266$, despite the two features being logically interchangeable in the true rule.
     </Step>
   </Steps>
