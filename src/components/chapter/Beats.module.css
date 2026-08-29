@@ -29,6 +29,20 @@
   max-width: 68ch;
 }
 
+/*
+ * .variables and .steps both reset `margin: 0` below (to kill the UA default
+ * <ul>/<ol> margin) at equal specificity to the rule above, so source order
+ * alone decides the winner — and since they're declared later in this file,
+ * they were silently zeroing out the 14px rhythm whenever one of them
+ * followed a sibling (e.g. a Formalize's <Variables> immediately followed
+ * by <Steps>, flush against it with no gap). Bump specificity instead of
+ * relying on order so this can't regress the next time either block moves.
+ */
+.prose > * + .variables,
+.prose > * + .steps {
+  margin-top: 14px;
+}
+
 .steps {
   list-style: none;
   margin: 0;
