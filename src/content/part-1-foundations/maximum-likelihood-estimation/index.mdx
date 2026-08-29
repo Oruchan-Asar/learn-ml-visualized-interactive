@@ -39,8 +39,19 @@ import { IntuitionDemo, PlayDemo, MleCheckpoint } from "./Demos";
       log never changes *where* the maximum sits.
     </Step>
     <Step label="Setting the derivative to zero gives a closed form">
-      $\frac{d\ell}{dp} = \frac{k}{p} - \frac{n-k}{1-p} = 0$ solves to $\hat{p} = k/n$ — the maximum
-      likelihood estimate is exactly the observed proportion of heads, no search required.
+      $$
+      \frac{d\ell}{dp} = \frac{k}{p} - \frac{n-k}{1-p} = 0
+      $$
+
+      Move the second term across and cross-multiply: $\frac{k}{p} = \frac{n-k}{1-p} \implies k(1-p) =
+      p(n-k)$. Expand both sides: $k - kp = pn - pk$. The $-kp$ on the left and $-pk$ on the right are the
+      same term, so they cancel, leaving $k = pn$, so
+
+      $$
+      \hat{p} = \frac{k}{n}
+      $$
+
+      — the maximum likelihood estimate is exactly the observed proportion of heads, no search required.
     </Step>
     <Step label="This is the general MLE recipe">
       Write the likelihood of the data under a parameter, take its log, and find where the derivative

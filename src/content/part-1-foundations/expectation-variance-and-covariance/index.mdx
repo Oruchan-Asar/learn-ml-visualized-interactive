@@ -80,10 +80,22 @@ import { IntuitionDemo, PlayDemo, MomentsCheckpoint } from "./Demos";
       $$
     </Step>
     <Step label="Find Cov(X, Y)">
-      Pairing each outcome's deviations $(x_i - 3)(y_i - 2.7)$ and weighting by $p_i$:
+      The five outcomes are $(x_i,y_i)$: $(1,2)$, $(2,1)$, $(3,4)$, $(4,3)$, $(5,5)$, with the same
+      probabilities $0.1, 0.3, 0.2, 0.3, 0.1$ as above. Subtract each mean and multiply the deviations:
+
+      $$
+      (1{-}3)(2{-}2.7)=(-2)(-0.7)=1.4,\quad (2{-}3)(1{-}2.7)=(-1)(-1.7)=1.7,\quad (3{-}3)(4{-}2.7)=(0)(1.3)=0,
+      $$
+      $$
+      (4{-}3)(3{-}2.7)=(1)(0.3)=0.3,\quad (5{-}3)(5{-}2.7)=(2)(2.3)=4.6
+      $$
+
+      Weighting each by its outcome's probability and summing:
+
       $$
       \mathrm{Cov}(X,Y) = 0.1(1.4) + 0.3(1.7) + 0.2(0) + 0.3(0.3) + 0.1(4.6) = 1.2
       $$
+
       Positive — when $X$ swings away from its mean, $Y$ tends to swing the same direction.
     </Step>
   </Steps>

@@ -57,21 +57,42 @@ import { IntuitionDemo, PlayDemo, KLCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="KL divergence, one direction">
-      $D_{KL}(P\Vert Q) = 0.5\log_2\frac{0.5}{0.4} + 0.3\log_2\frac{0.3}{0.4} + 0.2\log_2\frac{0.2}{0.2}
-      \approx 0.0365$ bits. The third term is exactly $0$ since $P$ and $Q$ agree there.
+      Compute each outcome's term separately: $0.5\log_2\frac{0.5}{0.4}=0.5\log_2(1.25)\approx0.5(0.3219)\approx0.1610$;
+      $0.3\log_2\frac{0.3}{0.4}=0.3\log_2(0.75)\approx0.3(-0.4150)\approx-0.1245$; the third term is exactly
+      $0$ since $P$ and $Q$ agree there ($\log_2(1)=0$). Summing:
+
+      $$
+      D_{KL}(P\Vert Q) \approx 0.1610 - 0.1245 + 0 \approx 0.0365 \text{ bits}
+      $$
     </Step>
     <Step label="The reverse direction gives a different number">
-      $D_{KL}(Q\Vert P) = 0.4\log_2\frac{0.4}{0.5} + 0.4\log_2\frac{0.4}{0.3} + 0.2\log_2\frac{0.2}{0.2}
-      \approx 0.0372$ bits — close to the forward value here, but not identical, confirming the asymmetry.
+      Same process, swapped: $0.4\log_2\frac{0.4}{0.5}=0.4\log_2(0.8)\approx0.4(-0.3219)\approx-0.1288$;
+      $0.4\log_2\frac{0.4}{0.3}=0.4\log_2(1.333)\approx0.4(0.4150)\approx0.1660$; the third term is again
+      $0$. Summing:
+
+      $$
+      D_{KL}(Q\Vert P) \approx -0.1288+0.1660+0 \approx 0.0372 \text{ bits}
+      $$
+
+      — close to the forward value here, but not identical, confirming the asymmetry.
     </Step>
     <Step label="Mutual information: KL applied to independence itself">
       For a joint distribution over two binary variables, $P(X{=}0,Y{=}0){=}P(X{=}1,Y{=}1){=}0.4$ and
       $P(X{=}0,Y{=}1){=}P(X{=}1,Y{=}0){=}0.1$ — $X$ and $Y$ agree far more than chance. Both marginals are
-      uniform, $(0.5,0.5)$, so $H(X)=H(Y)=1$ bit, while the joint entropy $H(X,Y)\approx1.7219$ bits.
-      **Mutual information** is exactly the gap: $I(X;Y)=H(X)+H(Y)-H(X,Y)\approx 0.2781$ bits — equivalently,
-      it's the KL divergence between the real joint distribution and the independent one its own marginals
-      would predict. Zero mutual information means knowing $X$ tells you nothing about $Y$; here, it tells
-      you a fair amount.
+      uniform, $(0.5,0.5)$, so $H(X)=H(Y)=1$ bit.
+
+      The joint entropy sums the same $-p\log_2 p$ recipe over all four outcomes: $-0.4\log_2(0.4)\approx
+      0.5288$ (for each of the two $0.4$ outcomes) and $-0.1\log_2(0.1)\approx0.3322$ (for each of the two
+      $0.1$ outcomes):
+
+      $$
+      H(X,Y) \approx 2(0.5288) + 2(0.3322) \approx 1.7219 \text{ bits}
+      $$
+
+      **Mutual information** is exactly the gap: $I(X;Y)=H(X)+H(Y)-H(X,Y)\approx 1+1-1.7219\approx 0.2781$
+      bits — equivalently, it's the KL divergence between the real joint distribution and the independent
+      one its own marginals would predict. Zero mutual information means knowing $X$ tells you nothing
+      about $Y$; here, it tells you a fair amount.
     </Step>
   </Steps>
 </WorkedExample>

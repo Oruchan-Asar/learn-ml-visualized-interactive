@@ -62,8 +62,23 @@ import { IntuitionDemo, PlayDemo, ImageCompressorCheckpoint } from "./Demos";
       image with every pixel equal to $8\times0.25=2$.
     </Step>
     <Step label="The error, by direct subtraction">
-      $I - I_1$ has entries $\pm1$ in all 16 cells (each of the original's 1's and 3's is exactly 1 away
-      from 2). $\|I-I_1\|_F=\sqrt{16\times1^2}=4$.
+      First reconstruct $I$ itself: $I = \sigma_1u_1u_1^\top+\sigma_2u_2u_2^\top$. The second term has
+      entries $4\times(\pm0.5)(\pm0.5)=\pm1$ — positive where $u_2$'s two entries share a sign, negative
+      where they don't:
+
+      $$
+      \sigma_2u_2u_2^\top = 4\begin{pmatrix}0.25&0.25&-0.25&-0.25\\0.25&0.25&-0.25&-0.25\\-0.25&-0.25&0.25&0.25\\-0.25&-0.25&0.25&0.25\end{pmatrix} = \begin{pmatrix}1&1&-1&-1\\1&1&-1&-1\\-1&-1&1&1\\-1&-1&1&1\end{pmatrix}
+      $$
+
+      Adding that to $I_1$'s flat $2$s gives $I$ — a matrix of $1$s and $3$s, each exactly $1$ away from
+      $I_1$'s $2$:
+
+      $$
+      I = \begin{pmatrix}3&3&1&1\\3&3&1&1\\1&1&3&3\\1&1&3&3\end{pmatrix}
+      $$
+
+      So $I - I_1$ is exactly the $\pm1$ matrix above, in all 16 cells, and
+      $\|I-I_1\|_F=\sqrt{16\times1^2}=4$.
     </Step>
     <Step label="Confirm it matches Eckart-Young">
       The formula predicts $\|I-I_1\|_F=\sqrt{\sigma_2^2}=\sigma_2=4$ — exactly what direct subtraction

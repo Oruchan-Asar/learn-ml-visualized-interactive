@@ -83,9 +83,20 @@ import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
     </Step>
     <Step label="Turn it into an SVD">
       Singular values are $|\lambda|$, sorted: $\sigma_1=3$, $\sigma_2=1$. Since $\lambda_2$ is negative,
-      its left singular vector flips sign: $u_1=v_1$, but $u_2=-v_2$. Reconstructing
-      $U\Sigma V^\top = \sigma_1 u_1 v_1^\top + \sigma_2 u_2 v_2^\top$ gives back
-      $\begin{pmatrix}1&2\\2&1\end{pmatrix}$ exactly — check it by hand, term by term.
+      its left singular vector flips sign: $u_1=v_1=(\tfrac{1}{\sqrt2},\tfrac{1}{\sqrt2})$, but
+      $u_2=-v_2=(-\tfrac{1}{\sqrt2},\tfrac{1}{\sqrt2})$.
+
+      Each term is a rank-1 outer product, scaled by its singular value:
+
+      $$
+      \sigma_1 u_1v_1^\top = 3\begin{pmatrix}0.5&0.5\\0.5&0.5\end{pmatrix} = \begin{pmatrix}1.5&1.5\\1.5&1.5\end{pmatrix}, \qquad \sigma_2 u_2v_2^\top = 1\begin{pmatrix}-0.5&0.5\\0.5&-0.5\end{pmatrix}
+      $$
+
+      Adding the two terms entrywise reconstructs $A$ exactly:
+
+      $$
+      \begin{pmatrix}1.5&1.5\\1.5&1.5\end{pmatrix} + \begin{pmatrix}-0.5&0.5\\0.5&-0.5\end{pmatrix} = \begin{pmatrix}1&2\\2&1\end{pmatrix}
+      $$
     </Step>
   </Steps>
 </WorkedExample>

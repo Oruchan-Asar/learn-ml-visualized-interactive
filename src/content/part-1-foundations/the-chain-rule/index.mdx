@@ -60,7 +60,12 @@ import { IntuitionDemo, PlayDemo, ChainRuleCheckpoint } from "./Demos";
       $$
     </Step>
     <Step label="Check directly, a different route">
-      Expand $h(x) = (2x+1)^2 = 4x^2+4x+1$, so $h'(x)=8x+4$, and $h'(1) = 12$ — same answer, two routes.
+      Expand the square first: $(2x+1)^2 = (2x+1)(2x+1) = 4x^2+2x+2x+1 = 4x^2+4x+1$.
+
+      Differentiate term by term: $\frac{d}{dx}[4x^2]=8x$, $\frac{d}{dx}[4x]=4$, $\frac{d}{dx}[1]=0$, so
+      $h'(x)=8x+4$.
+
+      Evaluating at $x=1$: $h'(1) = 8(1)+4 = 12$ — same answer, two routes.
     </Step>
   </Steps>
 </WorkedExample>

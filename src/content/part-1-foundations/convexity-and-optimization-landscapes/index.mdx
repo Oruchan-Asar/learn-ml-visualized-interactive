@@ -62,13 +62,21 @@ import { IntuitionDemo, PlayDemo, LandscapeCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Confirm the origin is critical">
+      Differentiate via the chain rule — the outer square, times the inner derivative:
+      $\partial f/\partial x = 2(x^2-2)\cdot\frac{\partial}{\partial x}(x^2-2) = 2(x^2-2)\cdot 2x = 4x(x^2-2)$,
+      and $\partial f/\partial y = 2y$.
+
       $$
       \nabla f(0,0) = \big(4(0)(0^2-2),\ 2(0)\big) = (0,0)
       $$
     </Step>
     <Step label="Classify it with the Hessian test">
-      $f_{xx}=12x^2-8$, $f_{yy}=2$, $f_{xy}=0$. At $x=0$: $f_{xx}=-8$, so
-      $\det H_f = (-8)(2) - 0^2 = -16 < 0$ — a **saddle**, exactly as the drag confirmed.
+      Differentiate the two first partials again. Expanding $\partial f/\partial x = 4x^3-8x$:
+      $f_{xx}=\partial/\partial x[4x^3-8x]=12x^2-8$, and $f_{xy}=\partial/\partial y[4x^3-8x]=0$ (no $y$
+      appears in that expression). From $\partial f/\partial y = 2y$: $f_{yy}=\partial/\partial y[2y]=2$.
+
+      At $x=0$: $f_{xx}=12(0)^2-8=-8$, so $\det H_f = (-8)(2) - 0^2 = -16 < 0$ — a **saddle**, exactly as
+      the drag confirmed.
     </Step>
     <Step label="Classify a well the same way">
       At $x=\sqrt2$: $f_{xx}=12(2)-8=16>0$, so $\det H_f = (16)(2)=32>0$ and $f_{xx}>0$ — a **minimum**, with
