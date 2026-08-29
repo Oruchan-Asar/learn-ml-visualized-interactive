@@ -69,9 +69,20 @@ import { IntuitionDemo, PlayDemo, GrabBagCheckpoint } from "./Demos";
       A — wrong, exactly like Chapter 1's own noisy-point example.
     </Step>
     <Step label="Naive Bayes isn't fooled at all">
-      Binarizing position into "high x" / "high y" features, class A's statistics come from *all five* A
-      points, not just the nearby one — so the noisy point's contribution gets diluted by the four genuine,
-      clearly-not-near-B, A points. The posterior for B comes out above $87\%$.
+      Binarizing position at threshold $3.5$, the query $(5, 5.5)$ is high-x and high-y. Class A's
+      statistics come from *all five* A points, not just the nearby noisy one, and (Laplace-smoothed)
+      likelihoods for "high" on each feature are:
+      - $P(\text{high x}\mid A) = P(\text{high y}\mid A) = (1+1)/(5+2) \approx 0.286$ (only the noisy point
+        is high on either feature)
+      - $P(\text{high x}\mid B) = P(\text{high y}\mid B) = (4+1)/(4+2) \approx 0.833$ (all four B points
+        are high on both)
+
+      Unnormalized scores (prior times both feature likelihoods):
+      - A: $\frac59 \times 0.286 \times 0.286 \approx 0.045$
+      - B: $\frac49 \times 0.833 \times 0.833 \approx 0.309$
+
+      Normalizing: $0.309/(0.045+0.309) \approx 87\%$ for B — the noisy point's contribution gets diluted
+      by the four genuine, clearly-not-near-B, A points.
     </Step>
     <Step label="DBSCAN doesn't use the label at all">
       Clustering the same nine points by density alone, the noisy point ends up in the same cluster as the

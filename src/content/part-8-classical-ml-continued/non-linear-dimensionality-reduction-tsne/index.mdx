@@ -52,9 +52,16 @@ import { IntuitionDemo, PlayDemo, TsneCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Within-pair affinity">
-      With $\sigma=1$, $P_1$'s Gaussian weight on $P_2$ (distance $1$) completely dominates its weight on
-      the far points (distance $20$ and $21$, both astronomically small by comparison) — so $p_{12} \approx
-      (1+1)/(2\cdot 4) = 0.25$, and symmetrically $p_{34} \approx 0.25$.
+      With $\sigma=1$, $P_1$'s unnormalized Gaussian weights on $P_2$, $P_3$, $P_4$ are
+      $e^{-1^2/2}\approx0.607$, $e^{-20^2/2}\approx0$, $e^{-21^2/2}\approx0$ — the far points contribute
+      nothing measurable. Normalizing: $p_{2\mid1} = 0.607/0.607 \approx 1$, and the same reasoning from
+      $P_2$'s side gives $p_{1\mid2}\approx1$. Symmetrizing over $n=4$ points:
+
+      $$
+      p_{12} = \frac{p_{2\mid1}+p_{1\mid2}}{2n} \approx \frac{1+1}{2\times4} = 0.25
+      $$
+
+      and symmetrically $p_{34} \approx 0.25$.
     </Step>
     <Step label="Cross-pair affinity is essentially zero">
       $p_{13}$, between the two far-apart pairs, comes out indistinguishable from $0$ — high-dimensional

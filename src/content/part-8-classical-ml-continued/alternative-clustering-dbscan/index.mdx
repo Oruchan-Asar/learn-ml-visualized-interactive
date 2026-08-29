@@ -56,9 +56,9 @@ import { IntuitionDemo, PlayDemo, DbscanCheckpoint } from "./Demos";
       `eps=1.5`, that's nowhere close enough to connect — the chains stay two separate clusters.
     </Step>
     <Step label="The point with no neighbors at all">
-      $(10,10)$'s nearest other point is $9.4$ units away — far beyond any reasonable `eps`. It's never a
-      core point and never reachable from one, so DBSCAN correctly leaves it as noise, folded into neither
-      cluster.
+      $(10,10)$'s nearest other point is $(2,5)$: $\sqrt{(10-2)^2+(10-5)^2}=\sqrt{64+25}=\sqrt{89}\approx9.4$
+      units away — far beyond any reasonable `eps`. It's never a core point and never reachable from one,
+      so DBSCAN correctly leaves it as noise, folded into neither cluster.
     </Step>
   </Steps>
 </WorkedExample>

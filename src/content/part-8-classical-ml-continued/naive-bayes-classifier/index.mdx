@@ -59,9 +59,23 @@ import { IntuitionDemo, PlayDemo, NaiveBayesCheckpoint } from "./Demos";
       = (0+1)/(3+2) = 0.2$. Never exactly zero again, no matter how sparse the training data.
     </Step>
     <Step label="Same prediction, honest confidence">
-      For "free, money": the unsmoothed model claims $100\%$ spam, $0\%$ not-spam — absolute certainty from
-      one missing example. The smoothed model reaches the *same* correct prediction, spam, but at a far more
-      reasonable $90\%$ to $10\%$.
+      For "free, money" (meeting absent), each class's unnormalized score is its prior times
+      $P(\text{free}\mid c) \times P(\text{money}\mid c) \times (1-P(\text{meeting}\mid c))$:
+
+      Unsmoothed:
+      - Spam: $0.5 \times \frac23 \times \frac23 \times (1-0) \approx 0.222$
+      - Not spam: $0.5 \times 0 \times \frac13 \times (1-\frac23) = 0$ — the zero-frequency word forces the
+        whole product to $0$
+
+      Normalizing: spam $\approx0.222/0.222=100\%$, not spam $=0\%$ — absolute certainty from one missing
+      example.
+
+      Smoothed:
+      - Spam: $0.5 \times 0.6 \times 0.6 \times (1-0.2) = 0.144$
+      - Not spam: $0.5 \times 0.2 \times 0.4 \times (1-0.6) = 0.016$
+
+      Normalizing: spam $=0.144/0.16=90\%$, not spam $=0.016/0.16=10\%$ — the same correct prediction, but
+      at a far more reasonable confidence.
     </Step>
   </Steps>
 </WorkedExample>

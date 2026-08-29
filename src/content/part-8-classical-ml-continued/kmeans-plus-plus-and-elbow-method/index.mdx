@@ -56,19 +56,47 @@ import { IntuitionDemo, PlayDemo, KmeansElbowCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="D(x)^2 from the first centroid, (0,0)">
-      Squared distances to the other 8 points: $1, 1, 100, 121, 101, 125, 136, 146$ — summing to $731$.
+      Squared distance $D(x)^2=x^2+y^2$ (since the centroid is the origin) to each of the other 8 points:
+      - $(1,0)$: $1^2+0^2=1$
+      - $(0,1)$: $0^2+1^2=1$
+      - $(10,0)$: $10^2=100$
+      - $(11,0)$: $11^2=121$
+      - $(10,1)$: $10^2+1^2=101$
+      - $(5,10)$: $5^2+10^2=125$
+      - $(6,10)$: $6^2+10^2=136$
+      - $(5,11)$: $5^2+11^2=146$
+
+      Summing: $1+1+100+121+101+125+136+146=731$.
     </Step>
     <Step label="The halfway draw lands on the far blob">
-      Half of $731$ is $365.5$. Walking the cumulative sum in point order — $1, 2, 102, 223, 324, 449,
-      \ldots$ — it first exceeds $365.5$ at the point $(5,10)$: the second centroid.
+      Half of $731$ is $365.5$. Walking the cumulative sum in point order:
+      - $(1,0)$: cumulative $1$
+      - $(0,1)$: cumulative $2$
+      - $(10,0)$: cumulative $102$
+      - $(11,0)$: cumulative $223$
+      - $(10,1)$: cumulative $324$
+      - $(5,10)$: cumulative $449$ — first exceeds $365.5$ here
+
+      The second centroid is $(5,10)$.
     </Step>
     <Step label="A third halfway draw finds the last untouched blob">
-      With two centroids now placed — one in each of two blobs — the same rule picks $(11,0)$ next,
-      landing the third centroid in the one remaining blob. All three blobs now have exactly one seed.
+      With centroids at $(0,0)$ and $(5,10)$, $D(x)^2$ is now the *smaller* of the two distances to each
+      point. Every point in the first two blobs is far closer to $(0,0)$ than to $(5,10)$, so their
+      $D(x)^2$ is unchanged from step 1: $0,1,1,100,121,101$ (for $(0,0),(1,0),(0,1),(10,0),(11,0),(10,1)$),
+      while the third blob's points are now essentially at distance $0$ from the chosen $(5,10)$: $0,1,1$.
+      Summing: $0+1+1+100+121+101+0+1+1=326$; half is $163$. Walking the cumulative sum, it passes $163$
+      at $(11,0)$ (cumulative $223$) — the third centroid. All three blobs now have exactly one seed.
     </Step>
     <Step label="Inertia across k=1..4">
-      $J(1)=354$, $J(2)=154$, $J(3)=4$, $J(4)=19/6 \approx 3.17$. The drop from $k=2$ to $k=3$ is $150$; the
-      drop from $k=3$ to $k=4$ is under $1$. $k=3$ is the elbow.
+      $J(3)$ is the cleanest to check by hand: with one centroid per blob, each blob's centroid is its own
+      mean, e.g. blob A's mean is $(\frac13,\frac13)$, giving squared distances $\frac29, \frac59, \frac59$
+      to its three points — summing to $\frac{12}{9}=\frac43$. All three blobs have the same shape, so each
+      contributes $\frac43$, and $J(3) = 3\times\frac43 = 4$.
+
+      The same sum-of-squared-distances recipe, applied to the (worse-fitting) 1- and 2-centroid
+      clusterings and the (needlessly-split) 4-centroid one, gives $J(1)=354$, $J(2)=154$, and
+      $J(4)=19/6\approx3.17$. The drop from $k=2$ to $k=3$ is $150$; the drop from $k=3$ to $k=4$ is under
+      $1$. $k=3$ is the elbow.
     </Step>
   </Steps>
 </WorkedExample>

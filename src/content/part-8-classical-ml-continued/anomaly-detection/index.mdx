@@ -51,8 +51,9 @@ import { IntuitionDemo, PlayDemo, AnomalyCheckpoint } from "./Demos";
       other, alone — isolated after exactly $1$ split.
     </Step>
     <Step label="The cluster needs several more splits">
-      $\{1,2,3,4,5\}$ splits at $3$, giving $\{1,2\}$ and $\{3,4,5\}$. Splitting again at $1.5$ isolates
-      both $1$ and $2$ at depth $3$; splitting $\{3,4,5\}$ at $4$ isolates $3$ at depth $3$ too.
+      - $\{1,2,3,4,5\}$ splits at $3$, giving $\{1,2\}$ and $\{3,4,5\}$
+      - Splitting $\{1,2\}$ again at $1.5$ isolates both $1$ and $2$, at depth $3$
+      - Splitting $\{3,4,5\}$ at $4$ isolates $3$, also at depth $3$
     </Step>
     <Step label="The last two take one split further">
       $\{4,5\}$ needs one more split, at $4.5$, before $4$ and $5$ are each isolated — at depth $4$, the
