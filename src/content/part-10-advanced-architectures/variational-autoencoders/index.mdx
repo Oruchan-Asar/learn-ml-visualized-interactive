@@ -62,14 +62,18 @@ import { IntuitionDemo, PlayDemo, VAECheckpoint } from "./Demos";
       input, recovered perfectly when there's no randomness at all.
     </Step>
     <Step label="Every other draw lands somewhere new">
-      $\varepsilon=1$ gives $z\approx1.4066\Rightarrow\hat x\approx2.8131$. $\varepsilon=-1$ gives
-      $z\approx0.5934\Rightarrow\hat x\approx1.1869$. $\varepsilon=2$ gives $z\approx1.8131\Rightarrow\hat
-      x\approx3.6263$ — four genuinely different outputs from one input, one encoder, one decoder.
+      - $\varepsilon=1$: $z=1+0.4066(1)\approx1.4066\Rightarrow\hat x=2z\approx2.8131$
+      - $\varepsilon=-1$: $z=1+0.4066(-1)\approx0.5934\Rightarrow\hat x\approx1.1869$
+      - $\varepsilon=2$: $z=1+0.4066(2)\approx1.8131\Rightarrow\hat x\approx3.6263$
+
+      Four genuinely different outputs from one input, one encoder, one decoder.
     </Step>
     <Step label="KL divergence penalizes distributions that stray from standard normal">
-      This encoding's KL divergence is $D_{KL}\approx0.983$. Encoding $x=0$ instead gives $\mu=0$,
-      $\log\sigma^2=-2$, and a *smaller* KL divergence of $\approx0.568$ — closer to $\mu{=}0,\sigma{=}1$, the
-      one distribution where this penalty vanishes entirely.
+      Plugging $\mu=1$, $\sigma^2=e^{-1.8}\approx0.1653$ into $D_{KL}=\tfrac12(\sigma^2+\mu^2-1-\log\sigma^2)$:
+      $D_{KL}=\tfrac12(0.1653+1-1-(-1.8))=\tfrac12(1.9653)\approx0.983$. Encoding $x=0$ instead gives $\mu=0$,
+      $\log\sigma^2=-2$, $\sigma^2=e^{-2}\approx0.1353$: $D_{KL}=\tfrac12(0.1353+0-1-(-2))=\tfrac12(1.1353)\approx0.568$
+      — a *smaller* KL divergence, closer to $\mu{=}0,\sigma{=}1$, the one distribution where this penalty
+      vanishes entirely.
     </Step>
   </Steps>
 </WorkedExample>

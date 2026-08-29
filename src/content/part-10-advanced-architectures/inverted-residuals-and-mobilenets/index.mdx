@@ -52,13 +52,19 @@ import { IntuitionDemo, PlayDemo, MobileNetCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Standard vs. separable at 4 channels">
-      Standard: $K^2C^2 = 9\cdot16=144$ params, $144\times16=2304$ FLOPs. Separable: depthwise
-      $K^2C=9\cdot4=36$, pointwise $C^2=16$, total $52$ params, $52\times16=832$ FLOPs — about
-      $36\%$ of the standard conv's cost, matching $1/4+1/9\approx0.361$ exactly.
+      - Standard: $K^2C^2 = 9\cdot16=144$ params, $144\times16=2304$ FLOPs
+      - Separable, depthwise: $K^2C=9\cdot4=36$ params
+      - Separable, pointwise: $C^2=16$ params
+      - Separable, total: $36+16=52$ params, $52\times16=832$ FLOPs
+
+      About $36\%$ of the standard conv's cost, matching $1/4+1/9\approx0.361$ exactly.
     </Step>
     <Step label="The inverted-residual bottleneck, expanded to 24 channels">
-      Expand $4\to24$: $4\times24=96$ params. Depthwise $3\times3$ on $24$ channels: $9\times24=216$ params.
-      Project $24\to4$: $24\times4=96$ params. Total: $96+216+96=408$ params.
+      - Expand $4\to24$: $4\times24=96$ params
+      - Depthwise $3\times3$ on $24$ channels: $9\times24=216$ params
+      - Project $24\to4$: $24\times4=96$ params
+
+      Total: $96+216+96=408$ params.
     </Step>
     <Step label="What a dense middle conv would have cost instead">
       Swap the depthwise filter for a *dense* $3\times3$ over the same expanded $24$ channels:

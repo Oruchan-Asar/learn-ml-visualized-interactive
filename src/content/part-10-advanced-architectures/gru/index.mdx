@@ -61,9 +61,16 @@ import { IntuitionDemo, PlayDemo, GRUCheckpoint } from "./Demos";
       candidate.
     </Step>
     <Step label="The hidden state creeps forward">
-      $h_t = (1-z_t)h_{t-1} + z_t\tilde h_t$ with $z_t\approx 0.018$ means each step keeps about $98.2\%$ of the old
-      state and blends in only a sliver of the new candidate. After 10 steps, $h \approx 0.128$ — small, steadily
-      increasing, never overshooting.
+      With $z_t\approx0.018$ and $r_t\approx0.982$ fixed every step, the recurrence becomes
+      $h_t \approx 0.982\,h_{t-1} + 0.018\tanh(1+0.491\,h_{t-1})$ (since $W{=}1$, $U{=}0.5$, and
+      $x_t{=}1$). Starting from $h_0=0$:
+      - $h_1 = 0.982(0)+0.018\tanh(1+0) \approx 0.0137$
+      - $h_2 = 0.982(0.0137)+0.018\tanh(1+0.491\times0.0137) \approx 0.0272$
+      - $h_3 \approx 0.982(0.0272)+0.018\tanh(1+0.491\times0.0272) \approx 0.0406$
+
+      Each step keeps about $98.2\%$ of the old state and blends in only a shrinking sliver of the
+      (slowly rising) candidate. Continuing the same recurrence for 7 more steps reaches
+      $h_{10} \approx 0.128$ — small, steadily increasing, never overshooting.
     </Step>
     <Step label="The same gate that shapes memory shapes the gradient">
       The dominant path for $\partial h_{10}/\partial h_1$ is a product of $(1-z_t)$ at each step:

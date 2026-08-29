@@ -45,14 +45,19 @@ import { IntuitionDemo, PlayDemo, TransferLearningCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Freezing turns two unknowns into one">
-      With $w$ fixed at $2$, the loss in $b$ alone is exactly $2(b-5)^2$-shaped — the same quadratic form from
-      the hyperparameter-tuning chapter. Its ideal learning rate, $\eta=0.5$, lands $b=5$ exactly, in one step.
-      **MSE** (short for **Mean Squared Error**): $0$.
+      With $w$ fixed at $2$, the loss in $b$ alone is exactly $2(b-5)^2$-shaped — the same quadratic form
+      from the hyperparameter-tuning chapter, whose gradient with respect to $b$ is $2(b-5)$. Starting
+      from $b=0$: gradient $=2(0-5)=-10$, so one step at $\eta=0.5$ gives
+      $b \leftarrow 0 - 0.5(-10) = 5$ exactly. **MSE** (short for **Mean Squared Error**): $0$.
     </Step>
     <Step label="The same rate wrecks the joint problem">
-      Training $w$ and $b$ together from $(0,0)$ at that same $\eta=0.5$ overshoots on step one, overshoots
-      further on step two, and by step three has exploded to $w\approx394$, $b\approx165$ — nowhere near the
-      target $(2,5)$.
+      Training $w$ and $b$ together from $(0,0)$ at that same $\eta=0.5$, using the joint gradient
+      $(\partial\mathcal{L}/\partial w,\partial\mathcal{L}/\partial b)$ each step:
+      - Step 1: $(w,b) \leftarrow (0,0) - 0.5(-40,-18) = (20, 9)$
+      - Step 2: $(w,b) \leftarrow (20,9) - 0.5(196,80) = (-78, -31)$
+      - Step 3: $(w,b) \leftarrow (-78,-31) - 0.5(-944,-392) = (394, 165)$
+
+      Overshooting further each step, nowhere near the target $(2,5)$.
     </Step>
     <Step label="Even a safe rate is slow when there's more to learn">
       At a stable $\eta=0.1$, from-scratch training reaches $(w,b)\approx(3.24, 2.01)$ after 5 steps — MSE

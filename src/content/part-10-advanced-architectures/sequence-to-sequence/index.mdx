@@ -49,19 +49,24 @@ import { IntuitionDemo, PlayDemo, SeqToSeqCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Encoding compresses three steps into one number">
-      $h_1=\tanh(1)\approx 0.7616$, $h_2=\tanh(-1+0.5(0.7616))\approx -0.5506$,
-      $h_3=\tanh(1+0.5(-0.5506))\approx 0.6198$. The context vector is $c=h_3\approx 0.6198$ — everything about
-      the 3-token input, folded into one scalar.
+      - $h_1=\tanh(1)\approx 0.7616$
+      - $h_2=\tanh(-1+0.5(0.7616))\approx -0.5506$
+      - $h_3=\tanh(1+0.5(-0.5506))\approx 0.6198$
+
+      The context vector is $c=h_3\approx 0.6198$ — everything about the 3-token input, folded into one
+      scalar.
     </Step>
     <Step label="Decoding starts from the context, not the input">
       $y_1=\tanh(c)\approx 0.5510$. From here the decoder only sees its own last output:
       $y_2=\tanh(0.5\,y_1)\approx 0.2687$.
     </Step>
     <Step label="The same context, unrolled further or not at all">
-      Running the decoder for 4 steps instead of 2 from the *exact same* context gives
-      $y_3\approx 0.1336$, $y_4\approx 0.0667$ — each output smaller than the last, since nothing new is
-      feeding the recurrence. The output length was never determined by the input length; it's just how
-      many times you choose to run the decoder.
+      Running the decoder for 4 steps instead of 2, continuing the exact same recurrence from $y_2$:
+      - $y_3=\tanh(0.5\,y_2)=\tanh(0.5\times0.2687)\approx 0.1336$
+      - $y_4=\tanh(0.5\,y_3)=\tanh(0.5\times0.1336)\approx 0.0667$
+
+      Each output smaller than the last, since nothing new is feeding the recurrence. The output length
+      was never determined by the input length; it's just how many times you choose to run the decoder.
     </Step>
   </Steps>
 </WorkedExample>

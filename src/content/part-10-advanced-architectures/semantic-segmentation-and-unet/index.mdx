@@ -54,17 +54,29 @@ import { IntuitionDemo, PlayDemo, UNetCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Encoder: two poolings to a bottleneck">
-      Pooling each $2\times2$ block gives $\text{skip}_1=\begin{bmatrix}4&8\\7&9\end{bmatrix}$ (block maxima), then
-      pooling that once more gives a bottleneck of just $9$ — the single largest pixel in the whole image.
+      Taking the max of each $2\times2$ block:
+      - Top-left block $\begin{bmatrix}1&3\\4&2\end{bmatrix}$: max $=4$
+      - Top-right block $\begin{bmatrix}6&2\\8&5\end{bmatrix}$: max $=8$
+      - Bottom-left block $\begin{bmatrix}7&1\\0&5\end{bmatrix}$: max $=7$
+      - Bottom-right block $\begin{bmatrix}3&9\\2&6\end{bmatrix}$: max $=9$
+
+      giving $\text{skip}_1=\begin{bmatrix}4&8\\7&9\end{bmatrix}$. Pooling that once more gives a
+      bottleneck of just $9$ — the single largest pixel in the whole image.
     </Step>
     <Step label="Without skip connections: a uniform blur">
       Upsampling $9$ twice produces a $4\times4$ grid of nothing but $9$s. Squared error against the original
       input, averaged over all $16$ pixels: $\text{MSE}=31.75$.
     </Step>
     <Step label="With skip connections: real detail comes back">
-      Averaging the upsampled bottleneck with $\text{skip}_1$, then upsampling *that* and averaging with the
-      original input, gives values like $3.75$ and $5.5$ in place of a flat $9$ — much closer to the true
-      pixels they're standing in for. $\text{MSE}=5.421875$.
+      First, average the upsampled bottleneck ($9$ everywhere) with $\text{skip}_1$'s own four values:
+
+      $$
+      \text{decode}_1 = \begin{bmatrix}(9+4)/2 & (9+8)/2\\(9+7)/2 & (9+9)/2\end{bmatrix} = \begin{bmatrix}6.5&8.5\\8&9\end{bmatrix}
+      $$
+
+      Upsampling that once more and averaging with the *original* input recovers real detail — for
+      example, the top-left pixel becomes $(1+6.5)/2=3.75$, and the pixel at row 4, column 3 becomes
+      $(2+9)/2=5.5$, in place of a flat $9$ either way. Averaged over all 16 pixels: $\text{MSE}=5.421875$.
     </Step>
     <Step label="The skip connection alone accounts for the entire gap">
       Both decoders start from the exact same bottleneck. The only difference is whether $\text{skip}_0$ and

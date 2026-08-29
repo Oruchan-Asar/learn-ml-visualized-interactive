@@ -52,14 +52,20 @@ import { IntuitionDemo, PlayDemo, ViTCheckpoint } from "./Demos";
       layers.
     </Step>
     <Step label="Self-attention connects them anyway">
-      Top-left's embedding and bottom-right's embedding produce identical dot-product scores against the query
-      (both are the "bright" pattern) — softmax assigns bottom-right $\approx 0.298$ of top-left's total
+      Query = top-left, embedding $(2,0)$. Both top-left and bottom-right are "bright" patches, so their
+      dot products with the query are identical: $q\cdot k_{\text{bottom-right}} = (2)(2)+(0)(0.8) = 4$,
+      scaled to $4/\sqrt2\approx2.828$ — the same score top-left gets against itself. Softmax over all
+      nine patches (three "bright" scores of $2.828$, six "dark" scores of $0$): $e^{2.828}\approx16.92$
+      (three of these) and $e^0=1$ (six of these), summing to $3(16.92)+6(1)=56.76$. Each bright patch's
+      share is $16.92/56.76\approx0.298$ — bottom-right gets that same $\approx0.298$ of top-left's
       attention, in a single layer, with no distance penalty of any kind.
     </Step>
     <Step label="Content beats proximity">
-      Meanwhile the immediately adjacent top-middle and mid-left patches — squarely inside a conv kernel's reach,
-      but dark — receive only $\approx 0.018$ each. Being close doesn't matter if the content doesn't match;
-      being far away doesn't matter if it does.
+      The adjacent top-middle and mid-left patches are "dark," so their dot product with the query is
+      $0$ (e.g. $q\cdot k_{\text{top-middle}}=(2)(0)+(0)(0.1)=0$), giving $e^0=1$ in that same softmax.
+      From the sum of $56.76$ above, each dark patch's share is $1/56.76\approx0.018$ — squarely inside a
+      conv kernel's reach, but dark, they receive only $\approx0.018$ each. Being close doesn't matter if
+      the content doesn't match; being far away doesn't matter if it does.
     </Step>
   </Steps>
 </WorkedExample>

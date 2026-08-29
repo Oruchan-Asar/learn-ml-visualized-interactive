@@ -61,8 +61,18 @@ import { IntuitionDemo, PlayDemo, DetectorCheckpoint } from "./Demos";
       everywhere else, both pipelines agree.
     </Step>
     <Step label="But two-stage still cost more overall">
-      One-stage: $6$ boxes $\times\,1 = 6$ cost units. Two-stage: $6\times0.2 + 5\times3 = 1.2+15=16.2$ —
-      over $2.5\times$ the compute, entirely to correct one boundary case.
+      Rounding every box's confidence to the nearest $0.25$-grid value to check the $\geq0.5$ proposal
+      threshold:
+      - A: $0.92\to1.0$, passes
+      - B: $0.77\to0.75$, passes
+      - C: $0.47\to0.5$, passes
+      - D: $0.18\to0.25$, fails
+      - E: $0.84\to0.75$, passes
+      - F: $0.56\to0.5$, passes
+
+      Five of six boxes clear it, so $K=5$. One-stage: $6$ boxes $\times\,1 = 6$ cost units. Two-stage:
+      $6\times0.2 + 5\times3 = 1.2+15=16.2$ — over $2.5\times$ the compute, entirely to correct one
+      boundary case.
     </Step>
   </Steps>
 </WorkedExample>

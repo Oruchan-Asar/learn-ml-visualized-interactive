@@ -49,9 +49,14 @@ import { IntuitionDemo, PlayDemo, ObjectDetectionCheckpoint } from "./Demos";
       the boundary most detection benchmarks use to call something a match at all.
     </Step>
     <Step label="Pixel metrics agree, and go further">
-      At the same shift, pixel-level scoring gives TP$=4$, FP$=2$, FN$=2$: precision $=$ recall $=2/3$, and Dice
-      $=2(4)/(2\cdot4+2+2)=8/12=2/3$ — consistent with the box IoU of $0.5$ via $\text{Dice}=2\,\text{IoU}/(1+\text{IoU})$,
-      but reporting exactly which pixels were false alarms versus which were missed.
+      At the same shift, the overlap (intersection) is $4$ pixels, out of $6$ in each box:
+      - TP (in both boxes) $=$ intersection $=4$
+      - FP (in predicted only) $=6-4=2$
+      - FN (in ground truth only) $=6-4=2$
+
+      So precision $=$ recall $=4/(4+2)=2/3$, and Dice $=2(4)/(2\cdot4+2+2)=8/12=2/3$ — consistent with the
+      box IoU of $0.5$ via $\text{Dice}=2\,\text{IoU}/(1+\text{IoU})$, but reporting exactly which pixels
+      were false alarms versus which were missed.
     </Step>
   </Steps>
 </WorkedExample>
