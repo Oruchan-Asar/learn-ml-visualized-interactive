@@ -50,8 +50,11 @@ import { IntuitionDemo, PlayDemo, BanditsCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="After the first three explore steps">
-      A$=[1]\to1.0$, B$=[1]\to1.0$, C$=[0]\to0.0$ — A and B are tied for best, purely by chance on a single
-      pull each.
+      - A: $[1]\to1.0$
+      - B: $[1]\to1.0$
+      - C: $[0]\to0.0$
+
+      A and B are tied for best, purely by chance on a single pull each.
     </Step>
     <Step label="Exploiting the tie">
       Ties break alphabetically, so the policy exploits A next: A$=[1,0]\to0.5$. Now B is the clear leader

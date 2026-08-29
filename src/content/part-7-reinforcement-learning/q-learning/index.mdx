@@ -60,9 +60,13 @@ import { IntuitionDemo, PlayDemo, QLearningCheckpoint } from "./Demos";
       a single update jumps straight to a strongly positive value.
     </Step>
     <Step label="One step back, still catching up">
-      $Q(S_1,\text{right})$ was updated twice — first to $-0.5$, then, using $\max_{a'}Q(S_2,a')$ which was
-      *still $0$ at that moment* (the update at $S_2$ hadn't happened yet), it moves to $-0.75$: further from
-      the goal's value, not closer, purely because of the order the updates happened in.
+      $Q(S_1,\text{right})$ was updated twice:
+      1. First, taking "right" to $S_2$ with reward $-1$ and $\max_{a'}Q(S_2,a')=0$ (nothing learned there
+         yet): $Q(S_1,\text{right}) \leftarrow 0 + 0.5(-1+0.9(0)-0) = -0.5$
+      2. Later, the same update runs again, but using $\max_{a'}Q(S_2,a')$ which was *still $0$ at that
+         moment* (the update at $S_2$ hadn't happened yet): $Q(S_1,\text{right}) \leftarrow -0.5 + 0.5(-1+0.9(0)-(-0.5)) = -0.75$
+
+      Further from the goal's value, not closer, purely because of the order the updates happened in.
     </Step>
   </Steps>
 </WorkedExample>

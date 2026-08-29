@@ -59,9 +59,12 @@ import { IntuitionDemo, PlayDemo, DeepQNetworksCheckpoint } from "./Demos";
       Taking "right" from state 0 lands on state 1 with reward $-1$. Since $\theta^-=\theta$ still at this
       point, the target network's best action-value at state 1 happens to be exactly $0$
       ($\max(Q(1,\text{left}), Q(1,\text{right})) = \max(0,-1) = 0$), so the target is $-1 + 0.9(0) = -1$.
-      TD error $= -1 - (-2) = 1$, loss $=1$. The output bias for "right" shifts, moving $Q_\theta(0,\text{right})$
-      from $-2$ to exactly $-1.9$ — a small step toward the target, the same shape as a Q-table update but
-      landing on a shared parameter instead of an isolated cell.
+      TD error $= -1 - (-2) = 1$, loss $=1$. The hidden unit is inactive at state 0
+      ($h=\max(0, 1\times0+0)=0$), so $Q_\theta(0,\text{right})=w_{\text{right}}\times0+b_{\text{right}}$
+      depends only on the output *bias* — the weight's gradient is $-2\times1\times h=0$, but the bias's
+      gradient is $-2\times1\times1=-2$. Gradient descent: $b_{\text{right}} \leftarrow -2 - 0.05\times(-2) = -1.9$
+      — a small step toward the target, the same shape as a Q-table update but landing on a shared
+      parameter instead of an isolated cell.
     </Step>
     <Step label="Step 3 — a 'left' move with zero TD error">
       Taking "left" from state 2 happens to produce a target that already exactly matches the current

@@ -48,12 +48,23 @@ import { IntuitionDemo, PlayDemo, RlhfCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="First fitting step">
-      All three scores start at $0$, so every comparison's predicted probability is $\sigma(0)=0.5$ — completely
-      uncertain. $B$ wins two comparisons and its score rises to $0.5$; $C$ wins one and loses one against
-      parties still at $0$, and those two pulls exactly cancel, leaving it at precisely $0$.
+      All three scores start at $0$, so every comparison's predicted probability is $\sigma(0)=0.5$ —
+      completely uncertain. Each comparison pushes the winner's gradient down by $(1-p)$ and the loser's
+      up by $(1-p)$, i.e. by $0.5$ each:
+      - $B$ beats $A$: pushes $B$ by $-0.5$
+      - $B$ beats $C$: pushes $B$ by another $-0.5$ (total $-1.0$), pushes $C$ by $+0.5$
+      - $C$ beats $A$: pushes $C$ by $-0.5$ (net $0$ for $C$, since its two pushes cancel)
+
+      Descending: $r_B \leftarrow 0 - 0.5(-1.0) = 0.5$; $r_C \leftarrow 0 - 0.5(0) = 0$ — $B$ wins two
+      comparisons and its score rises, while $C$'s one win and one loss (against parties still at $0$)
+      exactly cancel.
     </Step>
     <Step label="After three fitting steps">
-      $r_B \approx 1.18$, $r_C \approx 0.15$, $r_A = 0$ — the fitted scores recover the true order the
+      Repeating the same gradient step, using the updated rewards each time:
+      - After step 2 (starting from $r_B=0.5, r_C=0$): $r_B\to0.8775$, $r_C\to0.061$
+      - After step 3 (starting from those): $r_B\to1.18$, $r_C\to0.15$
+
+      $r_A=0$ throughout (fixed as the reference) — the fitted scores recover the true order the
       comparisons implied ($B$ beat both, $C$ split, $A$ lost both), entirely from three yes/no judgments.
     </Step>
     <Step label="Training the policy on that fitted reward">

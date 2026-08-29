@@ -53,9 +53,14 @@ import { IntuitionDemo, PlayDemo, PolicyGradientCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="First pull: arm A, reward 1">
-      $\pi = (\frac13,\frac13,\frac13)$ before the update. $\theta_A \leftarrow 0 + 0.5(1-\frac13)(1) = \frac13$;
-      both $\theta_B$ and $\theta_C$ drop to $-\frac16$ — pushed down even though they weren't pulled, simply
-      for not being the chosen action.
+      $\pi = (\frac13,\frac13,\frac13)$ before the update. Each preference updates by
+      $\alpha(\mathbb{1}[i{=}A]-\pi_i)(1)$:
+      - $\theta_A \leftarrow 0 + 0.5(1-\frac13)(1) = \frac13$
+      - $\theta_B \leftarrow 0 + 0.5(0-\frac13)(1) = -\frac16$
+      - $\theta_C \leftarrow 0 + 0.5(0-\frac13)(1) = -\frac16$
+
+      B and C both drop, pushed down even though they weren't pulled, simply for not being the chosen
+      action.
     </Step>
     <Step label="A reward of exactly zero changes nothing">
       Pulling arm C next happens to pay $0$. Since the update scales by the return, multiplying by $0$
@@ -63,8 +68,15 @@ import { IntuitionDemo, PlayDemo, PolicyGradientCheckpoint } from "./Demos";
       which arm was pulled.
     </Step>
     <Step label="After all five pulls">
-      $\theta_B \approx 0.498$, clearly ahead of $\theta_A \approx -0.074$ and $\theta_C \approx -0.424$ — the
-      policy now assigns arm B *more than half* its probability mass, without ever computing a single
+      Pulls 3 and 5 both pay $0$, so (per the previous step) they leave $\theta$ unchanged. Only pulls 2
+      and 4 (both pulling B, both paying $1$) move the parameters:
+      - After pull 2: $\pi\approx(0.452,0.274,0.274)$ from $\theta=(\frac13,-\frac16,-\frac16)$, giving
+        $\theta \approx (0.107, 0.196, -0.304)$
+      - After pull 4: $\pi\approx(0.363,0.397,0.240)$ from that $\theta$, giving
+        $\theta \approx (-0.074, 0.498, -0.424)$
+
+      $\theta_B \approx 0.498$, clearly ahead of $\theta_A \approx -0.074$ and $\theta_C \approx -0.424$ —
+      the policy now assigns arm B *more than half* its probability mass, without ever computing a single
       $Q(s,a)$.
     </Step>
   </Steps>

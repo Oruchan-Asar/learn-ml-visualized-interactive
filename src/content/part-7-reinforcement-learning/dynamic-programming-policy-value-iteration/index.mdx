@@ -56,9 +56,11 @@ import { IntuitionDemo, PlayDemo, DynamicProgrammingCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Sweep 1 — only the immediate reward is visible">
-      $V_1(2) = \max(-1 + 0.9(0),\ 10 + 0.9(0)) = 10$ — the goal's reward reaches state 2 immediately.
-      But $V_1(0) = V_1(1) = -1$: neither has a neighbor with useful value yet, so both just reflect the
-      cost of a single step.
+      $V_1(2) = \max(-1 + 0.9(0),\ 10 + 0.9(0)) = 10$ — the goal's reward reaches state 2 immediately. For
+      states 0 and 1, both the left and right moves land on a neighbor whose $V_0$ is still $0$, so both
+      branches of the max collapse to the same number: $V_1(1) = \max(-1+0.9(0),\ -1+0.9(0)) = -1$ and
+      $V_1(0) = \max(-1+0.9(0),\ -1+0.9(0)) = -1$ — neither has a neighbor with useful value yet, so both
+      just reflect the cost of a single step.
     </Step>
     <Step label="Sweep 2 — the goal's value takes one more step back">
       Using $V_1$: $V_2(1) = \max(-1 + 0.9(-1),\ -1 + 0.9(10)) = 8$ — now that $V_1(2)=10$ exists, state 1

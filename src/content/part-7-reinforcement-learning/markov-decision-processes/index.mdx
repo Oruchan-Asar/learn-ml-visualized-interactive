@@ -54,9 +54,9 @@ import { IntuitionDemo, PlayDemo, MdpCheckpoint } from "./Demos";
     </Step>
     <Step label="A policy that never arrives">
       Under "always move left," any state above $0$ eventually gets stuck bouncing at the boundary forever,
-      each bounce costing $-1$. Solving $V = -1 + 0.9V$ for a fixed point gives
-      $V = -1/(1-0.9) = -10$ — a genuinely worse value than even the very first state gets under "always
-      right."
+      each bounce costing $-1$. Solving $V = -1 + 0.9V$ for a fixed point: subtract $0.9V$ from both sides
+      to get $V - 0.9V = -1$, i.e. $0.1V = -1$, so $V = -1/0.1 = -1/(1-0.9) = -10$ — a genuinely worse
+      value than even the very first state gets under "always right."
     </Step>
   </Steps>
 </WorkedExample>

@@ -60,22 +60,31 @@ import { IntuitionDemo, PlayDemo, ActorCriticCheckpoint } from "./Demos";
   <Steps>
     <Step label="Step 1 — no signal yet, so the update is uninformative but harmless">
       From $S_0$, "right" lands on $S_1$ with reward $-1$; $V(S_1)=0$ still, so $\delta = -1+0.9(0)-0=-1$.
-      $V(S_0) \leftarrow 0.5(-1) = -0.5$. The actor nudges $\theta(S_0,\text{right})$ down to $-0.25$ and
-      $\theta(S_0,\text{left})$ up to $0.25$ — discouraging the very action just taken, purely because the
-      critic (still near-zero everywhere) rated the outcome as worse than expected.
+      $V(S_0) \leftarrow 0.5(-1) = -0.5$. With the policy still uniform ($\pi=0.5$ each way), the actor
+      update $\theta_i \leftarrow \theta_i+0.5(\mathbb{1}[i{=}\text{right}]-\pi_i)\delta$ gives:
+      - $\theta(S_0,\text{right}) \leftarrow 0+0.5(1-0.5)(-1) = -0.25$
+      - $\theta(S_0,\text{left}) \leftarrow 0+0.5(0-0.5)(-1) = 0.25$
+
+      Discouraging the very action just taken, purely because the critic (still near-zero everywhere)
+      rated the outcome as worse than expected.
     </Step>
     <Step label="Step 3 — a real mistake, correctly penalized">
       From $S_2$, taking "left" moves *away* from the goal, landing on $S_1$ (whose value, by now, is
-      already $-0.5$). $\delta = -1 + 0.9(-0.5) - 0 = -1.45$ — a bigger penalty than step 1's, because this
-      time the critic has real (negative) information about where "left" leads. $\theta(S_2,\text{left})$
-      drops to $-0.3625$; $\theta(S_2,\text{right})$ rises to $0.3625$ — already favoring "right" with more
-      than half the probability, after a single update.
+      already $-0.5$, from step 2's own critic update). $\delta = -1 + 0.9(-0.5) - 0 = -1.45$ — a bigger
+      penalty than step 1's, because this time the critic has real (negative) information about where
+      "left" leads. With $S_2$'s policy still uniform:
+      - $\theta(S_2,\text{left}) \leftarrow 0+0.5(1-0.5)(-1.45) = -0.3625$
+      - $\theta(S_2,\text{right}) \leftarrow 0+0.5(0-0.5)(-1.45) = 0.3625$
+
+      Already favoring "right" with more than half the probability, after a single update.
     </Step>
     <Step label="Step 5 — reaching the goal spikes the advantage">
-      From $S_2$, "right" reaches the goal directly: reward $+10$, advantage $\delta = 10.725$ — far
-      larger than anything seen so far, since the critic had rated $S_2$ quite pessimistically
-      ($V(S_2)=-0.725$ at that point). $V(S_2)$ jumps to $4.6375$, and $\theta(S_2,\text{right})$ jumps
-      with it — the actor and critic correcting course together, in the same step.
+      From $S_2$, "right" reaches the goal directly: reward $+10$, and $V(S_2)=-0.725$ at that point (from
+      step 3's own critic update), so $\delta = 10+0.9(0)-(-0.725) = 10.725$ — far larger than anything
+      seen so far. The critic updates $V(S_2) \leftarrow -0.725+0.5(10.725) = 4.6375$. The actor, starting
+      from step 3's $\theta(S_2,\text{right})=0.3625$ (policy $\pi_{\text{right}}\approx0.674$), updates to
+      $\theta(S_2,\text{right}) \leftarrow 0.3625+0.5(1-0.674)(10.725) \approx 2.11$ — the actor and critic
+      correcting course together, in the same step.
     </Step>
   </Steps>
 </WorkedExample>
