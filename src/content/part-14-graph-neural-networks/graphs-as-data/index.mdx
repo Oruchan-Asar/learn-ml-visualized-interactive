@@ -46,13 +46,26 @@ import { IntuitionDemo, PlayDemo, DegreeCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Read off the neighborhoods by hand">
-      $\mathcal{N}(0)=\{1,2\}$, $\mathcal{N}(1)=\{0,2,3\}$, $\mathcal{N}(2)=\{0,1\}$,
-      $\mathcal{N}(3)=\{1,4,5\}$, $\mathcal{N}(4)=\{3\}$, $\mathcal{N}(5)=\{3\}$ — degrees
-      $2,3,2,3,1,1$, none of them equal.
+      - $\mathcal{N}(0)=\{1,2\}$, degree $2$
+      - $\mathcal{N}(1)=\{0,2,3\}$, degree $3$
+      - $\mathcal{N}(2)=\{0,1\}$, degree $2$
+      - $\mathcal{N}(3)=\{1,4,5\}$, degree $3$
+      - $\mathcal{N}(4)=\{3\}$, degree $1$
+      - $\mathcal{N}(5)=\{3\}$, degree $1$
+
+      Degrees $2,3,2,3,1,1$ — none of them equal.
     </Step>
     <Step label="Build the adjacency matrix">
-      In node order $0,1,2,3,4,5$: row $0$ is $(0,1,1,0,0,0)$, row $3$ is $(0,1,0,0,1,1)$. Every row sums
-      to that node's degree — row $3$ sums to $3$, matching $|\mathcal{N}(3)|=3$ exactly.
+      In node order $0,1,2,3,4,5$, row $i$ has a $1$ in column $j$ exactly where $j\in\mathcal{N}(i)$:
+
+      - Row $0$: $(0,1,1,0,0,0)$
+      - Row $1$: $(1,0,1,1,0,0)$
+      - Row $2$: $(1,1,0,0,0,0)$
+      - Row $3$: $(0,1,0,0,1,1)$
+      - Row $4$: $(0,0,0,1,0,0)$
+      - Row $5$: $(0,0,0,1,0,0)$
+
+      Every row sums to that node's degree — row $3$ sums to $3$, matching $|\mathcal{N}(3)|=3$ exactly.
     </Step>
     <Step label="Confirm what a grid convolution would get wrong">
       A 3×3 kernel assumes 8 fixed neighbors, in a fixed spatial layout, for *every* pixel. Node $4$ has

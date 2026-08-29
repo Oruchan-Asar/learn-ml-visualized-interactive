@@ -60,13 +60,31 @@ import { IntuitionDemo, PlayDemo, SmoothingCheckpoint } from "./Demos";
       denominator changes depending on the node, since degrees aren't uniform (Chapter 1).
     </Step>
     <Step label="Full round 1">
-      $h^{(1)} = (1.0,\ 1.5,\ 1.0,\ 2.0,\ 2.0,\ 2.5)$ — variance across all six values drops from
-      $\frac{11}{12}\approx0.917$ to about $0.306$, already less than a third of where it started.
+      The same mean rule for the remaining four nodes:
+
+      - $h_0^{(1)} = \frac{1+2+0}{3} = 1.0$ (self $1$, neighbors $\{1,2\}$ with features $2,0$)
+      - $h_1^{(1)} = \frac{2+1+0+3}{4} = 1.5$ (self $2$, neighbors $\{0,2,3\}$ with features $1,0,3$)
+      - $h_2^{(1)} = \frac{0+1+2}{3} = 1.0$ (self $0$, neighbors $\{0,1\}$ with features $1,2$)
+      - $h_5^{(1)} = \frac{2+3}{2} = 2.5$ (self $2$, neighbor $\{3\}$ with feature $3$)
+
+      Together with $h_3^{(1)}=2.0$ and $h_4^{(1)}=2.0$ from the step above:
+      $h^{(1)} = (1.0,\ 1.5,\ 1.0,\ 2.0,\ 2.0,\ 2.5)$.
+
+      The new mean is $\frac{1.0+1.5+1.0+2.0+2.0+2.5}{6}=\frac{10.0}{6}\approx1.667$, so the new variance
+      is $\frac{(1.0-1.667)^2+(1.5-1.667)^2+(1.0-1.667)^2+(2.0-1.667)^2+(2.0-1.667)^2+(2.5-1.667)^2}{6}
+      \approx\frac{1.833}{6}\approx0.306$ — down from the original $\frac{11}{12}\approx0.917$, already
+      less than a third of where it started.
     </Step>
     <Step label="Keep going and it keeps shrinking">
-      By round $4$, variance is down to about $0.093$ — every node's value is crawling toward the graph's
-      overall average. Nodes $0$ and $5$ started a full $1.0$ apart; a few rounds of *pure local
-      averaging* is already enough to blur that gap.
+      Running the identical mean rule for three more rounds:
+
+      - Round $2$: $h^{(2)} \approx (1.167,\ 1.375,\ 1.167,\ 2.0,\ 2.0,\ 2.25)$, variance $\approx0.191$
+      - Round $3$: $h^{(3)} \approx (1.236,\ 1.427,\ 1.236,\ 1.906,\ 2.0,\ 2.125)$, variance $\approx0.134$
+      - Round $4$: $h^{(4)} \approx (1.300,\ 1.451,\ 1.300,\ 1.865,\ 1.953,\ 2.016)$, variance $\approx0.093$
+
+      Every node's value is crawling toward the graph's overall average. Nodes $0$ and $5$ started a full
+      $1.0$ apart; a few rounds of *pure local averaging* is already enough to blur that gap down to
+      $2.016-1.300\approx0.716$.
     </Step>
   </Steps>
 </WorkedExample>

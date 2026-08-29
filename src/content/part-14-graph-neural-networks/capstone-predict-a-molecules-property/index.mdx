@@ -63,18 +63,66 @@ import { IntuitionDemo, PlayDemo, MoleculeCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Layer 1 (GCN): mean over atom 0's neighborhood {0, 1, 2}">
-      $h^{(1)}_0 = \frac{1+2+0}{3} = 1.0$. The same round also gives $h^{(1)}_1 = 1.5$ and
-      $h^{(1)}_2 = 1.0$ — needed next, since layer 2 attends over *these* values, not the raw ones.
+      $h^{(1)}_0 = \frac{1+2+0}{3} = 1.0$ (self $1$, neighbors $\{1,2\}$ with features $2,0$). The same
+      mean rule for the rest of the ring:
+
+      - $h^{(1)}_1 = \frac{2+1+0+3}{4} = 1.5$ (self $2$, neighbors $\{0,2,3\}$ with features $1,0,3$)
+      - $h^{(1)}_2 = \frac{0+1+2}{3} = 1.0$ (self $0$, neighbors $\{0,1\}$ with features $1,2$)
+      - $h^{(1)}_3 = \frac{3+2+1+2}{4} = 2.0$ (self $3$, neighbors $\{1,4,5\}$ with features $2,1,2$)
+      - $h^{(1)}_4 = \frac{1+3}{2} = 2.0$ (self $1$, neighbor $\{3\}$ with feature $3$)
+      - $h^{(1)}_5 = \frac{2+3}{2} = 2.5$ (self $2$, neighbor $\{3\}$ with feature $3$)
+
+      These are needed next, since layer 2 attends over *these* values, not the raw ones.
     </Step>
     <Step label="Layer 2 (GAT): attention over the same neighborhood, using layer 1's output">
-      Scores: $e_{0,0}=0$, $e_{0,1}=\text{LeakyReLU}(1.5-1.0)=0.5$, $e_{0,2}=\text{LeakyReLU}(1.0-1.0)=0$.
-      Softmax gives weights $\approx(0.274,\ 0.452,\ 0.274)$ — atom $1$ dominates, since it's the only
-      neighbor layer 1 pushed higher than atom $0$ itself.
+      Scores for atom $0$ (neighbors $\{1,2\}$, using layer 1's values):
+
+      - $e_{0,0}=\text{LeakyReLU}(1.0-1.0)=0$
+      - $e_{0,1}=\text{LeakyReLU}(1.5-1.0)=0.5$
+      - $e_{0,2}=\text{LeakyReLU}(1.0-1.0)=0$
+
+      Softmax (subtracting the max, $0.5$): $e^{0-0.5}\approx0.607$ (self), $e^{0.5-0.5}=1$ (atom $1$),
+      $e^{0-0.5}\approx0.607$ (atom $2$); sum $\approx2.213$. Normalized weights:
+      $0.607/2.213\approx0.274$, $1/2.213\approx0.452$, $0.607/2.213\approx0.274$ — atom $1$ dominates,
+      since it's the only neighbor layer 1 pushed higher than atom $0$ itself.
     </Step>
     <Step label="Atom 0's final embedding">
-      $h^{(2)}_0 \approx 0.274(1.0) + 0.452(1.5) + 0.274(1.0) \approx 1.226$. Repeat this for all six
-      atoms and sum the results, and the ring's whole-molecule prediction comes out to about
-      $10.278$ — versus about $9.250$ for the exact same atoms wired into a chain instead.
+      $h^{(2)}_0 \approx 0.274(1.0) + 0.452(1.5) + 0.274(1.0) \approx 1.226$.
+    </Step>
+    <Step label="The same two layers, for the ring's other five atoms">
+      Running the identical GAT step (scores → softmax → weighted sum) over each atom's own layer-1
+      neighborhood:
+
+      - Atom $1$ (neighbors $\{0,2,3\}$, self $h^{(1)}_1=1.5$): scores $(0,-0.1,-0.1,0.5)$ for
+        (self, $0$, $2$, $3$); softmax weights $\approx(0.224,0.203,0.203,0.370)$;
+        $h^{(2)}_1\approx0.224(1.5)+0.203(1.0)+0.203(1.0)+0.370(2.0)\approx1.482$
+      - Atom $2$ (neighbors $\{0,1\}$, self $h^{(1)}_2=1.0$): the same self/neighbor values as atom $0$
+        (one neighbor at $1.0$, one at $1.5$), so $h^{(2)}_2\approx1.226$ — identical to atom $0$
+      - Atom $3$ (neighbors $\{1,4,5\}$, self $h^{(1)}_3=2.0$): scores $(0,-0.1,0,0.5)$ for
+        (self, $1$, $4$, $5$); softmax weights $\approx(0.220,0.199,0.220,0.362)$;
+        $h^{(2)}_3\approx0.220(2.0)+0.199(1.5)+0.220(2.0)+0.362(2.5)\approx2.082$
+      - Atom $4$ (neighbor $\{3\}$ only, self $h^{(1)}_4=2.0=h^{(1)}_3$): self and neighbor share the
+        same value, so softmax gives equal weights $0.5/0.5$ and $h^{(2)}_4=2.0$ exactly
+      - Atom $5$ (neighbor $\{3\}$ only, self $h^{(1)}_5=2.5$, neighbor $h^{(1)}_3=2.0$): scores
+        $(0,-0.1)$; softmax weights $\approx(0.525,0.475)$;
+        $h^{(2)}_5\approx0.525(2.5)+0.475(2.0)\approx2.263$
+
+      Summing all six: $1.226+1.482+1.226+2.082+2.0+2.263\approx10.278$ — the ring's whole-molecule
+      prediction.
+    </Step>
+    <Step label="Same atoms, different bonds: the chain's prediction">
+      Wiring the exact same six atoms into a chain ($0\text-1\text-2\text-3\text-4\text-5$) instead
+      changes every neighborhood, so layer 1 gives different means:
+
+      - $h^{(1)}_0=\frac{1+2}{2}=1.5$, $\ h^{(1)}_1=\frac{2+1+0}{3}\approx1.0$,
+        $\ h^{(1)}_2=\frac{0+2+3}{3}\approx1.667$
+      - $h^{(1)}_3=\frac{3+0+1}{3}\approx1.333$, $\ h^{(1)}_4=\frac{1+3+2}{3}=2.0$,
+        $\ h^{(1)}_5=\frac{2+1}{2}=1.5$
+
+      Running the same layer-2 attention step on these values gives
+      $h^{(2)}\approx(1.263,\ 1.462,\ 1.348,\ 1.739,\ 1.627,\ 1.811)$, summing to
+      $1.263+1.462+1.348+1.739+1.627+1.811\approx9.250$ — lower than the ring's $10.278$, purely because
+      the chain's end atoms ($0$ and $5$) have only one neighbor to draw on instead of two.
     </Step>
   </Steps>
 </WorkedExample>
