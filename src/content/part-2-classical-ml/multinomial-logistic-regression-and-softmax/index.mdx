@@ -61,14 +61,19 @@ import { IntuitionDemo, PlayDemo, SoftmaxCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Exponentiate each logit">
-      $e^2 \approx 7.389$, $e^0=1$, $e^{-1}\approx0.368$.
+      - $e^2 \approx 7.389$
+      - $e^0=1$
+      - $e^{-1}\approx0.368$
     </Step>
     <Step label="Sum them for the normalizer">
       $7.389 + 1 + 0.368 = 8.757$.
     </Step>
     <Step label="Divide each by the sum">
-      $p(\text{cat}) \approx 0.844$, $p(\text{dog}) \approx 0.114$, $p(\text{bird}) \approx 0.042$ — and
-      $0.844+0.114+0.042 = 1$ exactly, as it must.
+      - $p(\text{cat}) = 7.389/8.757 \approx 0.844$
+      - $p(\text{dog}) = 1/8.757 \approx 0.114$
+      - $p(\text{bird}) = 0.368/8.757 \approx 0.042$
+
+      And $0.844+0.114+0.042 = 1$ exactly, as it must.
     </Step>
   </Steps>
 </WorkedExample>

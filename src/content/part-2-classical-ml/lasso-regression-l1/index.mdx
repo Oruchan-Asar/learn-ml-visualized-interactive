@@ -65,12 +65,21 @@ import { IntuitionDemo, PlayDemo, LassoCheckpoint } from "./Demos";
       $w_2\approx-1.714$.
     </Step>
     <Step label="A tiny penalty already zeroes w2 (λ = 0.03)">
-      By $\lambda=0.03$, soft-thresholding has pushed $w_2$'s "signal" inside the dead zone: $w_2$ becomes
-      exactly $0$, while $w_1\approx2.096$ absorbs essentially the whole fit.
+      The soft-threshold cutoff is $\gamma=N\lambda=4(0.03)=0.12$. Starting from $w_1=w_2=0$:
+      1. $\rho_1=\sum_i x_{1i}y_i=63$ (since $w_2=0$), so $w_1=\text{soft}(63,0.12)/30=(63-0.12)/30\approx2.096$
+      2. $\rho_2 = \sum_i x_{2i}(y_i-w_1x_{1i}) \approx -0.072$ — inside the dead zone $[-0.12,0.12]$, so
+         $w_2=0$ exactly
+
+      Plugging $w_2=0$ back into step 1 reproduces the same $\rho_1$, so this is already the fixed point —
+      $w_1\approx2.096$ absorbs essentially the whole fit.
     </Step>
     <Step label="It stays exactly zero across a wide range (λ = 0.5)">
-      At $\lambda=0.5$: $w_1\approx2.033$, $w_2=0$ — lasso has picked predictor 1 and permanently discarded
-      predictor 2, a form of automatic feature selection ridge structurally cannot do.
+      The cutoff is now $\gamma=4(0.5)=2$ — much wider. Starting from $w_1=w_2=0$:
+      1. $\rho_1=63$, so $w_1=\text{soft}(63,2)/30=(63-2)/30\approx2.033$
+      2. $\rho_2 \approx 1.933$ — still inside the wider dead zone $[-2,2]$, so $w_2=0$
+
+      Again a fixed point immediately: lasso has picked predictor 1 and permanently discarded predictor 2,
+      a form of automatic feature selection ridge structurally cannot do.
     </Step>
   </Steps>
 </WorkedExample>

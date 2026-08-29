@@ -50,11 +50,26 @@ import { IntuitionDemo, PlayDemo, VariantsCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Compute one point's stochastic gradient">
-      The point $(-2,-3.2)$ alone gives a gradient of $(-12.8, 6.4)$.
+      For squared-error loss, each point's gradient is $(\partial L_i/\partial w, \partial L_i/\partial b) =
+      (-2x_i r_i,\ -2r_i)$, where $r_i=y_i-(wx_i+b)$ is that point's residual. At $(w,b)=(0,0)$, the point
+      $(-2,-3.2)$ has residual $r=-3.2-0=-3.2$, giving:
+
+      $$
+      (-2(-2)(-3.2),\ -2(-3.2)) = (-12.8,\ 6.4)
+      $$
     </Step>
     <Step label="Compare it to the full batch gradient">
-      The batch gradient there is $(-7.88, -2.04)$ — same rough neighborhood, but a different $w$-magnitude and
-      even a *flipped sign* on $b$.
+      At the same $(w,b)=(0,0)$, every residual equals $y_i$ (the prediction is $0$ everywhere). Each
+      point's $(-2x_iy_i,\ -2y_i)$ pair:
+      - $x=-2,y=-3.2$: $(-12.8,\ 6.4)$
+      - $x=-1,y=-0.8$: $(-1.6,\ 1.6)$
+      - $x=0,y=1.3$: $(0,\ -2.6)$
+      - $x=1,y=3.1$: $(-6.2,\ -6.2)$
+      - $x=2,y=4.7$: $(-18.8,\ -9.4)$
+
+      Averaging each column: $w$-gradient $=(-12.8-1.6+0-6.2-18.8)/5=-7.88$, $b$-gradient
+      $=(6.4+1.6-2.6-6.2-9.4)/5=-2.04$ — same rough neighborhood as the single point above, but a
+      different $w$-magnitude and even a *flipped sign* on $b$.
     </Step>
     <Step label="Average over a full pass">
       The individual gradients exactly reconstruct the batch gradient — noise that cancels out over time, not bias.

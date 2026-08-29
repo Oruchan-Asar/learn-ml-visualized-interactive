@@ -60,10 +60,10 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="XGBoost round 1 finds the exact boundary, with clean numbers">
-      Splitting at $x=9.5$: the left 10 points have gradient sum $G_L=6$ and Hessian sum $H_L=10$ (every point's
-      toy Hessian is 1), so at $\lambda=0$: $w_L^* = -6/10 = -0.6$. The right 15 points have $G_R=-9$, $H_R=15$,
-      giving $w_R^* = 9/15 = 0.6$. This split's gain, $6^2/10 + 9^2/15 = 3.6 + 5.4 = 9$, beats every other
-      candidate threshold outright.
+      Splitting at $x=9.5$ (every point's toy Hessian is 1):
+      - Left leaf: 10 points, $G_L=6$, $H_L=10$, so at $\lambda=0$: $w_L^* = -6/10 = -0.6$
+      - Right leaf: 15 points, $G_R=-9$, $H_R=15$, so $w_R^* = 9/15 = 0.6$
+      - Gain: $6^2/10 + 9^2/15 = 3.6 + 5.4 = 9$, beating every other candidate threshold outright
     </Step>
     <Step label="Regularization pulls both leaf values toward zero">
       With $\lambda=1$ instead: $w_L^* = -6/11 \approx -0.545$ and $w_R^* = 9/16 = 0.5625$ — both leaves take a

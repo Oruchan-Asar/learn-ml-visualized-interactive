@@ -65,16 +65,39 @@ import { IntuitionDemo, PlayDemo, RidgeCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Unregularized: an unstable, sign-flipped fit">
-      Solving the plain normal equations gives $w_1 \approx 3.929$, $w_2 \approx -1.714$. Both predictors
-      rise together, yet one gets a strongly negative weight — a symptom of collinearity, not a real
-      pattern in the data.
+      The normal equations $\mathbf{X}^\top\mathbf{X}\mathbf{w}=\mathbf{X}^\top\mathbf{y}$, with the numbers
+      plugged in:
+
+      $$
+      \begin{pmatrix}30&32\\32&34.25\end{pmatrix}\begin{pmatrix}w_1\\w_2\end{pmatrix} = \begin{pmatrix}63\\67\end{pmatrix}
+      $$
+
+      Solving by Cramer's rule: the determinant is $30(34.25)-32(32)=1027.5-1024=3.5$, so
+      $w_1=(63(34.25)-67(32))/3.5=13.75/3.5\approx3.929$ and $w_2=(30(67)-32(63))/3.5=-6/3.5\approx-1.714$.
+      Both predictors rise together, yet one gets a strongly negative weight — a symptom of collinearity,
+      not a real pattern in the data.
     </Step>
     <Step label="A modest penalty (λ = 1) already fixes the sign">
-      $(\mathbf{X}^\top\mathbf{X} + 1 \cdot I)\mathbf{w} = \mathbf{X}^\top\mathbf{y}$ solves to
-      $w_1 \approx 1.116$, $w_2 \approx 0.887$ — both positive, and much closer together.
+      Adding $\lambda=1$ to the diagonal:
+
+      $$
+      \begin{pmatrix}31&32\\32&35.25\end{pmatrix}\begin{pmatrix}w_1\\w_2\end{pmatrix} = \begin{pmatrix}63\\67\end{pmatrix}
+      $$
+
+      Determinant: $31(35.25)-32(32)=1092.75-1024=68.75$. Solving:
+      $w_1=(63(35.25)-67(32))/68.75=76.75/68.75\approx1.116$,
+      $w_2=(31(67)-32(63))/68.75=61/68.75\approx0.887$ — both positive, and much closer together.
     </Step>
     <Step label="A strong penalty (λ = 5) makes them nearly equal">
-      At $\lambda=5$: $w_1 \approx 0.940$, $w_2 \approx 0.941$ — ridge has split the credit between the two
+      At $\lambda=5$:
+
+      $$
+      \begin{pmatrix}35&32\\32&39.25\end{pmatrix}\begin{pmatrix}w_1\\w_2\end{pmatrix} = \begin{pmatrix}63\\67\end{pmatrix}
+      $$
+
+      Determinant: $35(39.25)-32(32)=1373.75-1024=349.75$. Solving:
+      $w_1=(63(39.25)-67(32))/349.75=328.75/349.75\approx0.940$,
+      $w_2=(35(67)-32(63))/349.75=329/349.75\approx0.941$ — ridge has split the credit between the two
       near-identical predictors almost exactly evenly, exactly as the theory predicts.
     </Step>
   </Steps>

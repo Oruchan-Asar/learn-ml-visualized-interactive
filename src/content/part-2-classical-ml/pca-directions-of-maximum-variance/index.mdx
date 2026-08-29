@@ -48,10 +48,29 @@ import { IntuitionDemo, PlayDemo, PcaCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Project onto the wide direction">
-      Onto $(0.6, 0.8)$, the variance comes out to exactly $4$.
+      Projecting each of the 7 points onto the unit direction $(0.6,0.8)$ (dot product $0.6x+0.8y$):
+      - $(-2.6,-1.8) \to -3$
+      - $(-0.4,-2.2) \to -2$
+      - $(-0.6,-0.8) \to -1$
+      - $(0,0) \to 0$
+      - $(0.6,0.8) \to 1$
+      - $(2,1) \to 2$
+      - $(1,3) \to 3$
+
+      The mean projection is $0$, so the variance is just the mean of the squares:
+      $(9+4+1+0+1+4+9)/7 = 28/7 = 4$.
     </Step>
     <Step label="Project onto the perpendicular">
-      Onto $(-0.8, 0.6)$, it's $4/7 \approx 0.57$ — seven times smaller.
+      Projecting onto the perpendicular unit direction $(-0.8,0.6)$ (dot product $-0.8x+0.6y$):
+      - $(-2.6,-1.8) \to 1$
+      - $(-0.4,-2.2) \to -1$
+      - $(-0.6,-0.8) \to 0$
+      - $(0,0) \to 0$
+      - $(0.6,0.8) \to 0$
+      - $(2,1) \to -1$
+      - $(1,3) \to 1$
+
+      Mean is again $0$, so variance $=(1+1+0+0+0+1+1)/7 = 4/7 \approx 0.57$ — seven times smaller.
     </Step>
     <Step label="Confirm it's the maximum">
       No other direction beats $4$: that's the maximum, and $(0.6, 0.8)$ (about $53°$ from the x-axis) is the first

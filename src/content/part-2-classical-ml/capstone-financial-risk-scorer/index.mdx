@@ -63,12 +63,22 @@ import { IntuitionDemo, PlayDemo, RiskScorerCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="At λ=0.2, correctly medium — but barely">
-      Shrunk weights give logits (low, medium, high) = $(1.833, 2.000, 0.167)$. Softmax:
-      $p \approx (0.422, 0.498, 0.080)$ — medium wins, but by a margin of less than 0.08.
+      Shrunk weights give logits (low, medium, high) = $(1.833, 2.000, 0.167)$. Exponentiate each:
+      - $e^{1.833} \approx 6.252$
+      - $e^{2.000} \approx 7.389$
+      - $e^{0.167} \approx 1.182$
+
+      Dividing by the sum $6.252+7.389+1.182 \approx 14.823$: $p \approx (0.422, 0.498, 0.080)$ — medium
+      wins, but by a margin of less than 0.08.
     </Step>
     <Step label="At λ=0.3, that thin margin flips">
-      Logits become $(2.154, 2.000, -0.154)$ — low has overtaken medium. Softmax: $p \approx (0.511, 0.438, 0.051)$.
-      Bao is now predicted **low** risk: an under-flagged applicant, purely from one notch more shrinkage.
+      Logits become $(2.154, 2.000, -0.154)$ — low has overtaken medium. Exponentiate each:
+      - $e^{2.154} \approx 8.621$
+      - $e^{2.000} \approx 7.389$
+      - $e^{-0.154} \approx 0.857$
+
+      Dividing by the sum $8.621+7.389+0.857 \approx 16.867$: $p \approx (0.511, 0.438, 0.051)$. Bao is now
+      predicted **low** risk: an under-flagged applicant, purely from one notch more shrinkage.
     </Step>
     <Step label="Confidence gives no warning either way">
       Bao's top-class probability is $0.498$ right before the flip and $0.511$ right after — essentially

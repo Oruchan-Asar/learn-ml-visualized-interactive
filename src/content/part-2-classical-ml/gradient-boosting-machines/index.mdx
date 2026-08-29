@@ -69,22 +69,46 @@ import { IntuitionDemo, PlayDemo, GbmCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="F0 is just the mean">
-      $\bar{y} = (1+2+8+9+13)/5 = 6.6$. Every point's residual going into round 1 is $y_i - 6.6$: $-5.6, -4.6,
-      1.4, 2.4, 6.4$ — total SSE $= 101.2$.
+      $\bar{y} = (1+2+8+9+13)/5 = 6.6$. Each point's residual going into round 1 is $y_i-6.6$:
+      - $x=1$: $1-6.6=-5.6$
+      - $x=2$: $2-6.6=-4.6$
+      - $x=3$: $8-6.6=1.4$
+      - $x=4$: $9-6.6=2.4$
+      - $x=5$: $13-6.6=6.4$
+
+      Squaring and summing: $(-5.6)^2+(-4.6)^2+1.4^2+2.4^2+6.4^2 = 31.36+21.16+1.96+5.76+40.96 = 101.2$.
     </Step>
     <Step label="Round 1's stump finds the split at x = 2.5">
-      Splitting into $\{1,2\}$ and $\{3,4,5\}$, the group means are $-5.1$ and $3.4$ — this beats every other
-      candidate split by a wide margin. $F_1(x) = 6.6 - 5.1 = 1.5$ for $x < 2.5$, and $6.6 + 3.4 = 10$ for
-      $x \geq 2.5$.
+      Splitting into $\{1,2\}$ and $\{3,4,5\}$:
+      - Left group mean: $(-5.6-4.6)/2=-5.1$
+      - Right group mean: $(1.4+2.4+6.4)/3=3.4$
+
+      This beats every other candidate split by a wide margin. $F_1(x) = 6.6 - 5.1 = 1.5$ for $x < 2.5$, and
+      $6.6 + 3.4 = 10$ for $x \geq 2.5$.
     </Step>
     <Step label="New residuals, and a new SSE">
-      $y - F_1 = -0.5, 0.5, -2, -1, 3$ — SSE has dropped from $101.2$ to $14.5$. Real progress, but $x=3,4,5$ are
-      still off by as much as 3.
+      $y-F_1$ at each point:
+      - $x=1$: $1-1.5=-0.5$
+      - $x=2$: $2-1.5=0.5$
+      - $x=3$: $8-10=-2$
+      - $x=4$: $9-10=-1$
+      - $x=5$: $13-10=3$
+
+      Squaring and summing: $(-0.5)^2+0.5^2+(-2)^2+(-1)^2+3^2 = 0.25+0.25+4+1+9=14.5$ — down from $101.2$.
+      Real progress, but $x=3,4,5$ are still off by as much as 3.
     </Step>
     <Step label="Round 2 fits a fresh stump to those residuals">
-      Splitting at $x = 4.5$ (isolating the single worst point, $x=5$), the group means are $-0.75$ and $3$.
-      $F_2(x) = F_1(x) - 0.75$ for $x < 4.5$, and $F_1(x) + 3 = 13$ for $x \geq 4.5$ — giving
-      $F_2 = 0.75, 0.75, 9.25, 9.25, 13$ and a final SSE of just $3.25$.
+      Splitting at $x = 4.5$ (isolating the single worst point, $x=5$):
+      - Left group mean ($x=1,2,3,4$): $(-0.5+0.5-2-1)/4=-0.75$
+      - Right group mean ($x=5$): $3/1=3$
+
+      $F_2(x) = F_1(x) - 0.75$ for $x < 4.5$, and $F_1(x) + 3 = 13$ for $x \geq 4.5$:
+      - $x=1,2$: $1.5-0.75=0.75$
+      - $x=3,4$: $10-0.75=9.25$
+      - $x=5$: $10+3=13$
+
+      New residuals $y-F_2$ are $0.25, 1.25, -1.25, -0.25, 0$, giving a final SSE of just
+      $0.25^2+1.25^2+1.25^2+0.25^2+0^2=3.25$.
     </Step>
   </Steps>
 </WorkedExample>

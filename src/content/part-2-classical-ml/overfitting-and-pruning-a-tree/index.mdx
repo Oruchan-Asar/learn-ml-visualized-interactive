@@ -63,14 +63,19 @@ import { IntuitionDemo, PlayDemo, PruningCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Depth 1, the shallow tree">
-      One split at $x = 9.5$ gets $20/25 = 80\%$ of training points right (the 5 mislabeled ones are the only
-      misses) and $24/24 = 100\%$ of validation points right. It has 2 leaves, so $R(T) = 0.20$ and $|T| = 2$.
+      One split at $x = 9.5$:
+      - Training accuracy: $20/25 = 80\%$ (the 5 mislabeled points are the only misses)
+      - Validation accuracy: $24/24 = 100\%$
+      - Leaves: $|T|=2$, so $R(T) = 1-0.80 = 0.20$
     </Step>
     <Step label="Depth 5, the overgrown tree">
-      Splitting all the way to depth 5 carves out 10 leaves and rescues 4 of the 5 noisy points, reaching
-      $24/25 = 96\%$ training accuracy — but validation accuracy *falls* to $20/24 \approx 83\%$. So
-      $R(T) = 0.04$ and $|T| = 10$. (Depth 6 adds one more leaf for zero extra training accuracy, so it never
-      wins at any $\alpha \geq 0$ — pruning drops that redundant split for free.)
+      Splitting all the way to depth 5, rescuing 4 of the 5 noisy points:
+      - Training accuracy: $24/25 = 96\%$
+      - Validation accuracy: $20/24 \approx 83\%$ — it *falls* even as training accuracy climbed
+      - Leaves: $|T|=10$, so $R(T) = 1-0.96 = 0.04$
+
+      (Depth 6 adds one more leaf for zero extra training accuracy, so it never wins at any $\alpha \geq 0$
+      — pruning drops that redundant split for free.)
     </Step>
     <Step label="alpha=0: raw training error wins, and the overgrown tree looks unbeatable">
       $R_0(\text{depth }1) = 0.20 + 0 \times 2 = 0.20$, while $R_0(\text{depth }5) = 0.04 + 0 \times 10 = 0.04$.

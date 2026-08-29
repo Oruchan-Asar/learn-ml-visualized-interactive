@@ -68,8 +68,10 @@ import { IntuitionDemo, PlayDemo, ModernBoostersCheckpoint } from "./Demos";
       Now $H = 4 \times 2 = 8$. At $\lambda=0$: $w^* = -3/8 = -0.375$. At $\lambda=1$: $w^* = -3/9 = -1/3$.
     </Step>
     <Step label="The right leaf shrinks the same way">
-      $G = -3$, $H = 1 \times h$. At $h=1,\lambda=0$: $w^*=3$ (matches GBM). At $h=1,\lambda=1$: $w^*=1.5$. At
-      $h=2,\lambda=1$: $w^*=1$.
+      $G = -3$, and $H = 1 \times h$ for whatever the per-point Hessian $h$ is:
+      - $h=1,\lambda=0$: $w^*=-(-3)/(1+0)=3$ (matches GBM)
+      - $h=1,\lambda=1$: $w^*=3/(1+1)=1.5$
+      - $h=2,\lambda=1$: $H=1\times2=2$, so $w^*=3/(2+1)=1$
     </Step>
   </Steps>
 </WorkedExample>
