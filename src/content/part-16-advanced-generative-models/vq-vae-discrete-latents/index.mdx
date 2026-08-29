@@ -58,8 +58,10 @@ import { IntuitionDemo, PlayDemo, VQVAECheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Distance to every code">
-      To $(0,0)$: $\sqrt{1^2+1^2}=\sqrt{2}\approx1.414$. To $(3,0)$: $\sqrt{2^2+1^2}=\sqrt{5}\approx2.236$.
-      To $(0,3)$: also $\sqrt{5}$. To $(3,3)$: $\sqrt{2^2+2^2}=\sqrt{8}\approx2.828$.
+      - To $(0,0)$: $\sqrt{1^2+1^2}=\sqrt{2}\approx1.414$
+      - To $(3,0)$: $\sqrt{2^2+1^2}=\sqrt{5}\approx2.236$
+      - To $(0,3)$: $\sqrt{1^2+2^2}=\sqrt{5}\approx2.236$ — same as $(3,0)$
+      - To $(3,3)$: $\sqrt{2^2+2^2}=\sqrt{8}\approx2.828$
     </Step>
     <Step label="Snap to the nearest">
       $(0,0)$ is closest, so $z_q = (0,0)$ — the decoder receives exactly $(0,0)$, never $(1,1)$.

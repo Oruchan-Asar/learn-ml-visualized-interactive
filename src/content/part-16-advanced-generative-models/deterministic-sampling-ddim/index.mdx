@@ -69,20 +69,45 @@ import { IntuitionDemo, PlayDemo, DdimCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Full schedule: every step, t = 4 -> 3 -> 2 -> 1 -> 0">
-      $x_4 \approx 3.1305 \to x_3 \approx 3.9369 \to x_2 \approx 4.5054 \to x_1 \approx 4.9193 \to x_0 = 5$.
+      Each hop estimates $\hat x_0=(x_t-\sqrt{1-\bar\alpha_t})/\sqrt{\bar\alpha_t}$ (since $\hat\epsilon=1$),
+      then rebuilds $x_{t_{\text{prev}}}=\sqrt{\bar\alpha_{t_{\text{prev}}}}\hat x_0+\sqrt{1-\bar\alpha_{t_{\text{prev}}}}$:
+
+      - $t=4\to3$: $\hat x_0=(3.1305-\sqrt{0.8})/\sqrt{0.2}=(3.1305-0.8944)/0.4472=5.0000$; $x_3=\sqrt{0.4}(5)+\sqrt{0.6}(1)=3.1623+0.7746=3.9369$
+      - $t=3\to2$: $\hat x_0=(3.9369-\sqrt{0.6})/\sqrt{0.4}=(3.9369-0.7746)/0.6325=5.0000$; $x_2=\sqrt{0.6}(5)+\sqrt{0.4}(1)=3.8730+0.6325=4.5054$
+      - $t=2\to1$: $\hat x_0=(4.5054-\sqrt{0.4})/\sqrt{0.6}=(4.5054-0.6325)/0.7746=5.0000$; $x_1=\sqrt{0.8}(5)+\sqrt{0.2}(1)=4.4721+0.4472=4.9193$
+      - $t=1\to0$: $\hat x_0=(4.9193-\sqrt{0.2})/\sqrt{0.8}=(4.9193-0.4472)/0.8944=5.0000$; $x_0=\sqrt{1}(5)+\sqrt{0}(1)=5$
+
+      Every hop's $\hat x_0$ lands exactly on $5$ — the perfect predictor recovers the true $x_0$
+      regardless of which timestep it's called from.
     </Step>
     <Step label="Skip schedule: t = 4 -> 2 -> 0, two model calls instead of four">
-      Starting from the identical $x_4 \approx 3.1305$, jumping straight to $t=2$ lands on the *exact same*
-      $x_2 \approx 4.5054$ the full schedule passed through — then one more jump reaches $x_0=5$ exactly.
+      Starting from the identical $x_4 \approx 3.1305$:
+
+      - $t=4\to2$: $\hat x_0=(3.1305-\sqrt{0.8})/\sqrt{0.2}=5.0000$ (same computation as the full schedule's
+        first hop, since it depends only on $x_4$); $x_2=\sqrt{0.6}(5)+\sqrt{0.4}(1)=4.5054$ — the *exact
+        same* value the full schedule passed through
+      - $t=2\to0$: $\hat x_0=(4.5054-\sqrt{0.4})/\sqrt{0.6}=5.0000$; $x_0=\sqrt{1}(5)+\sqrt{0}(1)=5$ exactly
     </Step>
     <Step label="Single jump: t = 4 -> 0">
-      Even one call, straight from $x_4$ to $x_0$, reconstructs $x_0=5$ exactly. With a perfect predictor,
-      the number of steps only changes the compute cost — never the destination.
+      $\hat x_0=(3.1305-\sqrt{0.8})/\sqrt{0.2}=5.0000$ (the same estimate every schedule above computed
+      from $x_4$); $x_0=\sqrt{1}(5)+\sqrt{0}(1)=5$ exactly. With a perfect predictor, the number of steps
+      only changes the compute cost — never the destination.
     </Step>
     <Step label="Now inject noise: eta = 1, fixed draws">
-      Running the same full schedule with $\eta=1$ and fixed draws $z = [0.5, -0.5, 0.5, 0.3]$ reaches only
-      $x_0 \approx 2.913$ — an error of about $2.09$, because each step's injected noise knocks the next
-      step's estimate off the clean marginal it assumes.
+      Running the same full schedule with $\eta=1$ (direction $=z$ instead of $\hat\epsilon$) and fixed
+      draws $z=[0.5,-0.5,0.5,0.3]$:
+
+      - $t=4\to3$: $\hat x_0=5.0000$ (unchanged, from $x_4$); direction $=z=0.5$; $x_3=\sqrt{0.4}(5.0000)+\sqrt{0.6}(0.5)=3.1623+0.3873=3.5496$
+      - $t=3\to2$: $\hat x_0=(3.5496-\sqrt{0.6})/\sqrt{0.4}=(3.5496-0.7746)/0.6325\approx4.3876$ — already
+        off the true $5$, since $x_3$ was knocked off the clean marginal; direction $=z=-0.5$;
+        $x_2=\sqrt{0.6}(4.3876)+\sqrt{0.4}(-0.5)\approx3.3990-0.3162=3.0828$
+      - $t=2\to1$: $\hat x_0=(3.0828-\sqrt{0.4})/\sqrt{0.6}\approx3.1629$; direction $=z=0.5$;
+        $x_1=\sqrt{0.8}(3.1629)+\sqrt{0.2}(0.5)\approx2.8295+0.2236=3.0526$
+      - $t=1\to0$: $\hat x_0=(3.0526-\sqrt{0.2})/\sqrt{0.8}\approx2.9129$; direction $=z=0.3$;
+        $x_0=\sqrt{1}(2.9129)+\sqrt{0}(0.3)\approx2.913$
+
+      Final $x_0\approx2.913$ — an error of $5-2.913\approx2.09$, because each step's injected noise
+      knocks the next step's estimate off the clean marginal it assumes.
     </Step>
   </Steps>
 </WorkedExample>

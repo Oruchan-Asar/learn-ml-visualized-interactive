@@ -63,23 +63,39 @@ import { IntuitionDemo, PlayDemo, DitCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Condition each patch at t=2">
-      $c = 2/4 = 0.5$, so $\gamma = 1.25$, $\beta = -0.5$. Conditioned values:
-      $\tilde v_0 = 1.25(3) - 0.5 = 3.25$, $\tilde v_1 = 0.75$, $\tilde v_2 = -0.5$, $\tilde v_3 = 2$.
+      $c = 2/4 = 0.5$, so $\gamma = 1+0.5(0.5) = 1.25$, $\beta = -1(0.5) = -0.5$. Conditioned values:
+
+      - $\tilde v_0 = 1.25(3) - 0.5 = 3.25$
+      - $\tilde v_1 = 1.25(1) - 0.5 = 0.75$
+      - $\tilde v_2 = 1.25(0) - 0.5 = -0.5$
+      - $\tilde v_3 = 1.25(2) - 0.5 = 2.0$
     </Step>
     <Step label="Score p0's query against every key">
-      Adding a small position term (0.1 per grid index) and scoring $p_0$'s embedding against all four
-      (including itself), then dividing by $\sqrt{2}$ and taking a softmax gives weights
-      $\approx [0.943, 0.003, 0.0002, 0.053]$ — p0 attends overwhelmingly to itself, then to $p_3$, the next
-      closest content value.
+      Each patch's full embedding is $(\tilde v,\ 0.1\times\text{grid index})$: $p_0=(3.25,0)$,
+      $p_1=(0.75,0.1)$, $p_2=(-0.5,0.2)$, $p_3=(2.0,0.3)$. Scoring query $p_0$ against each (dot product,
+      then divide by $\sqrt2$):
+
+      - $p_0\cdot p_0 = 3.25^2 = 10.5625$, scaled: $10.5625/\sqrt2\approx7.469$
+      - $p_0\cdot p_1 = 3.25(0.75)+0(0.1) = 2.4375$, scaled: $\approx1.724$
+      - $p_0\cdot p_2 = 3.25(-0.5)+0(0.2) = -1.625$, scaled: $\approx-1.149$
+      - $p_0\cdot p_3 = 3.25(2)+0(0.3) = 6.5$, scaled: $\approx4.596$
+
+      Softmax (subtracting the max, $7.469$, for stability): $e^{0}=1$ (self), $e^{1.724-7.469}\approx0.0032$,
+      $e^{-1.149-7.469}\approx0.00018$, $e^{4.596-7.469}\approx0.0565$; sum $\approx1.0599$. Normalizing gives
+      weights $\approx [0.943, 0.003, 0.0002, 0.053]$ — p0 attends overwhelmingly to itself, then to $p_3$,
+      the next closest content value.
     </Step>
     <Step label="Attention output mixes values by those weights">
       $p_0$'s attention output is $\approx 0.943(3.25) + 0.003(0.75) + 0.0002(-0.5) + 0.053(2) \approx 3.175$
       — pulled almost entirely from its own conditioned content, with a small nudge from $p_3$.
     </Step>
     <Step label="Self-attention sharpens further as t keeps rising">
-      At $t=3$, p0's self-attention weight on itself climbs past $0.95$; by $t=2$ it's still below that —
-      the conditioning needs to stretch the gap a bit further before self-attention all but ignores every
-      other patch.
+      At $t=3$: $c=3/4=0.75$, $\gamma=1.375$, $\beta=-0.75$, so $\tilde v_0 = 1.375(3)-0.75 = 3.375$ (versus
+      $3.25$ at $t=2$) — the gap between p0's content and the others widens further. Scoring p0 against
+      itself now gives $3.375^2/\sqrt2\approx8.055$, versus $\approx1.492$, $-1.790$, $4.773$ for $p_1,p_2,p_3$
+      respectively; running the same softmax gives a self-weight $\approx0.963$, past $0.95$ — while at
+      $t=2$ it was still $\approx0.943$, below that threshold. The conditioning needs to stretch the gap a
+      bit further before self-attention all but ignores every other patch.
     </Step>
   </Steps>
 </WorkedExample>
