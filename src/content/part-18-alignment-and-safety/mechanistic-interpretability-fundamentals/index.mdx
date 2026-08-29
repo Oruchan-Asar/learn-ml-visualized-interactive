@@ -53,12 +53,18 @@ import { IntuitionDemo, PlayDemo, MechInterpCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Mouse's own values">
-      size=0, legs=1, metal=0 → neuron A = ReLU(2·0 − 3·0 − 1) = 0, neuron B = ReLU(3·1 − 1) = 2.
-      Output = 2(0) − 0.5(2) = **−1**.
+      size=0, legs=1, metal=0:
+
+      - Neuron A $=\text{ReLU}(2\cdot0 - 3\cdot0 - 1) = \text{ReLU}(-1) = 0$
+      - Neuron B $=\text{ReLU}(3\cdot1 - 1) = \text{ReLU}(2) = 2$
+      - Output $= 2(0) - 0.5(2) = -1$
     </Step>
     <Step label="Elephant's own values">
-      size=1, legs=1, metal=0 → neuron A = ReLU(2·1 − 3·0 − 1) = 1, neuron B = ReLU(3·1 − 1) = 2.
-      Output = 2(1) − 0.5(2) = **1**.
+      size=1, legs=1, metal=0:
+
+      - Neuron A $=\text{ReLU}(2\cdot1 - 3\cdot0 - 1) = \text{ReLU}(1) = 1$
+      - Neuron B $=\text{ReLU}(3\cdot1 - 1) = \text{ReLU}(2) = 2$
+      - Output $= 2(1) - 0.5(2) = 1$
     </Step>
     <Step label="Patch: mouse's B, elephant's A">
       Output = 2(1) − 0.5(2) = 2 − 1 = **1** — exactly elephant's output. Neuron A alone accounts for

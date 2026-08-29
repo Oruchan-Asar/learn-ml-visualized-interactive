@@ -60,15 +60,21 @@ import { IntuitionDemo, PlayDemo, FairnessCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Demographic parity">
-      Group A: $(4{+}1)/10 = 0.5$ selected. Group B: $(2{+}2)/10 = 0.4$ selected. Gap: $0.1$.
+      - Group A: $(4{+}1)/10 = 0.5$ selected
+      - Group B: $(2{+}2)/10 = 0.4$ selected
+      - Gap: $|0.5-0.4|=0.1$
     </Step>
     <Step label="Equal opportunity (recall)">
-      Group A: $4/(4{+}1) = 0.8$. Group B: $2/(2{+}0) = 1.0$. Gap: $0.2$ — B's *actual* positives are
-      easier to catch, purely because there are so few of them.
+      - Group A: $4/(4{+}1) = 0.8$
+      - Group B: $2/(2{+}0) = 1.0$
+      - Gap: $|0.8-1.0|=0.2$ — B's *actual* positives are easier to catch, purely because there are so
+        few of them.
     </Step>
     <Step label="Predictive parity (precision)">
-      Group A: $4/(4{+}1) = 0.8$. Group B: $2/(2{+}2) = 0.5$. Gap: $0.3$ — the largest of the three, and
-      the one a naive "check the accuracy" audit would most likely miss entirely.
+      - Group A: $4/(4{+}1) = 0.8$
+      - Group B: $2/(2{+}2) = 0.5$
+      - Gap: $|0.8-0.5|=0.3$ — the largest of the three, and the one a naive "check the accuracy" audit
+        would most likely miss entirely.
     </Step>
   </Steps>
 </WorkedExample>

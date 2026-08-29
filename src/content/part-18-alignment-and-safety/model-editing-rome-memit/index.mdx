@@ -47,15 +47,23 @@ import { IntuitionDemo, PlayDemo, ModelEditingCheckpoint } from "./Demos";
 
 <WorkedExample>
   Editing "capital of France" from Paris to Rome, with $k_{\text{France}}=[1,0]$, $v_{\text{Paris}}=[2,1]$,
-  $v_{\text{Rome}}=[0,4]$, and $W = \begin{bmatrix}2 & 0\\1 & 3\end{bmatrix}$:
+  $v_{\text{Rome}}=[0,4]$, $W = \begin{bmatrix}2 & 0\\1 & 3\end{bmatrix}$, and (for checking that the edit
+  leaves an unrelated fact alone) $k_{\text{Germany}}=[0,1]$, $v_{\text{Berlin}}=[0,3]$:
 
   <Steps>
-    <Step label="Current output for this key">$Wk_{\text{France}} = [2,1] = v_{\text{Paris}}$, as expected.</Step>
-    <Step label="Residual">$v^* - Wk = [0,4]-[2,1] = [-2,3]$. And $k^\top k = 1$.</Step>
-    <Step label="Rank-1 update">$\Delta W = [-2,3] \otimes [1,0] = \begin{bmatrix}-2 & 0\\3 & 0\end{bmatrix}$.</Step>
+    <Step label="Current output for this key">
+      $Wk_{\text{France}} = [2(1)+0(0),\ 1(1)+3(0)] = [2,1] = v_{\text{Paris}}$, as expected.
+    </Step>
+    <Step label="Residual">$v^* - Wk = [0,4]-[2,1] = [-2,3]$. And $k^\top k = 1(1)+0(0) = 1$.</Step>
+    <Step label="Rank-1 update">
+      $\Delta W = [-2,3] \otimes [1,0] = \begin{bmatrix}-2(1) & -2(0)\\3(1) & 3(0)\end{bmatrix} = \begin{bmatrix}-2 & 0\\3 & 0\end{bmatrix}$.
+    </Step>
     <Step label="Edited matrix and check">
-      $W' = \begin{bmatrix}0 & 0\\4 & 3\end{bmatrix}$. $W'k_{\text{France}} = [0,4] = v_{\text{Rome}}$ exactly.
-      $W'k_{\text{Germany}} = [0,3] = v_{\text{Berlin}}$, untouched — since $k_{\text{France}}\cdot k_{\text{Germany}}=0$.
+      $W' = W+\Delta W = \begin{bmatrix}2-2 & 0+0\\1+3 & 3+0\end{bmatrix} = \begin{bmatrix}0 & 0\\4 & 3\end{bmatrix}$.
+
+      - $W'k_{\text{France}} = [0(1)+0(0),\ 4(1)+3(0)] = [0,4] = v_{\text{Rome}}$ exactly
+      - $W'k_{\text{Germany}} = [0(0)+0(1),\ 4(0)+3(1)] = [0,3] = v_{\text{Berlin}}$, untouched — since
+        $k_{\text{France}}\cdot k_{\text{Germany}} = 1(0)+0(1) = 0$
     </Step>
   </Steps>
 </WorkedExample>

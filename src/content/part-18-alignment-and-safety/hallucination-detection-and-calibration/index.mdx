@@ -51,9 +51,17 @@ import { IntuitionDemo, PlayDemo, HallucinationCheckpoint } from "./Demos";
   Checking threshold $t=0.75$ against all seven predictions:
 
   <Steps>
-    <Step label="The three confident, correct ones">0.95, 0.90, 0.85 all clear 0.75 → trusted, and all three are actually correct. Three matches.</Step>
+    <Step label="The three confident, correct ones">
+      - $0.95 \ge 0.75$ → trusted, actually correct → match
+      - $0.90 \ge 0.75$ → trusted, actually correct → match
+      - $0.85 \ge 0.75$ → trusted, actually correct → match
+    </Step>
     <Step label="The overconfident hallucination">0.70 does not clear 0.75 → flagged, and it's actually wrong. A match — exactly the case a lower threshold would have missed.</Step>
-    <Step label="The three lower-confidence wrong ones">0.50, 0.35, 0.15 all fall short of 0.75 → flagged, and all three are actually wrong. Three more matches.</Step>
+    <Step label="The three lower-confidence wrong ones">
+      - $0.50 < 0.75$ → flagged, actually wrong → match
+      - $0.35 < 0.75$ → flagged, actually wrong → match
+      - $0.15 < 0.75$ → flagged, actually wrong → match
+    </Step>
     <Step label="Total">7 out of 7 — perfect separation, for this dataset, at this threshold.</Step>
   </Steps>
 </WorkedExample>

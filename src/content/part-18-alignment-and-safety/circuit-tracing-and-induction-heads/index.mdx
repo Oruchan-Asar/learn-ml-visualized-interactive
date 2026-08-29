@@ -54,8 +54,20 @@ import { IntuitionDemo, PlayDemo, InductionCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Embed the tokens">One-hot in a 3-symbol vocabulary: A = [1,0,0], B = [0,1,0], C = [0,0,1].</Step>
-    <Step label="Build each position's previous-token report">$k_1=\text{embed}(x_0)=A$, $k_2=\text{embed}(x_1)=B$, $k_3=\text{embed}(x_2)=C$, $k_4=\text{embed}(x_3)=A$.</Step>
-    <Step label="Score against the query">$q = \text{embed}(x_4) = B$. $\text{score}_1 = B{\cdot}A=0$, $\text{score}_2=B{\cdot}B=1$, $\text{score}_3=B{\cdot}C=0$, $\text{score}_4=B{\cdot}A=0$.</Step>
+    <Step label="Build each position's previous-token report">
+      - $k_1=\text{embed}(x_0)=A$
+      - $k_2=\text{embed}(x_1)=B$
+      - $k_3=\text{embed}(x_2)=C$
+      - $k_4=\text{embed}(x_3)=A$
+    </Step>
+    <Step label="Score against the query">
+      $q = \text{embed}(x_4) = B$:
+
+      - $\text{score}_1 = B\cdot A = [0,1,0]\cdot[1,0,0] = 0$
+      - $\text{score}_2 = B\cdot B = [0,1,0]\cdot[0,1,0] = 1$
+      - $\text{score}_3 = B\cdot C = [0,1,0]\cdot[0,0,1] = 0$
+      - $\text{score}_4 = B\cdot A = [0,1,0]\cdot[1,0,0] = 0$
+    </Step>
     <Step label="Normalize and predict">$\alpha = [0,1,0,0]$ — all the weight lands on position 2. The token actually at position 2 is C, so the prediction is **C**.</Step>
   </Steps>
 </WorkedExample>

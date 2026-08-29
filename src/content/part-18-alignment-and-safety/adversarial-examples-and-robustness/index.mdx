@@ -57,15 +57,17 @@ import { IntuitionDemo, PlayDemo, AdversarialCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Before any perturbation">
-      $w \cdot x + b = 9(0.6) - 4.5 = 0.9$. $\sigma(0.9) \approx 0.711$ — confidently positive.
+      $w \cdot x + b = 9(0.6) - 4.5 = 0.9$. $\sigma(0.9) = \frac{1}{1+e^{-0.9}}$: $e^{-0.9}\approx0.4066$,
+      so $\sigma(0.9)\approx\frac{1}{1.4066}\approx0.711$ — confidently positive.
     </Step>
     <Step label="At epsilon = 0.1">
-      Every pixel drops to $0.5$. $w \cdot x + b = 9(0.5) - 4.5 = 0$. $\sigma(0) = 0.5$ — sitting exactly
-      on the boundary.
+      Every pixel drops to $0.5$. $w \cdot x + b = 9(0.5) - 4.5 = 0$. $\sigma(0) = 1/(1+e^0) = 1/2 = 0.5$
+      — sitting exactly on the boundary.
     </Step>
     <Step label="At epsilon = 0.15">
       Every pixel drops to $0.45$ — barely different from $0.5$. $w \cdot x + b = 9(0.45) - 4.5 = -0.45$.
-      $\sigma(-0.45) \approx 0.389$ — now confidently classified in the *other* class.
+      $\sigma(-0.45) = \frac{1}{1+e^{0.45}}$: $e^{0.45}\approx1.568$, so
+      $\sigma(-0.45)\approx\frac{1}{2.568}\approx0.389$ — now confidently classified in the *other* class.
     </Step>
   </Steps>
 </WorkedExample>
