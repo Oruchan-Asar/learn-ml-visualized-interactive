@@ -42,11 +42,16 @@ import { IntuitionDemo, PlayDemo, WeightInitCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Too small — scale 0.05">
-      About seven times smaller than ideal: the **RMS** (short for **Root Mean Square**) activation drops from about $1.5$ at the input to under
-      $0.0001$ by layer 6 — a network that's already numerically dead before a single gradient step.
+      About seven times smaller than ideal ($0.05$ vs. $\approx0.354$). Each layer's signal scales by
+      roughly $\sqrt{\text{fan-in}}\cdot\text{scale} = \sqrt8\times0.05\approx0.141$ — a shrink, not a hold.
+      Compounding that six times: $0.141^6\approx0.000008$, taking the **RMS** (short for **Root Mean
+      Square**) activation from about $1.5$ at the input to under $0.0001$ by layer 6 — a network that's
+      already numerically dead before a single gradient step.
     </Step>
     <Step label="Too large — scale 1.0">
-      Roughly three times too large: the same six layers push it up past $400$.
+      Roughly three times too large ($1.0$ vs. $\approx0.354$). Each layer's signal now scales by
+      $\sqrt8\times1.0\approx2.83$ — a growth factor well above $1$. Compounding that six times:
+      $2.83^6\approx514$, pushing the same six layers up past $400$.
     </Step>
     <Step label="Just right — the ideal scale ≈ 0.354">
       Every one of the six layers stays within about $0.4\times$ to $2\times$ of the input's own size — no

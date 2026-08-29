@@ -54,23 +54,38 @@ import { IntuitionDemo, PlayDemo, BackpropCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Forward pass">
-      $z_1 = 0.5(1) + (-0.3)(2) + 0.1 = 0$ exactly, so $h_1=\sigma(0)=0.5$. Forward through the rest: $z_2=0.8$,
-      $h_2\approx0.690$, $z_{\text{out}}\approx0.360$, $y\approx0.589$, loss $\approx0.173$.
+      $z_1 = 0.5(1) + (-0.3)(2) + 0.1 = 0$ exactly, so $h_1=\sigma(0)=0.5$. Forward through the rest:
+      - $z_2 = -0.2(1)+0.4(2)+0.2 = 0.8$, so $h_2=\sigma(0.8)\approx0.690$
+      - $z_{\text{out}} = 1.5(0.5)+(-1.0)(0.690)+0.3 \approx 0.360$
+      - $y=\sigma(0.360)\approx0.589$
+      - loss $=0.5(y-0)^2 \approx 0.173$
     </Step>
     <Step label="Backward into the output neuron">
-      $\partial L/\partial y = y = 0.589$ (target is $0$), times $\sigma'(z_{\text{out}})\approx0.242$ gives
-      $\partial L/\partial z_{\text{out}}\approx0.143$. That one number is *shared* by every weight feeding the
-      output: $\partial L/\partial v_1 = 0.143\cdot h_1 \approx 0.071$, $\partial L/\partial v_2 = 0.143\cdot
-      h_2\approx0.098$, $\partial L/\partial c \approx0.143$.
+      $\partial L/\partial y = y = 0.589$ (target is $0$), times $\sigma'(z_{\text{out}})=y(1-y)\approx0.242$
+      gives $\partial L/\partial z_{\text{out}}\approx0.143$. That one number is *shared* by every weight
+      feeding the output:
+      - $\partial L/\partial v_1 = 0.143\cdot h_1 \approx 0.071$
+      - $\partial L/\partial v_2 = 0.143\cdot h_2\approx0.098$
+      - $\partial L/\partial c \approx0.143$
     </Step>
-    <Step label="Push further back, into the hidden neuron">
-      $\partial L/\partial h_1 = 0.143\cdot v_1\approx0.214$, times $\sigma'(z_1)=0.25$ gives
-      $\partial L/\partial z_1\approx0.053$ — and *that* number is shared by every weight feeding $h_1$:
-      $\partial L/\partial w_{11}\approx0.053(1)=0.053$, $\partial L/\partial w_{12}\approx0.053(2)=0.107$,
-      $\partial L/\partial b_1\approx0.053$.
+    <Step label="Push further back, into the hidden neurons">
+      For hidden neuron 1: $\partial L/\partial h_1 = 0.143\cdot v_1\approx0.214$, times
+      $\sigma'(z_1)=h_1(1-h_1)=0.25$ gives $\partial L/\partial z_1\approx0.053$ — shared by every weight
+      feeding $h_1$:
+      - $\partial L/\partial w_{11}\approx0.053(1)=0.053$
+      - $\partial L/\partial w_{12}\approx0.053(2)=0.107$
+      - $\partial L/\partial b_1\approx0.053$
+
+      The exact same mechanism, run on neuron 2: $\partial L/\partial h_2 = 0.143\cdot v_2\approx-0.143$,
+      times $\sigma'(z_2)=h_2(1-h_2)\approx0.214$ gives $\partial L/\partial z_2\approx-0.030$ — shared by
+      every weight feeding $h_2$:
+      - $\partial L/\partial w_{21}\approx-0.030(1)=-0.030$
+      - $\partial L/\partial w_{22}\approx-0.030(2)=-0.061$
+      - $\partial L/\partial b_2\approx-0.030$
     </Step>
     <Step label="Tally the result">
-      All nine gradients, from two shared numbers and the inputs each weight multiplies.
+      All nine gradients, from two shared numbers ($\partial L/\partial z_{\text{out}}$, and per hidden
+      neuron $\partial L/\partial z_1$ or $\partial L/\partial z_2$) and the inputs each weight multiplies.
     </Step>
   </Steps>
 </WorkedExample>

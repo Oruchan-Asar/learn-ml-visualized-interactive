@@ -56,15 +56,31 @@ import { IntuitionDemo, PlayDemo, LayerGroupNormCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Six raw activations">
-      $[2, -1, 0.5, 3, -2.5, 1]$ — mean $0.5$, variance $20/6\approx3.33$.
+      $[2, -1, 0.5, 3, -2.5, 1]$: mean $=(2-1+0.5+3-2.5+1)/6=3/6=0.5$. Squared deviations from that mean —
+      $1.5^2, (-1.5)^2, 0^2, 2.5^2, (-3)^2, 0.5^2 = 2.25, 2.25, 0, 6.25, 9, 0.25$ — sum to $20$, so variance
+      $=20/6\approx3.33$.
     </Step>
     <Step label="One group (LayerNorm)">
-      Normalizing across all six at once gives mean $\approx0$ and variance $\approx1$ for the whole vector — the
-      same guarantee batch norm gives, just measured across channels instead of across a batch.
+      Dividing by $\sigma=\sqrt{3.33}\approx1.826$ after subtracting the mean $0.5$ from each value:
+      - $(2-0.5)/1.826\approx0.82$
+      - $(-1-0.5)/1.826\approx-0.82$
+      - $(0.5-0.5)/1.826=0$
+      - $(3-0.5)/1.826\approx1.37$
+      - $(-2.5-0.5)/1.826\approx-1.64$
+      - $(1-0.5)/1.826\approx0.27$
+
+      Averaging these six gives mean $\approx0$ and variance $\approx1$ for the whole vector — the same
+      guarantee batch norm gives, just measured across channels instead of across a batch.
     </Step>
     <Step label="Three groups of two">
-      Each pair happens to split into two values equally far from their own mean — so *every* one of the six
-      outputs lands at exactly $+1$ or $-1$, regardless of how spread out the original six numbers were.
+      Splitting into consecutive pairs $(2,-1)$, $(0.5,3)$, $(-2.5,1)$ — each pair's two values happen to
+      sit equally far from their own mean:
+      - $(2,-1)$: mean $0.5$, half-spread $1.5$, normalizing to $1.5/1.5=1$ and $-1.5/1.5=-1$
+      - $(0.5,3)$: mean $1.75$, half-spread $1.25$, normalizing to $-1$ and $1$
+      - $(-2.5,1)$: mean $-0.75$, half-spread $1.75$, normalizing to $-1$ and $1$
+
+      Every one of the six outputs lands at exactly $+1$ or $-1$, regardless of how spread out the
+      original six numbers were.
     </Step>
   </Steps>
 </WorkedExample>

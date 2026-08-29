@@ -58,8 +58,15 @@ import { IntuitionDemo, PlayDemo, VanishingCheckpoint } from "./Demos";
       gradient.
     </Step>
     <Step label="Follow it to depth 6">
-      The gradient reaching the input is about $3.6\times10^{-6}$ — already roughly four orders of magnitude
-      smaller than the loss gradient at the output, $\approx0.056$.
+      Each backward step multiplies by that layer's own $\sigma'(z_i)\cdot w$ — and $w=3$ pushes the forward
+      pass toward saturation fast (the signal climbs from $0.5$ toward $\approx0.94$ within a couple of
+      layers, where $\sigma'$ is tiny), so the six per-layer factors, computed layer by layer from the
+      output backward, are all well under the depth-1 bound of $0.75$:
+      - $\approx0.158,\ \approx0.158,\ \approx0.159,\ \approx0.167,\ \approx0.219,\ \approx0.447$
+
+      Multiplying the output gradient ($\approx-0.056$) by all six:
+      $-0.056\times0.158\times0.158\times0.159\times0.167\times0.219\times0.447\approx-3.6\times10^{-6}$ —
+      already roughly four orders of magnitude smaller than the loss gradient at the output.
     </Step>
     <Step label="One layer further">
       It drops under $10^{-6}$ entirely: for practical purposes, that weight has stopped learning.

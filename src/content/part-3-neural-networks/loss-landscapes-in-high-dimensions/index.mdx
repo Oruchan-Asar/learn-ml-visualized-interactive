@@ -41,8 +41,11 @@ import { IntuitionDemo, PlayDemo, LandscapeCheckpoint } from "./Demos";
       along that direction? A true minimum needs *every* coin to land "up."
     </Step>
     <Step label="Compute the probability as n grows">
-      With fair coins, that probability is $(1/2)^n$ — exactly $0.5$ in 1D, $0.25$ in 2D, but already under $1\%$
-      by 7 dimensions, and under one in a million by 20.
+      With fair coins, that probability is $(1/2)^n$:
+      - $n=1$: $(1/2)^1=0.5$
+      - $n=2$: $(1/2)^2=0.25$
+      - $n=7$: $(1/2)^7=1/128\approx0.0078$ — already under $1\%$
+      - $n=20$: $(1/2)^{20}=1/1{,}048{,}576\approx0.00000095$ — under one in a million
     </Step>
     <Step label="Apply it to real networks">
       Real networks have millions of dimensions. Almost every flat point gradient descent finds is a saddle, not a

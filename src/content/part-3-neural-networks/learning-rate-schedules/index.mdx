@@ -56,18 +56,28 @@ import { IntuitionDemo, PlayDemo, LearningRateScheduleCheckpoint } from "./Demos
 <WorkedExample>
   <Steps>
     <Step label="Constant: diverges immediately and never recovers">
-      At the base rate, $x_{t+1}=x_t(1-2\eta_0)=x_t\cdot(-1.4)$ — each step *grows* in magnitude by 40%. By step 12,
-      $x$ has swung from $10$ to over $566$, and the loss has grown from $100$ to over $321{,}000$.
+      At the base rate, $x_{t+1}=x_t(1-2\eta_0)=x_t\cdot(-1.4)$ — each step *grows* in magnitude by 40%.
+      Since every step multiplies by the same $-1.4$, this is a plain geometric sequence:
+      $x_t = 10\cdot(-1.4)^t$. At $t=12$: $x_{12}=10\cdot(-1.4)^{12}\approx566.9$, and the loss
+      $x_{12}^2\approx321{,}000$ — up from $100$ at the start.
     </Step>
     <Step label="Step decay: the same explosion, temporarily">
-      For the first 4 steps (before the first decay), step decay is identical to constant — $x$ already reaches
-      about $38$ (loss $\approx1476$, nearly $15\times$ its starting value) before the rate ever drops. Once it does,
-      the trajectory recovers quickly and the final loss ends up tiny — but only after that mid-run spike.
+      For the first 4 steps (before the first decay), step decay is identical to constant, so the same
+      closed form applies: $x_4 = 10\cdot(-1.4)^4 \approx 38.4$, and loss $x_4^2\approx1476$ — nearly
+      $15\times$ its starting value, before the rate ever drops. Once it does, the trajectory recovers
+      quickly and the final loss ends up tiny — but only after that mid-run spike.
     </Step>
     <Step label="Warmup + cosine: no spike at all">
-      $\eta(0)=0$ leaves $x$ completely unchanged for the first step. By the time the rate ramps up to its peak at
-      $t=4$, $x$ has already shrunk to $0.64$ on its own from the small early steps. The loss never exceeds its
-      starting value of $100$ anywhere along the run, and still ends near $6\times10^{-4}$.
+      During warmup, $\eta(t)=1.2\cdot t/4$ is a different rate every step, so each step needs its own
+      multiplication:
+      - $t=0$: $\eta=0$, so $x_1=10\cdot(1-0)=10$ — completely unchanged
+      - $t=1$: $\eta=0.3$, so $x_2=10\cdot(1-0.6)=4$
+      - $t=2$: $\eta=0.6$, so $x_3=4\cdot(1-1.2)=-0.8$
+      - $t=3$: $\eta=0.9$, so $x_4=-0.8\cdot(1-1.8)=0.64$
+
+      By the time the rate ramps up to its peak at $t=4$, $x$ has already shrunk to $0.64$ on its own from
+      those small early steps. The loss never exceeds its starting value of $100$ anywhere along the run,
+      and still ends near $6\times10^{-4}$.
     </Step>
   </Steps>
 </WorkedExample>

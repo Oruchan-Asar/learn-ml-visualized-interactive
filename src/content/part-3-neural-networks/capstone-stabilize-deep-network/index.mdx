@@ -56,7 +56,14 @@ import { IntuitionDemo, PlayDemo, StabilizeCheckpoint } from "./Demos";
       Turn on RMSNorm instead: the gradient reaching the input jumps to $\approx0.738$, comfortably healthy. But at the base learning rate ($1.2$, unwarmed), step $0$'s update is $1.2\times0.738\approx0.886$ -- past the $0.5$ unsafe threshold before training has learned anything.
     </Step>
     <Step label="Warmup and decoupled decay close the other two gaps">
-      Warmup starts the learning rate at exactly $0$, so step $0$'s update is $0$ regardless of gradient size -- safe by construction. Meanwhile, fifty steps of unchecked $5\%$-per-step growth take a weight from $1$ to $\approx11.47$; decoupled decay's steady $0.05w$ shrink each step instead leaves it at $\approx0.88$, comfortably under the bound of $5$.
+      Warmup starts the learning rate at exactly $0$, so step $0$'s update is $0$ regardless of gradient
+      size -- safe by construction.
+
+      For the weight bound, each step first grows the weight by $5\%$, then -- with decay on -- shrinks
+      that grown value back down by another $5\%$: a net per-step factor of $1.05\times0.95=0.9975$.
+      - Without decay, 50 steps compounds the raw $5\%$ growth alone: $1\times1.05^{50}\approx11.47$
+      - With decay, 50 steps compounds the net $0.9975$ factor instead: $1\times0.9975^{50}\approx0.88$,
+        comfortably under the bound of $5$
     </Step>
   </Steps>
 </WorkedExample>

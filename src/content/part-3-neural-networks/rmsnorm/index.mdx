@@ -50,7 +50,9 @@ import { IntuitionDemo, PlayDemo, RmsNormCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="RMS of the six activations">
-      $[2,-1,0.5,3,-2.5,1]$ has mean-of-squares $21.5/6\approx3.583$, so $\text{RMS}\approx1.893$.
+      Squaring each of $[2,-1,0.5,3,-2.5,1]$ and summing:
+      $2^2+(-1)^2+0.5^2+3^2+(-2.5)^2+1^2 = 4+1+0.25+9+6.25+1 = 21.5$. Mean-of-squares $=21.5/6\approx3.583$,
+      so $\text{RMS}=\sqrt{3.583}\approx1.893$.
     </Step>
     <Step label="RMSNorm's output mean isn't 0">
       Dividing every value by $1.893$ divides the *mean* by $1.893$ too: $0.5/1.893\approx0.264$. LayerNorm on the

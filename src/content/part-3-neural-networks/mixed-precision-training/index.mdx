@@ -61,11 +61,14 @@ import { IntuitionDemo, PlayDemo, MixedPrecisionCheckpoint } from "./Demos";
       $5\times10^{-5}$ — the exact true gradient, recovered.
     </Step>
     <Step label="A second problem: the weight itself">
-      Loss scaling protects gradients in flight, but the weight being updated has its own precision problem. A
-      weight of $1.234567$ stored directly in the toy low-precision format rounds to $1.23$ — and a tiny update of
-      $-0.0001$ added to $1.23$ still rounds right back to $1.23$. Applied for 10 steps, the fp16-only weight never
-      moves from $1.23$, while a full-precision master copy of the same weight, receiving the same updates, reaches
-      $1.233567$ — a real, accumulated difference of about $0.0036$.
+      Loss scaling protects gradients in flight, but the weight being updated has its own precision problem.
+      A weight of $1.234567$ stored directly in the toy low-precision format rounds to $1.23$, and a tiny
+      update of $-0.0001$ added to $1.23$ still rounds right back to $1.23$. Applying that same update for
+      10 steps down two different paths:
+      - fp16-only: every update rounds away, so the stored weight never moves from $1.23$
+      - full-precision master copy: the same 10 updates accumulate in full precision, reaching $1.234567-10(0.0001)=1.233567$
+
+      A real, accumulated difference of about $0.0036$ between the two paths.
     </Step>
   </Steps>
 </WorkedExample>
