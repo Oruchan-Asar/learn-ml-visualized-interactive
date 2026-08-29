@@ -65,10 +65,16 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
       because this house's size is $5$ units above baseline while its renovated status only differs by $1$.
     </Step>
     <Step label="The counterfactual finds a different answer again">
-      The nearest edit that reaches the $500$ threshold moves size by about $+1.26$, age by $-0.17$, distance
-      by $-0.42$, and renovated by about $+1.68$ — and that last number is a real problem: renovated is a
-      $0/1$ feature, and $1.68$ isn't a valid value for it. The naive closed form doesn't know that
-      "renovated" can't be anything other than $0$ or $1$.
+      This house's prediction is $445$, so $f(x) = 445-500 = -55$ below the threshold. The weight vector's
+      squared norm is $\lVert w \rVert^2 = 15^2+(-2)^2+(-5)^2+20^2 = 225+4+25+400=654$, giving a scale
+      factor of $-55/654\approx-0.0841$. Each feature's delta is $-\text{scale}\times w_i$:
+      - Size: $0.0841\times15\approx+1.26$
+      - Age: $-0.0841\times2\approx-0.17$
+      - Distance: $-0.0841\times5\approx-0.42$
+      - Renovated: $0.0841\times20\approx+1.68$
+
+      That last number is a real problem: renovated is a $0/1$ feature, and $1.68$ isn't a valid value
+      for it. The naive closed form doesn't know that "renovated" can't be anything other than $0$ or $1$.
     </Step>
   </Steps>
 </WorkedExample>

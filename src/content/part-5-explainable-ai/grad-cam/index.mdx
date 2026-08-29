@@ -60,9 +60,16 @@ import { IntuitionDemo, PlayDemo, GradCamCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="The channel weight, for each class">
-      Every cell's gradient works out to exactly $\pm0.5$ (positive for "Edge detected," negative for "No
-      edge"), so averaging over all 16 cells just gives back $\pm0.5$ — the channel weight is $\alpha^{\text{edge}} = 0.5$
-      and $\alpha^{\text{no edge}} = -0.5$.
+      Every 2×2 pooling window here is a 4-way tie (all $0$s or all $3$s), so nudging any one cell up by
+      $\epsilon$ makes it that window's new unique max — the pooled output rises by $\epsilon$ — while
+      nudging it down by $\epsilon$ leaves the other three tied cells still winning, so the pooled output
+      doesn't move at all. That one-sided response is what the numerical gradient
+      $\frac{\text{plus}-\text{minus}}{2\epsilon}$ picks up: for "Edge detected" (dense weight $+1$ on
+      every flattened position), one cell's plus-side logit rises by $1\times\epsilon$ while its
+      minus-side logit is unchanged, giving gradient $\frac{\epsilon-0}{2\epsilon}=0.5$ for *every* cell
+      (the same tie-breaking happens in every window). Averaging 16 identical $0.5$s over all 16 cells
+      just gives back $0.5$; the same argument with "No edge"'s $-1$ dense weight gives $-0.5$ everywhere
+      instead. So $\alpha^{\text{edge}} = 0.5$ and $\alpha^{\text{no edge}} = -0.5$.
     </Step>
     <Step label="Grad-CAM for 'Edge detected'">
       $\text{ReLU}(0.5 \times \begin{pmatrix}0&0&3&3\end{pmatrix}) = \begin{pmatrix}0&0&1.5&1.5\end{pmatrix}$ —

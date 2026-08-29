@@ -50,7 +50,19 @@ import { IntuitionDemo, PlayDemo, LimeCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Fit the weighted local line">
-      Solving the weighted least-squares equations gives slope $=6$, intercept $\approx -7.57$.
+      The Gaussian kernel weight for each offset $dx$, $w=\exp(-dx^2/4.5)$:
+      - $dx=-2$: $w\approx0.411$
+      - $dx=-1$: $w\approx0.801$
+      - $dx=0$: $w=1$
+      - $dx=1$: $w\approx0.801$
+      - $dx=2$: $w\approx0.411$
+
+      These are symmetric around $x_0=3$, so the weighted mean of $x$ is exactly $\bar x=3$, and the
+      weighted mean of $y$ comes out to $\bar y\approx10.43$ (pulled above $f(3)=9$ by the two farthest,
+      largest-$y$ samples). Plugging every sample's $(x_i-\bar x, y_i-\bar y)$ pair into the weighted
+      least-squares slope formula, $\sum w_i(x_i-\bar x)(y_i-\bar y) \big/ \sum w_i(x_i-\bar x)^2$, gives
+      slope $=6$; the intercept then follows from $\bar y - \text{slope}\cdot\bar x \approx 10.43-6(3)
+      \approx-7.57$.
     </Step>
     <Step label="Compare to the true derivative">
       $f'(x) = 2x$, so $f'(3)=6$ — LIME's local slope matches the exact derivative, even though LIME never
