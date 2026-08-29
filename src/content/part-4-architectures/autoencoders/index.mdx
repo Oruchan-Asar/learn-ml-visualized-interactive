@@ -49,8 +49,11 @@ import { IntuitionDemo, PlayDemo, AutoencoderCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="At the true PCA direction (0.6, 0.8)">
-      The mean squared reconstruction error is exactly $\frac{4}{7} \approx 0.571$ — and every other direction
-      does strictly worse.
+      Reconstruction error is the mean of each point's squared distance to its own projection — exactly the
+      variance left over in the perpendicular direction $(-0.8, 0.6)$. Projecting the seven points onto
+      that perpendicular direction (dot product $-0.8x+0.6y$) gives $1,-1,0,0,0,-1,1$ (mean $0$), so the
+      mean squared error is $(1^2+1^2+0^2+0^2+0^2+1^2+1^2)/7 = 4/7 \approx 0.571$ — and every other
+      direction does strictly worse.
     </Step>
     <Step label="Rotate away">
       Even a small rotation away from $(0.6, 0.8)$ makes the error rise immediately, because you're no longer

@@ -47,14 +47,25 @@ import { IntuitionDemo, PlayDemo, AttentionCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Raw dot products">
-      $q \cdot k_i$ gives $4, 0, 2$ for "the," "cat," "sat."
+      With "the"$=(2,0)$, "cat"$=(0,2)$, "sat"$=(1,1)$:
+      - "the": $(2)(2)+(0)(0)=4$
+      - "cat": $(2)(0)+(0)(2)=0$
+      - "sat": $(2)(1)+(0)(1)=2$
     </Step>
     <Step label="Scale by the square root of d">
-      Divided by $\sqrt{2}$: $2.828,\ 0,\ 1.414$.
+      Dividing each by $\sqrt{2}\approx1.414$:
+      - "the": $4/1.414\approx2.828$
+      - "cat": $0/1.414=0$
+      - "sat": $2/1.414\approx1.414$
     </Step>
     <Step label="Softmax into weights">
-      $0.768,\ 0.045,\ 0.187$ — "the" dominates, but "sat" (whose vector partially overlaps) still gets a
-      meaningful share, and "cat" (pointing in an unrelated direction) gets almost none.
+      Exponentiating each score and dividing by their sum $16.92+1+4.11\approx22.03$:
+      - "the": $e^{2.828}\approx16.92$, so $16.92/22.03\approx0.768$
+      - "cat": $e^0=1$, so $1/22.03\approx0.045$
+      - "sat": $e^{1.414}\approx4.11$, so $4.11/22.03\approx0.187$
+
+      "The" dominates, but "sat" (whose vector partially overlaps) still gets a meaningful share, and "cat"
+      (pointing in an unrelated direction) gets almost none.
     </Step>
   </Steps>
 </WorkedExample>

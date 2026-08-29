@@ -58,7 +58,13 @@ import { IntuitionDemo, PlayDemo, VanishingRnnCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Plain RNN gradient">
-      About $2.9\times10^{-10}$ — nine orders of magnitude gone.
+      Each timestep multiplies by that step's own $\tanh'(z_t)\cdot w_h$. The recurrence's input is
+      constant every step, so $z_t$ converges fast toward a fixed point ($\approx1.86$), where
+      $\tanh'(z_t)\approx0.094$ — a steady-state per-step factor of $\approx0.094\times0.9\approx0.084$.
+      Multiplying nine such factors together (nine transitions across ten timesteps):
+      $0.084^9\approx2\times10^{-10}$ — the same order of magnitude as the actual $\approx2.9\times10^{-10}$,
+      the small difference coming from the first couple of steps, before $z_t$ has fully settled,
+      contributing slightly larger factors. Nine orders of magnitude gone either way.
     </Step>
     <Step label="LSTM cell-state gradient">
       $0.9^9 \approx 0.387$ — still very much alive.

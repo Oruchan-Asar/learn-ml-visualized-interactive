@@ -50,11 +50,20 @@ import { IntuitionDemo, PlayDemo, SelfAttentionCheckpoint } from "./Demos";
       As a query, "sat" $=(1,1)$ projects to $1$ on both axes.
     </Step>
     <Step label="Head A (horizontal)">
-      Compares $1$ against "the" $=2$, "cat" $=0$, "sat" $=1$ — favoring "the."
+      Multiplying the query's projection ($1$) by each token's own horizontal projection:
+      - "the" $=2$: score $1\times2=2$
+      - "cat" $=0$: score $1\times0=0$
+      - "sat" $=1$: score $1\times1=1$
+
+      Softmax of $(2,0,1)$ gives roughly $(0.665, 0.090, 0.245)$ — favoring "the."
     </Step>
     <Step label="Head B (vertical)">
-      Compares the exact same $1$ against "the" $=0$, "cat" $=2$, "sat" $=1$ — favoring "cat," the mirror
-      image.
+      The exact same query projection ($1$), now against each token's *vertical* projection:
+      - "the" $=0$: score $1\times0=0$
+      - "cat" $=2$: score $1\times2=2$
+      - "sat" $=1$: score $1\times1=1$
+
+      Softmax of $(0,2,1)$ gives roughly $(0.090, 0.665, 0.245)$ — favoring "cat," the mirror image.
     </Step>
     <Step label="Concatenate">
       Combining both heads' outputs keeps *both* signals side by side, instead of forcing one projection to

@@ -38,8 +38,11 @@ import { IntuitionDemo, PlayDemo, TokenizationCheckpoint } from "./Demos";
       Tokenizing "lowest" from scratch: $l\ o\ w\ e\ s\ t\ \langle/w\rangle$.
     </Step>
     <Step label="Apply the learned merges in order">
-      $e{+}s\to es$, then $es{+}t\to est$, then $est{+}\langle/w\rangle \to est\langle/w\rangle$, then
-      $l{+}o\to lo$, then $lo{+}w\to low$.
+      1. $e{+}s\to es$
+      2. $es{+}t\to est$
+      3. $est{+}\langle/w\rangle \to est\langle/w\rangle$
+      4. $l{+}o\to lo$
+      5. $lo{+}w\to low$
     </Step>
     <Step label="Result">
       Exactly two tokens: $low$ and $est\langle/w\rangle$. Every merge rule came from *low*, *lower*,

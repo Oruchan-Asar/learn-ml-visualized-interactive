@@ -50,14 +50,31 @@ import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Forward — destroy the signal">
-      $x_0=5 \to x_1\approx5.06 \to x_2\approx4.30 \to x_3\approx4.04 \to x_4\approx2.37$.
+      With noise schedule $\beta=[0.1,0.2,0.3,0.4]$ (so $\alpha=[0.9,0.8,0.7,0.6]$) and fixed noise samples
+      $\epsilon=[1,-0.5,0.8,-1.2]$:
+      1. $x_1 = \sqrt{0.9}(5) + \sqrt{0.1}(1) \approx 4.743+0.316 = 5.06$
+      2. $x_2 = \sqrt{0.8}(5.06) + \sqrt{0.2}(-0.5) \approx 4.526-0.224 = 4.30$
+      3. $x_3 = \sqrt{0.7}(4.30) + \sqrt{0.3}(0.8) \approx 3.600+0.438 = 4.04$
+      4. $x_4 = \sqrt{0.6}(4.04) + \sqrt{0.4}(-1.2) \approx 3.128-0.759 = 2.37$
     </Step>
     <Step label="Reverse with a perfect denoiser">
-      Retraces those exact numbers backward: $x_4=2.37 \to 4.04 \to 4.30 \to 5.06 \to 5.00$.
+      Running the reverse formula with $\hat\epsilon_t$ set to the exact same true noise, from $x_4=2.37$
+      backward:
+      1. $x_3 = (2.37 - \sqrt{0.4}(-1.2))/\sqrt{0.6} \approx (2.37+0.759)/0.775 = 4.04$
+      2. $x_2 = (4.04 - \sqrt{0.3}(0.8))/\sqrt{0.7} \approx (4.04-0.438)/0.837 = 4.30$
+      3. $x_1 = (4.30 - \sqrt{0.2}(-0.5))/\sqrt{0.8} \approx (4.30+0.224)/0.894 = 5.06$
+      4. $x_0 = (5.06 - \sqrt{0.1}(1))/\sqrt{0.9} \approx (5.06-0.316)/0.949 = 5.00$
+
+      Exactly retraces those numbers backward.
     </Step>
     <Step label="Reverse with a useless denoiser">
-      Always predicting zero noise instead, reversing the same $x_4$ only reaches about $4.31$ — the right
-      neighborhood, but nowhere near exact, because every step's error compounds into the next.
+      Same formula, but every $\hat\epsilon_t=0$, from $x_4=2.37$ backward:
+      1. $x_3 = (2.37-0)/\sqrt{0.6} \approx 3.06$
+      2. $x_2 = (3.06-0)/\sqrt{0.7} \approx 3.66$
+      3. $x_1 = (3.66-0)/\sqrt{0.8} \approx 4.09$
+      4. $x_0 = (4.09-0)/\sqrt{0.9} \approx 4.31$
+
+      The right neighborhood, but nowhere near exact, because every step's error compounds into the next.
     </Step>
   </Steps>
 </WorkedExample>

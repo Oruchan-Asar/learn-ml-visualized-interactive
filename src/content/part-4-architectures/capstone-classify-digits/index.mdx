@@ -28,7 +28,14 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
       It's the cross-entropy loss from Part II, computed over the softmax of the two output logits.
     </Step>
     <Step label="Backprop threads through every stage">
-      Backpropagation runs through every stage: the softmax gradient, back through the dense weights, back through max-pooling (which routes each gradient only to the position that actually won each window), back through ReLU (zero wherever the pre-activation wasn't positive), and finally back into the two 3×3 kernels themselves — the same chain rule as always, just longer.
+      Backpropagation runs through every stage, in reverse order:
+      1. The softmax gradient
+      2. Back through the dense weights
+      3. Back through max-pooling, which routes each gradient only to the position that actually won each window
+      4. Back through ReLU, zero wherever the pre-activation wasn't positive
+      5. Finally back into the two 3×3 kernels themselves
+
+      The same chain rule as always, just longer.
     </Step>
   </Steps>
 </Formalize>
