@@ -29,8 +29,13 @@ import { IntuitionDemo, PlayDemo, AudioEmbeddingCheckpoint } from "./Demos";
       two-modality case, just applied to a third kind of point on the same map.
     </Step>
     <Step label="Any pair of modalities can now retrieve from each other">
-      What's new is that *any* pair among the three modalities can retrieve from each other: audio→image,
-      audio→text, image→audio, text→audio — the shared space makes every direction equally available.
+      What's new is that *any* pair among the three modalities can retrieve from each other:
+      - audio→image
+      - audio→text
+      - image→audio
+      - text→audio
+
+      The shared space makes every direction equally available.
     </Step>
   </Steps>
 </Formalize>
@@ -46,16 +51,25 @@ import { IntuitionDemo, PlayDemo, AudioEmbeddingCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Audio retrieves its image by a wide margin">
-      "Audio: a dog barking" sits distance $\approx0.22$ from "Image: dog" — the next-nearest image is over 10x
-      farther away, at $\approx2.91$. No ambiguity.
+      "Audio: a dog barking" sits at $(1.9,3.2)$, "Image: dog" at $(2,3)$:
+      $\sqrt{(1.9-2)^2+(3.2-3)^2}=\sqrt{0.01+0.04}=\sqrt{0.05}\approx0.22$. The next-nearest image, "Image:
+      cat" at $(0,1)$: $\sqrt{(1.9-0)^2+(3.2-1)^2}=\sqrt{3.61+4.84}=\sqrt{8.45}\approx2.91$ — over 10x
+      farther away. No ambiguity.
     </Step>
     <Step label="The same clip also retrieves its caption">
-      That same audio clip sits distance $\approx0.5$ from "Caption: a dog running" — closer to its own caption
-      than to either other caption by a comparable margin.
+      That same audio clip $(1.9,3.2)$ against "Caption: a dog running" at $(2.2,2.8)$:
+      $\sqrt{(1.9-2.2)^2+(3.2-2.8)^2}=\sqrt{0.09+0.16}=\sqrt{0.25}=0.5$ — closer to its own caption than to
+      either other caption by a comparable margin.
     </Step>
     <Step label="Every one of the three clips behaves the same way">
-      "Audio: a cat meowing" and "Audio: a bird chirping" both retrieve their own image and their own caption
-      correctly, with the same kind of clear separation — the geometry generalizes cleanly to a third modality.
+      The same distance computation for the other two clips:
+      - "Audio: a cat meowing" $(0.1,1.2)$ → "Image: cat" $(0,1)$: $\sqrt{0.01+0.04}\approx0.22$; →
+        "Caption: a cat sleeping" $(0.3,0.8)$: $\sqrt{0.04+0.16}\approx0.45$
+      - "Audio: a bird chirping" $(4.2,0.2)$ → "Image: bird" $(4,0)$: $\sqrt{0.04+0.04}\approx0.28$; →
+        "Caption: a bird flying" $(3.7,0.4)$: $\sqrt{0.25+0.04}\approx0.54$
+
+      Both retrieve their own image and their own caption correctly, with the same kind of clear
+      separation — the geometry generalizes cleanly to a third modality.
     </Step>
   </Steps>
 </WorkedExample>

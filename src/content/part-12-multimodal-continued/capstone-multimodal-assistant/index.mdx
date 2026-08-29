@@ -47,16 +47,25 @@ import { IntuitionDemo, PlayDemo, AssistantCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Dog barking routes to the dog caption and dog conditioning">
-      Retrieves "a dog running" (distance $\approx0.50$), then reverses the shared $x_T=2.0$ using dog-conditioned
-      noise to a final value $\approx2.789$.
+      Retrieval: "Audio: a dog barking" $(1.9,3.2)$ to "Caption: a dog running" $(2.2,2.8)$ —
+      $\sqrt{(1.9-2.2)^2+(3.2-2.8)^2}=\sqrt{0.09+0.16}=\sqrt{0.25}=0.5$. Generation: the dog-conditioned
+      noise sequence $[0.7,-0.3,0.9,-0.6]$ reverses the shared $x_4=2.0$ (same mechanism as Chapter 2's
+      first-step check, $x_3\approx2.010$) all the way to a final value $\approx2.789$.
     </Step>
     <Step label="Cat meowing routes to the cat caption and cat conditioning">
-      Retrieves "a cat sleeping" (distance $\approx0.45$), then reverses the same $x_T=2.0$ using cat-conditioned
-      noise to $\approx4.330$ — a different destination from the same starting point.
+      Retrieval: "Audio: a cat meowing" $(0.1,1.2)$ to "Caption: a cat sleeping" $(0.3,0.8)$ —
+      $\sqrt{(0.1-0.3)^2+(1.2-0.8)^2}=\sqrt{0.04+0.16}=\sqrt{0.2}\approx0.45$. Generation: the
+      cat-conditioned noise sequence $[-1.2,0.8,-0.5,1]$ reverses the same $x_4=2.0$
+      (first step $x_3\approx3.562$, per Chapter 2) to $\approx4.330$ — a different destination from the
+      same starting point.
     </Step>
     <Step label="Bird chirping completes the set">
-      Retrieves "a bird flying" (distance $\approx0.54$), reversing to $\approx3.866$ — a third distinct value,
-      confirming all three retrieval-then-generation chains work independently and correctly.
+      Retrieval: "Audio: a bird chirping" $(4.2,0.2)$ to "Caption: a bird flying" $(3.7,0.4)$ —
+      $\sqrt{(4.2-3.7)^2+(0.2-0.4)^2}=\sqrt{0.25+0.04}=\sqrt{0.29}\approx0.54$. Generation: the
+      bird-conditioned noise sequence $[-0.2,0.4,-0.9,0.5]$ (read $t{=}3$ down to $t{=}0$), first step
+      $x_3=(2.0-\sqrt{0.4}\times(-0.2))/\sqrt{0.6}\approx2.746$, reverses all the way to $\approx3.866$ —
+      a third distinct value, confirming all three retrieval-then-generation chains work independently
+      and correctly.
     </Step>
   </Steps>
 </WorkedExample>

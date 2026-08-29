@@ -51,16 +51,28 @@ import { IntuitionDemo, PlayDemo, DiffusionCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="No conditioning: a generic middle-ground result">
-      Predicting zero noise at every step (no caption at all) reverses $x_T=2.0$ to a final value
-      $\approx3.637$ — a plain, unconditioned denoising.
+      Predicting zero noise at every step reduces the reverse formula to just $x_{t-1}=x_t/\sqrt{\alpha_t}$.
+      Unrolling from $x_4=2.0$ with $\alpha=[0.9,0.8,0.7,0.6]$, from $t=3$ down to $t=0$:
+      1. $x_3 = 2.0/\sqrt{0.6} \approx 2.582$
+      2. $x_2 = 2.582/\sqrt{0.7} \approx 3.086$
+      3. $x_1 = 3.086/\sqrt{0.8} \approx 3.450$
+      4. $x_0 = 3.450/\sqrt{0.9} \approx 3.637$
+
+      A plain, unconditioned denoising.
     </Step>
     <Step label="'A cat': the same starting noise, steered higher">
-      Swapping in a cat-conditioned predicted-noise sequence at each step — otherwise identical math — reverses
-      the *same* $x_T=2.0$ to $\approx4.330$ instead.
+      Swapping in the cat-conditioned noise sequence $[-1.2, 0.8, -0.5, 1]$ (read at each step from
+      $t{=}3$ down to $t{=}0$) — otherwise identical math. Just the first step already diverges from the
+      unconditional case: $x_3 = (2.0-\sqrt{0.4}\times(-1.2))/\sqrt{0.6} \approx (2.0+0.759)/0.775
+      \approx3.562$, compared to $2.582$ with no conditioning. Carrying the same three remaining steps
+      forward reverses the *same* $x_4=2.0$ to $\approx4.330$ instead.
     </Step>
     <Step label="'A dog': the same starting noise, steered lower">
-      A dog-conditioned sequence pulls that same $x_T=2.0$ down to $\approx2.789$ — on the opposite side of the
-      unconditional baseline from the cat result.
+      The dog-conditioned sequence is $[0.7, -0.3, 0.9, -0.6]$. Its first step:
+      $x_3 = (2.0-\sqrt{0.4}\times0.7)/\sqrt{0.6} \approx (2.0-0.443)/0.775 \approx2.010$ — barely moved
+      from $2.0$, unlike the cat case's big jump. Carrying the same three remaining steps forward pulls
+      that same $x_4=2.0$ down to $\approx2.789$ — on the opposite side of the unconditional baseline
+      from the cat result.
     </Step>
   </Steps>
 
