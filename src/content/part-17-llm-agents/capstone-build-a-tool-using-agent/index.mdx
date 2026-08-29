@@ -58,7 +58,8 @@ import { IntuitionDemo, PlayDemo, AgentCapstoneCheckpoint } from "./Demos";
       history instead, exactly like Chapter 4's retrieval.
     </Step>
     <Step label="Convert (no dependency)">
-      `convertToUSD(200, 1.1) = 220` — an exact tool call, not a rounded guess, exactly like Chapter 1.
+      `convertToUSD(200, 1.1) = 200 × 1.1 = 220` — an exact tool call, not a rounded guess, exactly like
+      Chapter 1.
     </Step>
     <Step label="Compute total (depends on both)">
       $360 + \$220 = \$580$ — this step only runs once retrieval and conversion have both already

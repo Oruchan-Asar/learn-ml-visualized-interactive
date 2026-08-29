@@ -56,15 +56,17 @@ import { IntuitionDemo, PlayDemo, MemoryCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="The window at t=3">
-      $\{m_0, m_1, m_2, m_3\}$ — the fact is still the oldest message in the window, but it's in there.
+      $\text{window}(3) = \{m_{3-4+1},\ldots,m_3\} = \{m_0,\ldots,m_3\} = \{m_0, m_1, m_2, m_3\}$ — the
+      fact is still the oldest message in the window, but it's in there.
     </Step>
     <Step label="The window at t=4">
-      $\{m_1, m_2, m_3, m_4\}$ — one more message arrived, and $m_0$ is the one that had to go to keep
-      the window at size 4.
+      $\text{window}(4) = \{m_{4-4+1},\ldots,m_4\} = \{m_1,\ldots,m_4\} = \{m_1, m_2, m_3, m_4\}$ — one
+      more message arrived, and $m_0$ is the one that had to go to keep the window at size 4.
     </Step>
     <Step label="By t=6, it's long gone">
-      $\{m_3, m_4, m_5, m_6\}$ — the question itself is in the window, but nothing that answers it is.
-      Retrieval searches all 6 prior messages directly and returns $m_0$ regardless.
+      $\text{window}(6) = \{m_{6-4+1},\ldots,m_6\} = \{m_3,\ldots,m_6\} = \{m_3, m_4, m_5, m_6\}$ — the
+      question itself is in the window, but nothing that answers it is. Retrieval searches all 6 prior
+      messages directly and returns $m_0$ regardless.
     </Step>
   </Steps>
 </WorkedExample>

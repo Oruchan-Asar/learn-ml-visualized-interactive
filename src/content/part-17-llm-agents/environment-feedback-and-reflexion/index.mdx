@@ -37,9 +37,9 @@ import { IntuitionDemo, PlayDemo, ReflexionCheckpoint } from "./Demos";
       was simply never written. Nothing in the code itself flags this as tentative.
     </Step>
     <Step label="Feedback e₁ is exact because the code actually ran">
-      The test suite compares `12` against the true average `4` and reports
-      `AssertionError: expected 4, got 12`. This is not the agent's opinion — it's what the interpreter
-      returned.
+      The test suite computes the true average: `sum([2, 4, 6]) / len([2, 4, 6])` = `12 / 3` = `4`. It
+      compares `12` against that `4` and reports `AssertionError: expected 4, got 12`. This is not the
+      agent's opinion — it's what the interpreter returned.
     </Step>
     <Step label="Reflexion r₁ names the mechanism, not just the symptom">
       "My function returned 12, which is the sum of the 3 numbers, not their average… I should divide the
@@ -47,9 +47,9 @@ import { IntuitionDemo, PlayDemo, ReflexionCheckpoint } from "./Demos";
       same way an earlier action's observation is fed back in ReAct's loop.
     </Step>
     <Step label="Attempt 2 fixes exactly what r₁ pointed at">
-      `average([2, 4, 6])` now returns `sum(nums) / len(nums)` = `4`, matching the test. The fix is precise
-      because the reflexion was precise — a vaguer note like "something's wrong" wouldn't have pinned down
-      *what* to change.
+      `average([2, 4, 6])` now returns `sum(nums) / len(nums)` = `12 / 3` = `4`, matching the test. The fix
+      is precise because the reflexion was precise — a vaguer note like "something's wrong" wouldn't have
+      pinned down *what* to change.
     </Step>
   </Steps>
 </Formalize>

@@ -62,7 +62,8 @@ import { IntuitionDemo, PlayDemo, ToolUseCheckpoint } from "./Demos";
       4{,}000$.
     </Step>
     <Step label="True answer">
-      $127 \times 38 = 4{,}826$ exactly — the guess is off by $826$, more than 15% of the true value.
+      $127 \times 38 = 127\times30 + 127\times8 = 3{,}810 + 1{,}016 = 4{,}826$ exactly — the guess is off
+      by $4{,}826-4{,}000=826$, or $826/4{,}826\approx17.1\%$ of the true value.
     </Step>
     <Step label="With a tool: an exact structured call">
       `calculator(127, 38)` returns $4{,}826$ — not an estimate refined by more thought, but the exact
