@@ -79,8 +79,22 @@ import { IntuitionDemo, PlayDemo, KtoSimpoCheckpoint } from "./Demos";
       would have pushed a loser DOWN by the same amount in the same step.
     </Step>
     <Step label="After all 6 examples">
-      $\theta_B \approx 0.246$, $\theta_C \approx 0.006$, $\theta_A \approx -0.243$ — the same $B > C >
-      A$ ordering DPO found, recovered without ever using a preference pair.
+      The same one-response-at-a-time update, run through the remaining 5 examples in order:
+
+      - Example 2, "$A$ undesirable": $\pi(A)\approx0.319$ (softmax has already shifted after $B$'s
+        update), log-ratio $=\ln(0.319)-\ln(1/3)\approx-0.043$, $z=(-1)(0.5)(-0.043)\approx0.022$,
+        $\sigma(z)\approx0.505$, update $=0.5(1-0.505)(0.5)(-1)\approx-0.124 \Rightarrow \theta_A\approx-0.124$
+      - Example 3, "$B$ desirable" again: $\pi(B)\approx0.376$, log-ratio $\approx0.119$, $z\approx0.060$,
+        $\sigma(z)\approx0.515$, update $\approx+0.121 \Rightarrow \theta_B\approx0.246$
+      - Example 4, "$C$ undesirable": $\pi(C)\approx0.316$, log-ratio $\approx-0.053$, $z\approx0.026$,
+        $\sigma(z)\approx0.507$, update $\approx-0.123 \Rightarrow \theta_C\approx-0.123$
+      - Example 5, "$C$ desirable": $\pi(C)\approx0.290$, log-ratio $\approx-0.139$, $z\approx-0.069$,
+        $\sigma(z)\approx0.483$, update $\approx+0.129 \Rightarrow \theta_C\approx0.006$
+      - Example 6, "$A$ undesirable" again: $\pi(A)\approx0.279$, log-ratio $\approx-0.178$,
+        $z\approx0.089$, $\sigma(z)\approx0.522$, update $\approx-0.119 \Rightarrow \theta_A\approx-0.243$
+
+      Final values: $\theta_B \approx 0.246$, $\theta_C \approx 0.006$, $\theta_A \approx -0.243$ — the
+      same $B > C > A$ ordering DPO found, recovered without ever using a preference pair.
     </Step>
   </Steps>
 </WorkedExample>

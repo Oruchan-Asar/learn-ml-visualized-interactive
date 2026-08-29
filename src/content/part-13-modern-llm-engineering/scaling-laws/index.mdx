@@ -48,17 +48,29 @@ import { IntuitionDemo, PlayDemo, ScalingLawsCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Log-log OLS recovers the law exactly">
-      Fitting $\log L$ against $\log N$ gives slope $\approx-0.500$ and intercept $\approx\ln(100)$ — both
-      matching the true law to full floating-point precision, since the training data has no noise at all.
+      $(\log N, \log L)$ pairs: $(0, 4.605)$, $(1.386, 3.912)$, $(2.197, 3.507)$, $(2.773, 3.219)$.
+
+      - Mean $\log N \approx 1.589$, mean $\log L \approx 3.811$
+      - $\text{slope} = \dfrac{\sum(\log N-\overline{\log N})(\log L-\overline{\log L})}{\sum(\log N-\overline{\log N})^2} \approx \dfrac{-2.168}{4.337} \approx -0.500$
+      - $\text{intercept} = \overline{\log L} - \text{slope}\times\overline{\log N} \approx 3.811-(-0.500)(1.589)\approx4.605\approx\ln(100)$
+
+      Both match the true law ($\alpha=0.5$, $A=100$) to full floating-point precision, since the training
+      data has no noise at all.
     </Step>
     <Step label="Extrapolating to N=100: almost exactly right">
-      Plugging $N=100$ into the fitted log-log line and exponentiating back gives a predicted loss of
-      $\approx10.000$ — matching the true value of exactly $10$, despite $N=100$ being far outside the training
-      range of $1$ to $16$.
+      $\log(100)\approx4.605$. Plugging into the fitted line: $4.605 + (-0.500)(4.605) \approx 2.303$.
+      Exponentiating back: $e^{2.303}\approx10.000$ — matching the true value of exactly $10$, despite
+      $N=100$ being far outside the training range of $1$ to $16$.
     </Step>
     <Step label="Fitting the raw numbers instead: a nonsensical answer">
-      A straight line fit directly to $(N, L)$ — no log transform — predicts a loss of $\approx-351.26$ at
-      $N=100$. A negative loss is meaningless; the raw-linear model was extrapolating a relationship that was
+      Raw $(N, L)$ pairs: $(1,100)$, $(4,50)$, $(9,33.33)$, $(16,25)$.
+
+      - Mean $N=7.5$, mean $L\approx52.08$
+      - $\text{slope} \approx -562.5/129 \approx -4.360$
+      - $\text{intercept} \approx 52.08-(-4.360)(7.5)\approx84.79$
+      - At $N=100$: $84.79 + (-4.360)(100) \approx 84.79 - 436.0 \approx -351.26$
+
+      A negative loss is meaningless; the raw-linear model was extrapolating a relationship that was
       never actually linear.
     </Step>
   </Steps>

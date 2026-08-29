@@ -51,16 +51,26 @@ import { IntuitionDemo, PlayDemo, ICLCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="The weights come from the inputs alone">
-      Both prompts use $x \in \{1, 2, 3\}$, so both produce weights $\approx[0.155, 0.422, 0.422]$ — identical,
-      because the kernel only ever looks at how far $x_q$ is from each $x_i$.
+      Both prompts use $x \in \{1, 2, 3\}$ against query $x_q = 2.5$, with bandwidth $\sigma=1$:
+
+      - $K(2.5,1) = \exp(-(2.5-1)^2/2) = \exp(-1.125) \approx 0.325$
+      - $K(2.5,2) = \exp(-(2.5-2)^2/2) = \exp(-0.125) \approx 0.882$
+      - $K(2.5,3) = \exp(-(2.5-3)^2/2) = \exp(-0.125) \approx 0.882$
+      - Sum $\approx 0.325+0.882+0.882 = 2.090$
+      - Normalized weights: $0.325/2.090\approx0.155$, $0.882/2.090\approx0.422$, $0.882/2.090\approx0.422$
+
+      Both prompts produce weights $\approx[0.155, 0.422, 0.422]$ — identical, because the kernel only ever
+      looks at how far $x_q$ is from each $x_i$.
     </Step>
     <Step label="'Double' demonstrations blend toward roughly double">
-      With $y = \{2, 4, 6\}$ demonstrated, the weighted blend gives $\approx4.534$ — close to the true doubled
+      With $y = \{2, 4, 6\}$ demonstrated, the weighted blend is
+      $0.155(2) + 0.422(4) + 0.422(6) \approx 0.311 + 1.689 + 2.534 = 4.534$ — close to the true doubled
       value of $5$, though not exact, since a weighted average can only interpolate, not perfectly extrapolate a
       slope.
     </Step>
     <Step label="'Negate' demonstrations, same weights, opposite answer">
-      With $y = \{-1, -2, -3\}$ demonstrated instead, the identical weights now blend to $\approx-2.267$ — close
+      With $y = \{-1, -2, -3\}$ demonstrated instead, the identical weights blend to
+      $0.155(-1) + 0.422(-2) + 0.422(-3) \approx -0.155 - 0.845 - 1.267 = -2.267$ — close
       to the true negated value of $-2.5$, and of the opposite sign entirely from the "double" case.
     </Step>
   </Steps>

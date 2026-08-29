@@ -60,17 +60,29 @@ import { IntuitionDemo, PlayDemo, ReasoningTestTimeComputeCheckpoint } from "./D
 
   <Steps>
     <Step label="Accuracy at a few chain-of-thought lengths">
-      $L=0$: $1 - 0.8 \times 0.8^0 = 0.2$. $L=1$: $1 - 0.8 \times 0.8 = 0.36$. $L=4$: $1 - 0.8 \times
-      0.8^4 \approx 0.672$. Each step's gain is smaller than the last.
+      - $L=0$: $1 - 0.8 \times 0.8^0 = 1 - 0.8 \times 1 = 0.2$
+      - $L=1$: $1 - 0.8 \times 0.8^1 = 1 - 0.64 = 0.36$
+      - $L=4$: $0.8^4 = 0.4096$, so $1 - 0.8 \times 0.4096 = 1 - 0.32768 \approx 0.672$
+
+      Each step's gain is smaller than the last.
     </Step>
     <Step label="Compute cost grows linearly">
       $L=5$ costs $0.02 \times 5 = 0.10$ units. $L=10$ costs exactly twice that, $0.20$ units — no
       discount for going further.
     </Step>
     <Step label="Net utility peaks at L=10">
-      Utility $= \text{accuracy}(L) - 0.02L$ is higher at $L=10$ than at either $L=9$ or $L=11$ — the
-      compute-optimal chain-of-thought length for this cost weight, found by the same search a
-      real inference-time compute budget would run.
+      Utility $= \text{accuracy}(L) - 0.02L$ at the three candidate lengths:
+
+      - $L=9$: $0.8^9\approx0.1342$, accuracy $=1-0.8\times0.1342\approx0.8926$, utility
+        $\approx0.8926-0.02\times9=0.8926-0.18=0.7126$
+      - $L=10$: $0.8^{10}\approx0.1074$, accuracy $=1-0.8\times0.1074\approx0.9141$, utility
+        $\approx0.9141-0.02\times10=0.9141-0.20=0.7141$
+      - $L=11$: $0.8^{11}\approx0.0859$, accuracy $=1-0.8\times0.0859\approx0.9313$, utility
+        $\approx0.9313-0.02\times11=0.9313-0.22=0.7113$
+
+      $L=10$'s utility ($\approx0.7141$) beats both neighbors — the compute-optimal chain-of-thought
+      length for this cost weight, found by the same search a real inference-time compute budget
+      would run.
     </Step>
   </Steps>
 </WorkedExample>

@@ -51,8 +51,16 @@ import { IntuitionDemo, PlayDemo, MoECheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Token x=2 routes to experts 2 and 0">
-      Router logits: $[1, -1, 2, -2]$. Softmax gives expert 2 the highest probability, expert 0 second. Their
-      renormalized weights: $\approx0.731$ and $\approx0.269$. Experts 1 and 3 are never evaluated.
+      Router logits: $[1, -1, 2, -2]$. Softmax, subtracting the max logit ($2$) for stability:
+
+      - $e^{1-2}\approx0.368$, $e^{-1-2}\approx0.050$, $e^{2-2}=1$, $e^{-2-2}\approx0.018$
+      - Sum $\approx0.368+0.050+1+0.018=1.436$
+      - Full probabilities: expert 0 $\approx0.368/1.436\approx0.256$, expert 1 $\approx0.050/1.436\approx0.035$,
+        expert 2 $\approx1/1.436\approx0.696$, expert 3 $\approx0.018/1.436\approx0.013$
+
+      Top-2 are expert 2 ($\approx0.696$) and expert 0 ($\approx0.256$), summing to $\approx0.952$.
+      Renormalizing: $0.696/0.952\approx0.731$ for expert 2, $0.256/0.952\approx0.269$ for expert 0.
+      Experts 1 and 3 are never evaluated.
     </Step>
     <Step label="The combined output blends only the selected two">
       Expert 2's output is $1$, expert 0's is $2$. Combined: $0.731(1) + 0.269(2) \approx 1.269$ — a weighted

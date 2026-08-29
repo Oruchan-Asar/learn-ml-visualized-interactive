@@ -31,8 +31,11 @@ import { IntuitionDemo, PlayDemo, LoRACheckpoint } from "./Demos";
   <Steps>
     <Step label="Parameter cost drops from quadratic to linear">
       A full update to an $n\times n$ matrix costs $n^2$ trainable parameters. A rank-$r$ update costs only
-      $2nr$. For a $4096\times4096$ attention matrix and $r=8$, that's roughly $65{,}000$ parameters instead
-      of $16.7$ million — under half a percent.
+      $2nr$. For a $4096\times4096$ attention matrix and $r=8$:
+
+      - Full update: $n^2 = 4096^2 = 16{,}777{,}216$ parameters
+      - LoRA update: $2nr = 2 \times 4096 \times 8 = 65{,}536$ parameters
+      - Ratio: $65{,}536 / 16{,}777{,}216 \approx 0.0039 = 0.39\%$ — under half a percent
     </Step>
     <Step label="The catch: rank is capped at r">
       $\Delta W$ can only ever be rank $\leq r$, however training goes. If the update a task actually needs
