@@ -3,6 +3,9 @@ import { Fraunces, Source_Sans_3, IBM_Plex_Mono } from "next/font/google";
 import "katex/dist/katex.min.css";
 import "./globals.css";
 import { MathAutoFit } from "@/components/MathAutoFit";
+import { ThemeToggle } from "@/components/ThemeToggle";
+
+const THEME_INIT_SCRIPT = `!function(){try{var t=localStorage.getItem("gradient:theme");if("light"===t||"dark"===t)document.documentElement.setAttribute("data-theme",t)}catch(e){}}()`;
 
 const fraunces = Fraunces({
   variable: "--font-display",
@@ -33,10 +36,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${fraunces.variable} ${sourceSans.variable} ${plexMono.variable}`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body>
         {children}
         <MathAutoFit />
+        <ThemeToggle />
       </body>
     </html>
   );
