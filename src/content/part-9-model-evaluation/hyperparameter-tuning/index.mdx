@@ -48,9 +48,9 @@ import { IntuitionDemo, PlayDemo, HyperparameterTuningCheckpoint } from "./Demos
 
   <Steps>
     <Step label="Too small crawls, symmetric rates tie">
-      $\eta=0.01$ leaves loss $\approx 4.01$ after 20 steps — still visibly short of the minimum. $\eta=0.1$ and
-      $\eta=0.9$ are mirror images of each other around the ideal rate and land on the *exact same* final loss,
-      $\approx 0.0012$, by symmetry: $|1-2\eta|$ is $0.8$ either way.
+      - $\eta=0.01$: loss $\approx4.01$ after 20 steps — still visibly short of the minimum
+      - $\eta=0.1$ and $\eta=0.9$: mirror images of each other around the ideal rate, landing on the
+        *exact same* final loss $\approx0.0012$, by symmetry — $|1-2\eta|$ is $0.8$ either way
     </Step>
     <Step label="The exact rate lands in one step">
       For this quadratic, $\eta=0.5=\tfrac{1}{2a}$ (where $a=1$ is the curve's steepness) satisfies $1-2\eta=0$ —

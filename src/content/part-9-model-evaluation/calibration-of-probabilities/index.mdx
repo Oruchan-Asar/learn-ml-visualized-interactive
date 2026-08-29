@@ -58,13 +58,17 @@ import { IntuitionDemo, PlayDemo, CalibrationCheckpoint } from "./Demos";
       frequency in both buckets, by construction. $\text{ECE}=0$.
     </Step>
     <Step label="k=1.2: exaggerating confidence">
-      Raw prediction $=0.5+1.2(\text{true}-0.5)$ pushes every value further from $0.5$. Low bucket average
-      becomes $0.5 - 1.2\times0.25 = 0.2$; high bucket average becomes $0.5+1.2\times0.25=0.8$. Actual
-      frequencies never moved — they're properties of the labels, not the model.
+      Raw prediction $=0.5+1.2(\text{true}-0.5)$ pushes every value further from $0.5$:
+      - Low bucket average: $0.5 - 1.2\times0.25 = 0.2$
+      - High bucket average: $0.5+1.2\times0.25=0.8$
+
+      Actual frequencies never moved — they're properties of the labels, not the model.
     </Step>
     <Step label="ECE quantifies the damage">
-      $|0.2-0.25| = 0.05$ in the low bucket, $|0.8-0.75|=0.05$ in the high bucket. Both buckets hold 4 of 8
-      examples, so $\text{ECE} = \tfrac{4}{8}(0.05) + \tfrac{4}{8}(0.05) = 0.05$.
+      - Low bucket: $|0.2-0.25| = 0.05$
+      - High bucket: $|0.8-0.75|=0.05$
+
+      Both buckets hold 4 of 8 examples, so $\text{ECE} = \tfrac{4}{8}(0.05) + \tfrac{4}{8}(0.05) = 0.05$.
     </Step>
   </Steps>
 </WorkedExample>

@@ -48,17 +48,34 @@ import { IntuitionDemo, PlayDemo, CrossValidationCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Most folds barely notice the anomaly">
-      Holding out $x=3,4$ (fit on the other 8, including the anomaly) gives MSE $\approx 4.52$ — the anomaly pulls
-      the fitted line slightly, but the held-out points still land close to it.
+      Holding out $x=3,4$, fitting on the other 8 (including the anomaly) recovers $y\approx2x+3.125$ — the
+      anomaly pulls the intercept up slightly from the clean line's $1$, but the slope stays exactly $2$.
+      Predicting the held-out points:
+      - $x=3$: predicted $\approx9.125$, actual $7$, squared error $\approx4.52$
+      - $x=4$: predicted $\approx11.125$, actual $9$, squared error $\approx4.52$
+
+      MSE $=(4.52+4.52)/2\approx4.52$ — the held-out points still land close to the fitted line.
     </Step>
     <Step label="One fold holds out the anomaly itself">
-      Holding out $x=5,6$ trains on 8 clean points, recovering the line almost exactly ($y = 2x+1$). But testing on
-      $x=6$ where the true value is $30$ against a prediction of $13$ costs a squared error of $17^2=289$ — MSE $=144.5$.
+      Holding out $x=5,6$ trains on 8 clean points, recovering the line almost exactly ($y = 2x+1$).
+      Predicting the held-out points:
+      - $x=5$: predicted $11$, actual $11$, squared error $0$
+      - $x=6$: predicted $13$, actual $30$ (the anomaly), squared error $17^2=289$
+
+      MSE $=(0+289)/2=144.5$.
     </Step>
     <Step label="One number, or five, or the truth">
-      Averaging all five folds gives mean MSE $\approx 38.60$ with stdev $\approx 59.83$ — a spread almost as large as the
-      mean itself. A single 80/20 split (train on the first 8, test on the last 2) happens to score $26.73$: not
-      wrong, but silent about how much luckier or unluckier it could have been.
+      Running the same fit-and-hold-out recipe for the remaining three folds gives each fold's MSE:
+      - Fold (holdout $x=1,2$): $\approx9.85$
+      - Fold (holdout $x=3,4$): $\approx4.52$ (shown above)
+      - Fold (holdout $x=5,6$): $144.5$ (shown above)
+      - Fold (holdout $x=7,8$): $\approx7.39$
+      - Fold (holdout $x=9,10$): $\approx26.73$
+
+      Mean $=(9.85+4.52+144.5+7.39+26.73)/5\approx38.60$; stdev across those five values $\approx59.83$ —
+      a spread almost as large as the mean itself. A single 80/20 split (train on the first 8, test on the
+      last 2) is exactly the holdout-$x{=}9,10$ fold above, scoring $26.73$: not wrong, but silent about
+      how much luckier or unluckier it could have been.
     </Step>
   </Steps>
 </WorkedExample>

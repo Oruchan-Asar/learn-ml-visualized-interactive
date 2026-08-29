@@ -50,9 +50,13 @@ import { IntuitionDemo, PlayDemo, FeatureScalingCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="The same starting point, wildly different gradients">
-      At $w_1{=}w_2{=}0$, the gradient is $-6$ for $w_1$ but $-400$ for $w_2$ — over 66x steeper, purely because
-      $x_2$'s values are 100x larger. The loss surface is a long, narrow valley: gentle along $w_1$'s axis, brutally
-      steep along $w_2$'s.
+      With four points $(x_1,x_2,y)$: $(1,100,5)$, $(1,-100,1)$, $(-1,100,-1)$, $(-1,-100,-5)$, all
+      predictions are $0$ at $w_1{=}w_2{=}0$, so each residual is $0-y=-y$:
+      - $\partial\mathcal{L}/\partial w_1 = \frac24\sum(\text{residual}\times x_1) = \frac24\big[(-5)(1)+(-1)(1)+(1)(-1)+(5)(-1)\big] = \frac24(-12) = -6$
+      - $\partial\mathcal{L}/\partial w_2 = \frac24\sum(\text{residual}\times x_2) = \frac24\big[(-5)(100)+(-1)(-100)+(1)(100)+(5)(-100)\big] = \frac24(-800) = -400$
+
+      Over 66x steeper for $w_2$, purely because $x_2$'s values are 100x larger. The loss surface is a
+      long, narrow valley: gentle along $w_1$'s axis, brutally steep along $w_2$'s.
     </Step>
     <Step label="Safe for the steep axis, frozen on the gentle one">
       $\eta=0.00005$ is exactly the rate that lands $w_2$ on its true value in one step. Using that same rate for

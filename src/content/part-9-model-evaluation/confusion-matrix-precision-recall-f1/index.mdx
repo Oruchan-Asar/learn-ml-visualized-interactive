@@ -56,9 +56,10 @@ import { IntuitionDemo, PlayDemo, ConfusionMatrixCheckpoint } from "./Demos";
       positive, $8$ true negatives: $(1+8)/10 = 90\%$ too — identical, despite behaving nothing alike.
     </Step>
     <Step label="Precision and recall tell a completely different story">
-      A: precision $=0$, recall $=0$ — it never predicted positive, so both are undefined-in-spirit and
-      exactly zero by convention. B: precision $=1/2=0.5$, recall $=1/1=1.0$ — it caught the one case that
-      mattered, at the cost of one false alarm.
+      - Classifier A: precision $=0$, recall $=0$ — it never predicted positive, so both are
+        undefined-in-spirit and exactly zero by convention
+      - Classifier B: precision $=1/2=0.5$, recall $=1/1=1.0$ — it caught the one case that mattered, at
+        the cost of one false alarm
     </Step>
     <Step label="F1 makes the difference impossible to miss">
       A's F1 is exactly $0$. B's F1 is $2(0.5)(1)/(0.5+1) = 2/3 \approx 0.667$ — a large, clear gap that

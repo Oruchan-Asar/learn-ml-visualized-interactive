@@ -57,8 +57,15 @@ import { IntuitionDemo, PlayDemo, RocCheckpoint } from "./Demos";
       to $1/3$. One step later, at $0.4$, the last positive is caught: TPR reaches $1$, FPR still $1/3$.
     </Step>
     <Step label="Integrating the whole curve">
-      Trapezoidal integration over every segment gives $\text{AUC} = 8/9 \approx 0.889$ — meaningfully better
-      than a coin flip's $0.5$, but short of a perfect $1.0$, exactly because of that one overlapping pair.
+      AUC equals the fraction of (positive, negative) pairs where the positive scores higher — check all
+      $3\times3=9$ pairs:
+      - $0.9$ beats all three negatives ($0.6,0.3,0.1$): $3$ wins
+      - $0.7$ beats all three negatives: $3$ wins
+      - $0.4$ beats $0.3$ and $0.1$, but loses to $0.6$: $2$ wins
+
+      Total: $3+3+2=8$ correctly-ranked pairs out of $9$, so $\text{AUC}=8/9\approx0.889$ — meaningfully
+      better than a coin flip's $0.5$, but short of a perfect $1.0$, exactly because of that one
+      overlapping pair ($0.4$ losing to $0.6$).
     </Step>
   </Steps>
 </WorkedExample>

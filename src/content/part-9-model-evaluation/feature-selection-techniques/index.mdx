@@ -66,10 +66,11 @@ import { IntuitionDemo, PlayDemo, FeatureSelectionCheckpoint } from "./Demos";
       carries no information to score in the first place.
     </Step>
     <Step label="Everything else lands in between">
-      `shoeSize` correlates weakly ($r=0.2$, score $0.04$). `sleepHours` correlates moderately ($r=0.6$, score
-      $0.36$). `luckyNumber` happens to correlate *negatively* ($r\approx-0.371$) — but squaring turns that
-      into a positive score ($\approx 0.138$) anyway, since a strong negative relationship is just as useful
-      to a model as a strong positive one.
+      - `shoeSize` correlates weakly: $r=0.2$, score $0.04$
+      - `sleepHours` correlates moderately: $r=0.6$, score $0.36$
+      - `luckyNumber` happens to correlate *negatively*: $r\approx-0.371$, but squaring turns that into a
+        positive score $\approx0.138$ anyway, since a strong negative relationship is just as useful to a
+        model as a strong positive one
     </Step>
     <Step label="Summing every real feature gives the ceiling">
       Add up every feature except the useless one: $1 + 0.04 + 0.36 + 0.138 \approx 1.538$. That's the highest

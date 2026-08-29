@@ -41,8 +41,14 @@ import { IntuitionDemo, PlayDemo, EvaluatePipelineCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="One threshold, two disagreeing scores">
-      At threshold $0.5$: **TP** (true positives) $=4$, **FP** (false positives) $=2$, **FN** (false negatives) $=1$, **TN** (true negatives) $=3$. Accuracy $=0.7$ looks fine. But precision is only
-      $2/3$ and F1 lands at $8/11 \approx 0.727$ — the two false alarms cost more in F1 than they cost in accuracy.
+      At threshold $0.5$, all six examples scoring $\geq0.5$ get predicted positive:
+      - **TP** (true positives) $=4$
+      - **FP** (false positives) $=2$
+      - **FN** (false negatives) $=1$
+      - **TN** (true negatives) $=3$
+
+      Accuracy $=0.7$ looks fine. But precision is only $2/3$ and F1 lands at $8/11 \approx 0.727$ — the
+      two false alarms cost more in F1 than they cost in accuracy.
     </Step>
     <Step label="A threshold-free verdict">
       Ranking every pair of one positive against one negative, the positive scores higher in 19 of 25 pairs:
@@ -50,8 +56,17 @@ import { IntuitionDemo, PlayDemo, EvaluatePipelineCheckpoint } from "./Demos";
       themselves, not of wherever the cutoff happens to sit.
     </Step>
     <Step label="Where the fixed threshold actually fails">
-      Splitting the ten examples into five folds of two and scoring the *same* threshold-$0.5$ classifier on each
-      fold gives $[1.0, 0.5, 0.5, 0.5, 1.0]$ — mean $0.7$, matching the aggregate exactly, but now visibly
+      Splitting the ten examples into five folds of two, in score order, and scoring the *same*
+      threshold-$0.5$ classifier on each:
+      - Fold 1 (scores $0.9, 0.8$, both label $1$): both predicted $1$ — accuracy $1.0$
+      - Fold 2 (scores $0.7$ label $0$, $0.65$ label $1$): both predicted $1$, so the label-$0$ one is
+        wrong — accuracy $0.5$
+      - Fold 3 (scores $0.6$ label $0$, $0.55$ label $1$): both predicted $1$, same pattern — accuracy $0.5$
+      - Fold 4 (scores $0.4$ label $0$, $0.3$ label $1$): both predicted $0$, so the label-$1$ one is
+        wrong — accuracy $0.5$
+      - Fold 5 (scores $0.2, 0.1$, both label $0$): both predicted $0$ — accuracy $1.0$
+
+      $[1.0, 0.5, 0.5, 0.5, 1.0]$ — mean $0.7$, matching the aggregate exactly, but now visibly
       concentrated in three folds where a positive and a negative sit within $0.1$ of each other.
     </Step>
     <Step label="A better threshold, found by search">
