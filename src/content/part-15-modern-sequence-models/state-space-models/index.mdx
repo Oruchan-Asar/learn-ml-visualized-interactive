@@ -65,9 +65,12 @@ import { IntuitionDemo, PlayDemo, SSMCheckpoint } from "./Demos";
       $h_2 = 0.5(1) + ({-}1) = -0.5$. The first input hasn't vanished — it's still in there, halved.
     </Step>
     <Step label="t = 3">
-      $h_3 = 0.5({-}0.5) + 2 = 1.75$. Token 1's contribution is now scaled by $0.5^2=0.25$; token 2's by
-      $0.5$; token 3's by $1$ — every step, everything already in the state ages by one more factor of
-      $A$.
+      $h_3 = 0.5({-}0.5) + 2 = 1.75$. Every step, everything already in the state ages by one more factor
+      of $A$:
+
+      - Token 1's contribution is now scaled by $0.5^2=0.25$
+      - Token 2's contribution is scaled by $0.5$
+      - Token 3's contribution is scaled by $1$ (just added, unchanged)
     </Step>
   </Steps>
 </WorkedExample>

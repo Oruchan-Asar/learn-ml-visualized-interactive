@@ -66,11 +66,13 @@ import { IntuitionDemo, PlayDemo, HybridCheckpoint } from "./Demos";
       Each layer costs $64^2\times8=32{,}768$. Total: $4\times32{,}768=131{,}072$.
     </Step>
     <Step label="All 4 layers SSM">
-      Each layer costs $64\times8\times4=2{,}048$. Total: $4\times2{,}048=8{,}192$ — a 16x reduction.
+      Each layer costs $64\times8\times4=2{,}048$. Total: $4\times2{,}048=8{,}192$. Ratio to all-attention:
+      $131{,}072/8{,}192=16\times$ reduction.
     </Step>
     <Step label="Hybrid: 1 attention layer, 3 SSM layers">
-      $32{,}768 + 3\times2{,}048 = 32{,}768+6{,}144=38{,}912$ — roughly a 3.4x reduction from all-attention,
-      while keeping one layer able to retrieve any token exactly, however far back it sits.
+      $32{,}768 + 3\times2{,}048 = 32{,}768+6{,}144=38{,}912$. Ratio to all-attention:
+      $131{,}072/38{,}912\approx3.4\times$ reduction, while keeping one layer able to retrieve any token
+      exactly, however far back it sits.
     </Step>
   </Steps>
 </WorkedExample>

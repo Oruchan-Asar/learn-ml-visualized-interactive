@@ -59,7 +59,7 @@ import { IntuitionDemo, PlayDemo, ComparisonCheckpoint } from "./Demos";
     </Step>
     <Step label="The costs already aren't close">
       Transformer: $32^2 \times 8 = 8{,}192$ ops. Mamba: $32$ ops — a single pass, one step per token.
-      That's already a $256\times$ gap, for a sequence barely long enough to need a computer at all.
+      Ratio: $8{,}192/32=256\times$ gap, for a sequence barely long enough to need a computer at all.
     </Step>
     <Step label="The memory gap is just as stark">
       Transformer: $32$ cached key-value pairs, one per token processed so far. Mamba: $1$ state. Neither

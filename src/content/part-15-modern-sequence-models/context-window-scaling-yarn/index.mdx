@@ -62,8 +62,9 @@ import { IntuitionDemo, PlayDemo, YarnCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="No scaling (s = 1): the slow dimension extrapolates raw">
-      Angle $= 64 \times 0.01 = 0.64$ radians — over $9\times$ larger than any slow-dimension angle seen in
-      training (the largest trained angle is $\approx 8\times0.01=0.08$).
+      Angle $= 64 \times 0.01 = 0.64$ radians. The largest slow-dimension angle seen in training is at
+      $pos=L=8$: $8\times0.01=0.08$. Ratio: $0.64/0.08=8\times$ larger than any slow-dimension angle seen
+      in training.
     </Step>
     <Step label="Scale by 8x: divide position by 8 before rotating">
       Effective position $=64/8=8$. Angle $=8\times0.01=0.08$ — precisely the boundary angle the model

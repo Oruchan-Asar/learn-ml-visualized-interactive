@@ -66,12 +66,18 @@ import { IntuitionDemo, PlayDemo, RopeCheckpoint } from "./Demos";
       product.
     </Step>
     <Step label="Distance 2: rotate the key by a half turn">
-      $R(\pi)K_0 = (-0.5,\,-1)$. Then $Q_0\cdot R(\pi)K_0 = 1(-0.5)+0.5(-1) = -1.0$.
+      $\cos(\pi)=-1$, $\sin(\pi)=0$, so
+      $R(\pi)K_0 = (0.5(-1) - 1(0),\ 0.5(0) + 1(-1)) = (-0.5,\,-1)$. Then
+      $Q_0\cdot R(\pi)K_0 = 1(-0.5)+0.5(-1) = -1.0$.
     </Step>
     <Step label="Same distance, different absolute positions — identical answer">
-      Query at position 1, key at position 3 (still 2 apart): $R(\pi/2)Q_0=(-0.5,\,1)$,
-      $R(3\pi/2)K_0=(1,\,-0.5)$. Their dot product: $(-0.5)(1)+(1)(-0.5) = -1.0$ — exactly matching the
-      distance-2 score computed from positions 0 and 2.
+      Query at position 1, key at position 3 (still 2 apart):
+
+      - $\cos(\pi/2)=0$, $\sin(\pi/2)=1$, so $R(\pi/2)Q_0 = (1(0) - 0.5(1),\ 1(1) + 0.5(0)) = (-0.5,\,1)$
+      - $\cos(3\pi/2)=0$, $\sin(3\pi/2)=-1$, so $R(3\pi/2)K_0 = (0.5(0) - 1(-1),\ 0.5(-1) + 1(0)) = (1,\,-0.5)$
+
+      Their dot product: $(-0.5)(1)+(1)(-0.5) = -1.0$ — exactly matching the distance-2 score computed
+      from positions 0 and 2.
     </Step>
   </Steps>
 </WorkedExample>
