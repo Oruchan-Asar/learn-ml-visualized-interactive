@@ -52,12 +52,20 @@ import { IntuitionDemo, PlayDemo, VlmCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Cross-attention produces a context vector">
-      Weights $0.768$, $0.045$, $0.187$ for sky, ground, dog give a context vector of
-      $(1.723,\ 0.277)$.
+      With $q=(2,0)$, the same score→softmax steps as Chapter 3 give:
+      - Sky: score $4/\sqrt2\approx2.828$, weight $\approx0.768$
+      - Ground: score $0/\sqrt2=0$, weight $\approx0.045$
+      - Dog: score $2/\sqrt2\approx1.414$, weight $\approx0.187$
+
+      Weighting each patch and summing: $0.768(2,0)+0.045(0,2)+0.187(1,1) \approx (1.723,\ 0.277)$.
     </Step>
     <Step label="Nearest-neighbor picks the answer">
-      That context sits $0.39$ units from the sky prototype, $1.02$ from dog, and $2.44$ from ground — sky
-      wins by more than double the runner-up's distance.
+      Distance from $(1.723, 0.277)$ to each prototype:
+      - Sky $(2,0)$: $\sqrt{(1.723-2)^2+(0.277-0)^2}\approx0.39$
+      - Dog $(1,1)$: $\sqrt{(1.723-1)^2+(0.277-1)^2}\approx1.02$
+      - Ground $(0,2)$: $\sqrt{(1.723-0)^2+(0.277-2)^2}\approx2.44$
+
+      Sky wins by more than double the runner-up's distance.
     </Step>
     <Step label="A query with no preference at all">
       At $q=(0,0)$, attention is exactly uniform — $\frac13$ to each patch — and the context vector lands

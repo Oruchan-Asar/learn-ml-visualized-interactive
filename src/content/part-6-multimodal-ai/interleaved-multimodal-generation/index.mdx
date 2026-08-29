@@ -50,11 +50,17 @@ import { IntuitionDemo, PlayDemo, InterleavedGenerationCheckpoint } from "./Demo
 
   <Steps>
     <Step label="Exponentiate each logit">
-      $e^{2}\approx 7.389$, $e^{-1}\approx 0.368$, $e^{-1}\approx 0.368$.
+      - "top-left": $e^{2}\approx 7.389$
+      - "of": $e^{-1}\approx 0.368$
+      - "the": $e^{-1}\approx 0.368$
     </Step>
     <Step label="Normalize into weights">
-      Sum $\approx 8.125$, giving weights $\approx 0.909$, $0.045$, $0.045$ — "top-left" wins by a wide
-      margin, the same kind of margin every earlier all-text step also produced.
+      Sum $\approx 7.389+0.368+0.368=8.125$. Dividing each by that sum:
+      - "top-left": $7.389/8.125\approx0.909$
+      - "of": $0.368/8.125\approx0.045$
+      - "the": $0.368/8.125\approx0.045$
+
+      "top-left" wins by a wide margin, the same kind of margin every earlier all-text step also produced.
     </Step>
     <Step label="Emit and carry the embedding forward">
       The emitted token is the image patch "top-left," carrying embedding $(3, 7)$ — Chapter 5's own number
