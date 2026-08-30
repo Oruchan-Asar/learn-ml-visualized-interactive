@@ -56,28 +56,38 @@ import { IntuitionDemo, PlayDemo, CausalityCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="e3 and e6's vectors">
-      P0's own chain bumps only its own component each step: e1 $[0,0,0]\to[1,0,0]$, e2 (sends m1)
-      $[1,0,0]\to[2,0,0]$, e3 $[2,0,0]\to[3,0,0]$. P2's e6 is its first event, starting from the zero
-      vector and bumping only its own component: $[0,0,0]\to[0,0,1]$.
+      P0's own chain, bumping only its own component each step:
+
+      - e1: $[0,0,0]\to[1,0,0]$
+      - e2 (sends m1): $[1,0,0]\to[2,0,0]$
+      - e3: $[2,0,0]\to[3,0,0]$
+
+      P2's e6 is its first event, starting from the zero vector and bumping only its own component:
+
+      - e6: $[0,0,0]\to[0,0,1]$
 
       So e3 = [3, 0, 0], e6 = [0, 0, 1]. Neither dominates the other — the third component of e3 is 0
       but e6's is 1; the first component of e6 is 0 but e3's is 3. Concurrent.
     </Step>
     <Step label="Yet Lamport disagrees">
-      Lamport's rule bumps the same process's scalar counter by 1 per event: P0's counter reaches
-      $1,2,3$ across e1, e2, e3, so LAMPORT(e3) = 3. P2's counter, starting fresh, reaches $1$ at its
-      first event, so LAMPORT(e6) = 1. Different numbers, for a pair with no causal relationship at
-      all. That's the "false order": Lamport's scalar clock can't represent "unrelated," so it just
-      picks *some* order.
+      Lamport's rule bumps the same process's scalar counter by 1 per event:
+
+      - P0's counter: $1$ (e1), $2$ (e2), $3$ (e3) → LAMPORT(e3) = 3
+      - P2's counter, starting fresh: $1$ (e6) → LAMPORT(e6) = 1
+
+      Different numbers, for a pair with no causal relationship at all. That's the "false order":
+      Lamport's scalar clock can't represent "unrelated," so it just picks *some* order.
     </Step>
     <Step label="Contrast: e2 and e7">
-      e2 = [2, 0, 0] (P0's send, from the chain above). For e7 (P2 receives m2, sent by e5 with vector
-      $[2,2,0]$): take the componentwise max of P2's own vector at that point ($[0,0,1]$, from e6) with
-      the incoming $[2,2,0]$, giving $[2,2,1]$, then bump P2's own component: $[2,2,2]$. Every
-      component of e2 is $\le$ the matching component of e7, and they're not equal — a real causal
-      chain: e2 sends m1, P1 receives it and sends m2, P2 receives m2 at e7. Lamport's numbers (2 and
-      5, the latter from $\max(1,4)+1$ against m2's stamped timestamp of 4) happen to agree with this
-      order too — but that agreement isn't guaranteed the way it is for a concurrent pair.
+      - e2 = [2, 0, 0] (P0's send, from the chain above)
+      - e7 (P2 receives m2, sent by e5 with vector $[2,2,0]$): take the componentwise max of P2's own
+        vector at that point ($[0,0,1]$, from e6) with the incoming $[2,2,0]$, giving $[2,2,1]$, then
+        bump P2's own component: $[2,2,2]$
+
+      Every component of e2 is $\le$ the matching component of e7, and they're not equal — a real
+      causal chain: e2 sends m1, P1 receives it and sends m2, P2 receives m2 at e7. Lamport's numbers
+      (2 and 5, the latter from $\max(1,4)+1$ against m2's stamped timestamp of 4) happen to agree
+      with this order too — but that agreement isn't guaranteed the way it is for a concurrent pair.
     </Step>
   </Steps>
 </WorkedExample>
