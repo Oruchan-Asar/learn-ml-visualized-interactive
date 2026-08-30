@@ -68,8 +68,10 @@ import { IntuitionDemo, PlayDemo, FederatedLearningCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Each device computes its own local gradient">
-      Phone A: $g_A = \frac{2}{2}((0{-}2)+(0{-}3)) = -5$. Phone B: $g_B = \frac{2}{3}(-27) = -18$.
-      Phone C: $g_C = 2(0{-}4) = -8$. Phone D: $g_D = \frac{2}{2}(-11) = -11$.
+      - Phone A: $g_A = \frac{2}{2}((0{-}2)+(0{-}3)) = \frac{2}{2}(-5) = -5$
+      - Phone B: $g_B = \frac{2}{3}((0{-}8)+(0{-}9)+(0{-}10)) = \frac{2}{3}(-27) = -18$
+      - Phone C: $g_C = 2(0{-}4) = -8$
+      - Phone D: $g_D = \frac{2}{2}((0{-}6)+(0{-}5)) = \frac{2}{2}(-11) = -11$
     </Step>
     <Step label="The server averages them, weighted by sample count">
       Weighted sum $= (-5)(2) + (-18)(3) + (-8)(1) + (-11)(2) = -94$, over a total of $2{+}3{+}1{+}2=8$

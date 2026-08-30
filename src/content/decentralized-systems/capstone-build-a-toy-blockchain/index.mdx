@@ -62,12 +62,16 @@ import { IntuitionDemo, PlayDemo, MiningCheckpoint } from "./Demos";
       example, because it's the same 4 transactions.
     </Step>
     <Step label="Mining block 1">
-      Searching nonces against $(\text{prevHash}=33, \text{root}=577)$, nonce $600$ is the first to
-      succeed: $\text{blockHash}(33, 577, 600) = 43 < 50$.
+      Searching nonces against $(\text{prevHash}=33, \text{root}=577)$: $\text{blockHash}(33,577,0)=981$,
+      then $982, 983, 984, 985, \ldots$ for nonces $1$ through $5$ — every one of them lands in the
+      $980$s, well past the target. Nonce $600$ is the first to succeed:
+      $\text{blockHash}(33, 577, 600) = 43 < 50$.
     </Step>
     <Step label="Mining block 2">
-      A second batch of 4 transactions gives root $506$. Chained onto block 1's hash $43$, the first
-      winning nonce is $900$, giving hash $19$.
+      A second batch of 4 transactions gives root $506$. Chained onto block 1's hash $43$, the same
+      search against $(\text{prevHash}=43, \text{root}=506)$ starts at $\text{blockHash}(43,506,0)=594$,
+      climbing through the $590$s for the first several nonces, until nonce $900$ is the first to
+      succeed, giving hash $19$.
     </Step>
     <Step label="Tampering with block 1">
       Change transaction 0 to `"alice pays bob 9"`: the Merkle root becomes $301$ instead of $577$, so

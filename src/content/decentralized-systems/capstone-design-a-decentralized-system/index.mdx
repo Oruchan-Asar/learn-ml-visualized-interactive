@@ -77,21 +77,31 @@ import { IntuitionDemo, PlayDemo, CapstoneDesignCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="The maximal design: eventual + gossip + none">
-      Consistency: eventual (+40) — staleness is fine. Replication: gossip (+40) — scales with write
-      volume, survives partitions. Consensus: none (+20) — no single value needs agreeing on. Total:
-      $40+40+20=100$. A clean, coherent fit for every stated constraint.
+      - Consistency: eventual (+40) — staleness is fine
+      - Replication: gossip (+40) — scales with write volume, survives partitions
+      - Consensus: none (+20) — no single value needs agreeing on
+
+      Total: $40+40+20=100$. A clean, coherent fit for every stated constraint.
     </Step>
     <Step label="A reasonable-sounding but insufficient design: causal + quorum + raft">
-      This looks careful, not reckless — causal consistency (+20), quorum replication (+15), and Raft for
-      leader-backed writes (+0). Total: $20+15+0=35$, well under the 70-point threshold. Nothing here is
-      wrong exactly, but each axis reaches for more machinery than this scenario's constraints call for,
-      leaving points on the table across all three.
+      This looks careful, not reckless:
+
+      - Consistency: causal (+20)
+      - Replication: quorum (+15)
+      - Consensus: Raft for leader-backed writes (+0)
+
+      Total: $20+15+0=35$, well under the 70-point threshold. Nothing here is wrong exactly, but each
+      axis reaches for more machinery than this scenario's constraints call for, leaving points on the
+      table across all three.
     </Step>
     <Step label="An over-engineered, partition-intolerant design: linearizability + primary-backup + raft">
-      Linearizability (−30) — actively forbidden by the "never reject a ping during a partition"
-      constraint. Primary-backup (−20) — a bottleneck under this write volume, and a hazard when the
-      primary is on the wrong side of a split. Raft (0) — still unnecessary overhead. Total:
-      $-30-20+0=-50$, deeply negative — every axis works against the scenario at once.
+      - Consistency: linearizability (−30) — actively forbidden by the "never reject a ping during a
+        partition" constraint
+      - Replication: primary-backup (−20) — a bottleneck under this write volume, and a hazard when the
+        primary is on the wrong side of a split
+      - Consensus: Raft (0) — still unnecessary overhead
+
+      Total: $-30-20+0=-50$, deeply negative — every axis works against the scenario at once.
     </Step>
     <Step label="Why the gap is so large">
       The maximal and worst designs differ by $100-(-50)=150$ points across only three binary-ish choices

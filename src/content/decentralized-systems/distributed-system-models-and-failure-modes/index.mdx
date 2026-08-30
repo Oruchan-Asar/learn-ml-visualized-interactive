@@ -66,10 +66,11 @@ import { IntuitionDemo, PlayDemo, DistributedSystemModelsCheckpoint } from "./De
       At $\Delta = 9$, every message qualifies. At $\Delta = 8$, A → C alone breaks the promise.
     </Step>
     <Step label="Now the four round logs">
-      A sent every peer exactly what was expected → <strong>correct</strong>. B sent nothing at all →{" "}
-      <strong>crash</strong>. C sent the right value to A and B but never reached D → <strong>omission</strong>.
-      D told B a different value (5) than it told A and C (4) → <strong>byzantine</strong>, even though D never
-      went silent.
+      - A sent every peer exactly what was expected → <strong>correct</strong>
+      - B sent nothing at all → <strong>crash</strong>
+      - C sent the right value to A and B but never reached D → <strong>omission</strong>
+      - D told B a different value (5) than it told A and C (4) → <strong>byzantine</strong>, even
+        though D never went silent
     </Step>
   </Steps>
 </WorkedExample>

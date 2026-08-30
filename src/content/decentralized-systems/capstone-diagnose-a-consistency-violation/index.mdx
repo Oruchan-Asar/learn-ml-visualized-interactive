@@ -65,9 +65,18 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
       at t=10. Linearizability's real-time rule says op5 must reflect it.
     </Step>
     <Step label="What op5 actually knew about">
-      `findCausallyPriorWrite(TRACE, op5)` returns op1, not op3 — op5's vector clock is [1, 2, 0], and op3's is
-      [2, 0, 0]. Neither dominates the other: `isViolationMerelyConcurrent(op5, op3)` is true. op5 only ever
-      read-from op1; no chain of messages ever told client c1 about op3's write.
+      Building each op's vector clock (own component bumps, read-from takes the componentwise max):
+
+      - op1 (c0 write): bumps its own slot from $[0,0,0]$ → $[1,0,0]$
+      - op2 (c1 read-from op1): bumps its own slot to $[0,1,0]$, merges with op1's $[1,0,0]$ → $[1,1,0]$
+      - op3 (c0 write): bumps its own slot from $[1,0,0]$ (c0's state after op1) → $[2,0,0]$
+      - op5 (c1 read-from op1 only): bumps its own slot from $[1,1,0]$ (c1's state after op2) →
+        $[1,2,0]$, merges with op1's $[1,0,0]$ → still $[1,2,0]$
+
+      So op5's vector clock is $[1,2,0]$ and op3's is $[2,0,0]$. Neither dominates the other:
+      `isViolationMerelyConcurrent(op5, op3)` is true. op5 only ever read-from op1; no chain of messages
+      ever told client c1 about op3's write. `findCausallyPriorWrite(TRACE, op5)` accordingly returns
+      op1, not op3.
     </Step>
     <Step label="The gap">
       A causal-consistency checker only asks "did you violate something you actually knew about?" — and by that

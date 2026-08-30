@@ -61,9 +61,10 @@ import { IntuitionDemo, PlayDemo, DistributedDeadlockDetectionCheckpoint } from 
 
   <Steps>
     <Step label="Check each site alone">
-      Site A's one edge, P1 → P2, can't be a cycle by itself. Same for Site B's P2 → P3, and for
-      Site C's two edges: P3 → P1 alone isn't a cycle, and P4 → P5 never will be — P5 has no
-      outgoing wait-for edge in this scenario.
+      - Site A: P1 → P2 alone isn't a cycle
+      - Site B: P2 → P3 alone isn't a cycle
+      - Site C: P3 → P1 alone isn't a cycle, and P4 → P5 never will be — P5 has no outgoing wait-for
+        edge in this scenario
     </Step>
     <Step label="Merge all local views">
       Union of all edges: P1 → P2, P2 → P3, P3 → P1, P4 → P5. Four edges, no duplicates to collapse

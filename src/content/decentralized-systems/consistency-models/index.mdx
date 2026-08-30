@@ -67,9 +67,12 @@ import { IntuitionDemo, PlayDemo, ConsistencyModelsCheckpoint } from "./Demos";
       — real time was the only thing violated.
     </Step>
     <Step label="Causal consistency tolerates disagreement">
-      w2 depends on w1; w3 is concurrent with both. View R1 = [w1, w3, w2] and view R2 = [w3, w1, w2] disagree on
-      w1-vs-w3's order — and both are valid, because neither ordering puts w2 before its dependency w1. View
-      [w2, w1, w3] is not: w2 appears before the write it depends on.
+      w2 depends on w1; w3 is concurrent with both.
+
+      - View R1 = [w1, w3, w2]: valid — w2 (which depends on w1) still comes after w1
+      - View R2 = [w3, w1, w2]: valid — same reason; R1 and R2 disagree only on w1-vs-w3's order,
+        which is fine since neither depends on the other
+      - View [w2, w1, w3]: **not** valid — w2 appears before the write (w1) it depends on
     </Step>
     <Step label="Eventual consistency just needs convergence">
       Three writes at timestamps 2, 1, 3 with last-writer-wins: no matter what order they're delivered in, the

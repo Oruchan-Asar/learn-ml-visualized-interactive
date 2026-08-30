@@ -58,14 +58,22 @@ import { IntuitionDemo, PlayDemo, GossipCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Fanout 2, round by round">
-      Round 1: node 0 gossips to 2 of its 3 neighbors → infected $=\{0,1,4\}$. Round 2: those three
-      nodes each gossip further → infected grows to $\{0,1,2,3,4,5,7\}$ — seven of eight. Round 3: the
-      last holdout, node 6, finally gets reached → all 8 nodes infected.
+      Peer selection rotates through each node's neighbor list by `offset = round mod 3`, contacting
+      the next 2 neighbors from there:
+
+      1. Round 1 (offset 0): node 0's neighbors are $[1,4,7]$, so it contacts the first two, $1$ and
+         $4$ → infected $=\{0,1,4\}$
+      2. Round 2 (offset 1): node 0 contacts $[4,7]$ (its neighbors shifted by 1), node 1 contacts
+         $[2,5]$, node 4 contacts $[3,5]$ → infected grows to $\{0,1,2,3,4,5,7\}$ — seven of eight
+      3. Round 3 (offset 2): nodes 2, 5, and 7 each shift to contacting $6$ as one of their two
+         targets — the last holdout finally gets reached → all 8 nodes infected
+
     </Step>
     <Step label="Fanout 1 takes noticeably longer">
-      With only one peer contacted per round, the same network needs **5** rounds to fully cover —
-      and round 4 adds *nothing new* at all, because that round's rotation of peers happens to miss
-      the one remaining uninfected node (node 3).
+      With only one peer contacted per round (just `offset`'s neighbor, no second target), the same
+      network's infected set grows $\{0\}\to\{0,1\}\to\{0,1,2,4\}\to\{0,1,2,4,5,6,7\}$, then **stalls**
+      at round 4 — every infected node's single round-4 target already belongs to the set — before
+      node 3 finally gets reached in round 5, needing **5** rounds total to fully cover.
     </Step>
     <Step label="Fanout 3 (flooding) is fastest">
       Contacting every neighbor every round reaches all 8 nodes in just **2** rounds — the fastest

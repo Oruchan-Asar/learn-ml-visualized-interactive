@@ -58,7 +58,11 @@ import { IntuitionDemo, PlayDemo, TwoPCCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Phase 1 — collect votes">
-      Coordinator sends VOTE-REQUEST to P1, P2, P3. Votes come back: P1 = YES, P2 = NO, P3 = YES.
+      Coordinator sends VOTE-REQUEST to P1, P2, P3. Votes come back:
+
+      - P1 = YES
+      - P2 = NO
+      - P3 = YES
     </Step>
     <Step label="Apply the decision rule">
       Not every vote was yes ($P2 = \text{no}$), so the AND fails: decision = abort.

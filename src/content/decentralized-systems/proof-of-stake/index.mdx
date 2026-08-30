@@ -66,9 +66,14 @@ import { IntuitionDemo, PlayDemo, LeaderSelectionCheckpoint } from "./Demos";
       **B** wins.
     </Step>
     <Step label="Rounds 3–6">
-      Ticket 18 (round 3) falls in A's $[0,40)$ → **A**. Ticket 79 (round 4) falls in C's $[70,90)$ →
-      **C**. Ticket 40 (round 5) falls exactly at B's lower bound → **B**. Ticket 1 (round 6) falls in
-      A's $[0,40)$ → **A**.
+      - Round 3: $\text{toyHash}(\texttt{"epoch-3-x"})=818 \Rightarrow \text{ticket}=18$, falls in A's
+        $[0,40)$ → **A**
+      - Round 4: $\text{toyHash}(\texttt{"epoch-4-x"})=779 \Rightarrow \text{ticket}=79$, falls in C's
+        $[70,90)$ → **C**
+      - Round 5: $\text{toyHash}(\texttt{"epoch-5-x"})=740 \Rightarrow \text{ticket}=40$, falls exactly
+        at B's lower bound → **B**
+      - Round 6: $\text{toyHash}(\texttt{"epoch-6-x"})=701 \Rightarrow \text{ticket}=1$, falls in A's
+        $[0,40)$ → **A**
     </Step>
     <Step label="Six rounds: D, B, A, C, B, A">
       Two wins for A (stake 40%), two for B (stake 30%), one each for C and D (stakes 20% and 10%) — a

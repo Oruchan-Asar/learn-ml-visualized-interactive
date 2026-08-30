@@ -57,18 +57,20 @@ import { IntuitionDemo, PlayDemo, CrdtCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Independent local states">
-      P increments 3 times: $\{P{:}3, Q{:}0, R{:}0\}$. Q increments 2 times: $\{P{:}0, Q{:}2,
-      R{:}0\}$. R increments once: $\{P{:}0, Q{:}0, R{:}1\}$ — none of them has seen either of the
-      others' updates.
+      - P increments 3 times: $\{P{:}3, Q{:}0, R{:}0\}$
+      - Q increments 2 times: $\{P{:}0, Q{:}2, R{:}0\}$
+      - R increments once: $\{P{:}0, Q{:}0, R{:}1\}$
+
+      None of them has seen either of the others' updates.
     </Step>
     <Step label="Merging P and Q, either direction">
       $\text{merge}(P,Q) = \{P{:}\max(3,0), Q{:}\max(0,2), R{:}\max(0,0)\} = \{3, 2, 0\}$. Merging
       the other way, $\text{merge}(Q,P)$, produces the exact same $\{3, 2, 0\}$.
     </Step>
     <Step label="Bringing in R, in either grouping">
-      $\text{merge}(\text{merge}(P,Q), R) = \{3,2,1\}$, and $\text{merge}(P, \text{merge}(Q,R))$
-      also comes out to $\{3,2,1\}$ — total value $6$, regardless of which two replicas happened
-      to sync with each other first.
+      $\text{merge}(\text{merge}(P,Q), R) = \{P{:}\max(3,0), Q{:}\max(2,0), R{:}\max(0,1)\} = \{3,2,1\}$,
+      and $\text{merge}(P, \text{merge}(Q,R))$ also comes out to $\{3,2,1\}$ — total value $6$,
+      regardless of which two replicas happened to sync with each other first.
     </Step>
   </Steps>
 </WorkedExample>

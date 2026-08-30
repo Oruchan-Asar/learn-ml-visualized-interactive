@@ -59,20 +59,25 @@ import { IntuitionDemo, PlayDemo, ChordCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Node A's finger table">
-      $\text{finger}_0(2)=\text{successor}(3)=6$, $\text{finger}_1(2)=\text{successor}(4)=6$,
-      $\text{finger}_2(2)=\text{successor}(6)=6$, $\text{finger}_3(2)=\text{successor}(10)=13$. So
-      A's fingers are $[6, 6, 6, 13]$.
+      - $\text{finger}_0(2)=\text{successor}(2+2^0)=\text{successor}(3)=6$
+      - $\text{finger}_1(2)=\text{successor}(2+2^1)=\text{successor}(4)=6$
+      - $\text{finger}_2(2)=\text{successor}(2+2^2)=\text{successor}(6)=6$
+      - $\text{finger}_3(2)=\text{successor}(2+2^3)=\text{successor}(10)=13$
+
+      So A's fingers are $[6, 6, 6, 13]$.
     </Step>
     <Step label="Lookup key@5 from A — 0 hops">
       Key position $5$ falls in $(2, 6]$ — exactly the arc A's own finger $0$ already covers. A
       answers immediately: owner is B (pos 6), no other node contacted.
     </Step>
     <Step label="Lookup key@12 from A — 2 hops">
-      $12$ is past B's arc, so A jumps to its furthest finger that doesn't overshoot: $6$ (node B).
-      B's fingers are $[9, 9, 13, 2]$; $12$ is still past B's own successor (9), so B jumps to its
-      furthest qualifying finger, $9$ (node C). C's fingers are $[13, 13, 13, 2]$; now $12$ falls in
-      $(9, 13]$, C's own successor arc — so C answers directly: owner is D (pos 13). Path: A → B → C,
-      2 hops.
+      1. $12$ is past B's arc, so A jumps to its furthest finger that doesn't overshoot: $6$ (node B)
+      2. B's fingers are $[9, 9, 13, 2]$; $12$ is still past B's own successor ($9$), so B jumps to its
+         furthest qualifying finger, $9$ (node C)
+      3. C's fingers are $[13, 13, 13, 2]$; now $12$ falls in $(9, 13]$, C's own successor arc — so C
+         answers directly: owner is D (pos 13)
+
+      Path: A → B → C, 2 hops.
     </Step>
   </Steps>
 </WorkedExample>

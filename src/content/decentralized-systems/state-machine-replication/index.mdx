@@ -53,7 +53,11 @@ import { IntuitionDemo, PlayDemo, SmrCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Apply each command in order">
-      `SET x=10` → x=10. `ADD x+=5` → x=15. `ADD x+=-3` → x=12. `SET x=100` → x=100. `ADD x+=1` → x=101.
+      1. `SET x=10` → x=10
+      2. `ADD x+=5` → x=15
+      3. `ADD x+=-3` → x=12
+      4. `SET x=100` → x=100
+      5. `ADD x+=1` → x=101
     </Step>
     <Step label="A replica lagging at command 3">
       Suppose a replica only applied the first three commands: it's sitting at x=12 — exactly what
@@ -65,8 +69,16 @@ import { IntuitionDemo, PlayDemo, SmrCheckpoint } from "./Demos";
       only that you apply the same suffix afterward.
     </Step>
     <Step label="Now reorder the same five commands">
-      Swap the first and fourth entries: `SET x=100` now runs *before* `SET x=10`. Same five commands, same
-      final `ADD x+=1` — but `set` isn't commutative with `add`, so the final value is x=11, not x=101.
+      Swap the first and fourth entries: `SET x=100` now runs *before* `SET x=10`. Tracing the new order:
+
+      1. `SET x=100` → x=100
+      2. `ADD x+=5` → x=105
+      3. `ADD x+=-3` → x=102
+      4. `SET x=10` → x=10
+      5. `ADD x+=1` → x=11
+
+      Same five commands, same final `ADD x+=1` — but `set` isn't commutative with `add`, so the final
+      value is x=11, not x=101.
     </Step>
   </Steps>
 </WorkedExample>

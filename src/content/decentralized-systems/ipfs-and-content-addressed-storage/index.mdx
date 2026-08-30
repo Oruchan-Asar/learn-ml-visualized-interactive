@@ -63,9 +63,10 @@ import { IntuitionDemo, PlayDemo, IpfsCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Hash each file's content to get its address">
-      `cat.txt` = &ldquo;meow&rdquo; hashes to address **840**. `dog.txt` = &ldquo;woof&rdquo; hashes to
-      address **343**. `cat-copy.txt` also holds &ldquo;meow&rdquo;, so it hashes to address **840** too —
-      identical to `cat.txt`, even though nobody told the system these two files were "the same."
+      - `cat.txt` = &ldquo;meow&rdquo; hashes to address **840**
+      - `dog.txt` = &ldquo;woof&rdquo; hashes to address **343**
+      - `cat-copy.txt` also holds &ldquo;meow&rdquo;, so it hashes to address **840** too — identical
+        to `cat.txt`, even though nobody told the system these two files were "the same"
     </Step>
     <Step label="Storage only needs 2 blocks, not 3">
       Since `cat.txt` and `cat-copy.txt` share an address, the network stores one block for that content

@@ -59,8 +59,9 @@ import { IntuitionDemo, PlayDemo, CrossShardCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Group the accounts by shard">
-      Shard 0: $\{\texttt{bob}, \texttt{erin}\}$. Shard 1: $\{\texttt{alice}, \texttt{carol}, \texttt{dave}\}$.
-      Shard 2: $\{\texttt{frank}\}$.
+      - Shard 0: $\{\texttt{bob}, \texttt{erin}\}$
+      - Shard 1: $\{\texttt{alice}, \texttt{carol}, \texttt{dave}\}$
+      - Shard 2: $\{\texttt{frank}\}$
     </Step>
     <Step label="A same-shard transaction: alice → carol">
       Both land in shard 1, so $\text{isCrossShard} = \text{false}$ — one message settles it.

@@ -58,10 +58,12 @@ import { IntuitionDemo, PlayDemo, CapTheoremCheckpoint } from "./Demos";
       false. An answer, but a stale one — R2's local value hasn't caught up.
     </Step>
     <Step label="Classifying real systems">
-      Dynamo/Cassandra default to Availability during a partition and Latency otherwise: <strong>PA/EL</strong>.
-      A majority-write MongoDB chooses Consistency during a partition but Latency otherwise:{" "}
-      <strong>PC/EL</strong>. A fully-synchronous SQL cluster chooses Consistency both times:{" "}
-      <strong>PC/EC</strong>.
+      - Dynamo/Cassandra: chooses Availability during a partition ($P{=}A$) and Latency otherwise
+        ($E{=}L$) → <strong>PA/EL</strong>
+      - A majority-write MongoDB: chooses Consistency during a partition ($P{=}C$) but Latency
+        otherwise ($E{=}L$) → <strong>PC/EL</strong>
+      - A fully-synchronous SQL cluster: chooses Consistency both times ($P{=}C$, $E{=}C$) →
+        <strong>PC/EC</strong>
     </Step>
   </Steps>
 </WorkedExample>

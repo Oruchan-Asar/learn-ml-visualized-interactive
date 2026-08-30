@@ -73,10 +73,14 @@ import { IntuitionDemo, PlayDemo, MerkleCheckpoint } from "./Demos";
       $\text{root}=\text{toyHashPair}(741,229)=577$.
     </Step>
     <Step label="Now tamper with transaction 0">
-      Change it to `alice pays bob 9`. Its leaf hash becomes $465$ instead of $459$ — a one-character
-      change, an unrelated-looking output. Parent 0 becomes $\text{toyHashPair}(465,416)=808$ instead of
-      $741$. Parent 1 is untouched, still $229$. The root becomes $\text{toyHashPair}(808,229)=301$ —
-      nowhere near the original $577$, even though only one transaction out of four changed.
+      Change it to `alice pays bob 9`:
+
+      1. Its leaf hash becomes $465$ instead of $459$ — a one-character change, an unrelated-looking
+         output
+      2. Parent 0 becomes $\text{toyHashPair}(465,416)=808$ instead of $741$
+      3. Parent 1 is untouched, still $229$, since it doesn't depend on $h_0$
+      4. The root becomes $\text{toyHashPair}(808,229)=301$ — nowhere near the original $577$, even
+         though only one transaction out of four changed
     </Step>
   </Steps>
 </WorkedExample>

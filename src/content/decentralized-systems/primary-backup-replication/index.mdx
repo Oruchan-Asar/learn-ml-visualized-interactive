@@ -53,7 +53,9 @@ import { IntuitionDemo, PlayDemo, PrimaryBackupCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Read off the replication state">
-      B1 has replicated 5 entries, B2 has replicated all 7, B3 has replicated only 3.
+      - B1 has replicated 5 entries
+      - B2 has replicated all 7
+      - B3 has replicated only 3
     </Step>
     <Step label="Pick the most up-to-date backup">
       B2, at `replicatedUpTo = 7`, is furthest along — it becomes the new primary.

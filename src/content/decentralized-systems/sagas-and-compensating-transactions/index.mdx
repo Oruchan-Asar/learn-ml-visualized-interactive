@@ -55,8 +55,9 @@ import { IntuitionDemo, PlayDemo, SagaCheckpoint } from "./Demos";
       Completed order was $[0, 1]$; compensation order is the reverse, $[1, 0]$.
     </Step>
     <Step label="Run the compensations">
-      First undo step 1's action: "Cancel flight." Then undo step 0's: "Release funds." Charge card
-      (step 3) never ran, so it needs no compensation at all.
+      1. Undo step 1's action first: "Cancel flight"
+      2. Then undo step 0's: "Release funds"
+      3. Charge card (step 3) never ran, so it needs no compensation at all
     </Step>
   </Steps>
 </WorkedExample>

@@ -69,9 +69,11 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
       hashing's rule, unchanged.
     </Step>
     <Step label="Gossip spreads the join exactly as before">
-      Fanout 2 from node 0: round 1 reaches $\{0,1,4\}$, round 2 reaches 7 of the 8 nodes, round 3
-      finally reaches the last holdout — the identical trace the gossip chapter already worked
-      through by hand.
+      Fanout 2 from node 0 — the identical trace the gossip chapter already worked through by hand:
+
+      1. Round 1 reaches $\{0,1,4\}$
+      2. Round 2 reaches $\{0,1,2,3,4,5,7\}$ — 7 of the 8 nodes
+      3. Round 3 finally reaches the last holdout, node 6 — all 8 nodes now agree
     </Step>
     <Step label="A concurrent write lands mid-convergence">
       At round 2, node 0 (informed) accepts a write, recording $\{0{:}1\}$. Node 6, the one

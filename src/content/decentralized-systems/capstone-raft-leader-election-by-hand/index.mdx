@@ -52,13 +52,15 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="N1's request reaches N2 first, N3's reaches N4 first">
-      N2 (log: term 5, index 20) grants N1 — equal log, no prior vote. N4 (log: term 5, index 17) grants N3 —
-      N3's log (index 19) is ahead of N4's. N5 (log: term 5, index 21) is ahead of *both* candidates' logs, so it
-      rejects both outright.
+      - N2 (log: term 5, index 20) grants N1 — equal log, no prior vote
+      - N4 (log: term 5, index 17) grants N3 — N3's log (index 19) is ahead of N4's
+      - N5 (log: term 5, index 21) is ahead of *both* candidates' logs, so it rejects both outright
     </Step>
     <Step label="Now the other request arrives at each">
-      N2 already voted for N1, so it rejects N3's request regardless of log. N4 already voted for N3, so it
-      rejects N1's. Neither late-arriving request can change a vote already cast this term.
+      - N2 already voted for N1, so it rejects N3's request regardless of log
+      - N4 already voted for N3, so it rejects N1's
+
+      Neither late-arriving request can change a vote already cast this term.
     </Step>
     <Step label="Tally both candidates">
       N1: self + N2 = 2 of 5. N3: self + N4 = 2 of 5. `hasMajority(2, 5)` is false for both —
