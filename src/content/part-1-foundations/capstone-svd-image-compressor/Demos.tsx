@@ -37,8 +37,8 @@ export function IntuitionDemo() {
         ))}
       </div>
       <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
-        <KernelHeatmap kernel={IMAGE} label="original image" width={140} />
-        <KernelHeatmap kernel={reconstruction} label={`rank-${rank} reconstruction`} width={140} />
+        <KernelHeatmap kernel={IMAGE} label="original image" width={200} />
+        <KernelHeatmap kernel={reconstruction} label={`rank-${rank} reconstruction`} width={200} />
       </div>
       <p>reconstruction error = {error.toFixed(3)} (energy retained: {(energyRetained(rank) * 100).toFixed(0)}%)</p>
     </>
