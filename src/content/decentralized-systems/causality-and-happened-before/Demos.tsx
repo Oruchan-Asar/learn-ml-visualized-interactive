@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type CSSProperties } from "react";
 import { CheckpointFrame } from "@/components/chapter/CheckpointFrame";
 import { ContributionBars } from "@/components/viz/ContributionBars";
 import {
   EVENTS,
   VECTOR_CLOCKS,
   LAMPORT_TIMESTAMPS,
+  PROCESS_NAMES,
   eventHappenedBefore,
   eventsAreConcurrent,
   lamportFalselyOrders,
@@ -17,6 +18,24 @@ import styles from "../_shared/StepControls.module.css";
 
 const CONCEPT_ID = "causality-and-happened-before";
 
+const processLabelStyle: CSSProperties = {
+  display: "block",
+  fontSize: "10px",
+  fontWeight: 400,
+  opacity: 0.7,
+  marginTop: 2,
+};
+
+/** Every button doubles as "which process is this?" — the picker alone can't otherwise tell e1 and e6 apart. */
+function EventButtonLabel({ e }: { e: (typeof EVENTS)[number] }) {
+  return (
+    <>
+      <span style={{ display: "block" }}>{e.id}</span>
+      <span style={processLabelStyle}>{PROCESS_NAMES[e.process]}</span>
+    </>
+  );
+}
+
 function EventPicker({ selectedId, onPick }: { selectedId: string | null; onPick: (id: string) => void }) {
   return (
     <div className={styles.buttons}>
@@ -26,8 +45,9 @@ function EventPicker({ selectedId, onPick }: { selectedId: string | null; onPick
           type="button"
           className={e.id === selectedId ? styles.buttonPrimary : styles.button}
           onClick={() => onPick(e.id)}
+          title={e.label}
         >
-          {e.id}
+          <EventButtonLabel e={e} />
         </button>
       ))}
     </div>
@@ -90,60 +110,107 @@ export function PlayDemo() {
   );
 }
 
-/** Checkpoint: find a pair of events where Lamport's total order is a genuine fabrication — concurrent, yet numbered differently. */
+/**
+ * Checkpoint: pick one event as A, then select every OTHER event that's concurrent with it yet still
+ * received a different Lamport number — no more, no less. A single lucky pair is easy to stumble into
+ * (7 of the 36 pairs in this trace qualify); matching the *exact* set for a chosen A is not.
+ */
 export function CausalityCheckpoint() {
   const [aId, setAId] = useState<string | null>(null);
-  const [bId, setBId] = useState<string | null>(null);
+  const [selectedB, setSelectedB] = useState<Set<string>>(new Set());
   const [hasInteracted, setHasInteracted] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
-  const passed = Boolean(aId && bId && aId !== bId && lamportFalselyOrders(aId, bId));
+  const candidates = aId ? EVENTS.filter((e) => e.id !== aId) : [];
+  const correctSet = new Set(
+    aId
+      ? candidates
+          .filter((e) => eventsAreConcurrent(aId, e.id) && LAMPORT_TIMESTAMPS[aId] !== LAMPORT_TIMESTAMPS[e.id])
+          .map((e) => e.id)
+      : [],
+  );
+  const passed =
+    aId !== null &&
+    correctSet.size > 0 &&
+    selectedB.size === correctSet.size &&
+    [...selectedB].every((id) => correctSet.has(id));
 
   useEffect(() => {
     if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
   }, [passed]);
 
-  const pick = (id: string) => {
+  const pickA = (id: string) => {
     setHasInteracted(true);
-    if (!aId || (bId && id !== aId)) {
-      setAId(id);
-      setBId(null);
-    } else if (id !== aId) {
-      setBId(id);
-    }
+    setAId(id);
+    setSelectedB(new Set());
+  };
+
+  const toggleB = (id: string) => {
+    setHasInteracted(true);
+    setSelectedB((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   };
 
   return (
     <CheckpointFrame
       instructions={
         <>
-          Click two events (A then B) that are <strong>concurrent</strong> but were still handed{" "}
-          <strong>different Lamport timestamps</strong> — the exact case where a scalar clock&apos;s total order is
-          fiction.
+          Click one event to fix as <strong>A</strong>, then select <strong>every other event</strong> that&apos;s
+          concurrent with it but still got a <strong>different Lamport timestamp</strong> — the whole set, nothing
+          more. That&apos;s exactly where a scalar clock&apos;s total order is fiction.
         </>
       }
       passed={passed || everPassed}
       hasInteracted={hasInteracted}
-      idleLabel="Click an event to select A, then another for B"
+      idleLabel="Click an event to select A"
     >
+      <div className={styles.stepCount}>A:</div>
       <div className={styles.buttons}>
         {EVENTS.map((e) => (
           <button
             key={e.id}
             type="button"
-            className={e.id === aId || e.id === bId ? styles.buttonPrimary : styles.button}
-            onClick={() => pick(e.id)}
+            className={e.id === aId ? styles.buttonPrimary : styles.button}
+            onClick={() => pickA(e.id)}
+            title={e.label}
           >
-            {e.id}
+            <EventButtonLabel e={e} />
           </button>
         ))}
       </div>
+
+      {aId && (
+        <>
+          <div className={styles.stepCount} style={{ marginTop: 8 }}>
+            B (select all that qualify):
+          </div>
+          <div className={styles.buttons}>
+            {candidates.map((e) => (
+              <button
+                key={e.id}
+                type="button"
+                className={selectedB.has(e.id) ? styles.buttonPrimary : styles.button}
+                onClick={() => toggleB(e.id)}
+                title={e.label}
+              >
+                <EventButtonLabel e={e} />
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
       <div className={styles.script}>
         {aId ? `A = ${aId} (Lamport ${LAMPORT_TIMESTAMPS[aId]})` : "A = (pick one)"}
         <br />
-        {bId ? `B = ${bId} (Lamport ${LAMPORT_TIMESTAMPS[bId]})` : "B = (pick one)"}
-        <br />
-        {aId && bId && aId !== bId ? relationLabel(aId, bId) : ""}
+        {aId && correctSet.size === 0 &&
+          `Every other event is causally ordered against ${aId}, or ties its Lamport number — pick a different A.`}
+        {aId && correctSet.size > 0 &&
+          `B = ${selectedB.size ? [...selectedB].sort().join(", ") : "(none selected yet)"}`}
       </div>
     </CheckpointFrame>
   );

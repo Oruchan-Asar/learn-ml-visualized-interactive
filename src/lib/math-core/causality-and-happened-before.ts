@@ -2,11 +2,12 @@ import {
   EVENTS,
   LAMPORT_TIMESTAMPS,
   VECTOR_CLOCKS,
+  PROCESS_NAMES,
   compareVectorClocks,
   type RawEvent,
 } from "./time-clocks-and-ordering";
 
-export { EVENTS, LAMPORT_TIMESTAMPS, VECTOR_CLOCKS };
+export { EVENTS, LAMPORT_TIMESTAMPS, VECTOR_CLOCKS, PROCESS_NAMES };
 export type { RawEvent };
 
 /** a "happened-before" b: a's vector clock is componentwise <= b's, and the two aren't equal. */
