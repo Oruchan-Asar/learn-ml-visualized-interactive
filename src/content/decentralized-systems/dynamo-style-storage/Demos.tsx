@@ -128,7 +128,12 @@ export function DynamoCheckpoint() {
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
   const w = 3;
-  const passed = sufficientQuorum(r, w, N);
+  // The instructions ask to slide R "up until" overlap is guaranteed — i.e. find the minimum R, not
+  // just any R that happens to satisfy R+W>N (3 of the 5 slider positions would otherwise pass).
+  let minSufficientR = 1;
+  while (minSufficientR <= N && !sufficientQuorum(minSufficientR, w, N)) minSufficientR++;
+  const passed = r === minSufficientR;
+  const isSufficient = sufficientQuorum(r, w, N);
   const readSet = PREF_LIST.slice(N - r);
   const overlap = quorumOverlap(readSet, WRITE_SET);
 
@@ -146,8 +151,8 @@ export function DynamoCheckpoint() {
       instructions={
         <>
           With the write quorum fixed at <strong>W=3</strong> out of <strong>N=5</strong>, slide the read
-          quorum <strong>R</strong> up until every possible read is guaranteed to overlap every possible
-          write.
+          quorum <strong>R</strong> to the exact minimum value that guarantees every possible read overlaps
+          every possible write — not just any R past that point.
         </>
       }
       passed={passed || everPassed}
@@ -158,7 +163,7 @@ export function DynamoCheckpoint() {
         items={bars}
         max={2}
         formatValue={(v) => String(v)}
-        readout={`R=${r}, W=${w}, N=${N} — R+W ${passed ? ">" : "≤"} N — this example's overlap: ${overlap.length === 0 ? "none" : overlap.join(", ")}`}
+        readout={`R=${r}, W=${w}, N=${N} — R+W ${isSufficient ? ">" : "≤"} N — this example's overlap: ${overlap.length === 0 ? "none" : overlap.join(", ")}`}
       />
       <div className={styles.controls}>
         <label className={styles.sliderRow}>

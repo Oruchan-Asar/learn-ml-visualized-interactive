@@ -135,7 +135,12 @@ export function PlayDemo() {
   );
 }
 
-/** Checkpoint: find any combination of the three axes that clears the pass threshold for this scenario. */
+/**
+ * Checkpoint: find the single BEST-scoring combination of the three axes, not just any combination
+ * that clears the pass threshold. 4 of the 27 possible combinations already clear {PASS_THRESHOLD}
+ * points, so "any combo above threshold" is guessable in a couple of tries — requiring the unique
+ * top score forces actually reasoning about all three axes together.
+ */
 export function CapstoneDesignCheckpoint() {
   const [consistency, setConsistency] = useState<ConsistencyModel>("linearizability");
   const [replication, setReplication] = useState<ReplicationStrategy>("primary-backup");
@@ -144,7 +149,16 @@ export function CapstoneDesignCheckpoint() {
   const everPassed = useCheckpointPassed(CONCEPT_ID);
   const design: Design = { consistency, replication, consensus };
   const score = scoreDesign(design);
-  const passed = isCoherentDesign(design);
+  const bestScore = Math.max(
+    ...CONSISTENCY_OPTIONS.flatMap((c) =>
+      REPLICATION_OPTIONS.flatMap((r) =>
+        CONSENSUS_OPTIONS.map((k) =>
+          scoreDesign({ consistency: c.value, replication: r.value, consensus: k.value }),
+        ),
+      ),
+    ),
+  );
+  const passed = score === bestScore;
 
   useEffect(() => {
     if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
@@ -154,9 +168,10 @@ export function CapstoneDesignCheckpoint() {
     <CheckpointFrame
       instructions={
         <>
-          Pick a consistency model, replication strategy, and consensus protocol whose combined score clears
-          the <strong>{PASS_THRESHOLD}</strong>-point threshold for this scenario (huge write volume, cheap
-          staleness, no Byzantine participants, availability-during-partition required).
+          Pick a consistency model, replication strategy, and consensus protocol that score the{" "}
+          <strong>single best</strong> combined total for this scenario (huge write volume, cheap staleness, no
+          Byzantine participants, availability-during-partition required) — not just one that clears the{" "}
+          {PASS_THRESHOLD}-point pass bar, the actual best of all 27 combinations.
         </>
       }
       passed={passed || everPassed}
@@ -194,7 +209,7 @@ export function CapstoneDesignCheckpoint() {
       </div>
       <ScoreBreakdown design={design} />
       <p className={styles.controls}>
-        {passed ? "clears the threshold" : `needs ${PASS_THRESHOLD - score} more points`}
+        {passed ? `best possible score (${bestScore})` : `${score} of ${bestScore} — not the best combination yet`}
       </p>
     </CheckpointFrame>
   );

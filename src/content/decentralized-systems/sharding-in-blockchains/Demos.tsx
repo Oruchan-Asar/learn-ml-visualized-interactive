@@ -139,14 +139,35 @@ export function PlayDemo() {
   );
 }
 
-/** Checkpoint: click a pair of accounts that forms a genuinely cross-shard transaction. */
+function pairKey(a: string, b: string): string {
+  return [a, b].sort().join("-");
+}
+
+/**
+ * Checkpoint: find EVERY pair of accounts that lands in the SAME shard — not just any two accounts
+ * in different shards. 11 of the 15 possible pairs are cross-shard, so "click any two that differ"
+ * passed on nearly 3 out of 4 random clicks; the same-shard pairs are the rare, interesting case
+ * (only 4 of 15), and finding all of them requires actually working out each account's shard.
+ */
 export function CrossShardCheckpoint() {
   const [from, setFrom] = useState<string | null>(null);
   const [to, setTo] = useState<string | null>(null);
+  const [foundPairs, setFoundPairs] = useState<Set<string>>(new Set());
   const [hasInteracted, setHasInteracted] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
-  const passed = useMemo(() => from !== null && to !== null && isCrossShard(from, to), [from, to]);
+  const allSameShardPairs = useMemo(() => {
+    const pairs = new Set<string>();
+    for (let i = 0; i < ACCOUNTS.length; i++) {
+      for (let j = i + 1; j < ACCOUNTS.length; j++) {
+        if (!isCrossShard(ACCOUNTS[i], ACCOUNTS[j])) pairs.add(pairKey(ACCOUNTS[i], ACCOUNTS[j]));
+      }
+    }
+    return pairs;
+  }, []);
+  const totalPairs = (ACCOUNTS.length * (ACCOUNTS.length - 1)) / 2;
+
+  const passed = foundPairs.size === allSameShardPairs.size;
 
   useEffect(() => {
     if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
@@ -158,6 +179,9 @@ export function CrossShardCheckpoint() {
       setFrom(id);
       setTo(null);
     } else if (to === null && id !== from) {
+      if (!isCrossShard(from, id)) {
+        setFoundPairs((prev) => new Set(prev).add(pairKey(from, id)));
+      }
       setTo(id);
     } else {
       setFrom(id);
@@ -165,11 +189,20 @@ export function CrossShardCheckpoint() {
     }
   };
 
-  const edges: [string, string][] = from && to ? [[from, to]] : [];
+  const confirmedEdges: [string, string][] = [...allSameShardPairs]
+    .filter((key) => foundPairs.has(key))
+    .map((key) => key.split("-") as [string, string]);
+  const currentEdge: [string, string][] = from && to ? [[from, to]] : [];
 
   return (
     <CheckpointFrame
-      instructions={<>Click two accounts, one after the other, that land in <strong>different</strong> shards.</>}
+      instructions={
+        <>
+          Click through pairs of accounts to find <strong>every</strong> pair that lands in the{" "}
+          <strong>same</strong> shard — {allSameShardPairs.size} of the {totalPairs} possible pairs qualify.
+          Cross-shard pairs are the common case; same-shard collisions are the rare, interesting one.
+        </>
+      }
       passed={passed || everPassed}
       hasInteracted={hasInteracted}
       idleLabel="Click an account to start"
@@ -178,17 +211,22 @@ export function CrossShardCheckpoint() {
         nodes={NODES}
         height={GRAPH_HEIGHT}
         width={GRAPH_WIDTH}
-        edges={edges}
+        edges={[...confirmedEdges, ...currentEdge]}
         focusNodeId={from}
         highlightedNodeIds={to ? [to] : []}
         onSelectNode={onSelectNode}
         passed={passed}
         readout={
-          from && to ? (
-            <span>
-              {from} (shard {assignShard(from)}) → {to} (shard {assignShard(to)})
-            </span>
-          ) : undefined
+          <span>
+            {from && to ? (
+              <>
+                {from} (shard {assignShard(from)}) → {to} (shard {assignShard(to)})
+                {isCrossShard(from, to) ? " — cross-shard" : " — same-shard, found!"}
+                {"  —  "}
+              </>
+            ) : null}
+            {foundPairs.size} of {allSameShardPairs.size} same-shard pairs found
+          </span>
         }
       />
     </CheckpointFrame>

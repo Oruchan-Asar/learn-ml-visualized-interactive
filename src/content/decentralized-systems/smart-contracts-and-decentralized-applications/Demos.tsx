@@ -71,15 +71,20 @@ export function PlayDemo() {
   );
 }
 
-/** Checkpoint: drive the contract to the refunded phase — deposit, then pick the branch where the condition fails. */
+/**
+ * Checkpoint: drive the contract to BOTH resolutions — released and refunded — not just one. With only
+ * two buttons and one outcome checked, a single click had 50% odds and trying both guaranteed a pass;
+ * requiring both branches means actually seeing that the same contract can end either way.
+ */
 export function EscrowCheckpoint() {
   const [outcome, setOutcome] = useState<"release" | "refund" | null>(null);
+  const [seenPhases, setSeenPhases] = useState<Set<string>>(new Set());
   const [hasInteracted, setHasInteracted] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
   const trace = runEscrow(outcome);
   const finalEntry = trace[trace.length - 1];
-  const passed = finalEntry.state.phase === "refunded";
+  const passed = seenPhases.has("released") && seenPhases.has("refunded");
 
   useEffect(() => {
     if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
@@ -88,14 +93,17 @@ export function EscrowCheckpoint() {
   const choose = (o: "release" | "refund" | null) => {
     setHasInteracted(true);
     setOutcome(o);
+    const t = runEscrow(o);
+    setSeenPhases((prev) => new Set(prev).add(t[t.length - 1].state.phase));
   };
 
   return (
     <CheckpointFrame
       instructions={
         <>
-          {BUYER} deposits {DEPOSIT_AMOUNT}. Drive the contract to the <strong>refunded</strong> phase — the branch
-          where {SELLER} never gets paid.
+          {BUYER} deposits {DEPOSIT_AMOUNT}. Drive the contract to <strong>both</strong> resolutions — released
+          (the branch where {SELLER} gets paid) and refunded (the branch where they don&apos;t) — to see that the
+          same contract can end either way.
         </>
       }
       passed={passed || everPassed}
@@ -111,6 +119,9 @@ export function EscrowCheckpoint() {
         </button>
       </div>
       {outcome !== null && <TraceLine entry={finalEntry} />}
+      <p className={descentStyles.stepCount}>
+        Seen so far: {seenPhases.size === 0 ? "neither" : [...seenPhases].sort().join(", ")}
+      </p>
     </CheckpointFrame>
   );
 }

@@ -89,7 +89,17 @@ export function AttackCostCheckpoint() {
   const id = useId();
 
   const cost = share === null ? null : attackCost(share, TOTAL_POW_COST);
-  const passed = cost !== null && cost > SECURITY_BUDGET;
+  // The instructions ask to slide "until" cost prices the attack out — i.e. find the break-even
+  // share, not just any share past it (roughly half the slider's 101 positions would otherwise pass).
+  let minPricedOutShare: number | null = null;
+  for (let i = 0; i <= 100; i++) {
+    const s = i / 100;
+    if (attackCost(s, TOTAL_POW_COST) > SECURITY_BUDGET) {
+      minPricedOutShare = s;
+      break;
+    }
+  }
+  const passed = share !== null && minPricedOutShare !== null && Math.abs(share - minPricedOutShare) < 0.001;
 
   useEffect(() => {
     if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
@@ -99,10 +109,10 @@ export function AttackCostCheckpoint() {
     <CheckpointFrame
       instructions={
         <>
-          Slide the attacker&apos;s targeted share of proof-of-work hash power until acquiring it would cost
-          more than the network&apos;s {formatDollars(SECURITY_BUDGET)} security budget (out of a total
-          {" "}
-          {formatDollars(TOTAL_POW_COST)} to control 100%).
+          Slide the attacker&apos;s targeted share of proof-of-work hash power to the exact point where
+          acquiring it first costs more than the network&apos;s {formatDollars(SECURITY_BUDGET)} security
+          budget (out of a total {formatDollars(TOTAL_POW_COST)} to control 100%) — not just any share past
+          that point.
         </>
       }
       passed={passed || everPassed}

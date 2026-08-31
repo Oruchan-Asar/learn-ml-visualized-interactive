@@ -129,7 +129,12 @@ export function FinalityCheckpoint() {
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
   const prob = confirmations === null ? null : reversalProbability(confirmations);
-  const passed = prob !== null && prob < FINALITY_THRESHOLD;
+  // The instructions ask for the MINIMUM confirmations that clears the threshold — checking only
+  // "prob < threshold" would also accept every larger value (8 of the 11 slider positions), letting
+  // a student slide straight to the far end and pass without ever finding the actual crossover.
+  let minConfirmations = 0;
+  while (minConfirmations <= 10 && !(reversalProbability(minConfirmations) < FINALITY_THRESHOLD)) minConfirmations++;
+  const passed = confirmations === minConfirmations;
 
   useEffect(() => {
     if (passed) recordCheckpointAttempt(CONCEPT_ID, true);

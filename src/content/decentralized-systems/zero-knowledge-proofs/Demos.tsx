@@ -105,7 +105,12 @@ export function ZeroKnowledgeCheckpoint() {
   const [hasInteracted, setHasInteracted] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
   const p = cheatProbability(rounds);
-  const passed = p <= 0.05;
+  // "the smallest number of rounds" is the actual ask — checking only "p<=0.05" would also accept
+  // every larger round count (6 of the slider's 10 positions), letting a student slide to the far
+  // end and pass without ever finding the actual minimum.
+  let minRounds = 1;
+  while (minRounds <= 10 && cheatProbability(minRounds) > 0.05) minRounds++;
+  const passed = rounds === minRounds;
 
   useEffect(() => {
     if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
@@ -115,7 +120,8 @@ export function ZeroKnowledgeCheckpoint() {
     <CheckpointFrame
       instructions={
         <>
-          Move the rounds slider until an impostor&rsquo;s cheating probability drops to <strong>5% or below</strong>.
+          Move the rounds slider to the <strong>smallest</strong> number of rounds that drops an impostor&rsquo;s
+          cheating probability to <strong>5% or below</strong> — not just any round count past that point.
         </>
       }
       passed={passed || everPassed}

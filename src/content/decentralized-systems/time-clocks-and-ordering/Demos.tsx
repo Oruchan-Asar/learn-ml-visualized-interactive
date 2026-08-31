@@ -93,60 +93,107 @@ export function PlayDemo() {
   );
 }
 
-/** Checkpoint: find a pair of events that are genuinely concurrent — neither vector clock dominates the other. */
+/**
+ * Checkpoint: pick one event as A, then select every OTHER event that's genuinely concurrent with it —
+ * no more, no less. A single lucky pair is easy to stumble into (9 of the 36 pairs in this trace
+ * qualify); matching the *exact* set of A's concurrent partners is not.
+ */
 export function TimeClocksCheckpoint() {
   const [aId, setAId] = useState<string | null>(null);
-  const [bId, setBId] = useState<string | null>(null);
+  const [selectedB, setSelectedB] = useState<Set<string>>(new Set());
   const [hasInteracted, setHasInteracted] = useState(false);
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
-  const relation = aId && bId && aId !== bId ? compareVectorClocks(VECTOR_CLOCKS[aId], VECTOR_CLOCKS[bId]) : null;
-  const passed = relation === "concurrent";
+  const candidates = aId ? EVENTS.filter((e) => e.id !== aId) : [];
+  const correctSet = new Set(
+    aId
+      ? candidates
+          .filter((e) => compareVectorClocks(VECTOR_CLOCKS[aId], VECTOR_CLOCKS[e.id]) === "concurrent")
+          .map((e) => e.id)
+      : [],
+  );
+  const passed =
+    aId !== null &&
+    correctSet.size > 0 &&
+    selectedB.size === correctSet.size &&
+    [...selectedB].every((id) => correctSet.has(id));
 
   useEffect(() => {
     if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
   }, [passed]);
 
-  const pick = (id: string) => {
+  const pickA = (id: string) => {
     setHasInteracted(true);
-    if (!aId || (bId && id !== aId)) {
-      setAId(id);
-      setBId(null);
-    } else if (id !== aId) {
-      setBId(id);
-    }
+    setAId(id);
+    setSelectedB(new Set());
+  };
+
+  const toggleB = (id: string) => {
+    setHasInteracted(true);
+    setSelectedB((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
   };
 
   return (
     <CheckpointFrame
       instructions={
         <>
-          Click two different events (in order, A then B) that are <strong>concurrent</strong> — no chain of
-          messages links them either way.
+          Click one event to fix as <strong>A</strong>, then select <strong>every other event</strong> that&apos;s
+          genuinely concurrent with it — the whole set, nothing more. No chain of messages links a concurrent pair
+          either way.
         </>
       }
       passed={passed || everPassed}
       hasInteracted={hasInteracted}
-      idleLabel="Click an event to select A, then another for B"
+      idleLabel="Click an event to select A"
     >
+      <div className={styles.stepCount}>A:</div>
       <div className={styles.buttons}>
         {EVENTS.map((e) => (
           <button
             key={e.id}
             type="button"
-            className={e.id === aId || e.id === bId ? styles.buttonPrimary : styles.button}
-            onClick={() => pick(e.id)}
+            className={e.id === aId ? styles.buttonPrimary : styles.button}
+            onClick={() => pickA(e.id)}
+            title={e.label}
           >
             {e.id}
           </button>
         ))}
       </div>
+
+      {aId && (
+        <>
+          <div className={styles.stepCount} style={{ marginTop: 8 }}>
+            B (select all that qualify):
+          </div>
+          <div className={styles.buttons}>
+            {candidates.map((e) => (
+              <button
+                key={e.id}
+                type="button"
+                className={selectedB.has(e.id) ? styles.buttonPrimary : styles.button}
+                onClick={() => toggleB(e.id)}
+                title={e.label}
+              >
+                {e.id}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
       <div className={styles.script}>
         {aId ? `A = ${aId} [${VECTOR_CLOCKS[aId].join(", ")}]` : "A = (pick one)"}
         <br />
-        {bId ? `B = ${bId} [${VECTOR_CLOCKS[bId].join(", ")}]` : "B = (pick one)"}
-        <br />
-        relation: <strong>{relation ?? "—"}</strong>
+        {aId && correctSet.size === 0 &&
+          `${aId} is causally ordered against every other event — pick a different A.`}
+        {aId && correctSet.size > 0 &&
+          `B = ${selectedB.size ? [...selectedB].sort().join(", ") : "(none selected yet)"}`}
       </div>
     </CheckpointFrame>
   );

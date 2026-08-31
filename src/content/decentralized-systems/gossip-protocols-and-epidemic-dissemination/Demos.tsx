@@ -137,13 +137,12 @@ export function GossipCheckpoint() {
   const everPassed = useCheckpointPassed(CONCEPT_ID);
 
   const full = roundsToFullCoverage(fanout);
-  const passed = full > 0 && full <= 3;
-
-  useEffect(() => {
-    if (passed) recordCheckpointAttempt(CONCEPT_ID, true);
-  }, [passed]);
-
   const { round, infected, justInfected, step, reset } = useGossipTrace(fanout);
+  // The instructions say to gossip forward and CONFIRM it — checking only the fanout parameter let a
+  // student pass the instant they set fanout to 2 or 3, without ever clicking "Gossip one round." The
+  // pass condition now depends on the actual simulation state: you have to run it to observe full
+  // coverage arrive by round 3.
+  const passed = full > 0 && full <= 3 && round <= 3 && infected.size === NUM_NODES;
 
   return (
     <CheckpointFrame
