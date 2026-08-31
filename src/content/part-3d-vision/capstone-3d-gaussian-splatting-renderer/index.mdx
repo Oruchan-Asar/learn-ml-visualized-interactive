@@ -38,9 +38,8 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Project both Gaussians through the same pinhole camera as chapter 2">
-      The near, on-axis Gaussian ($\mu = (0,0,5)$) projects to the principal point $(50, 50)$ with
-      $\sigma_{\text{2D}} = 0.1 \times 100/5 = 2$. The farther, off-axis one ($\mu = (0.3, 0, 10)$) projects
-      to $(53, 50)$ with $\sigma_{\text{2D}} = 0.3 \times 100/10 = 3$.
+      - The near, on-axis Gaussian ($\mu = (0,0,5)$) projects to the principal point $(50, 50)$ with $\sigma_{\text{2D}} = 0.1 \times 100/5 = 2$.
+      - The farther, off-axis one ($\mu = (0.3, 0, 10)$) projects to $(53, 50)$ with $\sigma_{\text{2D}} = 0.3 \times 100/10 = 3$.
     </Step>
     <Step label="Composite at the near Gaussian's own projected center, (50, 50)">
       Weight is exactly 1 there, so the near Gaussian's contribution is just its opacity: $0.6$.

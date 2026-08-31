@@ -74,9 +74,13 @@ import { IntuitionDemo, PlayDemo, UNetCheckpoint } from "./Demos";
       \text{decode}_1 = \begin{bmatrix}(9+4)/2 & (9+8)/2\\(9+7)/2 & (9+9)/2\end{bmatrix} = \begin{bmatrix}6.5&8.5\\8&9\end{bmatrix}
       $$
 
-      Upsampling that once more and averaging with the *original* input recovers real detail — for
-      example, the top-left pixel becomes $(1+6.5)/2=3.75$, and the pixel at row 4, column 3 becomes
-      $(2+9)/2=5.5$, in place of a flat $9$ either way. Averaged over all 16 pixels: $\text{MSE}=5.421875$.
+      Upsampling that once more and averaging with the *original* input recovers real detail, in place of a
+      flat $9$ either way:
+
+      - the top-left pixel becomes $(1+6.5)/2=3.75$
+      - the pixel at row 4, column 3 becomes $(2+9)/2=5.5$
+
+      Averaged over all 16 pixels: $\text{MSE}=5.421875$.
     </Step>
     <Step label="The skip connection alone accounts for the entire gap">
       Both decoders start from the exact same bottleneck. The only difference is whether $\text{skip}_0$ and

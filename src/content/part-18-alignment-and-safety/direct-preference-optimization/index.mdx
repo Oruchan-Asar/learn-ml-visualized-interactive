@@ -67,8 +67,9 @@ import { IntuitionDemo, PlayDemo, DPOCheckpoint } from "./Demos";
       The update is $\theta \to \theta + \eta\,(1-\sigma(h))\,\beta\,(\mathbb{1}[a{=}y_w]-\mathbb{1}[a{=}y_l])$,
       with learning rate $\eta=0.5$ and $\beta=0.5$. With $\sigma(h)=0.5$, the update factor
       $(1-\sigma(h))=0.5$ pushes $\theta_B$ up and $\theta_A$ down by the same amount:
-      $\theta_B \to 0 + \underbrace{0.5}_{\eta}\underbrace{(0.5)}_{1-\sigma(h)}\underbrace{(0.5)}_{\beta}(1) = 0.125$,
-      $\theta_A \to 0 - 0.125 = -0.125$.
+
+      - $\theta_B \to 0 + \underbrace{0.5}_{\eta}\underbrace{(0.5)}_{1-\sigma(h)}\underbrace{(0.5)}_{\beta}(1) = 0.125$
+      - $\theta_A \to 0 - 0.125 = -0.125$
     </Step>
     <Step label="Nothing else moved">
       $\theta_C$ is untouched — this comparison never mentioned C, and DPO's update (like RLHF's) only

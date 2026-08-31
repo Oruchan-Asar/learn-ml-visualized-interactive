@@ -67,8 +67,14 @@ import { IntuitionDemo, PlayDemo, RlvrCheckpoint } from "./Demos";
       Mean verifiable reward: $(1+0+1+0)/4 = 0.5$.
     </Step>
     <Step label="Compare against the learned reward model's guesses">
-      Guesses of $0.62, 0.71, 0.55, 0.30$ for those same four responses, in order. Sum:
-      $0.62+0.71+0.55+0.30=2.18$. Mean: $2.18/4 = 0.545$ — close to the verifier's $0.5$ on average.
+      Guesses for those same four responses, in order:
+
+      - $0.62$
+      - $0.71$
+      - $0.55$
+      - $0.30$
+
+      Sum: $0.62+0.71+0.55+0.30=2.18$. Mean: $2.18/4 = 0.545$ — close to the verifier's $0.5$ on average.
     </Step>
     <Step label="But the rankings disagree where it matters">
       The learned RM's highest guess ($0.71$) belongs to "$39$" — the WRONG answer. The verifier would

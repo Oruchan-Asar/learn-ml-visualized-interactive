@@ -47,9 +47,12 @@ import { IntuitionDemo, PlayDemo, GanCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Step 450 — near equilibrium">
-      The generator's output has reached about $4.95$, close to the real value of $5$. $D(\text{real}) \approx
-      0.51$ and $D(\text{fake}) \approx 0.50$ — the discriminator is essentially guessing, unable to tell them
-      apart.
+      The generator's output has reached about $4.95$, close to the real value of $5$.
+
+      - $D(\text{real}) \approx 0.51$
+      - $D(\text{fake}) \approx 0.50$
+
+      The discriminator is essentially guessing, unable to tell them apart.
     </Step>
     <Step label="150 steps later — overshoot">
       The generator has overshot past $6$, and the gap between $D(\text{real})$ and $D(\text{fake})$ has grown

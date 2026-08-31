@@ -38,8 +38,10 @@ import { IntuitionDemo, PlayDemo, BenchmarkCheckpoint } from "./Demos";
       `last_index([1,2,3,2,1], 2)` should return `3` (the last position of `2`), not `1`.
     </Step>
     <Step label="Patch A (indexOf) passes the easy cases, fails the ones that matter">
-      `[1,2,3,2,1]` → `indexOf` gives `1`, expected `3`: fail. `[5,5,5]` → `indexOf` gives `0`, expected
-      `2`: fail. The other three tests pass regardless, because there's no duplicate to disagree on — first
+      - `[1,2,3,2,1]` → `indexOf` gives `1`, expected `3`: fail.
+      - `[5,5,5]` → `indexOf` gives `0`, expected `2`: fail.
+
+      The other three tests pass regardless, because there's no duplicate to disagree on — first
       and last position coincide.
     </Step>
     <Step label="Patch B (lastIndexOf) is the real fix">

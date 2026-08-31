@@ -50,9 +50,10 @@ import { IntuitionDemo, PlayDemo, GaussianSplattingCheckpoint } from "./Demos";
       same weight $\approx 0.8825$, so $\alpha_B = 0.8 \times 0.8825 \approx 0.7060$.
     </Step>
     <Step label="Composite front-to-back: A first, then B through what A left transparent">
-      $T_A = 1$, contribution $= 1 \times 0.5295 = 0.5295$ (all red). Then $T_B = 1 - 0.5295 = 0.4705$,
-      contribution $= 0.4705 \times 0.7060 \approx 0.3322$ (all blue). Total alpha $\approx 1 - 0.4705(1 -
-      0.7060) \approx 0.8617$ — the pixel is mostly opaque, blended red-over-blue.
+      - Gaussian A: $T_A = 1$, contribution $= 1 \times 0.5295 = 0.5295$ (all red).
+      - Gaussian B: $T_B = 1 - 0.5295 = 0.4705$, contribution $= 0.4705 \times 0.7060 \approx 0.3322$ (all blue).
+
+      Total alpha $\approx 1 - 0.4705(1 - 0.7060) \approx 0.8617$ — the pixel is mostly opaque, blended red-over-blue.
     </Step>
   </Steps>
 </Formalize>

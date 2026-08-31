@@ -56,9 +56,10 @@ import { IntuitionDemo, PlayDemo, GRUCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Both gates settle to the same value every step">
-      With $W_z{=}U_z{=}0$, $b_z{=}-4$: $z_t = \sigma(-4) \approx 0.0180$ at every timestep, regardless of the
-      hidden state. With $b_r{=}4$: $r_t \approx 0.9820$ — the reset gate stays wide open, barely touching the
-      candidate.
+      With $W_z{=}U_z{=}0$, $b_z{=}-4$, $b_r{=}4$:
+
+      - $z_t = \sigma(-4) \approx 0.0180$ at every timestep, regardless of the hidden state.
+      - $r_t \approx 0.9820$ — the reset gate stays wide open, barely touching the candidate.
     </Step>
     <Step label="The hidden state creeps forward">
       With $z_t\approx0.018$ and $r_t\approx0.982$ fixed every step, the recurrence becomes

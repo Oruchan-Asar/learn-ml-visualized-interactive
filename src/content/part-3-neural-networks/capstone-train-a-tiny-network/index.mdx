@@ -45,9 +45,12 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Watch the loss over training">
-      From this network's particular random start, a single epoch barely moves the loss. By epoch 400 it's down to
-      about $0.087$; by epoch 800, about $0.006$ — and every one of the four points is already on the correct side
-      of $0.5$.
+      From this network's particular random start, a single epoch barely moves the loss.
+
+      - By epoch 400 it's down to about $0.087$.
+      - By epoch 800, about $0.006$.
+
+      Every one of the four points is already on the correct side of $0.5$.
     </Step>
     <Step label="See what makes it possible">
       The hidden layer is what makes this possible at all: each of its four neurons draws its *own* straight line

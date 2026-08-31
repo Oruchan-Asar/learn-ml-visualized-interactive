@@ -26,8 +26,10 @@ import { IntuitionDemo, PlayDemo, MlpCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Two lines, not one">
-      Perceptron A fires like $\text{OR}(x_1,x_2)$: on for every corner except $(0,0)$. Perceptron B fires like
-      $\text{NAND}(x_1,x_2)$: on for every corner except $(1,1)$. Two different lines, two different opinions.
+      - Perceptron A fires like $\text{OR}(x_1,x_2)$: on for every corner except $(0,0)$.
+      - Perceptron B fires like $\text{NAND}(x_1,x_2)$: on for every corner except $(1,1)$.
+
+      Two different lines, two different opinions.
     </Step>
     <Step label="A third perceptron combines their opinions">
       Feed $h_A$ and $h_B$ into an output perceptron wired like $\text{AND}(h_A, h_B)$: it fires only when *both*
@@ -53,10 +55,10 @@ import { IntuitionDemo, PlayDemo, MlpCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Try c = 0 (a plausible-looking guess)">
-      At $(0,0)$: $h_A=\text{step}(-0.5)=0$, $h_B=\text{step}(1.5)=1$, so $z_{\text{out}}=0+1+0=1$ and
-      $y=\text{step}(1)=1$ — but the target is $0$. Wrong. The same thing happens at $(1,1)$ by symmetry:
-      $h_A=1$, $h_B=0$, $z_{\text{out}}=1$, $y=1$ against a target of $0$. Both "same-input" corners fail —
-      $c=0$ only gets 2 of 4 rows right.
+      - At $(0,0)$: $h_A=\text{step}(-0.5)=0$, $h_B=\text{step}(1.5)=1$, so $z_{\text{out}}=0+1+0=1$ and $y=\text{step}(1)=1$ — but the target is $0$. Wrong.
+      - At $(1,1)$ by symmetry: $h_A=1$, $h_B=0$, $z_{\text{out}}=1$, $y=1$ against a target of $0$.
+
+      Both "same-input" corners fail — $c=0$ only gets 2 of 4 rows right.
     </Step>
     <Step label="Try c = -1.5 instead">
       At $(0,0)$: $z_{\text{out}} = 0+1-1.5=-0.5$, so $y=\text{step}(-0.5)=0$ — correct. At $(1,1)$:

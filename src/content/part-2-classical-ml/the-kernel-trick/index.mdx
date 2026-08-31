@@ -25,8 +25,8 @@ import { IntuitionDemo, PlayDemo, KernelCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Radius collapses points regardless of angle">
-      Points near the center now share one small value of $z$; points on the outer ring share one large value,
-      *no matter which direction they're in*.
+      - Points near the center now share one small value of $z$, *no matter which direction they're in*.
+      - Points on the outer ring share one large value, *no matter which direction they're in*.
     </Step>
     <Step label="Angle was the confusion, radius was the signal">
       The two classes were tangled by angle but separated by radius all along — $z$ just throws away the angle
@@ -44,15 +44,18 @@ import { IntuitionDemo, PlayDemo, KernelCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Transform an inner and an outer point">
-      $(1.8, 0)$: $z = 1.8^2 = 3.24$. $(4.7, 0)$: $z = 4.7^2 = 22.09$.
+      - $(1.8, 0)$: $z = 1.8^2 = 3.24$.
+      - $(4.7, 0)$: $z = 4.7^2 = 22.09$.
     </Step>
     <Step label="Transform a diagonal point at the same inner radius">
       $(1.556, 1.556)$: $z = 1.556^2 + 1.556^2 \approx 2.42+2.42 = 4.84$ — the *same* value every inner point at
       that radius gets, regardless of angle.
     </Step>
     <Step label="Confirm a single threshold separates everything">
-      Every inner point lands with $z \le 4.84$; every outer point lands with $z \ge 22.09$. Any threshold in
-      between — 10, 15, 20 — separates all sixteen points at once.
+      - Every inner point lands with $z \le 4.84$.
+      - Every outer point lands with $z \ge 22.09$.
+
+      Any threshold in between — 10, 15, 20 — separates all sixteen points at once.
     </Step>
   </Steps>
 </WorkedExample>

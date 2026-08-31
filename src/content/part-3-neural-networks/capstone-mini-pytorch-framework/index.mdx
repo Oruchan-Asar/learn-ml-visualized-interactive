@@ -64,8 +64,12 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
       $g = -0.012081$.
     </Step>
     <Step label="At the very first step, the moving averages start from zero">
-      $t=1$, so $\hat m = m/(1-\beta_1) = g$ exactly, and $\hat v = v/(1-\beta_2) = g^2$ exactly — the bias
-      correction perfectly cancels the very first $(1-\beta)$ factor on both averages.
+      $t=1$, so:
+
+      - $\hat m = m/(1-\beta_1) = g$ exactly.
+      - $\hat v = v/(1-\beta_2) = g^2$ exactly.
+
+      The bias correction perfectly cancels the very first $(1-\beta)$ factor on both averages.
     </Step>
     <Step label="That collapses the ratio to just the gradient's sign">
       $\hat m/\sqrt{\hat v} = g/|g| = -1$ — same "first step ignores magnitude" behavior Chapter 9 found for

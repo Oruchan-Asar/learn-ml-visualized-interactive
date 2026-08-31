@@ -49,12 +49,13 @@ import { IntuitionDemo, PlayDemo, RocCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Two points at zero false positives">
-      At threshold $0.9$: TPR$=1/3$, FPR$=0$. At threshold $0.7$: TPR$=2/3$, FPR$=0$ — both real positives
-      outrank every negative so far.
+      - At threshold $0.9$: TPR$=1/3$, FPR$=0$.
+      - At threshold $0.7$: TPR$=2/3$, FPR$=0$ — both real positives outrank every negative so far.
     </Step>
     <Step label="The one overlapping pair costs a false positive">
-      At threshold $0.6$, the highest-scoring negative gets swept in too: TPR stays at $2/3$, but FPR jumps
-      to $1/3$. One step later, at $0.4$, the last positive is caught: TPR reaches $1$, FPR still $1/3$.
+      - At threshold $0.6$, the highest-scoring negative gets swept in too: TPR stays at $2/3$, but FPR
+        jumps to $1/3$.
+      - One step later, at $0.4$, the last positive is caught: TPR reaches $1$, FPR still $1/3$.
     </Step>
     <Step label="Integrating the whole curve">
       AUC equals the fraction of (positive, negative) pairs where the positive scores higher — check all

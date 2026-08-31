@@ -46,8 +46,10 @@ import { IntuitionDemo, PlayDemo, InferenceOptCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Quadratic work, without a cache">
-      At $n=10$: $10\cdot11/2=55$ units of work. At $n=100$: $100\cdot101/2=5{,}050$ units — a 10x longer sequence
-      costs roughly 100x more work, the signature of a quadratic cost.
+      - At $n=10$: $10\cdot11/2=55$ units of work.
+      - At $n=100$: $100\cdot101/2=5{,}050$ units.
+
+      A 10x longer sequence costs roughly 100x more work, the signature of a quadratic cost.
     </Step>
     <Step label="Linear work, with one">
       The same two sequences cost exactly $10$ and $100$ units with a cache — the speedup grows from $5.5\times$

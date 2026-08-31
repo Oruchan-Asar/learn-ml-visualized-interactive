@@ -62,10 +62,10 @@ import { IntuitionDemo, PlayDemo, EncodingCheckpoint } from "./Demos";
       own label. The "feature" is the answer, restated.
     </Step>
     <Step label="Leave-one-out catches it">
-      For the SF row, leave-one-out excludes the row itself — and there are no *other* SF rows to average, so
-      it falls back to the global mean, $0.5$. For an NYC row, e.g. the one labeled $0$, leave-one-out averages
-      the *other two* NYC labels ($1, 1$), giving $1.0$ — a real average of other rows, not a copy of its own
-      answer.
+      - For the SF row, leave-one-out excludes the row itself — and there are no *other* SF rows to average,
+        so it falls back to the global mean, $0.5$.
+      - For an NYC row, e.g. the one labeled $0$, leave-one-out averages the *other two* NYC labels ($1, 1$),
+        giving $1.0$ — a real average of other rows, not a copy of its own answer.
     </Step>
   </Steps>
 </WorkedExample>

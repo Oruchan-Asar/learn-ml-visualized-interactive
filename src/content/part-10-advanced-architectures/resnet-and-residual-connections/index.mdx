@@ -59,9 +59,13 @@ import { IntuitionDemo, PlayDemo, ResNetCheckpoint } from "./Demos";
     </Step>
     <Step label="The residual network doesn't just survive — it stabilizes">
       Because each layer *adds* $w\cdot\sigma(z_i)$ instead of replacing $h$, and $\sigma$ saturates to
-      $1$ almost immediately here, $h$ grows by very close to $w=3$ every layer past the first couple —
-      $h_5\approx14.95$, $h_{10}\approx29.95$, $h_{20}\approx59.95$ — so the raw gradient at the output,
-      $h_{\text{depth}}-1$, grows roughly linearly with depth too. Meanwhile every backward factor
+      $1$ almost immediately here, $h$ grows by very close to $w=3$ every layer past the first couple:
+
+      - Depth 5: $h_5\approx14.95$
+      - Depth 10: $h_{10}\approx29.95$
+      - Depth 20: $h_{20}\approx59.95$
+
+      So the raw gradient at the output, $h_{\text{depth}}-1$, grows roughly linearly with depth too. Meanwhile every backward factor
       $1+w^2\sigma'(z_i)$ is essentially $1$ once $z_i$ is deep in saturation (true from the second layer
       on) — only the first layer's factor, $1+9\sigma'(1.5)\approx2.342$, differs meaningfully from $1$.
       So the accumulated gradient is essentially just $(h_{\text{depth}}-1)\times2.342$:

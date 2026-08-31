@@ -27,7 +27,13 @@ import { IntuitionDemo, PlayDemo, StabilizeCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="These four failure modes don't cure each other">
-      Normalizing every layer fixes vanishing magnitude, but does nothing about a raw fp16 cast underflowing to zero, or an unbounded first update, or weights drifting upward over training. Each fix repairs exactly one mechanism.
+      Normalizing every layer fixes vanishing magnitude, but does nothing about:
+
+      - A raw fp16 cast underflowing to zero.
+      - An unbounded first update.
+      - Weights drifting upward over training.
+
+      Each fix repairs exactly one mechanism.
     </Step>
     <Step label="Some of them only matter once another is in place">
       Loss scaling rescues a vanishing gradient from becoming exactly $0$ in storage -- but a gradient that's merely tiny, not zero, is still too small to be useful. RMSNorm is what actually lifts the *magnitude*; loss scaling only stops that magnitude from being destroyed a second time on the way into fp16.

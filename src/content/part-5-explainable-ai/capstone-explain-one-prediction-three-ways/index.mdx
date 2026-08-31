@@ -61,8 +61,10 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
       of the four, and that ranking would be identical for every house this model ever sees.
     </Step>
     <Step label="SHAP ranks size highest instead">
-      For this specific house, size contributes $75$ and renovated contributes $20$ — size dominates here,
-      because this house's size is $5$ units above baseline while its renovated status only differs by $1$.
+      Size dominates here:
+
+      - Size contributes $75$ to the SHAP value, and this house's size is $5$ units above baseline
+      - Renovated contributes $20$ to the SHAP value, and this house's renovated status only differs by $1$
     </Step>
     <Step label="The counterfactual finds a different answer again">
       This house's prediction is $445$, so $f(x) = 445-500 = -55$ below the threshold. The weight vector's

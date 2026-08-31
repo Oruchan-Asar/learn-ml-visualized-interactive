@@ -33,9 +33,10 @@ import { IntuitionDemo, PlayDemo, PositionalEncodingsCheckpoint } from "./Demos"
 
   <Steps>
     <Step label="Every dimension pair spins at its own rate">
-      Pair $i=0$ has a rate of $10000^0=1$, so it completes a full rotation roughly every $2\pi\approx6.3$
-      positions — fast. Pair $i=1$ divides $pos$ by $10000^{2/d}$ first, so for the same $pos$ it's barely
-      turned at all. Stacking fast and slow pairs together lets nearby positions look different in the
+      - Pair $i=0$ has a rate of $10000^0=1$, so it completes a full rotation roughly every $2\pi\approx6.3$ positions — fast.
+      - Pair $i=1$ divides $pos$ by $10000^{2/d}$ first, so for the same $pos$ it's barely turned at all.
+
+      Stacking fast and slow pairs together lets nearby positions look different in the
       fast dimensions while far-apart positions still differ in the slow ones.
     </Step>
     <Step label="Added, not appended">
@@ -70,9 +71,9 @@ import { IntuitionDemo, PlayDemo, PositionalEncodingsCheckpoint } from "./Demos"
       $\sin(0)=0$ and $\cos(0)=1$ at every frequency, so $PE_0 = (0,1,0,1)$ exactly, regardless of $d$.
     </Step>
     <Step label="Position 10, then 11 — the sinusoidal score">
-      At $pos=10$: rate $i=0$ is $1$, rate $i=1$ is $10000^{-1/2}=0.01$, so
-      $PE_{10}=(\sin(10),\,\cos(10),\,\sin(0.1),\,\cos(0.1))\approx(-0.544,\,-0.839,\,0.0998,\,0.995)$.
-      At $pos=11$: $PE_{11}=(\sin(11),\,\cos(11),\,\sin(0.11),\,\cos(0.11))\approx(-1.0,\,0.0044,\,0.110,\,0.994)$.
+      - At $pos=10$: rate $i=0$ is $1$, rate $i=1$ is $10000^{-1/2}=0.01$, so
+        $PE_{10}=(\sin(10),\,\cos(10),\,\sin(0.1),\,\cos(0.1))\approx(-0.544,\,-0.839,\,0.0998,\,0.995)$.
+      - At $pos=11$: $PE_{11}=(\sin(11),\,\cos(11),\,\sin(0.11),\,\cos(0.11))\approx(-1.0,\,0.0044,\,0.110,\,0.994)$.
 
       Elementwise sums:
 

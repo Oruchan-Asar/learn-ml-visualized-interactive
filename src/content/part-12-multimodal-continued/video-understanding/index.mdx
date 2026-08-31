@@ -54,8 +54,11 @@ import { IntuitionDemo, PlayDemo, VideoCheckpoint } from "./Demos";
       Query = frame 0, embedding $(2,0)$. Frame 4 shares the same "high" motion state, so its dot product
       with the query is identical: $q\cdot k_{\text{frame 4}} = (2)(2)+(0)(0.4) = 4$, scaled to
       $4/\sqrt2\approx2.828$ — the same score frame 0 gets against itself. Softmax over all six frames
-      (three "high" scores of $2.828$, three "low" scores of $0$): $e^{2.828}\approx16.92$ (three of
-      these) and $e^0=1$ (three of these), summing to $3(16.92)+3(1)=53.76$. Each high-state frame's
+      (three "high" scores of $2.828$, three "low" scores of $0$):
+      - $e^{2.828}\approx16.92$ (three of these)
+      - $e^0=1$ (three of these)
+
+      Summing to $3(16.92)+3(1)=53.76$. Each high-state frame's
       share is $16.92/53.76\approx0.315$ — frame 4 gets that same $\approx0.315$ of frame 0's attention,
       in one layer, with no penalty for the temporal gap.
     </Step>

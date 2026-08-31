@@ -34,9 +34,13 @@ import { IntuitionDemo, PlayDemo, MobileNetCheckpoint } from "./Demos";
     </Step>
     <Step label="MobileNet inverts the usual bottleneck order">
       An **inverted-residual** block puts this depthwise filter *inside* an expand-then-project bottleneck:
-      a $1\times1$ expands $C$ channels to $tC$, a depthwise $K\times K$ filters the expanded space, and a
-      linear $1\times1$ projects back down to $C$ so the block's output can add back onto its input — the
-      reverse of a ResNet bottleneck, which narrows before it widens.
+
+      - a $1\times1$ expands $C$ channels to $tC$
+      - a depthwise $K\times K$ filters the expanded space
+      - a linear $1\times1$ projects back down to $C$
+
+      so the block's output can add back onto its input — the reverse of a ResNet bottleneck, which narrows
+      before it widens.
     </Step>
   </Steps>
 </Formalize>

@@ -70,10 +70,15 @@ import { IntuitionDemo, PlayDemo, GpuMemoryCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="At N = 8: bytes and FLOPs">
-      $\text{bytes}(8) = 3 \cdot 4 \cdot 64 = 768$. $\text{flops}(8) = 2 \cdot 512 = 1024$.
+      - $\text{bytes}(8) = 3 \cdot 4 \cdot 64 = 768$
+      - $\text{flops}(8) = 2 \cdot 512 = 1024$
     </Step>
     <Step label="Two times, exactly equal">
-      With $B = 3$ and $R = 4$: $T_{\text{transfer}}(8) = 768 / 3 = 256$. $T_{\text{compute}}(8) = 1024 / 4 = 256$.
+      With $B = 3$ and $R = 4$:
+
+      - $T_{\text{transfer}}(8) = 768 / 3 = 256$
+      - $T_{\text{compute}}(8) = 1024 / 4 = 256$
+
       Same number — N = 8 is exactly the crossover for these constants.
     </Step>
     <Step label="One step either side">

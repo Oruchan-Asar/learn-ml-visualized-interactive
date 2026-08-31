@@ -50,15 +50,20 @@ import { IntuitionDemo, PlayDemo, BiasVarianceCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Degree 0 — too stiff">
-      Just the mean: bias² $= 3.3$ across the six samples — it structurally cannot bend, so it's consistently wrong
-      by roughly the same amount every time; its variance is a tiny $0.003$.
+      Just the mean, across the six samples:
+      - bias² $= 3.3$ — it structurally cannot bend, so it's consistently wrong by roughly the same amount every time
+      - variance is a tiny $0.003$
     </Step>
     <Step label="Degree 4 — too flexible">
-      With exactly enough parameters to hit all five points exactly, bias² drops to $0$ — but variance explodes to
-      $0.173$, nearly 50 times higher.
+      With exactly enough parameters to hit all five points exactly:
+      - bias² drops to $0$
+      - variance explodes to $0.173$, nearly 50 times higher
     </Step>
     <Step label="Degree 2 — matches the true shape">
-      Bias² $\approx 0$ *and* a modest variance of just $0.046$ — the lowest total error of any degree tried.
+      - Bias² $\approx 0$
+      - a modest variance of just $0.046$
+
+      The lowest total error of any degree tried.
     </Step>
   </Steps>
 </WorkedExample>

@@ -57,9 +57,10 @@ import { IntuitionDemo, PlayDemo, HyperparameterTuningCheckpoint } from "./Demos
       the update jumps straight to $x=3$ on step one and stays there. Loss $=0$, not approximately, exactly.
     </Step>
     <Step label="Too large stalls, too much larger explodes">
-      $\eta=1.0$ gives $1-2\eta=-1$: the update overshoots to $x=6$, back to $x=0$, forever — the loss never
-      improves past its starting value of $9$. $\eta=1.1$ pushes $|1-2\eta|$ past $1$: the point sails further
-      from the minimum every step, ending 20 steps later with loss over $13{,}000$.
+      - $\eta=1.0$ gives $1-2\eta=-1$: the update overshoots to $x=6$, back to $x=0$, forever — the loss
+        never improves past its starting value of $9$.
+      - $\eta=1.1$ pushes $|1-2\eta|$ past $1$: the point sails further from the minimum every step, ending
+        20 steps later with loss over $13{,}000$.
     </Step>
   </Steps>
 </WorkedExample>

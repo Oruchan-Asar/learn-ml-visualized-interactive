@@ -59,9 +59,11 @@ import { IntuitionDemo, PlayDemo, FeatureScalingCheckpoint } from "./Demos";
       long, narrow valley: gentle along $w_1$'s axis, brutally steep along $w_2$'s.
     </Step>
     <Step label="Safe for the steep axis, frozen on the gentle one">
-      $\eta=0.00005$ is exactly the rate that lands $w_2$ on its true value in one step. Using that same rate for
-      $w_1$ over 20 steps leaves it at just $0.006$ — still $2.99$ away from its true value of $3$. Double the rate
-      to $\eta=0.0001$ and $w_2$ stops converging altogether, bouncing between $0$ and $0.04$ forever.
+      - $\eta=0.00005$ is exactly the rate that lands $w_2$ on its true value in one step.
+      - Using that same rate for $w_1$ over 20 steps leaves it at just $0.006$ — still $2.99$ away from its
+        true value of $3$.
+      - Double the rate to $\eta=0.0001$ and $w_2$ stops converging altogether, bouncing between $0$ and
+        $0.04$ forever.
     </Step>
     <Step label="Scaling turns two curvatures into one">
       Dividing $x_2$ by $100$ shrinks its range to match $x_1$'s, and its true weight becomes $0.02\times100=2$.

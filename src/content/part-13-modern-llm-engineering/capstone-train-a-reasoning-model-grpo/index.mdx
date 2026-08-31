@@ -59,8 +59,10 @@ import { IntuitionDemo, PlayDemo, GrpoReasoningCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Verify (RLVR)">
-      "$84$" appears four times → reward $1$ each. "$91$" → wrong → reward $0$. Rewards:
-      $[1, 1, 1, 1, 0]$.
+      - "$84$" appears four times → reward $1$ each
+      - "$91$" → wrong → reward $0$
+
+      Rewards: $[1, 1, 1, 1, 0]$.
     </Step>
     <Step label="Group statistics">
       - Mean $= (1+1+1+1+0)/5 = 4/5 = 0.8$
@@ -68,8 +70,8 @@ import { IntuitionDemo, PlayDemo, GrpoReasoningCheckpoint } from "./Demos";
       - $\text{std} = \sqrt{0.16} = 0.4$
     </Step>
     <Step label="Advantage (GRPO)">
-      Each correct response: $A = (1-0.8)/0.4 = 0.5$. The one wrong response: $A =
-      (0-0.8)/0.4 = -2.0$.
+      - Each correct response: $A = (1-0.8)/0.4 = 0.5$
+      - The one wrong response: $A = (0-0.8)/0.4 = -2.0$
     </Step>
     <Step label="Nothing else was trained">
       No reward model, no value network — every number above came from a verifier and five

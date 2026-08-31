@@ -78,10 +78,12 @@ import { IntuitionDemo, PlayDemo, DriftCheckpoint } from "./Demos";
       - Medium: $0.5\log_2(0.5/0.3) \approx 0.5(0.737) \approx 0.368$
       - High: $0.3\log_2(0.3/0.4) \approx 0.3(-0.415) \approx -0.125$
 
-      Sum: $-0.117+0.368-0.125\approx0.127$ bits — well past a 0.05-bit alert threshold. The medium bin's
-      share fell from 50% to 30% (a 40% relative drop); the high bin's share rose from 30% to 40% (a
-      one-third relative gain). Accuracy never had a chance to see it, because the per-bin accuracies
-      happened to average out.
+      Sum: $-0.117+0.368-0.125\approx0.127$ bits — well past a 0.05-bit alert threshold.
+
+      - The medium bin's share fell from 50% to 30% (a 40% relative drop).
+      - The high bin's share rose from 30% to 40% (a one-third relative gain).
+
+      Accuracy never had a chance to see it, because the per-bin accuracies happened to average out.
     </Step>
   </Steps>
 </WorkedExample>

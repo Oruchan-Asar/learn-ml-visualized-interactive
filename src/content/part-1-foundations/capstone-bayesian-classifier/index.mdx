@@ -71,9 +71,11 @@ import { IntuitionDemo, PlayDemo, BayesianClassifierCheckpoint } from "./Demos";
       ($P=0$). Both class likelihoods for this message come out to exactly $0$ — MLE cannot classify it.
     </Step>
     <Step label="MAP smooths every word likelihood off the boundary">
-      With $\alpha=1$: $P(\text{urgent}\mid\text{spam})=0.6$, $P(\text{urgent}\mid\text{not spam})=0.2$,
-      $P(\text{link}\mid\text{spam})=0.2$, $P(\text{link}\mid\text{not spam})=0.6$, and "win" absent gives
-      $0.4$ under spam, $0.6$ under not spam.
+      With $\alpha=1$:
+
+      - "urgent": $P(\text{urgent}\mid\text{spam})=0.6$, $P(\text{urgent}\mid\text{not spam})=0.2$
+      - "link": $P(\text{link}\mid\text{spam})=0.2$, $P(\text{link}\mid\text{not spam})=0.6$
+      - "win" (absent): $0.4$ under spam, $0.6$ under not spam
     </Step>
     <Step label="Multiply through and apply Bayes' rule">
       $$

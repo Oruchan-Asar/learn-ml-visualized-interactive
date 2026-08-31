@@ -29,9 +29,9 @@ import { IntuitionDemo, PlayDemo, ComparisonCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Every number traces back to an earlier chapter">
-      The $n^2$ comes from Chapter 1's attention matrix, the $O(n)$ memory from Chapter 3's key-value
-      cache, and the $O(1)$ from Chapter 4's selective state collapsing an entire sequence's history into
-      one fixed-size number.
+      - The $n^2$ comes from Chapter 1's attention matrix.
+      - The $O(n)$ memory comes from Chapter 3's key-value cache.
+      - The $O(1)$ comes from Chapter 4's selective state collapsing an entire sequence's history into one fixed-size number.
     </Step>
     <Step label="This capstone adds no new mechanism">
       It just puts the two totals next to each other on the one task where both architectures happen to
@@ -53,17 +53,20 @@ import { IntuitionDemo, PlayDemo, ComparisonCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Both get the right answer">
-      Transformer: attention weights concentrate on position $5$ regardless of $n$; the retrieved value is
-      exactly $7$. Mamba: the selective rule writes $7$ into its state at position $5$ and freezes it
-      through all $26$ remaining filler tokens. Also exactly $7$.
+      - Transformer: attention weights concentrate on position $5$ regardless of $n$; the retrieved value is exactly $7$.
+      - Mamba: the selective rule writes $7$ into its state at position $5$ and freezes it through all $26$ remaining filler tokens. Also exactly $7$.
     </Step>
     <Step label="The costs already aren't close">
-      Transformer: $32^2 \times 8 = 8{,}192$ ops. Mamba: $32$ ops — a single pass, one step per token.
+      - Transformer: $32^2 \times 8 = 8{,}192$ ops.
+      - Mamba: $32$ ops — a single pass, one step per token.
+
       Ratio: $8{,}192/32=256\times$ gap, for a sequence barely long enough to need a computer at all.
     </Step>
     <Step label="The memory gap is just as stark">
-      Transformer: $32$ cached key-value pairs, one per token processed so far. Mamba: $1$ state. Neither
-      number depends on *where* in the sequence the signal was — only on how long the sequence got before
+      - Transformer: $32$ cached key-value pairs, one per token processed so far.
+      - Mamba: $1$ state.
+
+      Neither number depends on *where* in the sequence the signal was — only on how long the sequence got before
       an answer was needed.
     </Step>
   </Steps>

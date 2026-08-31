@@ -57,15 +57,19 @@ import { IntuitionDemo, PlayDemo, PipelineCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Day 1: the baseline">
-      Distribution matches training exactly: $[0.3,0.4,0.3]$. Accuracy $=0.3(0.9)+0.4(0.8)+0.3(0.7)=0.27+0.32+0.21=0.800$.
-      Drift $=D_{KL}([0.3,0.4,0.3]\|[0.3,0.4,0.3])=0.000$ bits, since the two distributions are identical.
+      - Distribution matches training exactly: $[0.3,0.4,0.3]$.
+      - Accuracy $=0.3(0.9)+0.4(0.8)+0.3(0.7)=0.27+0.32+0.21=0.800$.
+      - Drift $=D_{KL}([0.3,0.4,0.3]\|[0.3,0.4,0.3])=0.000$ bits, since the two distributions are identical.
+
       Every check is green because nothing has happened yet.
     </Step>
     <Step label="Day 3: the incident">
-      Distribution shifts from $[0.3,0.4,0.3]$ (train) to $[0.4,0.2,0.4]$ (live) — medium-bin traffic falls
-      from 40% to 20% (halved), while high-bin traffic rises from 30% to 40% (up by a third). Accuracy:
-      $0.4(0.9) + 0.2(0.8) + 0.4(0.7) = 0.36 + 0.16 + 0.28 = 0.80$ — unchanged, because the bins' fixed
-      accuracies happened to average out identically.
+      Distribution shifts from $[0.3,0.4,0.3]$ (train) to $[0.4,0.2,0.4]$ (live):
+
+      - Medium-bin traffic falls from 40% to 20% (halved).
+      - High-bin traffic rises from 30% to 40% (up by a third).
+      - Accuracy: $0.4(0.9) + 0.2(0.8) + 0.4(0.7) = 0.36 + 0.16 + 0.28 = 0.80$ — unchanged, because the bins'
+        fixed accuracies happened to average out identically.
     </Step>
     <Step label="What actually caught it">
       $D_{KL}([0.3,0.4,0.3]\|[0.4,0.2,0.4])$:

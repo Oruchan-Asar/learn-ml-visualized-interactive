@@ -52,7 +52,10 @@ import { IntuitionDemo, PlayDemo, IntegratedGradientsCheckpoint } from "./Demos"
 
   <Steps>
     <Step label="The true output change is large, the gradient at the input is tiny">
-      $f(0)=\sigma(0)=0.5$. $f(2)=\sigma(10)=1/(1+e^{-10})\approx0.99995$ — a change of nearly $0.5$. The
+      - $f(0)=\sigma(0)=0.5$
+      - $f(2)=\sigma(10)=1/(1+e^{-10})\approx0.99995$
+
+      A change of nearly $0.5$. The
       derivative $f'(x)=5\sigma(5x)(1-\sigma(5x))$ at $x=2$: $f'(2)=5\times0.99995\times(1-0.99995)
       \approx5\times0.99995\times0.00005\approx0.000227$ — the input sits so deep in saturation that its
       own gradient badly understates how much it mattered.

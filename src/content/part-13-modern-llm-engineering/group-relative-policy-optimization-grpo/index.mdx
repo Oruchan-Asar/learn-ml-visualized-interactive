@@ -37,8 +37,9 @@ import { IntuitionDemo, PlayDemo, GrpoCheckpoint } from "./Demos";
     </Step>
     <Step label="The scale comes from the samples too">
       Dividing by the group's standard deviation keeps the advantage's scale comparable across prompts
-      of very different difficulty — a group where everyone agrees produces small, tightly-scaled
-      advantages; a group with wildly different rewards produces larger ones.
+      of very different difficulty:
+      - A group where everyone agrees produces small, tightly-scaled advantages
+      - A group with wildly different rewards produces larger ones
     </Step>
     <Step label="No critic network, anywhere">
       That's GRPO's entire pitch: PPO's clipped policy-gradient update, unchanged, but fed an advantage

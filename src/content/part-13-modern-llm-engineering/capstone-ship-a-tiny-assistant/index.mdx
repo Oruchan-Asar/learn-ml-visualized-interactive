@@ -56,14 +56,18 @@ import { IntuitionDemo, PlayDemo, ShipAssistantCheckpoint } from "./Demos";
       $16$ — the exact result verified in this part's first chapter, unchanged here.
     </Step>
     <Step label="Steer behavior per request with a system prompt">
-      The same frozen backbone, prompted with "double" demonstrations, answers $\approx4.534$ for a query of
-      $2.5$. Prompted with "negate" demonstrations instead, the identical backbone answers $\approx-2.267$ — no
-      retraining, no change to a single weight.
+      The same frozen backbone, for a query of $2.5$:
+      - Prompted with "double" demonstrations, answers $\approx4.534$
+      - Prompted with "negate" demonstrations instead, the identical backbone answers $\approx-2.267$
+
+      No retraining, no change to a single weight.
     </Step>
     <Step label="Serve both, cheaply">
-      $50$ requests at $100$ tokens each cost $252{,}500$ units of attention work without a KV cache, and just
-      $5{,}000$ with one — a $50.5\times$ reduction, applied identically regardless of which prompt each request
-      used.
+      $50$ requests at $100$ tokens each cost:
+      - $252{,}500$ units of attention work without a KV cache
+      - Just $5{,}000$ with one
+
+      A $50.5\times$ reduction, applied identically regardless of which prompt each request used.
     </Step>
   </Steps>
 </WorkedExample>

@@ -56,9 +56,15 @@ import { IntuitionDemo, PlayDemo, LayerGroupNormCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Six raw activations">
-      $[2, -1, 0.5, 3, -2.5, 1]$: mean $=(2-1+0.5+3-2.5+1)/6=3/6=0.5$. Squared deviations from that mean —
-      $1.5^2, (-1.5)^2, 0^2, 2.5^2, (-3)^2, 0.5^2 = 2.25, 2.25, 0, 6.25, 9, 0.25$ — sum to $20$, so variance
-      $=20/6\approx3.33$.
+      $[2, -1, 0.5, 3, -2.5, 1]$: mean $=(2-1+0.5+3-2.5+1)/6=3/6=0.5$. Squared deviations from that mean:
+      - $1.5^2=2.25$
+      - $(-1.5)^2=2.25$
+      - $0^2=0$
+      - $2.5^2=6.25$
+      - $(-3)^2=9$
+      - $0.5^2=0.25$
+
+      These sum to $20$, so variance $=20/6\approx3.33$.
     </Step>
     <Step label="One group (LayerNorm)">
       Dividing by $\sigma=\sqrt{3.33}\approx1.826$ after subtracting the mean $0.5$ from each value:

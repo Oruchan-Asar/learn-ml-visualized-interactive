@@ -57,9 +57,10 @@ import { IntuitionDemo, PlayDemo, WeightDecayCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Same λ = 0.5, two parameters">
-      $w_1$ has $v=0.01$ (so $\sqrt{v}=0.1$), $w_2$ has $v=4$ (so $\sqrt{v}=2$). With $\eta=0.1$: coupled decay on
-      $w_1$ is $\approx 0.1\times0.5\times1 / 0.1 = 0.5$ — half the weight, in one step. Coupled decay on $w_2$ is
-      $0.1\times0.5\times1/2=0.025$ — twenty times smaller, for the identical $\lambda$.
+      With $\eta=0.1$:
+
+      - $w_1$ has $v=0.01$ (so $\sqrt{v}=0.1$): coupled decay is $\approx 0.1\times0.5\times1 / 0.1 = 0.5$ — half the weight, in one step.
+      - $w_2$ has $v=4$ (so $\sqrt{v}=2$): coupled decay is $0.1\times0.5\times1/2=0.025$ — twenty times smaller, for the identical $\lambda$.
     </Step>
     <Step label="Decoupled decay doesn't care">
       At that same $\lambda=0.5$, decoupled decay gives *both* parameters exactly $0.1\times0.5\times1=0.05$ — a

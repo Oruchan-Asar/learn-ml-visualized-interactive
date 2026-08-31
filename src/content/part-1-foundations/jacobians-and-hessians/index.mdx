@@ -82,9 +82,8 @@ import { IntuitionDemo, PlayDemo, JacobianCheckpoint } from "./Demos";
 
       Now evaluate both $F$ and $J_F$ at $(2,3)$:
 
-      $$
-      F(2,3) = (4+3,\ 2+9) = (7, 11), \qquad J_F(2,3) = \begin{bmatrix}2(2) & 1 \\ 1 & 2(3)\end{bmatrix} = \begin{bmatrix}4 & 1 \\ 1 & 6\end{bmatrix}
-      $$
+      - $F(2,3) = (4+3,\ 2+9) = (7, 11)$
+      - $J_F(2,3) = \begin{bmatrix}2(2) & 1 \\ 1 & 2(3)\end{bmatrix} = \begin{bmatrix}4 & 1 \\ 1 & 6\end{bmatrix}$
     </Step>
     <Step label="Its determinant">
       $$
@@ -92,7 +91,10 @@ import { IntuitionDemo, PlayDemo, JacobianCheckpoint } from "./Demos";
       $$
     </Step>
     <Step label="The Hessian of f is constant">
-      First partials: $\partial f/\partial x = 2x+y$, $\partial f/\partial y = x+2y$.
+      First partials:
+
+      - $\partial f/\partial x = 2x+y$
+      - $\partial f/\partial y = x+2y$
 
       Differentiate each of those again:
       - $\partial^2f/\partial x^2 = \partial/\partial x[2x+y] = 2$

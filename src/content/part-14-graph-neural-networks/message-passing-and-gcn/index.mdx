@@ -55,8 +55,10 @@ import { IntuitionDemo, PlayDemo, SmoothingCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="One round, computed by hand for a leaf and a hub">
-      Node $4$ (a leaf, neighbor $\{3\}$): $h_4^{(1)} = \frac{1+3}{2} = 2$. Node $3$ (a hub, neighbors
-      $\{1,4,5\}$): $h_3^{(1)} = \frac{3+2+1+2}{4} = 2$. Every node's group size is $1+\deg(v)$ — the
+      - Node $4$ (a leaf, neighbor $\{3\}$): $h_4^{(1)} = \frac{1+3}{2} = 2$.
+      - Node $3$ (a hub, neighbors $\{1,4,5\}$): $h_3^{(1)} = \frac{3+2+1+2}{4} = 2$.
+
+      Every node's group size is $1+\deg(v)$ — the
       denominator changes depending on the node, since degrees aren't uniform (Chapter 1).
     </Step>
     <Step label="Full round 1">

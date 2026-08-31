@@ -45,13 +45,16 @@ import { IntuitionDemo, PlayDemo, PoolingCheckpoint } from "./Demos";
 <WorkedExample>
   <Steps>
     <Step label="Top-left window">
-      Rows 0-1 and columns 0-1 hold the values $2, 2, 2, 6$. Max pooling takes $\max(2,2,2,6) = 6$ — the exact
-      strength of the strongest detection, unchanged. Average pooling takes $\frac{2+2+2+6}{4} = 3$ — half of
-      the true peak, because it's been averaged against three much smaller values.
+      Rows 0-1 and columns 0-1 hold the values $2, 2, 2, 6$.
+
+      - Max pooling takes $\max(2,2,2,6) = 6$ — the exact strength of the strongest detection, unchanged.
+      - Average pooling takes $\frac{2+2+2+6}{4} = 3$ — half of the true peak, because it's been averaged against three much smaller values.
     </Step>
     <Step label="Bottom-right window">
-      The values $4, 0, 0, 0$ tell the same story at a smaller scale: max reports $4$, average reports
-      $\frac{4}{4}=1$.
+      The values $4, 0, 0, 0$ tell the same story at a smaller scale:
+
+      - Max reports $4$
+      - Average reports $\frac{4}{4}=1$
     </Step>
   </Steps>
 </WorkedExample>

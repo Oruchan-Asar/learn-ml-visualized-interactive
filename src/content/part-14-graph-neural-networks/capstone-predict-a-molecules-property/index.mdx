@@ -81,10 +81,19 @@ import { IntuitionDemo, PlayDemo, MoleculeCheckpoint } from "./Demos";
       - $e_{0,1}=\text{LeakyReLU}(1.5-1.0)=0.5$
       - $e_{0,2}=\text{LeakyReLU}(1.0-1.0)=0$
 
-      Softmax (subtracting the max, $0.5$): $e^{0-0.5}\approx0.607$ (self), $e^{0.5-0.5}=1$ (atom $1$),
-      $e^{0-0.5}\approx0.607$ (atom $2$); sum $\approx2.213$. Normalized weights:
-      $0.607/2.213\approx0.274$, $1/2.213\approx0.452$, $0.607/2.213\approx0.274$ — atom $1$ dominates,
-      since it's the only neighbor layer 1 pushed higher than atom $0$ itself.
+      Softmax (subtracting the max, $0.5$):
+
+      - $e^{0-0.5}\approx0.607$ (self)
+      - $e^{0.5-0.5}=1$ (atom $1$)
+      - $e^{0-0.5}\approx0.607$ (atom $2$)
+
+      Sum $\approx2.213$. Normalized weights:
+
+      - $0.607/2.213\approx0.274$
+      - $1/2.213\approx0.452$
+      - $0.607/2.213\approx0.274$
+
+      Atom $1$ dominates, since it's the only neighbor layer 1 pushed higher than atom $0$ itself.
     </Step>
     <Step label="Atom 0's final embedding">
       $h^{(2)}_0 \approx 0.274(1.0) + 0.452(1.5) + 0.274(1.0) \approx 1.226$.
@@ -114,10 +123,12 @@ import { IntuitionDemo, PlayDemo, MoleculeCheckpoint } from "./Demos";
       Wiring the exact same six atoms into a chain ($0\text-1\text-2\text-3\text-4\text-5$) instead
       changes every neighborhood, so layer 1 gives different means:
 
-      - $h^{(1)}_0=\frac{1+2}{2}=1.5$, $\ h^{(1)}_1=\frac{2+1+0}{3}\approx1.0$,
-        $\ h^{(1)}_2=\frac{0+2+3}{3}\approx1.667$
-      - $h^{(1)}_3=\frac{3+0+1}{3}\approx1.333$, $\ h^{(1)}_4=\frac{1+3+2}{3}=2.0$,
-        $\ h^{(1)}_5=\frac{2+1}{2}=1.5$
+      - $h^{(1)}_0=\frac{1+2}{2}=1.5$
+      - $h^{(1)}_1=\frac{2+1+0}{3}\approx1.0$
+      - $h^{(1)}_2=\frac{0+2+3}{3}\approx1.667$
+      - $h^{(1)}_3=\frac{3+0+1}{3}\approx1.333$
+      - $h^{(1)}_4=\frac{1+3+2}{3}=2.0$
+      - $h^{(1)}_5=\frac{2+1}{2}=1.5$
 
       Running the same layer-2 attention step on these values gives
       $h^{(2)}\approx(1.263,\ 1.462,\ 1.348,\ 1.739,\ 1.627,\ 1.811)$, summing to

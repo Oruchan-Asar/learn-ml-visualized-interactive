@@ -69,11 +69,13 @@ import { IntuitionDemo, PlayDemo, VAECheckpoint } from "./Demos";
       Four genuinely different outputs from one input, one encoder, one decoder.
     </Step>
     <Step label="KL divergence penalizes distributions that stray from standard normal">
-      Plugging $\mu=1$, $\sigma^2=e^{-1.8}\approx0.1653$ into $D_{KL}=\tfrac12(\sigma^2+\mu^2-1-\log\sigma^2)$:
-      $D_{KL}=\tfrac12(0.1653+1-1-(-1.8))=\tfrac12(1.9653)\approx0.983$. Encoding $x=0$ instead gives $\mu=0$,
-      $\log\sigma^2=-2$, $\sigma^2=e^{-2}\approx0.1353$: $D_{KL}=\tfrac12(0.1353+0-1-(-2))=\tfrac12(1.1353)\approx0.568$
-      — a *smaller* KL divergence, closer to $\mu{=}0,\sigma{=}1$, the one distribution where this penalty
-      vanishes entirely.
+      Plugging into $D_{KL}=\tfrac12(\sigma^2+\mu^2-1-\log\sigma^2)$:
+
+      - Encoding $x=2$: $\mu=1$, $\sigma^2=e^{-1.8}\approx0.1653$, so $D_{KL}=\tfrac12(0.1653+1-1-(-1.8))=\tfrac12(1.9653)\approx0.983$.
+      - Encoding $x=0$ instead: $\mu=0$, $\log\sigma^2=-2$, $\sigma^2=e^{-2}\approx0.1353$, so $D_{KL}=\tfrac12(0.1353+0-1-(-2))=\tfrac12(1.1353)\approx0.568$.
+
+      The second is a *smaller* KL divergence, closer to $\mu{=}0,\sigma{=}1$, the one distribution where this
+      penalty vanishes entirely.
     </Step>
   </Steps>
 </WorkedExample>

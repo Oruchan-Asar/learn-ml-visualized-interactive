@@ -55,10 +55,13 @@ import { IntuitionDemo, PlayDemo, ShapleyCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Order matters for any one feature">
-      In the order dough → cheese → toppings, cheese joins a pizza that already has dough:
-      $v(\{A,B\})-v(\{A\}) = 62-55 = 7$. In the order toppings → cheese → dough, cheese joins a pizza that
-      already has toppings: $v(\{B,C\})-v(\{C\}) = 65-53 = 12$ — same feature, same final pizza, different
-      credit, because cheese's payoff depends on what's already there.
+      - In the order dough → cheese → toppings, cheese joins a pizza that already has dough:
+        $v(\{A,B\})-v(\{A\}) = 62-55 = 7$.
+      - In the order toppings → cheese → dough, cheese joins a pizza that already has toppings:
+        $v(\{B,C\})-v(\{C\}) = 65-53 = 12$.
+
+      Same feature, same final pizza, different credit, because cheese's payoff depends on what's already
+      there.
     </Step>
     <Step label="Average over all 6 orders">
       Each feature's marginal contribution across all 6 orderings:

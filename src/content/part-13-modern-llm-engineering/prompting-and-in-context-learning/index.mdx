@@ -57,7 +57,10 @@ import { IntuitionDemo, PlayDemo, ICLCheckpoint } from "./Demos";
       - $K(2.5,2) = \exp(-(2.5-2)^2/2) = \exp(-0.125) \approx 0.882$
       - $K(2.5,3) = \exp(-(2.5-3)^2/2) = \exp(-0.125) \approx 0.882$
       - Sum $\approx 0.325+0.882+0.882 = 2.090$
-      - Normalized weights: $0.325/2.090\approx0.155$, $0.882/2.090\approx0.422$, $0.882/2.090\approx0.422$
+      - Normalized weights:
+        - $0.325/2.090\approx0.155$
+        - $0.882/2.090\approx0.422$
+        - $0.882/2.090\approx0.422$
 
       Both prompts produce weights $\approx[0.155, 0.422, 0.422]$ — identical, because the kernel only ever
       looks at how far $x_q$ is from each $x_i$.

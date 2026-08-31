@@ -76,15 +76,21 @@ import { IntuitionDemo, PlayDemo, EigenvectorCheckpoint } from "./Demos";
       $\lambda_1 = 3$ and $\lambda_2 = -1$.
     </Step>
     <Step label="Solve for each eigenvector">
-      For $\lambda_1=3$: $(A-3I)v=0 \Rightarrow -2x+2y=0 \Rightarrow x=y$, giving direction $(1,1)$. For
-      $\lambda_2=-1$: $(A+I)v=0 \Rightarrow x+y=0$, giving direction $(1,-1)$. Normalized, these are
+      - For $\lambda_1=3$: $(A-3I)v=0 \Rightarrow -2x+2y=0 \Rightarrow x=y$, giving direction $(1,1)$.
+      - For $\lambda_2=-1$: $(A+I)v=0 \Rightarrow x+y=0$, giving direction $(1,-1)$.
+
+      Normalized, these are
       $v_1=(\tfrac{1}{\sqrt2},\tfrac{1}{\sqrt2})$ and $v_2=(\tfrac{1}{\sqrt2},-\tfrac{1}{\sqrt2})$ — exactly
       the $45°$ and $-45°$ directions from the demo above.
     </Step>
     <Step label="Turn it into an SVD">
-      Singular values are $|\lambda|$, sorted: $\sigma_1=3$, $\sigma_2=1$. Since $\lambda_2$ is negative,
-      its left singular vector flips sign: $u_1=v_1=(\tfrac{1}{\sqrt2},\tfrac{1}{\sqrt2})$, but
-      $u_2=-v_2=(-\tfrac{1}{\sqrt2},\tfrac{1}{\sqrt2})$.
+      Singular values are $|\lambda|$, sorted:
+      - $\sigma_1=3$
+      - $\sigma_2=1$
+
+      Since $\lambda_2$ is negative, its left singular vector flips sign:
+      - $u_1=v_1=(\tfrac{1}{\sqrt2},\tfrac{1}{\sqrt2})$
+      - $u_2=-v_2=(-\tfrac{1}{\sqrt2},\tfrac{1}{\sqrt2})$
 
       Each term is a rank-1 outer product, scaled by its singular value:
       - $\sigma_1 u_1v_1^\top = 3\begin{pmatrix}0.5&0.5\\0.5&0.5\end{pmatrix} = \begin{pmatrix}1.5&1.5\\1.5&1.5\end{pmatrix}$
