@@ -79,9 +79,10 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
       At round 2:
 
       - Node 0 (informed) accepts a write, recording $\{0{:}1\}$
-      - Node 6, the one
-      holdout, also accepts a write, recording $\{6{:}1\}$ — concurrent, because neither node's
-      view agreed on the key's owner yet, let alone on each other's write.
+      - Node 6, the one holdout, also accepts a write, recording $\{6{:}1\}$
+
+      Concurrent, because neither node's view agreed on the key's owner yet, let alone on each
+      other's write.
     </Step>
     <Step label="Round 3 and a merge resolve everything at once">
       Once round 3 finishes, every node's local `assignKey` call agrees the owner is node 8. And

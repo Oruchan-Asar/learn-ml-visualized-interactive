@@ -71,8 +71,12 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
     </Step>
     <Step label="Term 7: N1 tries again alone">
       Every voter's term bumped to 6 and `votedFor` reset. N1 requests votes again with the *same* log (no
-      leader existed in term 6 to replicate anything new). N2, N3, and N4 all grant — their logs are behind or
-      equal to N1's. Only N5, still ahead at index 21, rejects. N1 collects 4 of 5 and wins.
+      leader existed in term 6 to replicate anything new).
+
+      - N2, N3, and N4 all grant — their logs are behind or equal to N1's
+      - N5, still ahead at index 21, rejects
+
+      N1 collects 4 of 5 and wins.
     </Step>
   </Steps>
 </WorkedExample>
