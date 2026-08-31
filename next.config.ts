@@ -5,7 +5,12 @@ import rehypeKatex from "rehype-katex";
 
 const nextConfig: NextConfig = {
   experimental: {
-    cpus: 4,
+    // The static-generation worker count multiplies peak build memory (each worker gets its
+    // own NODE_OPTIONS heap cap), and this repo's content has grown large enough that 4
+    // concurrent workers pushed total build memory over the deploy platform's ceiling even
+    // with each worker capped at 4GB. Serializing generation trades build time for a much
+    // lower, single-process memory ceiling.
+    cpus: 1,
     webpackMemoryOptimizations: true,
   },
 };
