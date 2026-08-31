@@ -29,11 +29,11 @@ export function ContributionBars({ items, formatValue = (v) => v.toFixed(2), rea
 
   return (
     <div className={styles.wrap} role="img" aria-label="A diverging bar chart of signed feature contributions, centered on zero.">
-      {items.map((item) => {
+      {items.map((item, index) => {
         const fraction = Math.min(1, Math.abs(item.value / maxAbs));
         const halfWidth = fraction * 50;
         return (
-          <div className={styles.row} key={item.label}>
+          <div className={styles.row} key={index}>
             <span className={styles.label}>{item.label}</span>
             <div className={styles.track}>
               <div className={styles.zeroLine} style={{ left: "50%" }} />
