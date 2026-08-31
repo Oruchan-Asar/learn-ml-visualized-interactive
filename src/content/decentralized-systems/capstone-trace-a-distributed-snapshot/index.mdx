@@ -72,15 +72,24 @@ import { IntuitionDemo, PlayDemo, CapstoneTraceADistributedSnapshotCheckpoint } 
       \$4 to N0 earlier: $15 - 4 = 11$.
     </Step>
     <Step label="Both messages land in open channels">
-      The \$6 arrives at N1 before N0's marker closes channel N0→N1 — logged. The \$4 arrives at N0
-      before N2's marker closes channel N2→N0 — logged. Every other channel closes with nothing
-      in it.
+      - The \$6 arrives at N1 before N0's marker closes channel N0→N1 — logged
+      - The \$4 arrives at N0 before N2's marker closes channel N2→N0 — logged
+      - Every other channel closes with nothing in it
     </Step>
     <Step label="The totals check out">
-      Recorded states: $4 + 5 + 11 = 20$ (N0's $4$, N1's own $5$, N2's $11$). Channel state:
-      $6 + 4 = 10$ (N0→N1's $6$, N2→N0's $4$). Together: $20 + 10 = 30$ — exactly the true starting
-      total, split correctly between "already reflected in a node's balance" and "still crossing a
-      channel."
+      Recorded states:
+
+      - N0's $4$
+      - N1's own $5$
+      - N2's $11$
+
+      Sum: $4 + 5 + 11 = 20$. Channel state:
+
+      - N0→N1's $6$
+      - N2→N0's $4$
+
+      Sum: $6 + 4 = 10$. Together: $20 + 10 = 30$ — exactly the true starting total, split correctly
+      between "already reflected in a node's balance" and "still crossing a channel."
     </Step>
   </Steps>
 </WorkedExample>

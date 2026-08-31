@@ -18,8 +18,12 @@ import { IntuitionDemo, PlayDemo, LeaderSelectionCheckpoint } from "./Demos";
 <Formalize>
   <Steps>
     <Step label="Lay every validator's stake out on a line">
-      Validators A, B, C, D hold stakes 40, 30, 20, 10 (total 100). Laid end to end on $[0, 100)$: A
-      occupies $[0,40)$, B occupies $[40,70)$, C occupies $[70,90)$, D occupies $[90,100)$.
+      Validators A, B, C, D hold stakes 40, 30, 20, 10 (total 100). Laid end to end on $[0, 100)$:
+
+      - A occupies $[0,40)$
+      - B occupies $[40,70)$
+      - C occupies $[70,90)$
+      - D occupies $[90,100)$
     </Step>
     <Step label="Hash the round number into a ticket on that line">
       $\text{ticket}(\text{round}) = \text{toyHash}(\texttt{"epoch-}\text{round}\texttt{-x"}) \bmod 100$ —
@@ -76,8 +80,12 @@ import { IntuitionDemo, PlayDemo, LeaderSelectionCheckpoint } from "./Demos";
         $[0,40)$ → **A**
     </Step>
     <Step label="Six rounds: D, B, A, C, B, A">
-      Two wins for A (stake 40%), two for B (stake 30%), one each for C and D (stakes 20% and 10%) — a
-      small sample, but already leaning the way the stakes predict.
+      - A: 2 wins (stake 40%)
+      - B: 2 wins (stake 30%)
+      - C: 1 win (stake 20%)
+      - D: 1 win (stake 10%)
+
+      A small sample, but already leaning the way the stakes predict.
     </Step>
   </Steps>
 </WorkedExample>

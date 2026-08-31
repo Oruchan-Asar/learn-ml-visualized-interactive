@@ -77,8 +77,10 @@ import { IntuitionDemo, PlayDemo, ZeroKnowledgeCheckpoint } from "./Demos";
       $c \cdot y \bmod 91 = 16 \times 25 \bmod 91 = 400 \bmod 91 = 36$. Both sides equal 36. ✓ Passes.
     </Step>
     <Step label="Rounds needed for under 5% cheating odds">
-      $(1/2)^4 = 0.0625$ is still above 5%. $(1/2)^5 = 0.03125$ clears it — so **5 rounds** is the smallest
-      number that pushes a cheater's odds below 5%.
+      - At 4 rounds: $(1/2)^4 = 0.0625$ — still above 5%
+      - At 5 rounds: $(1/2)^5 = 0.03125$ — clears it
+
+      So **5 rounds** is the smallest number that pushes a cheater's odds below 5%.
     </Step>
   </Steps>
 </WorkedExample>

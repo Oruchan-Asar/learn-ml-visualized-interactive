@@ -54,7 +54,10 @@ import { IntuitionDemo, PlayDemo, PaxosCheckpoint } from "./Demos";
       All three accept — 3 of 3 is a majority, so `"X"` is chosen.
     </Step>
     <Step label="Round 2: a conflicting proposer shows up">
-      P2 sends `PREPARE(2)`. A1 promises but reports `accepted: (1, "X")`; A2 and A3 report nothing.
+      P2 sends `PREPARE(2)`.
+
+      - A1 promises but reports `accepted: (1, "X")`
+      - A2 and A3 promise and report nothing
     </Step>
     <Step label="Apply the safety rule">
       Since at least one acceptor (A1) reported a previously accepted value, P2 must adopt it: `valueToPropose`

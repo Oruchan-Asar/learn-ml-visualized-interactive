@@ -76,7 +76,10 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
       3. Round 3 finally reaches the last holdout, node 6 — all 8 nodes now agree
     </Step>
     <Step label="A concurrent write lands mid-convergence">
-      At round 2, node 0 (informed) accepts a write, recording $\{0{:}1\}$. Node 6, the one
+      At round 2:
+
+      - Node 0 (informed) accepts a write, recording $\{0{:}1\}$
+      - Node 6, the one
       holdout, also accepts a write, recording $\{6{:}1\}$ — concurrent, because neither node's
       view agreed on the key's owner yet, let alone on each other's write.
     </Step>

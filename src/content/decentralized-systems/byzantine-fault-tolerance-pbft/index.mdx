@@ -67,16 +67,19 @@ import { IntuitionDemo, PlayDemo, PbftCheckpoint } from "./Demos";
       R0 sends `PRE-PREPARE(op-42)` to R1, R2, R3.
     </Step>
     <Step label="Prepare votes come in">
-      R0, R1, and R2 all broadcast `PREPARE(op-42)` — three matching votes. R3 broadcasts `PREPARE(op-fake)`
-      instead, equivocating.
+      - R0, R1, and R2 all broadcast `PREPARE(op-42)` — three matching votes
+      - R3 broadcasts `PREPARE(op-fake)` instead, equivocating
     </Step>
     <Step label="Check the PREPARE quorum">
       `countMatchingVotes` counts 3 replicas reporting `op-42`. `quorumSize(1) = 2(1)+1 = 3`. Three matches meets
       quorum — R3's mismatched vote simply doesn't count, and doesn't need to.
     </Step>
     <Step label="Commit votes, and the final check">
-      R0, R1, R2 broadcast `COMMIT(op-42)`; R3 sends nothing at all this round. That's still 3 matching commits —
-      quorum again — so `runPbftRound` reports `committed: true`. One lying replica changed nothing.
+      - R0, R1, R2 broadcast `COMMIT(op-42)`
+      - R3 sends nothing at all this round
+
+      That's still 3 matching commits — quorum again — so `runPbftRound` reports `committed: true`. One
+      lying replica changed nothing.
     </Step>
   </Steps>
 </WorkedExample>

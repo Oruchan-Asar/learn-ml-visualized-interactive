@@ -67,8 +67,14 @@ import { IntuitionDemo, PlayDemo, DistributedDeadlockDetectionCheckpoint } from 
         edge in this scenario
     </Step>
     <Step label="Merge all local views">
-      Union of all edges: P1 → P2, P2 → P3, P3 → P1, P4 → P5. Four edges, no duplicates to collapse
-      here (no two sites reported the same pair).
+      Union of all edges:
+
+      - P1 → P2
+      - P2 → P3
+      - P3 → P1
+      - P4 → P5
+
+      Four edges, no duplicates to collapse here (no two sites reported the same pair).
     </Step>
     <Step label="Search the merged graph for a cycle">
       Starting a depth-first search from P1: P1 → P2 → P3 → P1 closes a loop back to a node already

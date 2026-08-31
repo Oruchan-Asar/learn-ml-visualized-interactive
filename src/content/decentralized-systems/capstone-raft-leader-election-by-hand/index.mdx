@@ -63,8 +63,11 @@ import { IntuitionDemo, PlayDemo, CapstoneCheckpoint } from "./Demos";
       Neither late-arriving request can change a vote already cast this term.
     </Step>
     <Step label="Tally both candidates">
-      N1: self + N2 = 2 of 5. N3: self + N4 = 2 of 5. `hasMajority(2, 5)` is false for both —
-      `isSplitVote([traceN1, traceN3])` is `true`. Term 6 ends with no leader.
+      - N1: self + N2 = 2 of 5
+      - N3: self + N4 = 2 of 5
+
+      `hasMajority(2, 5)` is false for both — `isSplitVote([traceN1, traceN3])` is `true`. Term 6 ends
+      with no leader.
     </Step>
     <Step label="Term 7: N1 tries again alone">
       Every voter's term bumped to 6 and `votedFor` reset. N1 requests votes again with the *same* log (no

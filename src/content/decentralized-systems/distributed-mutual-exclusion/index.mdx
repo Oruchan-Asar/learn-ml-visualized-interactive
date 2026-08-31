@@ -61,8 +61,13 @@ import { IntuitionDemo, PlayDemo, DistributedMutualExclusionCheckpoint } from ".
       Q and R both requested at timestamp 3, so node id decides: "Q" sorts before "R", so Q has priority over R.
     </Step>
     <Step label="Full entry order">
-      Sorting all three by (timestamp, id): Q (3, Q), then R (3, R), then P (5, P) — matching
-      `determineEntryOrder`'s output exactly.
+      Sorting all three by (timestamp, id):
+
+      1. Q (3, Q)
+      2. R (3, R)
+      3. P (5, P)
+
+      Matching `determineEntryOrder`'s output exactly.
     </Step>
     <Step label="Why Q defers to everyone">
       Q has priority over both P and R, so by the reply rule, Q *defers* replying to either of them until Q has

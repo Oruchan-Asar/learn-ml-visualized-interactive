@@ -70,10 +70,15 @@ import { IntuitionDemo, PlayDemo, GossipCheckpoint } from "./Demos";
 
     </Step>
     <Step label="Fanout 1 takes noticeably longer">
-      With only one peer contacted per round (just `offset`'s neighbor, no second target), the same
-      network's infected set grows $\{0\}\to\{0,1\}\to\{0,1,2,4\}\to\{0,1,2,4,5,6,7\}$, then **stalls**
-      at round 4 — every infected node's single round-4 target already belongs to the set — before
-      node 3 finally gets reached in round 5, needing **5** rounds total to fully cover.
+      With only one peer contacted per round (just `offset`'s neighbor, no second target):
+
+      1. Round 1: infected $=\{0,1\}$
+      2. Round 2: infected $=\{0,1,2,4\}$
+      3. Round 3: infected $=\{0,1,2,4,5,6,7\}$
+      4. Round 4: **stalls** — every infected node's single round-4 target already belongs to the set
+      5. Round 5: node 3 finally gets reached — all 8 nodes infected
+
+      Needing **5** rounds total to fully cover.
     </Step>
     <Step label="Fanout 3 (flooding) is fastest">
       Contacting every neighbor every round reaches all 8 nodes in just **2** rounds — the fastest

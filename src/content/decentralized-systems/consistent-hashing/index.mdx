@@ -54,12 +54,20 @@ import { IntuitionDemo, PlayDemo, RingCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Base assignment">
-      Walking clockwise from each key: k1(0)→A, k2(4)→B, k3(7)→C, k4(10)→D, k5(12)→D, k6(15) finds no
-      node $\ge 15$, so it wraps to the smallest, A.
+      Walking clockwise from each key:
+
+      - k1(0)→A
+      - k2(4)→B
+      - k3(7)→C
+      - k4(10)→D
+      - k5(12)→D
+      - k6(15) finds no node $\ge 15$, so it wraps to the smallest, A
     </Step>
     <Step label="Adding node E at position 11">
-      E sits strictly between C(9) and D(13). Only k4(10), which falls in the arc $(9, 11]$, now
-      belongs to E instead of D. k5(12) is past position 11, so it's untouched — still D's.
+      E sits strictly between C(9) and D(13).
+
+      - k4(10) falls in the arc $(9, 11]$, so it now belongs to E instead of D
+      - k5(12) is past position 11, so it's untouched — still D's
     </Step>
     <Step label="Removing node C instead">
       With C gone, the remaining nodes are $\{$A2, B6, D13$\}$. k3(7) now walks clockwise to the

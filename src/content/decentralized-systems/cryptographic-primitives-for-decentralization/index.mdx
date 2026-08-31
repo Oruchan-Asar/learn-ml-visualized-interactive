@@ -64,10 +64,14 @@ import { IntuitionDemo, PlayDemo, MerkleCheckpoint } from "./Demos";
 
   <Steps>
     <Step label="Hash each leaf">
-      $h_0=\text{toyHash}(\texttt{"alice pays bob 3"})=459$, $h_1=416$, $h_2=636$, $h_3=976$.
+      - $h_0=\text{toyHash}(\texttt{"alice pays bob 3"})=459$
+      - $h_1=\text{toyHash}(\texttt{"bob pays carol 1"})=416$
+      - $h_2=\text{toyHash}(\texttt{"carol pays dave 2"})=636$
+      - $h_3=\text{toyHash}(\texttt{"dave pays alice 1"})=976$
     </Step>
     <Step label="Combine into parents">
-      $p_0=\text{toyHashPair}(459,416)=741$ and $p_1=\text{toyHashPair}(636,976)=229$.
+      - $p_0=\text{toyHashPair}(459,416)=741$
+      - $p_1=\text{toyHashPair}(636,976)=229$
     </Step>
     <Step label="Combine into the root">
       $\text{root}=\text{toyHashPair}(741,229)=577$.
